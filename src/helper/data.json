@@ -1,0 +1,132 @@
+[
+  {
+    "id": 1,
+    "nombre": "Feria Artesanal Primavera",
+    "ubicacion": "Plaza Central",
+    "dueño": "Ana Pérez",
+    "puestos": [
+      {
+        "num_puesto": 1,
+        "precio": 50,
+        "horario": "09:00 - 18:00",
+        "tipo_puesto": "Comida"
+      },
+      {
+        "num_puesto": 2,
+        "precio": 40,
+        "horario": "09:00 - 18:00",
+        "tipo_puesto": "Artesanías"
+      },
+      {
+        "num_puesto": 3,
+        "precio": 35,
+        "horario": "09:00 - 18:00",
+        "tipo_puesto": "Ropa"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "nombre": "Feria Nocturna Verano",
+    "ubicacion": "Parque Rivera",
+    "dueño": "Carlos González",
+    "puestos": [
+      {
+        "num_puesto": 1,
+        "precio": 70,
+        "horario": "18:00 - 23:00",
+        "tipo_puesto": "Bebidas"
+      },
+      {
+        "num_puesto": 2,
+        "precio": 55,
+        "horario": "18:00 - 23:00",
+        "tipo_puesto": "Accesorios"
+      },
+      {
+        "num_puesto": 3,
+        "precio": 65,
+        "horario": "18:00 - 23:00",
+        "tipo_puesto": "Decoración"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "nombre": "Feria Navideña",
+    "ubicacion": "Avenida Principal",
+    "dueño": "Luis García",
+    "puestos": [
+      {
+        "num_puesto": 1,
+        "precio": 80,
+        "horario": "10:00 - 20:00",
+        "tipo_puesto": "Juguetes"
+      },
+      {
+        "num_puesto": 2,
+        "precio": 90,
+        "horario": "10:00 - 20:00",
+        "tipo_puesto": "Decoración"
+      },
+      {
+        "num_puesto": 3,
+        "precio": 75,
+        "horario": "10:00 - 20:00",
+        "tipo_puesto": "Comida"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "nombre": "Feria Independencia",
+    "ubicacion": "Parque Independencia",
+    "dueño": "María López",
+    "puestos": [
+      {
+        "num_puesto": 1,
+        "precio": 60,
+        "horario": "08:00 - 16:00",
+        "tipo_puesto": "Ropa"
+      },
+      {
+        "num_puesto": 2,
+        "precio": 55,
+        "horario": "08:00 - 16:00",
+        "tipo_puesto": "Artesanías"
+      },
+      {
+        "num_puesto": 3,
+        "precio": 50,
+        "horario": "08:00 - 16:00",
+        "tipo_puesto": "Comida"
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "nombre": "Feria Otoñal",
+    "ubicacion": "Centro Histórico",
+    "dueño": "Fernando Ruiz",
+    "puestos": [
+      {
+        "num_puesto": 1,
+        "precio": 65,
+        "horario": "10:00 - 19:00",
+        "tipo_puesto": "Libros"
+      },
+      {
+        "num_puesto": 2,
+        "precio": 55,
+        "horario": "10:00 - 19:00",
+        "tipo_puesto": "Ropa"
+      },
+      {
+        "num_puesto": 3,
+        "precio": 60,
+        "horario": "10:00 - 19:00",
+        "tipo_puesto": "Accesorios"
+      }
+    ]
+  }
+]
