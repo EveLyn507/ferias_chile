@@ -10,7 +10,7 @@ export function Logout() {
     const logOut = () => {
         clearLocalStorage(UserKey)
         dispatch(resetUser());
-        navigate(`/${PublicRoutes.LOGIN}`, {replace : true});
+        navigate(`/${PublicRoutes.FEEDFERIAS}`, {replace : true});
 
     };
 
