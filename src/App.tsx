@@ -6,13 +6,12 @@ import { Suspense ,lazy} from 'react';
 import { Provider } from 'react-redux';
 import store from './redux/store';
 import { Login } from './components.publicas/registro_login/index';
-import { Logout } from './components/index';
 const View_feed = lazy(() => import ('./components.publicas/feed_ferias/view_feed'));
 const PerfilL = lazy(() => import ('./components.privadas/perfil_encargados/routes.p_encargado'));
 
 function App() {
-
-  return (
+   
+  return ( 
     <div className="App">
       <Suspense fallback = {<></>}>
         <Provider store={store}>
@@ -33,7 +32,7 @@ function App() {
   )   
 
 
-}
+}     
 
 
 export default App

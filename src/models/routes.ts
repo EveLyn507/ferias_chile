@@ -6,4 +6,4 @@ export const PublicRoutes = {
 export const PrivateRoutes = {
     PRIVATE : 'private',
     PERFILENCARGADO : 'Perfil-E'
-}
+} 
