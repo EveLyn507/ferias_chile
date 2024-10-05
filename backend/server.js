@@ -2,50 +2,38 @@ const express = require('express');
 const { Pool } = require('pg');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const jwt = require('jsonwebtoken');
-
+const usuarioRoutes = require('./routes/user.routes'); // rutas
+const credencial = require('./credenciales'); // Importa el archivo de configuración
 
 dotenv.config();
 const app = express();
 const port = process.env.PORT || 5000;
 
+
+//esta es la conexion a la bd
 const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'ferias_chile',
-  password: 'contrasena',
-  port: 5432, // Puerto predeterminado de PostgreSQL
+  user: credencial.user_name,
+  host: credencial.host_name,
+  database: credencial.database_name,
+  password: credencial.pass,
+  port: credencial.puerto // Puerto predeterminado de PostgreSQL
 });
 
+
+//uso de cors que recibe peticiones https
 app.use(cors());
 app.use(express.json());
 
-// Ruta de login
-app.post('/login', async (req, res) => {
-  const { email, contrasena } = req.body;
-  try {
-    const result = await pool.query('SELECT * FROM ferias_chile.public."USUARIO" WHERE email = $1', [email]);
-    const user = result.rows[0];
-    
 
-    if (!user) {
-      
-      return res.status(401).json({ message: 'Credenciales incorrectas' });
-    }
-
-    // Comparar contraseñas en texto plano
-    if (contrasena !== user.contrasena) {
-      return res.status(401).json({ message: 'Credenciales incorrectas' });
-    }
-
-    // Generar token
-    const token = jwt.sign({ id: user.email }, 'xd', { expiresIn: '1h' });
-    res.json({ token });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error al iniciar sesión');
-  }
+//midware , le da el pool a las peticiones para que conecten
+app.use((req, res, next) => {
+  req.pool = pool; 
+  next(); // Pasar al siguiente middleware o ruta
 });
+
+//resgistra las rutas en el sv y las saca desde  routes
+app.use(usuarioRoutes); 
+
 
 // Iniciar el servidor
 app.listen(port, () => {
