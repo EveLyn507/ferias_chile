@@ -1,9 +1,11 @@
 export const PublicRoutes = { 
     FEEDFERIAS : 'Feed-Ferias' ,
-    LOGIN : 'login'
+    LOGIN : 'login',
+    REGISTRO : 'registro'
 }
 
 export const PrivateRoutes = {
     PRIVATE : 'private',
-    PERFILENCARGADO : 'Perfil-E'
+    PERFILENCARGADO : 'Perfil-E',
+    ruta : 'ruta2'
 } 
