@@ -3,6 +3,7 @@ import PerfilEn from './perfil_encargado';
 import  {NotFound}  from '../../models/index.ts';
 import { Navigate, Route } from 'react-router-dom';
 import { Logout } from '../../components/index';
+
 function PerfilL() {
     return (
      <>

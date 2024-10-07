@@ -1,9 +1,13 @@
+import React from 'react';
 
-const Toolbar = () => {
+interface ToolbarProps {
+  onAddRectangle: () => void;
+}
+
+const Toolbar: React.FC<ToolbarProps> = ({ onAddRectangle }) => {
   return (
     <div className="toolbar">
       <button onClick={onAddRectangle}>Agregar Puesto</button>
-      <button>Agregar Calles</button>
     </div>
   );
 };

@@ -1,6 +1,7 @@
 export const PublicRoutes = { 
     FEEDFERIAS : 'Feed-Ferias' ,
-    LOGIN : 'login'
+    LOGIN : 'login',
+     HERRAMIENTA : 'Plano'
 }
 
 export const PrivateRoutes = {
