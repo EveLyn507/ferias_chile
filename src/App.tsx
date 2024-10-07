@@ -4,10 +4,12 @@ import {AuthGuard} from './guard/auth.guard';
 import { NotFound,PrivateRoutes, PublicRoutes } from './models/index';
 import { Suspense ,lazy} from 'react';
 import { Provider } from 'react-redux';
-import store from './redux/store';
-import { Login, Registro } from './components.publicas/registro_login/index';
-const View_feed = lazy(() => import ('./components.publicas/feed_ferias/view_feed'));
-const PerfilL = lazy(() => import ('./components.privadas/perfil_encargados/routes.p_encargado'));
+import {store} from './redux/store';
+import { Login, Registro } from './pages/pages.publicas/registro_login/index';
+import { ProtectedRoute } from './guard/rol.guard';
+import { Perfil_feriante } from './pages/pages.privadas/perfil_feriante/perfil_feriante';
+const View_feed = lazy(() => import ('./pages/pages.publicas/feed_ferias/view_feed'));
+const Privado = lazy(() => import ('./pages/pages.privadas/perfil_encargados/routes.p_encargado'));
 
 
 function App() {
@@ -23,8 +25,9 @@ function App() {
               <Route path={PublicRoutes.LOGIN} element = {<Login/>} />
               <Route path={PublicRoutes.REGISTRO} element = {<Registro/>} />
               <Route element= {<AuthGuard />}>
-                <Route  path={`${PrivateRoutes.PRIVATE}/*`} element= {<PerfilL/>} />
+                <Route  path={`${PrivateRoutes.PRIVATE}/*`} element= {<Privado/>} />
               </Route>
+               <Route path={PrivateRoutes.PERFILADMIN} element={<ProtectedRoute allowedRoles={['administrador']}> <Perfil_feriante /> </ProtectedRoute>}/>
             </NotFound>
           </BrowserRouter>
         </Provider>

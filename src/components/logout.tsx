@@ -1,5 +1,5 @@
-import { clearLocalStorage } from '../utilities/localStorage.utilities'
-import { resetUser, UserKey } from '../redux/states/user'
+
+import { logout } from '../redux/states/user'
 import {  PublicRoutes } from '../models';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -8,8 +8,7 @@ export function Logout() {
     const navigate  = useNavigate();
     const dispatch = useDispatch();
     const logOut = () => {
-        clearLocalStorage(UserKey)
-        dispatch(resetUser());
+        dispatch(logout());
         navigate(`/${PublicRoutes.FEEDFERIAS}`, {replace : true});
 
     };

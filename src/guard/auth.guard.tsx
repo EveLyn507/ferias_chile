@@ -4,8 +4,14 @@ import { PublicRoutes } from "../models";
 export const AuthGuard = () => {
 
     const token = localStorage.getItem('token');
-    return token ? <Outlet/> : <Navigate replace to = {PublicRoutes.FEEDFERIAS} /> ;
-}
-
+    const role = localStorage.getItem('role');
+    
+   
+    return token && role  ? <Outlet/> : <Navigate replace to = {PublicRoutes.FEEDFERIAS} /> ;
+   
+   
+    
+   }
+        
 
 export default AuthGuard

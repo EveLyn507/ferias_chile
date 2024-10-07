@@ -11,13 +11,14 @@ export const Registro = () => {
   const [contrasena,Setcontrasena] = useState('');
   const [contrasena2,Setcontrasena2] = useState('');
   const [error2, setError2] = useState('');
+  const [role, setRole] = useState('');
 
 
   const clicRegistro =async  (e: React.FormEvent) => {
     e.preventDefault();
 
     try{
-      const response = await axios.post('http://localhost:5000/registro' , {nombre , apellido ,rut , email , telefono , contrasena }) 
+      const response = await axios.post('http://localhost:5000/registro' , {nombre , apellido ,rut , email , telefono , contrasena,role }) 
       console.log('Registro exitoso:', response.data);
     } catch(err) {
       setError2('error al registrar usuario');
@@ -67,6 +68,14 @@ return (
         </div>
     </div>
 
+
+      <div>
+      <select id="role" name="role"  value={role} onChange={(e) => setRole(e.target.value)} required>
+    <option value="encargado">encargado</option>
+    <option value="feriante">feriante</option> 
+    <option value="administrador">administrador muni</option>
+    </select>
+      </div>
     <button type="submit">registrarse</button>
     {error2 && <p>{error2}</p>}
 </form>
