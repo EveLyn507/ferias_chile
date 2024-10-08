@@ -1,3 +1,5 @@
+import React from 'react';
+import { useState } from 'react';
 import { Line, Circle } from 'react-konva';
 
 interface Street {

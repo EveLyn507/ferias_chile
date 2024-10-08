@@ -1,3 +1,4 @@
+import React from 'react';
 import { Rect, Text } from 'react-konva';
 
 interface Area {

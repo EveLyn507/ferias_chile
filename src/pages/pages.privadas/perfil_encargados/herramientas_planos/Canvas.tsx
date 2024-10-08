@@ -1,5 +1,5 @@
 import { Stage, Layer, Rect, Line } from 'react-konva';
-import AreaPage from './AreaPage';
+import AreaPage from './Areapage';
 import StreetPage from './StreetPage';
 
 interface Rectangle {
@@ -118,11 +118,10 @@ const Canvas: React.FC<CanvasProps> = ({
             onDragEnd={(e) => {
               const updatedRectangles = rectangles.map(r => 
                 r.id === rect.id
-                  ? { ...r, x: e.target.x(), y: e.target.y() } 
+                  ? { ...r, x: e.target.x(), y: e.target.y() }
                   : r
               );
               setRectangles(updatedRectangles);
-              localStorage.setItem('puestos', JSON.stringify(updatedRectangles)); 
             }}
           />
         ))}

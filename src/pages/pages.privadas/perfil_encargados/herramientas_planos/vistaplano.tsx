@@ -26,12 +26,14 @@ interface Street {
   width: number;
 }
 
-const LOCAL_STORAGE_KEY = 'puestos';
+const API_URL = 'http://localhost:3001'; // Cambia a la URL de tu servidor
 
-function Vista() {
+const Vista = () => {
   const [rectangles, setRectangles] = useState<Rectangle[]>([]);
   const [planWidth, setPlanWidth] = useState<number>(600);
   const [planHeight, setPlanHeight] = useState<number>(400);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   const [areas, setAreas] = useState<Area[]>([]);
   const [streets, setStreets] = useState<Street[]>([]);
@@ -46,24 +48,38 @@ function Vista() {
       fill: 'green',
       id: Date.now(),
     };
-    setRectangles((prev) => {
-      const updated = [...prev, newRectangle];
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated)); 
-      return updated;
-    });
+    setRectangles((prev) => [...prev, newRectangle]);
   };
 
   const handleRemoveRectangle = (id: number) => {
-    const updatedRectangles = rectangles.filter(rect => rect.id !== id);
-    setRectangles(updatedRectangles);
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedRectangles));
+    setRectangles((prev) => prev.filter(rect => rect.id !== id));
   };
 
   useEffect(() => {
-    const storedRectangles = localStorage.getItem(LOCAL_STORAGE_KEY);
-    if (storedRectangles) {
-      setRectangles(JSON.parse(storedRectangles));
-    }
+    const fetchData = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const [rectanglesRes, planRes] = await Promise.all([
+          fetch(`${API_URL}/puestos`),
+          fetch(`${API_URL}/plano`)
+        ]);
+        if (!rectanglesRes.ok || !planRes.ok) {
+          throw new Error('Error al obtener los datos');
+        }
+        const rectanglesData = await rectanglesRes.json();
+        const planData = await planRes.json();
+        setRectangles(rectanglesData);
+        setPlanWidth(planData.width);
+        setPlanHeight(planData.height);
+      } catch (error) {
+        console.error('Error al cargar los datos', error);
+        setError('Error al cargar los datos del servidor');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
   }, []);
 
   const handleAddArea = () => {
@@ -105,6 +121,27 @@ function Vista() {
 
   
 
+  const saveData = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(`${API_URL}/puestos`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ rectangles, planWidth, planHeight }),
+      });
+      if (!response.ok) {
+        throw new Error('Error al guardar los datos');
+      }
+      console.log('Datos guardados correctamente');
+    } catch (error) {
+      console.error('Error al guardar los datos', error);
+      setError('Error al guardar los datos en la base de datos');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="App">
       <header className="header">
@@ -112,6 +149,8 @@ function Vista() {
       </header>
 
       <div className="main-content">
+        {isLoading && <p>Cargando...</p>}
+        {error && <p style={{ color: 'red' }}>{error}</p>}
         <Toolbar onAddRectangle={handleAddRectangle} />
         <Canvas
           rectangles={rectangles}
@@ -129,9 +168,13 @@ function Vista() {
           onRemoveStreet={handleRemoveStreet}
           onUpdateStreet={handleUpdateStreet}
         />
+        <button onClick={saveData} disabled={isLoading}>
+          {isLoading ? 'Guardando...' : 'Guardar en la base de datos'}
+        </button>
       </div>
     </div>
   );
-}
+};
+
 
 export default Vista;
