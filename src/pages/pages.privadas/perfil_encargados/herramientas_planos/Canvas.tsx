@@ -1,5 +1,6 @@
-import React from 'react';
 import { Stage, Layer, Rect, Line } from 'react-konva';
+import AreaPage from './AreaPage';
+import StreetPage from './StreetPage';
 
 interface Rectangle {
   id: number;
@@ -17,7 +18,13 @@ interface CanvasProps {
   planWidth: number;
   planHeight: number;
   setPlanWidth: (width: number) => void;  
-  setPlanHeight: (height: number) => void; 
+  setPlanHeight: (height: number) => void;
+  areas: any[]; 
+  onRemoveArea: (id: number) => void;
+  streets: any[];
+  onUpdateArea: (id: number, updatedProps: any) => void; 
+  onUpdateStreet: (id: number, updatedProps: any) => void; 
+  onRemoveStreet: (id: number) => void; 
 }
 
 const Canvas: React.FC<CanvasProps> = ({
@@ -27,7 +34,13 @@ const Canvas: React.FC<CanvasProps> = ({
   planWidth,
   planHeight,
   setPlanWidth,  
-  setPlanHeight 
+  setPlanHeight,
+  areas, 
+  onRemoveArea,
+  streets,
+  onUpdateArea,
+  onUpdateStreet,
+  onRemoveStreet,
 }) => {
   const planX = 50; 
   const planY = 50; 
@@ -113,6 +126,8 @@ const Canvas: React.FC<CanvasProps> = ({
             }}
           />
         ))}
+        <AreaPage areas={areas} onRemoveArea={onRemoveArea} onUpdateArea={onUpdateArea} />
+        <StreetPage streets={streets} onRemoveStreet={onRemoveStreet} onUpdateStreet={onUpdateStreet} />
       </Layer>
     </Stage>
   );
