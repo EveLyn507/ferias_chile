@@ -1,5 +1,5 @@
 const express = require('express');
-const { login, register } = require('../controllers/usuarioController');
+const { login, register } = require('../controllers/usuarioController.js');
 const router = express.Router();
 
 
@@ -9,7 +9,9 @@ router.post('/login', (req, res) => {
     login(req, res, pool); // Pasar el pool a la función de login
   });
 
-  
-router.post('/register', register);
+  router.post('/registro', (req, res) => {
+    const pool = req.pool; // Recuperar el pool del objeto req
+    register(req, res, pool); // Pasar el pool a la función de login
+  });
 
 module.exports = router;

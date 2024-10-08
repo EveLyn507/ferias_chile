@@ -1,5 +1,6 @@
+import { Roles } from "./rol"
+
 export interface UserInfo {
-    id : number
-    name : string
-    mail : string
+    token : string;
+    rol : Roles;
 }

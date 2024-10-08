@@ -16,8 +16,9 @@ const login = async (req, res, pool) => {
       return res.status(401).json({ message: 'Credenciales incorrectas' });
     }
 
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    res.json({ token });
+    const token = jwt.sign({ id: user.id }, 'xd', { expiresIn: '1h' });
+    const role =  user.role;
+    res.json({ token, role });
   } catch (err) {
     console.error(err);
     res.status(500).send('Error al iniciar sesión');
@@ -25,10 +26,10 @@ const login = async (req, res, pool) => {
 };
 
 // Lógica para registro (ejemplo)
-const register = async (req, res) => {
-  const { email, contrasena } = req.body;
+const register = async (req, res, pool) => {
+  const { nombre , apellido ,rut , email , telefono , contrasena  ,role} = req.body;
   try {
-    await pool.query('INSERT INTO ferias_chile.public."USUARIO" (email, contrasena) VALUES ($1, $2)', [email, contrasena]);
+    await pool.query('INSERT INTO ferias_chile.public."USUARIO" (nombre , apellido ,rut , email , telefono , contrasena,role) VALUES ($1, $2, $3, $4, $5, $6,$7)', [nombre , apellido ,rut , email , telefono , contrasena ,role]);
     res.status(201).send('Usuario registrado correctamente');
   } catch (err) {
     console.error(err);
