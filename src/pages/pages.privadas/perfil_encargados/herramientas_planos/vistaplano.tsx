@@ -26,7 +26,7 @@ interface Street {
   width: number;
 }
 
-const API_URL = 'http://localhost:3001'; // Cambia a la URL de tu servidor
+const API_URL = 'http://localhost:5000'; // Cambia a la URL de tu servidor
 
 const Vista = () => {
   const [rectangles, setRectangles] = useState<Rectangle[]>([]);
