@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import  { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -5,8 +6,9 @@ import axios from 'axios';
 import { clearLocalStorage } from '../../../utilities/localStorage.utilities';
 import { createUser, resetUser, UserKey } from '../../../redux/states/user';
 import {  PrivateRoutes, PublicRoutes } from '../../../models';
+import { Nav_bar } from '../../../components';
 
-export function Login() {
+function Login() {
   const [email, setEmail] = useState('');
   const [contrasena, setContrasena] = useState('');
 
@@ -18,6 +20,8 @@ export function Login() {
     dispatch(resetUser());
     navigate(`/${PublicRoutes.LOGIN}`, { replace: true });
   }, []);
+
+
 
 const login = async () => {
     try {
@@ -35,6 +39,9 @@ const login = async () => {
 
 
   return (
+
+    <>  
+      <Nav_bar/> 
     <div>
       <h1>Login</h1>
       <input
@@ -51,6 +58,8 @@ const login = async () => {
       />
       <button onClick={login}>Login</button>
     </div>
+
+    </>
   );
 };
 

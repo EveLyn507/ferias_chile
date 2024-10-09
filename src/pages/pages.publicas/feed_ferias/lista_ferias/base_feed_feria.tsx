@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { pedirDatos } from '../../../helper/PedirDatos';
+import { pedirDatos } from '../../../../helper/PedirDatos';
 import { Item_list } from './list_ferias';
 
 // Define la interfaz para los objetos de feria

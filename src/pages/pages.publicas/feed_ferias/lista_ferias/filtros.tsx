@@ -1,5 +1,3 @@
-
-import './css/base.css'
 export const Filtros_base = () => {
   return (
 

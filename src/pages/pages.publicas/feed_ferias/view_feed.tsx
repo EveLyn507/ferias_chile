@@ -1,9 +1,9 @@
-import Feed_d_ferias from './base_feed_feria';
+import Feed_d_ferias from './lista_ferias/base_feed_feria';
 import { Nav_bar } from '../../../components';
-import { Filtros_base } from '../../../components/index';
-import '../../../components/css/base.css';
+import '../../../css/base.css';
+import { Filtros_base } from './lista_ferias/filtros';
 
-const View_feed: React.FC = () => {
+const View_feed  = () => {
   return (
     <>
       <Nav_bar />

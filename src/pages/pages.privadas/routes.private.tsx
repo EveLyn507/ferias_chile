@@ -2,7 +2,7 @@ import { PrivateRoutes } from '../../models/index.ts';
 import PerfilEn from './perfil_encargados/perfil_encargado.tsx';
 import  {NotFound}  from '../../models/index.ts';
 import { Navigate, Route } from 'react-router-dom';
-import { Logout } from '../../components/index';
+import { Logout, Nav_bar } from '../../components/index';
 import { Perfil_feriante } from './perfil_feriante/perfil_feriante.tsx';
 import { Perfil_admin } from './perfil_muni/perfil_admin.tsx';
 import { useSelector } from 'react-redux';
@@ -17,6 +17,7 @@ function Privado(){
 
   return (
     <>
+    <Nav_bar/>
      <Logout/>
     <NotFound>
     <Route path='/' element = {<Navigate to={ role}/> } />
@@ -32,7 +33,7 @@ function Privado(){
     <Route element={<RoleGuard rol={Roles.MUNICIPAL} />}>
       <Route path={PrivateRoutes.PERFILADMIN} element={<Perfil_admin />} />
     </Route>
-    
+
     </NotFound>
     </>
    )
