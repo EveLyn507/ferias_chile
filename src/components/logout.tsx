@@ -9,7 +9,7 @@ export function Logout() {
     const dispatch = useDispatch();
     const logOut = () => {
         dispatch(resetUser());
-        navigate(`/${PublicRoutes.FEEDFERIAS}`, {replace : true});
+        navigate(`/${PublicRoutes.LOGIN}`, {replace : true});
 
     };
 
