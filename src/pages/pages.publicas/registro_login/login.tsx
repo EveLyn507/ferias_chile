@@ -1,39 +1,38 @@
-import React, { useState } from 'react';
+import  { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { loginSuccess } from '../../../redux/states/user';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { clearLocalStorage } from '../../../utilities/localStorage.utilities';
+import { createUser, resetUser, UserKey } from '../../../redux/states/user';
+import {  PrivateRoutes, PublicRoutes } from '../../../models';
 
-export const Login: React.FC = () => {
+export function Login() {
   const [email, setEmail] = useState('');
   const [contrasena, setContrasena] = useState('');
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleLogin = async () => {
+  useEffect(() => {
+    clearLocalStorage(UserKey);
+    dispatch(resetUser());
+    navigate(`/${PublicRoutes.LOGIN}`, { replace: true });
+  }, []);
+
+const login = async () => {
     try {
       const response = await axios.post('http://localhost:5000/login', { email, contrasena });
-      const { token, role } = response.data;
+      const {token , role } = response.data
 
-      // Dispatch para actualizar el estado de Redux con el token y el rol
-      dispatch(loginSuccess({ token, role }));
-
-      // Redirigir al perfil correspondiente
-      if (role === 'encargado') {
-        navigate(`/private/Perfil-E`);
-      } else if (role === 'feriante') {
-        navigate(`/private/Perfil-F`);
-      } else if (role === 'administrador') {
-        navigate(`/private/Perfil-A`);
-      } else {
-        // Si el rol no coincide, redirigir a una página genérica o de error
-        navigate(`/not-authorized`);
-      }
+      dispatch(createUser({ token , role}));
+      navigate(`/${PrivateRoutes.PRIVATE}`, { replace: true });
+    
     } catch (error) {
       console.error('Error de login', error);
       // Manejo de errores de login (puedes agregar lógica aquí)
     }
   };
+
 
   return (
     <div>
@@ -50,9 +49,11 @@ export const Login: React.FC = () => {
         value={contrasena}
         onChange={(e) => setContrasena(e.target.value)}
       />
-      <button onClick={handleLogin}>Login</button>
+      <button onClick={login}>Login</button>
     </div>
   );
 };
+
+export default Login
 
 

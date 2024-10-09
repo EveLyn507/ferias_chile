@@ -1,5 +1,5 @@
 export enum Roles {
-NOTLOG = 'nothing',
+NOTLOG = '',
 ENCARGADO = 'encargado' ,
 MUNICIPAL = 'municipal' ,
 FERIANTE ='feriante' 

@@ -1,12 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit';
-import  authReducer  from './states/user'; // Reducer de autenticación
+import { UserInfo } from '../models';
+import userSliceReducer from './states/user';
 
-export const store = configureStore({
+export interface AppStore {
+  user: UserInfo;
+}
+
+export default configureStore<AppStore>({
   reducer: {
-    auth: authReducer, // Registramos el slice de autenticación
-  },
+    user: userSliceReducer
+  }
 });
 
-// Tipos personalizados para usar el estado y dispatch en TypeScript
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
+
