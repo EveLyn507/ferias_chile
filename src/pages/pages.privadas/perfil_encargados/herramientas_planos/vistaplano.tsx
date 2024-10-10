@@ -118,29 +118,30 @@ const Vista = () => {
   const handleRemoveStreet = (id: number) => {
     setStreets(streets.filter(street => street.id !== id));
   };
-
   
 
   const saveData = async () => {
     setIsLoading(true);
     setError(null);
+    console.log('Datos a guardar:', { rectangles, planWidth, planHeight, areas, streets }); // Para depuración
     try {
       const response = await fetch(`${API_URL}/puestos`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ rectangles, planWidth, planHeight }),
+        body: JSON.stringify({ rectangles, planWidth, planHeight, areas, streets }),
       });
       if (!response.ok) {
         throw new Error('Error al guardar los datos');
       }
       console.log('Datos guardados correctamente');
     } catch (error) {
-      console.error('Error al guardar los datos', error);
+      console.error('Error al guardar los datos:', error);
       setError('Error al guardar los datos en la base de datos');
     } finally {
       setIsLoading(false);
     }
-  };
+  };  
+  
 
   return (
     <div className="App">
@@ -151,22 +152,21 @@ const Vista = () => {
       <div className="main-content">
         {isLoading && <p>Cargando...</p>}
         {error && <p style={{ color: 'red' }}>{error}</p>}
-        <Toolbar onAddRectangle={handleAddRectangle} />
+        <Toolbar onAddRectangle={handleAddRectangle} onAddArea={handleAddArea} onAddStreet={handleAddStreet} />
         <Canvas
           rectangles={rectangles}
           setRectangles={setRectangles}
           onRemoveRectangle={handleRemoveRectangle}
           planWidth={planWidth}
           planHeight={planHeight}
-          setPlanWidth={setPlanWidth}  
-          setPlanHeight={setPlanHeight} 
+          setPlanWidth={setPlanWidth}
+          setPlanHeight={setPlanHeight}
           areas={areas}
           onRemoveArea={handleRemoveArea}
           streets={streets}
           onUpdateArea={handleUpdateArea}
-          onAddStreet={handleAddStreet}
-          onRemoveStreet={handleRemoveStreet}
           onUpdateStreet={handleUpdateStreet}
+          onRemoveStreet={handleRemoveStreet}
         />
         <button onClick={saveData} disabled={isLoading}>
           {isLoading ? 'Guardando...' : 'Guardar en la base de datos'}

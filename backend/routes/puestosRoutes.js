@@ -1,5 +1,5 @@
 const express = require('express');
-const { getPuestos, savePuestos, getPlano } = require('../controllers/puestosController.js');
+const { getPuestos, savePuestos, getPlano, getCalles,saveCalles,getAreas, saveAreas} = require('../controllers/puestosController.js');
 const router = express.Router();
 
 // Ruta para obtener los puestos
@@ -19,5 +19,24 @@ router.get('/plano', (req, res) => {
   const pool = req.pool; // Recuperar el pool del objeto req
   getPlano(req, res, pool);
 });
+///////
 
+router.get('/calles', (req, res) => {
+  const pool = req.pool; 
+  getCalles(req, res, pool);
+});
+
+router.post('/calles', (req, res) => {
+  const pool = req.pool; 
+  saveCalles(req, res, pool);
+});
+
+router.get('/areas', (req, res) => {
+  const pool = req.pool; 
+  getAreas(req, res, pool);
+});
+
+router.post('/areas', (req, res) => {
+  saveAreas(req, res, req.pool); // Agregar esta ruta
+});
 module.exports = router;
