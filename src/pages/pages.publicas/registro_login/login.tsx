@@ -9,7 +9,7 @@ import {  PrivateRoutes, PublicRoutes } from '../../../models';
 import { Nav_bar } from '../../../components';
 
 function Login() {
-  const [email, setEmail] = useState('');
+  const [mail, setmail] = useState('');
   const [contrasena, setContrasena] = useState('');
 
   const dispatch = useDispatch();
@@ -25,11 +25,11 @@ function Login() {
 
 const login = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/login', { email, contrasena });
+      const response = await axios.post('http://localhost:5000/login', { mail, contrasena });
       const {token , role } = response.data
 
       dispatch(createUser({ token , role}));
-      navigate(`/${PrivateRoutes.PRIVATE}`, { replace: true });
+      navigate(`/${PrivateRoutes.PRIVATE + '/' + role}`, { replace: true });
     
     } catch (error) {
       console.error('Error de login', error);
@@ -47,8 +47,8 @@ const login = async () => {
       <input
         type="text"
         placeholder="Username"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        value={mail}
+        onChange={(e) => setmail(e.target.value)}
       />
       <input
         type="password"

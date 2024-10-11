@@ -18,6 +18,8 @@ interface AreaPageProps {
 
 const AreaPage: React.FC<AreaPageProps> = ({ areas, onRemoveArea, onUpdateArea }) => {
   const controlSize = 10;
+  const minWidth = 50;
+  const minHeight = 50;
 
   return (
     <>
@@ -31,8 +33,8 @@ const AreaPage: React.FC<AreaPageProps> = ({ areas, onRemoveArea, onUpdateArea }
             fill="rgba(0, 0, 255, 0.3)"
             draggable
             onDragMove={(e) => {
-              const newX = e.target.x();
-              const newY = e.target.y();
+              const newX = Math.max(0, e.target.x()); // Restringir el movimiento a valores positivos
+              const newY = Math.max(0, e.target.y());
               onUpdateArea(area.id, { x: newX, y: newY });
             }}
             onDblClick={() => onRemoveArea(area.id)}
@@ -46,8 +48,8 @@ const AreaPage: React.FC<AreaPageProps> = ({ areas, onRemoveArea, onUpdateArea }
             fill="red"
             draggable
             onDragMove={(e) => {
-              const newWidth = Math.max(50, e.target.x() - area.x);
-              const newHeight = Math.max(50, e.target.y() - area.y);
+              const newWidth = Math.max(minWidth, e.target.x() - area.x);
+              const newHeight = Math.max(minHeight, e.target.y() - area.y);
               onUpdateArea(area.id, { width: newWidth, height: newHeight });
             }}
           />

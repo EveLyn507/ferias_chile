@@ -8,9 +8,8 @@ export const PublicRoutes = {
 
 export const PrivateRoutes = {
     PRIVATE : 'private',
-    PERFILENCARGADO : 'encargado',
-    PERFILADMIN : 'municipal',
-    PERFILFERIANTE : 'feriante',
-    
+    PERFILENCARGADO : '1',
+    PERFILADMIN : '3',
+    PERFILFERIANTE : '2',
 
 } 

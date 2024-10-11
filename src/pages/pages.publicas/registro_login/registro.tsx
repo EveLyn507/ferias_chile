@@ -1,12 +1,13 @@
 import axios from "axios";
 import React, { useState } from "react"
+import { Nav_bar } from "../../../components";
 
 export const Registro = () => {
 
   const [nombre,setNombre] = useState('');
   const [apellido, setApellido] = useState('');
   const [rut, setRut] = useState('');
-  const [email, setEmail] = useState('');
+  const [mail, setmail] = useState('');
   const [telefono,setTelefono] = useState('');
   const [contrasena,Setcontrasena] = useState('');
   const [contrasena2,Setcontrasena2] = useState('');
@@ -18,7 +19,7 @@ export const Registro = () => {
     e.preventDefault();
 
     try{
-      const response = await axios.post('http://localhost:5000/registro' , {nombre , apellido ,rut , email , telefono , contrasena,role }) 
+      const response = await axios.post('http://localhost:5000/registro' , {mail , rut ,nombre , apellido , telefono  , role, contrasena }) 
       console.log('Registro exitoso:', response.data);
     } catch(err) {
       setError2('error al registrar usuario');
@@ -29,6 +30,8 @@ export const Registro = () => {
 
 return (
 <>
+
+<Nav_bar/>
 <h2>registro</h2>
 <form onSubmit={clicRegistro}>
     <div>
@@ -48,8 +51,8 @@ return (
         </div>
 
       <div>
-      <label htmlFor="">email</label>
-        <input type="email"  value={email} onChange={(e) => setEmail(e.target.value)} required/>
+      <label htmlFor="">mail</label>
+        <input type="email"  value={mail} onChange={(e) => setmail(e.target.value)} required/>
         </div>
 
       <div>
@@ -70,11 +73,18 @@ return (
 
 
       <div>
-      <select id="role" name="role"  value={role} onChange={(e) => setRole(e.target.value)} required>
-    <option value="encargado">encargado</option>
-    <option value="feriante">feriante</option> 
-    <option value="administrador">administrador muni</option>
-    </select>
+      <select 
+                id="role" 
+                name="role"  
+                value={role} 
+                onChange={(e) => setRole(e.target.value)} 
+                required
+            >
+                <option value="" disabled>Select a role</option>
+                <option value={1}>Encargado</option>
+                <option value={2}>Feriante</option> 
+                <option value={3}>Administrador Muni</option>
+            </select>
       </div>
     <button type="submit">registrarse</button>
     {error2 && <p>{error2}</p>}

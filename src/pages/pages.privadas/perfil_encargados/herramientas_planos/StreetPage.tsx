@@ -1,5 +1,4 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Line, Circle } from 'react-konva';
 
 interface Street {
@@ -16,25 +15,25 @@ interface StreetPageProps {
 
 const StreetPage: React.FC<StreetPageProps> = ({ streets, onRemoveStreet, onUpdateStreet }) => {
   const [selectedStreetId, setSelectedStreetId] = useState<number | null>(null);
-  const [controlPointIndex, setControlPointIndex] = useState<number | null>(null);
-  
+
   const handleDragControlPoint = (e: any, streetId: number, index: number) => {
-    const newPoints = [...streets.find((street) => street.id === streetId)?.points!];
+    const street = streets.find((street) => street.id === streetId);
+    if (!street) return;
+    const newPoints = [...street.points];
     newPoints[index * 2] = e.target.x();
     newPoints[index * 2 + 1] = e.target.y();
     onUpdateStreet(streetId, { points: newPoints });
   };
 
   const handleDragStreet = (e: any, streetId: number) => {
-    const newPoints = streets.find((street) => street.id === streetId)?.points!;
-    const dx = e.target.x() - newPoints[0];
-    const dy = e.target.y() - newPoints[1];
-    
-    const updatedPoints = newPoints.map((point, index) => {
-      if (index % 2 === 0) return point + dx; 
-      return point + dy; 
-    });
+    const street = streets.find((street) => street.id === streetId);
+    if (!street) return;
+    const dx = e.target.x() - street.points[0];
+    const dy = e.target.y() - street.points[1];
 
+    const updatedPoints = street.points.map((point, index) => 
+      index % 2 === 0 ? point + dx : point + dy
+    );
     onUpdateStreet(streetId, { points: updatedPoints });
   };
 
@@ -52,7 +51,7 @@ const StreetPage: React.FC<StreetPageProps> = ({ streets, onRemoveStreet, onUpda
             onClick={() => setSelectedStreetId(selectedStreetId === street.id ? null : street.id)}
           />
           {selectedStreetId === street.id && street.points.map((point, index) => {
-            if (index % 2 === 0) { 
+            if (index % 2 === 0) {
               return (
                 <Circle
                   key={`control-${index}`}
@@ -62,8 +61,6 @@ const StreetPage: React.FC<StreetPageProps> = ({ streets, onRemoveStreet, onUpda
                   fill="red"
                   draggable
                   onDragMove={(e) => handleDragControlPoint(e, street.id, index / 2)}
-                  onDragEnd={() => setControlPointIndex(null)}
-                  onClick={() => setControlPointIndex(index / 2)}
                 />
               );
             }
