@@ -1,6 +1,6 @@
 export enum Roles {
 NOTLOG = '',
-ENCARGADO = 'encargado' ,
-MUNICIPAL = 'municipal' ,
-FERIANTE ='feriante' 
+ENCARGADO = 1 ,
+MUNICIPAL = 3 ,
+FERIANTE =2 
 }

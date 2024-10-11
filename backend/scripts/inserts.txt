@@ -1,0 +1,70 @@
+-- tipo usuario
+
+INSERT INTO tipo_usuario (id_tipo_usuario, detalle)
+VALUES (1, 'encargado');
+
+INSERT INTO tipo_usuario (id_tipo_usuario, detalle)
+VALUES (2, 'feriante');
+
+INSERT INTO tipo_usuario (id_tipo_usuario, detalle)
+VALUES (3, 'municipal');
+
+
+-- tipo pago
+
+INSERT INTO tipo_pago (id_tipo_pago, detalle)
+VALUES (1, 'debito');
+
+INSERT INTO tipo_pago (id_tipo_pago, detalle)
+VALUES (2, 'credito');
+
+INSERT INTO tipo_pago (id_tipo_pago, detalle)
+VALUES (3, 'efectivo');
+
+
+-- tipo_estado_contrato
+
+INSERT INTO tipo_estado_contrato (id_status_contrato, detalle)
+VALUES (1, 'en curso');
+
+INSERT INTO tipo_estado_contrato (id_status_contrato, detalle)
+VALUES (2, 'finalizado');
+
+INSERT INTO tipo_estado_contrato (id_status_contrato, detalle)
+VALUES (3, 'cancelado');
+
+
+--tipo puesto
+
+INSERT INTO tipo_puesto (id_tipo_puesto, detalle)
+VALUES (1, 'dia');
+
+INSERT INTO tipo_puesto (id_tipo_puesto, detalle)
+VALUES (2, 'plazo');
+
+INSERT INTO tipo_puesto (id_tipo_puesto, detalle)
+VALUES (3, 'contacto');
+
+
+
+-- regiones
+
+INSERT INTO region (id_region, nombre) VALUES (1, 'Arica y Parinacota');
+INSERT INTO region (id_region, nombre) VALUES (2, 'Tarapaca');
+INSERT INTO region (id_region, nombre) VALUES (3, 'Antofagasta');
+INSERT INTO region (id_region, nombre) VALUES (4, 'Atacama');
+INSERT INTO region (id_region, nombre) VALUES (5, 'Coquimbo');
+INSERT INTO region (id_region, nombre) VALUES (6, 'Valparaiso');
+INSERT INTO region (id_region, nombre) VALUES (7, 'Metropolitana de Santiago');
+INSERT INTO region (id_region, nombre) VALUES (8, 'O Higgins');
+INSERT INTO region (id_region, nombre) VALUES (9, 'Maule');
+INSERT INTO region (id_region, nombre) VALUES (10, 'Nuble');
+INSERT INTO region (id_region, nombre) VALUES (11, 'Biobio');
+INSERT INTO region (id_region, nombre) VALUES (12, 'La Araucania');
+INSERT INTO region (id_region, nombre) VALUES (13, 'Los Rios');
+INSERT INTO region (id_region, nombre) VALUES (14, 'Los Lagos');
+INSERT INTO region (id_region, nombre) VALUES (15, 'Aysen');
+INSERT INTO region (id_region, nombre) VALUES (16, 'Magallanes');
+
+
+-- comunas

@@ -7,9 +7,9 @@ dotenv.config();
 
 // Lógica para login
 const login = async (req, res, pool) => {
-  const { email, contrasena } = req.body;
+  const { mail, contrasena } = req.body;
   try {
-    const result = await pool.query('SELECT * FROM ferias_chile.public."USUARIO" WHERE email = $1', [email]);
+    const result = await pool.query('SELECT * FROM public.usuario WHERE mail = $1', [mail]);
     const user = result.rows[0];
 
     if (!user || contrasena !== user.contrasena) {
@@ -17,7 +17,7 @@ const login = async (req, res, pool) => {
     }
 
     const token = jwt.sign({ id: user.id }, 'xd', { expiresIn: '1h' });
-    const role =  user.role;
+    const role =  user.id_tipo_usuario;
     res.json({ token, role });
   } catch (err) {
     console.error(err);
@@ -25,12 +25,17 @@ const login = async (req, res, pool) => {
   }
 };
 
+
+
+
 // Lógica para registro (ejemplo)
 const register = async (req, res, pool) => {
-  const { nombre , apellido ,rut , email , telefono , contrasena  ,role} = req.body;
+  const { mail , rut ,nombre , apellido , telefono  , role, contrasena} = req.body;
+
+
   try {
-    await pool.query('INSERT INTO ferias_chile.public."USUARIO" (nombre , apellido ,rut , email , telefono , contrasena,role) VALUES ($1, $2, $3, $4, $5, $6,$7)', [nombre , apellido ,rut , email , telefono , contrasena ,role]);
-    res.status(201).send('Usuario registrado correctamente');
+    await pool.query(`INSERT INTO public.usuario (mail, rut, nombre, apellido, telefono, id_tipo_usuario, contrasena) VALUES ($1, $2, $3, $4, $5, $6, $7)`, [mail, rut, nombre, apellido, telefono, role, contrasena]);
+res.status(201).send('Usuario registrado correctamente');
   } catch (err) {
     console.error(err);
     res.status(500).send('Error al registrar usuario');
