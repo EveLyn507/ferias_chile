@@ -2,7 +2,8 @@ export const PublicRoutes = {
     FEEDFERIAS : 'Feed-Ferias' ,
     LOGIN : 'login',
      HERRAMIENTA : 'Plano',
-     REGISTRO: 'registro'
+     REGISTRO: 'registro',
+     DATOSENCARGADO : 'actualizar-datos'
 }
 
 export const PrivateRoutes = {
@@ -10,5 +11,6 @@ export const PrivateRoutes = {
     PERFILENCARGADO : 'encargado',
     PERFILADMIN : 'municipal',
     PERFILFERIANTE : 'feriante',
+    
 
 } 
