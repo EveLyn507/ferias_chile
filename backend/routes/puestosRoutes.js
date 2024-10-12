@@ -39,4 +39,9 @@ router.get('/areas', (req, res) => {
 router.post('/areas', (req, res) => {
   saveAreas(req, res, req.pool); // Agregar esta ruta
 });
+
+
+
 module.exports = router;
+
+

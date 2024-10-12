@@ -68,3 +68,8 @@ INSERT INTO region (id_region, nombre) VALUES (16, 'Magallanes');
 
 
 -- comunas
+
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (1, 'Arica', 1);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (2, 'Camarones', 1);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (3, 'Putre', 1);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (4, 'Parinacota', 1);

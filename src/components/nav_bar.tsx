@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom"
 import { Logeado } from "./perfil_loged"
 
 export const Nav_bar = () => {
@@ -6,9 +7,9 @@ export const Nav_bar = () => {
   return (
     <nav className='Nav_bar'>
       <ul className="Nav_item">
-        <li><a href="/registro">Registrate</a></li>
+        <li><Link to="/registro">Registrate</Link></li>
         <li>empresas</li>
-        <li><a href="/Feed-ferias">Feed-ferias</a></li>
+        <li><Link to="/Feed-ferias">Feed-ferias</Link></li>
         <Logeado/>
      
       </ul>

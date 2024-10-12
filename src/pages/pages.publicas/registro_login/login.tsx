@@ -6,7 +6,7 @@ import axios from 'axios';
 import { clearLocalStorage } from '../../../utilities/localStorage.utilities';
 import { createUser, resetUser, UserKey } from '../../../redux/states/user';
 import {  PrivateRoutes, PublicRoutes } from '../../../models';
-import { Nav_bar } from '../../../components';
+
 
 function Login() {
   const [mail, setmail] = useState('');
@@ -41,7 +41,7 @@ const login = async () => {
   return (
 
     <>  
-      <Nav_bar/> 
+ 
     <div>
       <h1>Login</h1>
       <input

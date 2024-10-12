@@ -1,6 +1,5 @@
 import axios from "axios";
 import React, { useState } from "react"
-import { Nav_bar } from "../../../components";
 
 export const Registro = () => {
 
@@ -31,7 +30,7 @@ export const Registro = () => {
 return (
 <>
 
-<Nav_bar/>
+
 <h2>registro</h2>
 <form onSubmit={clicRegistro}>
     <div>
