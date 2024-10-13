@@ -4,7 +4,8 @@ export const PublicRoutes = {
     HERRAMIENTA : 'Plano',
     REGISTRO: 'registro',
     DATOSENCARGADO : 'actualizar-datos',
-    DETALLEFERIA : "/feria/:id_feria"
+    DETALLEFERIA : "/feria/:id_feria",
+     PAGOS : 'pago'
 }
 
 export const PrivateRoutes = {

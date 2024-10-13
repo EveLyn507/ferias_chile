@@ -107,6 +107,17 @@ const saveAreas = async (req, res, pool) => {
   }
 };
 
+const saveFeria = async (jsonData, pool) => {
+  try {
+    const res = await pool.query(
+      'INSERT INTO ferias (datos) VALUES ($1) RETURNING *',
+      [JSON.stringify(jsonData)] // Convierte el objeto JSON a string
+    );
+    console.log('Feria guardada:', res.rows[0]);
+  } catch (err) {
+    console.error('Error al guardar la feria:', err);
+  }
+};
   
   module.exports = {
     getPuestos,
@@ -116,5 +127,6 @@ const saveAreas = async (req, res, pool) => {
     saveCalles,
     getAreas,
     saveAreas,
+    saveFeria
   };
   
