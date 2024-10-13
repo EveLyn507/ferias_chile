@@ -8,6 +8,7 @@ import { clearLocalStorage, persistLocalStorage } from '../../utilities/localSto
 export const EmptyUserState: UserInfo ={
   token : "",
   role: Roles.NOTLOG,
+  email: ''
 };
 
 export const UserKey = 'user';

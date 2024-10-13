@@ -26,6 +26,23 @@ $$ LANGUAGE plpgsql;
 
 
 
+CREATE OR REPLACE FUNCTION contar_puestos_actuales(id_feria INT)
+RETURNS INT AS $$
+DECLARE
+    puestos_actuales INT;
+BEGIN
+    SELECT COUNT(*) INTO puestos_actuales
+    FROM puesto
+    WHERE puesto.id_feria = contar_puestos_actuales.id_feria;
+    
+    RETURN puestos_actuales;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+
+
 
 ------------------
 
@@ -63,3 +80,33 @@ RETURNS TABLE (
         ORDER BY p.numero,num_horario;
     END;
    $$ LANGUAGE plpgsql;
+
+
+
+CREATE OR REPLACE FUNCTION obtener_ferias_encargado(mail character varying)
+RETURNS TABLE (
+    id_feria INT,
+    nombre_feria character varying(80),
+    comuna character varying(80),
+    region character varying(80),
+    estado character varying(80),
+    puestos_actuales INT
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        f.id_feria, 
+        f.nombre AS nombre_feria, 
+        c.comuna, 
+        g.nombre AS region,
+        es.estado,
+        contar_puestos_actuales(f.id_feria) AS puestos_actuales  -- Llamada a la función
+    FROM encargado_feria ef
+    JOIN feria f ON ef.user_mail = f.encargado_feria_user_mail
+    JOIN comuna c ON f.id_comuna = c.id_comuna
+    JOIN region g ON c.id_region = g.id_region
+    JOIN estado_feria es ON f.id_estado = es.id_estado_feria
+    WHERE ef.user_mail = mail;  -- Uso directo del parámetro mail
+END;
+$$ LANGUAGE plpgsql;
+

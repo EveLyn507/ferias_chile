@@ -10,7 +10,10 @@ export const PublicRoutes = {
 export const PrivateRoutes = {
     PRIVATE : 'private',
     PERFILENCARGADO : '1',
+    ADMINFERIA : '/administracion/:id_feria',
+
     PERFILADMIN : '3',
+
     PERFILFERIANTE : '2',
 
 } 

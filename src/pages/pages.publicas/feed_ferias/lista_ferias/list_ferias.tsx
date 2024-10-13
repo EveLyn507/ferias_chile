@@ -1,18 +1,11 @@
 import { Link } from "react-router-dom";
+import { FeriasProps } from "../../../interfaces";
 
 // Define la interfaz para los objetos de feria
-interface Feria {
-    id_feria: number;
-    nombre_feria: string;
-    comuna : string;
-    region: string;
-}
 
 // Define las props del componente, en este caso un array de objetos Feria
-interface ItemListProps {
-    ferias: Feria[];
-}
-export const Item_list = ({ ferias }: ItemListProps) => {
+
+export const Item_list = ({ ferias }: FeriasProps) => {
     console.log(ferias);
 
     return (

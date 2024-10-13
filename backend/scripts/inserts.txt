@@ -47,6 +47,11 @@ VALUES (3, 'contacto');
 
 
 
+-- estado feria 
+INSERT INTO public.estado_feria (id_estado_feria, estado) VALUES (1, 'no enviada');
+INSERT INTO public.estado_feria (id_estado_feria, estado) VALUES (2, 'en revision');
+INSERT INTO estado_feria (id_estado_feria, estado) VALUES (3, 'validada');
+
 -- regiones
 
 INSERT INTO region (id_region, nombre) VALUES (1, 'Arica y Parinacota');

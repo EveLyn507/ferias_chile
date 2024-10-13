@@ -22,7 +22,7 @@ function App() {
           <BrowserRouter>
           <Nav_bar/>
             <NotFound>
-              <Route path="/" element = {<Navigate to ={ PrivateRoutes.PRIVATE}/> } />
+              <Route path="/" element = {<Navigate to ={ PublicRoutes.FEEDFERIAS}/> } />
               <Route path={PublicRoutes.FEEDFERIAS} element = {<View_feed/>} />
               <Route path={PublicRoutes.HERRAMIENTA} element = {<Vistaplano/>} />
               <Route path={PublicRoutes.LOGIN} element = {<Login/>} />

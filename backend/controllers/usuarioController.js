@@ -18,7 +18,8 @@ const login = async (req, res, pool) => {
 
     const token = jwt.sign({ id: user.id }, 'xd', { expiresIn: '1h' });
     const role =  user.id_tipo_usuario;
-    res.json({ token, role });
+    const email = user.mail
+    res.json({ token, role, email });
   } catch (err) {
     console.error(err);
     res.status(500).send('Error al iniciar sesión');
@@ -42,4 +43,30 @@ res.status(201).send('Usuario registrado correctamente');
   }
 };
 
-module.exports = { login, register };
+
+
+
+// PERFIL ENCARGADO FUNCIONES
+
+
+// get id_feria nombre nombre_region nombre_comuna
+const get_feria_Encargado = async (req, res, pool) => {
+
+    const {mail} = req.body;
+  try {
+  
+  const result = await pool.query(
+     ` SELECT * FROM obtener_ferias_encargado($1);` , [mail]);
+  res.json(result.rows)
+  
+  }catch (err){
+      console.error('Error al obtener las ferias:', err);
+      res.status(500).send('Error al obtener las ferias');
+  
+  }
+  
+  }
+
+
+
+module.exports = { login, register, get_feria_Encargado };

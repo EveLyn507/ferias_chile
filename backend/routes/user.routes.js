@@ -1,6 +1,6 @@
 const express = require('express');
-const { login, register } = require('../controllers/usuarioController.js');
-const { get_feria,get_puestos_feria } = require('../controllers/feedController.js');
+const { login, register , get_feria_Encargado } = require('../controllers/usuarioController.js');
+const { get_feria,get_puestos_feria ,  } = require('../controllers/feedController.js');
 const router = express.Router();
 
 
@@ -26,6 +26,12 @@ router.post('/login', (req, res) => {
   router.get('/ferias/:id_feria', (req , res) => {
     const pool = req.pool; // Recuperar el pool del objeto req
     get_puestos_feria(req,res,pool);
+  })
+
+
+  router.post('/private/1', (req , res) => {
+    const pool = req.pool; // Recuperar el pool del objeto req
+    get_feria_Encargado(req,res,pool);
   })
   
 

@@ -26,9 +26,9 @@ function Login() {
 const login = async () => {
     try {
       const response = await axios.post('http://localhost:5000/login', { mail, contrasena });
-      const {token , role } = response.data
+      const {token , role, email} = response.data
 
-      dispatch(createUser({ token , role}));
+      dispatch(createUser({ token , role , email}));
       navigate(`/${PrivateRoutes.PRIVATE + '/' + role}`, { replace: true });
     
     } catch (error) {

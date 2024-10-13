@@ -1,14 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Item_list } from './list_ferias';
 import axios from 'axios';
+import { Feria } from '../../../interfaces';
 
 // Define la interfaz para los objetos de feria
-interface Feria {
-    id_feria: number;
-    nombre_feria: string;
-    comuna : string;
-    region: string;
-}
+
 
 
 const traerFerias = async () => {

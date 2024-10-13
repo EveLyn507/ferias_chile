@@ -1,19 +1,6 @@
+import { PuestosProp } from "../../../interfaces";
 
 
-// Define la interfaz para los objetos de feria
-interface puesto {
-    id_puesto :number,
-    num_puesto: number,
-    num_horario: number,
-    hora_inicio :string,
-    hora_termino :string,
-    precio :number
-}
-
-// Define las props del componente, en este caso un array de objetos Feria
-interface PuestosProp {
-    puestos: puesto[];
-}
 export const Item_list_puestos = ({ puestos }: PuestosProp) => {
   
     console.log(puestos)
