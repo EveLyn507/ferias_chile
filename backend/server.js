@@ -5,6 +5,7 @@ const dotenv = require('dotenv');
 const usuarioRoutes = require('./routes/user.routes'); // rutas
 const puestosRoutes = require('./routes/puestosRoutes'); 
 const credencial = require('./credenciales'); // Importa el archivo de configuración
+const paymentRoutes = require('./routes/paymentRoutes');
 
 dotenv.config();
 const app = express();
@@ -25,6 +26,7 @@ const pool = new Pool({
 app.use(cors());
 app.use(express.json());
 
+app.use('/api', paymentRoutes);
 
 //midware , le da el pool a las peticiones para que conecten
 app.use((req, res, next) => {
@@ -36,6 +38,8 @@ app.use((req, res, next) => {
 app.use(usuarioRoutes); 
 
 app.use(puestosRoutes);
+
+app.use('/api', paymentRoutes);
 
 // Iniciar el servidor
 app.listen(port, () => {

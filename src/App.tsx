@@ -9,7 +9,7 @@ import store from './redux/store';
 import PerfilFeriantes from './pages/pages.privadas/perfil_feriante/perfil_feriante';
 const View_feed = lazy(() => import ('./pages/pages.publicas/feed_ferias/view_feed'));
 const Privado = lazy(() => import ('./pages/pages.privadas/routes.private'));
-
+import Flow from './pages/pages.publicas/pagos/pagos';
 
 function App() {
 
@@ -23,6 +23,7 @@ function App() {
               <Route path={PublicRoutes.FEEDFERIAS} element = {<View_feed/>} />
               <Route path={PublicRoutes.HERRAMIENTA} element = {<Vistaplano/>} />
               <Route path={PublicRoutes.LOGIN} element = {<Login/>} />
+              <Route path={PublicRoutes.PAGOS} element = {<Flow/>} />
               <Route path={PublicRoutes.REGISTRO} element = {<Registro/>} />
               <Route path={PublicRoutes.DATOSENCARGADO} element={<PerfilFeriantes />} />
               <Route element= {<AuthGuard privateValidation={true} />}>

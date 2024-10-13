@@ -142,6 +142,43 @@ const Vista = () => {
     }
   };  
   
+  const handleSaveFeria = async () => {
+    const feriaData = {
+        nombre: "Feria Internacional 2024",
+        ubicacion: "Santiago, Chile",
+        fechas: {
+            inicio: "2024-10-20",
+            fin: "2024-10-25"
+        },
+        puestos: rectangles, // Asegúrate de que esta variable contiene los datos correctos
+        areas: areas,
+        calles: streets
+    };
+
+    try {
+      const response = await fetch('http://localhost:5000/api/feria', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(feriaData),
+      });
+    
+      // Verifica el tipo de respuesta
+      const text = await response.text(); // Obtiene la respuesta como texto
+    
+      // Verifica si la respuesta fue exitosa
+      if (!response.ok) {
+        throw new Error('Error al guardar la feria: ' + text); // Muestra la respuesta en caso de error
+      }
+    
+      // Ahora puedes analizar la respuesta como JSON
+      const result = JSON.parse(text); // Intenta convertirlo a JSON
+      console.log(result);
+    } catch (error) {
+      console.error('Error al guardar la feria:', error);
+    }
+};
 
   return (
     <div className="App">
@@ -171,10 +208,12 @@ const Vista = () => {
         <button onClick={saveData} disabled={isLoading}>
           {isLoading ? 'Guardando...' : 'Guardar en la base de datos'}
         </button>
+        <button onClick={handleSaveFeria} disabled={isLoading}>
+          {isLoading ? 'Guardando feria...' : 'Guardar Feria json'}
+        </button>
       </div>
     </div>
   );
 };
-
 
 export default Vista;

@@ -3,7 +3,8 @@ export const PublicRoutes = {
     LOGIN : 'login',
      HERRAMIENTA : 'Plano',
      REGISTRO: 'registro',
-     DATOSENCARGADO : 'actualizar-datos'
+     DATOSENCARGADO : 'actualizar-datos',
+     PAGOS : 'pago'
 }
 
 export const PrivateRoutes = {
