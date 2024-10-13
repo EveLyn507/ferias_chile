@@ -59,5 +59,6 @@ router.post('/api/feria', async (req, res) => {
       res.status(500).json({ error: 'Error al guardar la feria' }); // Cambiado a JSON
   }
 });
-
 module.exports = router;
+
+

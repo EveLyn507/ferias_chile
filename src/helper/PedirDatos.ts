@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import data from './data.json'; // Si estás usando módulos de JSON, asegúrate de que TypeScript lo soporte (opción "resolveJsonModule" en tsconfig)
 
 // Define la interfaz Feria (si no está definida ya en otro lugar)

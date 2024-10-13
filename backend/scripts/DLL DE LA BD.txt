@@ -82,14 +82,7 @@ CREATE TABLE feriante (
     PRIMARY KEY (user_mail)
 );
 
-CREATE TABLE horario_puesto (
-    id_horario   INTEGER NOT NULL,
-    hora_inicio  DATE NOT NULL,
-    hora_termino DATE NOT NULL,
-    precio       INTEGER NOT NULL,
-    num_horario  INTEGER NOT NULL,
-    PRIMARY KEY (id_horario)
-);
+
 
 CREATE TABLE intereses (
     id_interes  INTEGER NOT NULL,
@@ -117,8 +110,18 @@ CREATE TABLE puesto (
     numero            INTEGER NOT NULL,
     id_tipo_puesto    INTEGER NOT NULL,
     id_feria          INTEGER NOT NULL,
-    id_horario_puesto INTEGER NOT NULL,
     PRIMARY KEY (id_puesto)
+);
+
+
+CREATE TABLE horario_puesto (
+    id_horario   INTEGER NOT NULL,
+    hora_inicio  DATE NOT NULL,
+    hora_termino TIMESTAMP without TIMEZONE NOT NULL,
+    precio       INTEGER NOT NULL,
+    num_horario  INTEGER NOT NULL,
+    id_puesto INTERGER NOT NULL, 
+    PRIMARY KEY (id_horario)
 );
 
 CREATE TABLE puesto_archivado (
@@ -266,13 +269,14 @@ ALTER TABLE puesto
     ADD CONSTRAINT puesto_feria_fk FOREIGN KEY (id_feria)
         REFERENCES feria (id_feria);
 
-ALTER TABLE puesto
-    ADD CONSTRAINT puesto_horario_puesto_fk FOREIGN KEY (id_horario_puesto)
-        REFERENCES horario_puesto (id_horario);
 
 ALTER TABLE puesto
     ADD CONSTRAINT puesto_tipo_puesto_fk FOREIGN KEY (id_tipo_puesto)
         REFERENCES tipo_puesto (id_tipo_puesto);
+
+ALTER TABLE horario_puesto
+    ADD CONSTRAINT puesto_id_to_horario_fk FOREIGN KEY (id_puesto)
+        REFERENCES puesto (id_puesto);
 
 ALTER TABLE supervisor
     ADD CONSTRAINT team_feriante_fk FOREIGN KEY (feriante_usuario_mail)

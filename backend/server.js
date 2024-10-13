@@ -4,6 +4,7 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const usuarioRoutes = require('./routes/user.routes'); // rutas
 const puestosRoutes = require('./routes/puestosRoutes'); 
+const perfilferianteRoutes = require('./routes/perfilferianteRoutes');
 const credencial = require('./credenciales'); // Importa el archivo de configuración
 const paymentRoutes = require('./routes/paymentRoutes');
 
@@ -38,6 +39,8 @@ app.use((req, res, next) => {
 app.use(usuarioRoutes); 
 
 app.use(puestosRoutes);
+
+app.use(perfilferianteRoutes);
 
 app.use('/api', paymentRoutes);
 

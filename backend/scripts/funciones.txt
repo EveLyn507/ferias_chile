@@ -1,0 +1,65 @@
+
+
+CREATE OR REPLACE FUNCTION obtener_ferias()
+RETURNS TABLE (
+    id_feria INTEGER,
+    nombre_feria CHARACTER VARYING(80),
+    comuna CHARACTER VARYING(80),
+    region CHARACTER VARYING(100)
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        f.id_feria, 
+        f.nombre AS nombre_feria, 
+        c.comuna, 
+        g.nombre AS region 
+    FROM 
+        public.feria AS f 
+    JOIN 
+        COMUNA c ON f.id_comuna = c.id_comuna 
+    JOIN 
+        REGION g ON c.id_region = g.id_region;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+
+
+------------------
+
+
+CREATE OR REPLACE FUNCTION traer_puestos_feria(id_de_feria INTEGER)
+RETURNS TABLE (
+    id_puesto INTEGER,
+    num_puesto INTEGER,
+    num_horario INTEGER,
+    hora_inicio TIME WITH TIME ZONE,
+    hora_termino TIME WITH TIME ZONE,
+    precio INTEGER
+
+) AS $$
+    BEGIN
+        RETURN QUERY
+        SELECT 
+
+        
+        p.id_puesto ,
+        p.numero,
+        hp.num_horario ,
+        hp.hora_inicio,
+        hp.hora_termino,
+        hp.precio
+
+        FROM 
+        public.feria as f 
+        JOIN 
+        public.puesto as p ON f.id_feria = p.id_feria
+        RIGHT JOIN
+        public.horario_puesto as hp ON p.id_puesto = hp.id_puesto
+        WHERE
+        f.id_feria = id_de_feria
+        ORDER BY p.numero,num_horario;
+    END;
+   $$ LANGUAGE plpgsql;
