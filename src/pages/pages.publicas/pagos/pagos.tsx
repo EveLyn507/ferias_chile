@@ -1,32 +1,29 @@
-import React, { useState } from 'react';
-import axios from 'axios';
 
 const Pago: React.FC = () => {
-  const [amount, setAmount] = useState<number>(0);
   const handlePayment = async () => {
+  
     try {
-      const response = await axios.post('http://localhost:5000/api/webpay/init', { amount });
-
-      const { url } = response.data;
-
-      console.log('Redirigiendo a:', url);  // Verificar que la URL es correcta
-      window.location.href = url;
+      const amount = 10000; // Monto en pesos chilenos
+      const response = await fetch('http://localhost:5000/webpay/init', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ amount }),
+      });
+  
+      const data = await response.json();
+      console.log('Response from Webpay:', data);
+      // Aquí puedes redirigir al usuario a data.url
     } catch (error) {
-      console.error('Error al iniciar el pago', error);
+      console.error('Error al crear la transacción:', error);
     }
   };
-  return (
-    <div>
-      <h2>Realizar Pago</h2>
-      <input
-        type="number"
-        placeholder="Monto"
-        value={amount}
-        onChange={(e) => setAmount(Number(e.target.value))}
-      />
-      <button onClick={handlePayment}>Pagar</button>
-    </div>
-  );
-};
+  
 
+  return(
+
+    <button onClick={handlePayment}> Pagar</button>
+  )
+}
 export default Pago;

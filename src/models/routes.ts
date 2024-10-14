@@ -5,13 +5,15 @@ export const PublicRoutes = {
     REGISTRO: 'registro',
     DATOSENCARGADO : 'actualizar-datos',
     DETALLEFERIA : "/feria/:id_feria",
-     PAGOS : 'pago'
+     PAGOS : 'pago',
+     PAGOS2 : 'pagosss',
+     PAGOOK : 'ferias/retorno'
 }
 
 export const PrivateRoutes = {
     PRIVATE : 'private',
     PERFILENCARGADO : '1',
-    ADMINFERIA : '/administracion/:id_feria',
+    ADMINFERIA : '1/administracion/:id_feria',
 
     PERFILADMIN : '3',
 

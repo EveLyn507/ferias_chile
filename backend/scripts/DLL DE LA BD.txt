@@ -2,7 +2,6 @@
 
 DROP TABLE IF EXISTS puesto_archivado CASCADE;
 DROP TABLE IF EXISTS puesto CASCADE;
-DROP TABLE IF EXISTS json_feria_archivo CASCADE;
 DROP TABLE IF EXISTS json_feria CASCADE;
 DROP TABLE IF EXISTS intereses CASCADE;
 DROP TABLE IF EXISTS horario_puesto CASCADE;
@@ -81,6 +80,7 @@ CREATE TABLE feria (
     id_comuna                 INTEGER NOT NULL,
     id_region                 INTEGER NOT NULL,
     encargado_feria_user_mail CHARACTER VARYING(80) NOT NULL,
+    id_json INTEGER ,
     id_estado INTEGER NOT NULL,
     PRIMARY KEY (id_feria)
 );
@@ -105,12 +105,6 @@ CREATE TABLE json_feria (
     PRIMARY KEY (id_json)
 );
 
-CREATE TABLE json_feria_archivo (
-    feria_id_feria     INTEGER NOT NULL,
-    json_feria_id_json INTEGER NOT NULL,
-    CONSTRAINT id_feria UNIQUE (feria_id_feria),
-    CONSTRAINT id_json UNIQUE (json_feria_id_json)
-);
 
 CREATE TABLE puesto (
     id_puesto         INTEGER NOT NULL,
@@ -256,17 +250,13 @@ ALTER TABLE feria
     ADD CONSTRAINT id_comuna_fk FOREIGN KEY (id_comuna, id_region)
         REFERENCES comuna (id_comuna, id_region);
 
-ALTER TABLE json_feria_archivo
-    ADD CONSTRAINT id_d_feria_fk FOREIGN KEY (feria_id_feria)
-        REFERENCES feria (id_feria);
+
 
 ALTER TABLE solicitudes_apertura
     ADD CONSTRAINT id_encargado_soli_fk FOREIGN KEY (encargado_mail)
         REFERENCES encargado_feria (user_mail);
 
-ALTER TABLE json_feria_archivo
-    ADD CONSTRAINT id_json_d_feria_fk FOREIGN KEY (json_feria_id_json)
-        REFERENCES json_feria (id_json);
+
 
 ALTER TABLE intereses
     ADD CONSTRAINT intereses_feriante_fk FOREIGN KEY (user_mail)

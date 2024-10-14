@@ -69,4 +69,16 @@ const get_feria_Encargado = async (req, res, pool) => {
 
 
 
-module.exports = { login, register, get_feria_Encargado };
+
+
+   const tb_pago = async (req, res)  => {
+    const token = req.body.token_ws; // Recibes el token de pago de Webpay
+    const response = await webpay.commit(token);
+    
+    // Procesar la respuesta de confirmación
+    res.json(response);
+  };
+  
+
+
+module.exports = { login, register, get_feria_Encargado,tb_pago  };
