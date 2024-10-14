@@ -7,7 +7,7 @@ export const PublicRoutes = {
     DETALLEFERIA : "/feria/:id_feria",
      PAGOS : 'pago',
      PAGOS2 : 'pagosss',
-     PAGOOK : 'ferias/retorno'
+     PAGOOK : '/pagos/estado'
 }
 
 export const PrivateRoutes = {

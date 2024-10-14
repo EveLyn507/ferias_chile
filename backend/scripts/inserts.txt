@@ -47,10 +47,27 @@ VALUES (3, 'contacto');
 
 
 
+
+
 -- estado feria 
 INSERT INTO public.estado_feria (id_estado_feria, estado) VALUES (1, 'no enviada');
 INSERT INTO public.estado_feria (id_estado_feria, estado) VALUES (2, 'en revision');
 INSERT INTO estado_feria (id_estado_feria, estado) VALUES (3, 'validada');
+
+
+
+-- USUARIOS POR DEFECTO 1 ENCARGADO 2 FERIANTE 3 municipal
+
+INSERT INTO usuario (mail, rut , num_div, nombre,apellido,telefono,id_tipo_usuario,url_foto_perfil,auth_google,contrasena)
+VALUES ('1@1', 123, 1,'encargado' ,'te', 123, 1,null,null,123);
+
+INSERT INTO usuario (mail, rut , num_div, nombre,apellido,telefono,id_tipo_usuario,url_foto_perfil,auth_google,contrasena)
+VALUES ('2@2', 123, 1,'feriante' ,'te', 123, 2,null,null,123);
+
+INSERT INTO usuario (mail, rut , num_div, nombre,apellido,telefono,id_tipo_usuario,url_foto_perfil,auth_google,contrasena)
+VALUES ('3@3', 123, 1,'municipal' ,'te', 123, 3,null,null,123);
+
+
 
 -- regiones
 
@@ -78,3 +95,13 @@ INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (1, 'Arica', 1);
 INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (2, 'Camarones', 1);
 INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (3, 'Putre', 1);
 INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (4, 'Parinacota', 1);
+
+
+
+-- FERIAS DE LOS ENCARGADOS 
+
+INSERT INTO feria (nombre,id_comuna,id_region,encargado_feria_user_mail,id_estado,id_json)
+VALUES ('feria 1', 1, 1,'1@1',1,null);
+
+INSERT INTO feria (nombre,id_comuna,id_region,encargado_feria_user_mail,id_estado,id_json)
+VALUES ('feria 2', 1, 1,'1@1',1,null);

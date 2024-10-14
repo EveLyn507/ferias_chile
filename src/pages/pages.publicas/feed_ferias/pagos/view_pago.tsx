@@ -6,10 +6,10 @@ const PaymentButton: React.FC = () => {
     const buyOrder = 'order123';
     const sessionId = 'session123';
     const amount = 10000; // monto en pesos chilenos
-    const returnUrl = 'https://ferias/retorno';
+
 
     try {
-      const { url, token } = await createTransaction(buyOrder, sessionId, amount, returnUrl);
+      const { url, token } = await createTransaction(buyOrder, sessionId, amount);
       // Redirigir al usuario a la página de pago
       window.location.href = `${url}?token_ws=${token}`;
     } catch (error) {

@@ -1,6 +1,7 @@
 const express = require('express');
-const { login, register , get_feria_Encargado,tb_pago } = require('../controllers/usuarioController.js');
-const { get_feria,get_puestos_feria ,  } = require('../controllers/feedController.js');
+const { login, register , get_feria_Encargado , abrirTiketFeria } = require('../controllers/usuarioController.js');
+const { get_feria,get_puestos_feria  } = require('../controllers/feedController.js');
+const {createTransaction,commitTransaction} = require('../controllers/pagosController.js')
 const router = express.Router();
 
 
@@ -35,8 +36,31 @@ router.post('/login', (req, res) => {
   })
   
 
-  router.post('mi-sitio.com/retorno') , (req , res) =>{
-    tb_pago(req,res);
-  }
+
+// RUTAS PARA EL PERFIL ENCARGADO
+
+
+router.post('/tiket', (req , res) => {
+  const pool = req.pool; // Recuperar el pool del objeto req
+  abrirTiketFeria(req,res,pool);
+})
+
+
+
+// RUTAS PARA GENERAR PAGO  
+
+
+
+// crea  una transaccion
+router.post('/api/webpay/create', async (req, res) => {
+  createTransaction(req,res);
+});
+
+
+router.post('/api/webpay/commit', commitTransaction);
+
+
+
+
 
 module.exports = router;

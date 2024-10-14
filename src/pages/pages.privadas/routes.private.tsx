@@ -10,8 +10,8 @@ import Perfil_feriante from './perfil_feriante/perfil_feriante.tsx';
 import { Admin_de_feria } from './perfil_encargados/admin_de_feria.tsx';
 
 
-function Privado(){
 
+function Privado(){
 
 
   return (
