@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Canvas from './Canvas';
 import Toolbar from './Toolbar';
+import { useSelector } from 'react-redux';
 
 interface Rectangle {
   id: number;
@@ -29,6 +30,7 @@ interface Street {
 const API_URL = 'http://localhost:5000'; // Cambia a la URL de tu servidor
 
 const Vista = () => {
+  const encargadoId = useSelector((state: any) => state.user.id);
   const [rectangles, setRectangles] = useState<Rectangle[]>([]);
   const [planWidth, setPlanWidth] = useState<number>(600);
   const [planHeight, setPlanHeight] = useState<number>(400);
@@ -146,7 +148,8 @@ const Vista = () => {
     const feriaData = {
         puestos: rectangles, // Asegúrate de que esta variable contiene los datos correctos
         areas: areas,
-        calles: streets
+        calles: streets,
+        encargadoId: encargadoId,
     };
 
     try {
@@ -158,16 +161,13 @@ const Vista = () => {
         body: JSON.stringify(feriaData),
       });
     
-      // Verifica el tipo de respuesta
-      const text = await response.text(); // Obtiene la respuesta como texto
+      const text = await response.text(); 
     
-      // Verifica si la respuesta fue exitosa
+     
       if (!response.ok) {
-        throw new Error('Error al guardar la feria: ' + text); // Muestra la respuesta en caso de error
+        throw new Error('Error al guardar la feria: ' + text); 
       }
-    
-      // Ahora puedes analizar la respuesta como JSON
-      const result = JSON.parse(text); // Intenta convertirlo a JSON
+      const result = JSON.parse(text); 
       console.log(result);
     } catch (error) {
       console.error('Error al guardar la feria:', error);
