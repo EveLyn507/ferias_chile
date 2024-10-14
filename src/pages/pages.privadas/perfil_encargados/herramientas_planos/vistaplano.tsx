@@ -144,12 +144,6 @@ const Vista = () => {
   
   const handleSaveFeria = async () => {
     const feriaData = {
-        nombre: "Feria Internacional 2024",
-        ubicacion: "Santiago, Chile",
-        fechas: {
-            inicio: "2024-10-20",
-            fin: "2024-10-25"
-        },
         puestos: rectangles, // Asegúrate de que esta variable contiene los datos correctos
         areas: areas,
         calles: streets

@@ -72,7 +72,7 @@ CREATE TABLE estado_feria (
     id_estado_feria INTEGER,
     estado CHARACTER VARYING(30) NOT NULL,
     PRIMARY KEY(id_estado_feria)
-)
+);
 
 
 CREATE TABLE feria (
@@ -81,7 +81,7 @@ CREATE TABLE feria (
     id_comuna                 INTEGER NOT NULL,
     id_region                 INTEGER NOT NULL,
     encargado_feria_user_mail CHARACTER VARYING(80) NOT NULL,
-    estado CHARACTER VARYING(30) NOT NULL,
+    id_estado INTEGER NOT NULL,
     PRIMARY KEY (id_feria)
 );
 
@@ -123,11 +123,11 @@ CREATE TABLE puesto (
 
 CREATE TABLE horario_puesto (
     id_horario   INTEGER NOT NULL,
-    hora_inicio  DATE NOT NULL,
-    hora_termino TIMESTAMP without TIMEZONE NOT NULL,
+    hora_inicio  TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    hora_termino TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     precio       INTEGER NOT NULL,
     num_horario  INTEGER NOT NULL,
-    id_puesto INTERGER NOT NULL, 
+    id_puesto INTEGER NOT NULL, 
     PRIMARY KEY (id_horario)
 );
 
@@ -225,8 +225,8 @@ ALTER TABLE feria
         REFERENCES encargado_feria (user_mail);
 
 ALTER TABLE feria
-    ADD CONSTRAINT estado_feria_fk FOREIGN KEY (estado)
-        REFERENCES estado_feria (estado);
+    ADD CONSTRAINT estado_feria_fk FOREIGN KEY (id_estado)
+        REFERENCES estado_feria (id_estado_feria);
 
 ALTER TABLE encargado_feria
     ADD CONSTRAINT encargado_feria_usuario_fk FOREIGN KEY (user_mail)
