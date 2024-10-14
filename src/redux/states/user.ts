@@ -4,7 +4,6 @@ import { Roles } from '../../models/rol';
 import { clearLocalStorage, persistLocalStorage } from '../../utilities/localStorage.utilities';
 
 
-
 export const EmptyUserState: UserInfo ={
   token : "",
   role: Roles.NOTLOG,

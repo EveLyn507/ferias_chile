@@ -11,7 +11,9 @@ const Pago: React.FC = () => {
         },
         body: JSON.stringify({ amount }),
       });
-  
+      
+
+      
       const data = await response.json();
       console.log('Response from Webpay:', data);
       // Aquí puedes redirigir al usuario a data.url

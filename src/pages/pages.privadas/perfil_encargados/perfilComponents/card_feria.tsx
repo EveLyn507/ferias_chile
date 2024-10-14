@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import {  FeriasProps } from "../../../interfaces";
+import { OpenTiket } from "./open_tikek";
 
 export const Card_feria_encargado = ({ferias} : FeriasProps) => {
 
@@ -14,7 +15,8 @@ export const Card_feria_encargado = ({ferias} : FeriasProps) => {
                         <li> Comuna  : {feria.comuna} </li>
                         <li> region : {feria.region} </li>
                         <li>< Link to={`administracion/${feria.id_feria}`}> Administrar feria</Link></li>  
-                        <li>< Link to={`/feria/${feria.id_feria}`}> Ver Puestos Feria </Link></li>                                
+                        <button onClick={() => OpenTiket(feria.id_feria)}> Solicitar apertura de feria </button>
+                                
                     </ul>
                 </div>
             ))}

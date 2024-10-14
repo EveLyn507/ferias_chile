@@ -69,16 +69,27 @@ const get_feria_Encargado = async (req, res, pool) => {
 
 
 
-
-
-   const tb_pago = async (req, res)  => {
-    const token = req.body.token_ws; // Recibes el token de pago de Webpay
-    const response = await webpay.commit(token);
-    
-    // Procesar la respuesta de confirmación
-    res.json(response);
-  };
+  const abrirTiketFeria = async (req, res, pool) => {
+    const {id_feria} = req.body;
+  try {
   
+  const result = await pool.query(
+    '' , [id_feria]);
+  res.json(result.rows)
+  
+  }catch (err){
+      console.error('Error al abrir tiket:', err);
+      res.status(500).send('Error al  abrir tiket');
+  
+  }
+  
+  }
 
 
-module.exports = { login, register, get_feria_Encargado,tb_pago  };
+
+
+
+
+
+
+module.exports = { login, register, get_feria_Encargado , abrirTiketFeria };
