@@ -2,7 +2,9 @@ const express = require('express');
 const router = express.Router();
 const { guardarPerfil } = require('../controllers/perfilferianteController');
 
-// Ruta para guardar el perfil
-router.post('/perfil', guardarPerfil);
+router.post('/api/perfil', (req, res) => {
+    const pool = req.pool; 
+    guardarPerfil(req, res, pool); 
+  });
 
 module.exports = router;
