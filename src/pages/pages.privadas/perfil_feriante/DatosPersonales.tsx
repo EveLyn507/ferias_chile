@@ -3,14 +3,12 @@ import React, { useState } from 'react';
 interface DatosPersonalesProps {
   nombre: string;
   telefono: string;
-  direccion: string;
-  setDatosPersonales: (datos: { nombre: string; telefono: string; direccion: string }) => void;
+  setDatosPersonales: (datos: { nombre: string; telefono: string }) => void;
 }
 
-const DatosPersonales: React.FC<DatosPersonalesProps> = ({ nombre, telefono, direccion, setDatosPersonales }) => {
+const DatosPersonales: React.FC<DatosPersonalesProps> = ({ nombre, telefono, setDatosPersonales }) => {
   const [nombreActualizado, setNombreActualizado] = useState(nombre);
   const [telefonoActualizado, setTelefonoActualizado] = useState(telefono);
-  const [direccionActualizada, setDireccionActualizada] = useState(direccion);
   const [mensajeError, setMensajeError] = useState<string | null>(null);
   const [mensajeExito, setMensajeExito] = useState<string | null>(null);
 
@@ -19,9 +17,7 @@ const DatosPersonales: React.FC<DatosPersonalesProps> = ({ nombre, telefono, dir
     return telefonoRegex.test(telefono);
   };
 
-
   const actualizarDatos = () => {
-
     if (!nombreActualizado.trim()) {
       setMensajeError('El nombre no puede estar vacío.');
       setMensajeExito(null);
@@ -34,16 +30,9 @@ const DatosPersonales: React.FC<DatosPersonalesProps> = ({ nombre, telefono, dir
       return;
     }
 
-    if (!direccionActualizada.trim()) {
-      setMensajeError('La dirección no puede estar vacía.');
-      setMensajeExito(null);
-      return;
-    }
-
     setDatosPersonales({
       nombre: nombreActualizado,
       telefono: telefonoActualizado,
-      direccion: direccionActualizada,
     });
 
     setMensajeExito('Datos actualizados con éxito.');
@@ -70,14 +59,6 @@ const DatosPersonales: React.FC<DatosPersonalesProps> = ({ nombre, telefono, dir
         value={telefonoActualizado}
         onChange={e => setTelefonoActualizado(e.target.value)}
         placeholder="Escribe tu teléfono"
-      />
-      
-      <label>Dirección:</label>
-      <input
-        type="text"
-        value={direccionActualizada}
-        onChange={e => setDireccionActualizada(e.target.value)}
-        placeholder="Escribe tu dirección"
       />
       
       <button onClick={actualizarDatos}>Actualizar Datos</button>

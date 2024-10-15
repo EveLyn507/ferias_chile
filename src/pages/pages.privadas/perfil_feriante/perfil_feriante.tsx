@@ -1,25 +1,55 @@
-import { useState } from 'react';
-import DatosPersonales from './DatosPersonales.tsx';
-import Biografia from './Biografia.tsx';
-import InteresesVenta from './InteresesVentas.tsx';
-import RedesSociales from './RedesSociales.tsx';
-import ActualizarCorreoContraseña from './ActualizarCorreoContraseña.tsx';
-import FotoPerfil from './FotoPerfil.tsx';
-import HistorialActividades from './HistorialActividades.tsx';
-
+import { useState, useEffect } from 'react';
+import DatosPersonales from './DatosPersonales';
+import Biografia from './Biografia';
+import InteresesVenta from './InteresesVentas';
+import RedesSociales from './RedesSociales';
+import ActualizarCorreoContraseña from './ActualizarCorreoContraseña';
+import FotoPerfil from './FotoPerfil';
+import HistorialActividades from './HistorialActividades';
+import { useSelector } from 'react-redux';
+import { AppStore } from '../../../redux/store';
 
 const PerfilFeriantes: React.FC = () => {
-  const [perfilPublico, setPerfilPublico] = useState(true);
+  const userMail = useSelector((state: AppStore) => state.user.email);
+  const [perfilPublico, setPerfilPublico] = useState<boolean>(true);
   const [intereses, setIntereses] = useState<string[]>([]);
   const [fotoPerfil, setFotoPerfil] = useState<string>('');
-  const [datosPersonales, setDatosPersonales] = useState({
+  const [datosPersonales, setDatosPersonales] = useState<{ nombre: string; telefono: string }>({
     nombre: '',
     telefono: '',
-    direccion: '',
   });
-  const [biografia, setBiografia] = useState('');
-  const [correo, setCorreo] = useState('');
+  const [biografia, setBiografia] = useState<string>('');
+  const [correo, setCorreo] = useState<string>('');
+  const [, setContraseña] = useState<string>('');
 
+  useEffect(() => {
+    const cargarPerfil = async () => {
+      try {
+        const encodedMail = encodeURIComponent(userMail);  
+        const response = await fetch(`http://localhost:5000/api/perfil/${encodedMail}`);
+        
+        if (response.ok) {
+          const perfilData = await response.json();
+          setDatosPersonales({
+            nombre: perfilData.nombre,
+            telefono: perfilData.telefono,
+          });
+          setBiografia(perfilData.biografia);
+          setIntereses(perfilData.intereses);
+          setCorreo(perfilData.correo);
+          setFotoPerfil(perfilData.url_foto_perfil || ''); 
+          console.log('Perfil cargado correctamente:', perfilData);
+        } else {
+          console.error('Error al cargar el perfil');
+        }
+      } catch (error) {
+        console.error('Error al conectar con el servidor:', error);
+      }
+    };
+  
+    cargarPerfil();
+  }, [userMail]);
+    
   const togglePerfil = () => {
     setPerfilPublico(!perfilPublico);
   };
@@ -28,12 +58,13 @@ const PerfilFeriantes: React.FC = () => {
     const perfilData = {
       nombre: datosPersonales.nombre,
       telefono: datosPersonales.telefono,
-      direccion: datosPersonales.direccion,
       biografia: biografia,
-      intereses: intereses,  
+      intereses: intereses,
       correo: correo,
+      userMail: userMail,
+      url_foto_perfil: fotoPerfil, 
     };
-  
+
     try {
       const response = await fetch('http://localhost:5000/api/perfil', {
         method: 'POST',
@@ -42,7 +73,7 @@ const PerfilFeriantes: React.FC = () => {
         },
         body: JSON.stringify(perfilData),
       });
-  
+
       if (response.ok) {
         const result = await response.json();
         console.log('Perfil guardado:', result);
@@ -64,30 +95,20 @@ const PerfilFeriantes: React.FC = () => {
 
       <button onClick={guardarPerfil}>Guardar Perfil</button>
 
-      <FotoPerfil fotoPerfil={fotoPerfil} setFotoPerfil={setFotoPerfil} />
-
-      <InteresesVenta intereses={intereses} setIntereses={setIntereses} />
+      <FotoPerfil setFotoPerfil={setFotoPerfil} userMail={userMail} />
 
       <DatosPersonales 
-        nombre={datosPersonales.nombre} 
-        telefono={datosPersonales.telefono}
-        direccion={datosPersonales.direccion}
-        setDatosPersonales={setDatosPersonales}
+        setDatosPersonales={setDatosPersonales} nombre={''} telefono={''}        
       />
-
-      <Biografia 
-        biografia={biografia}
-        setBiografia={setBiografia}
-      />
-
+      <Biografia biografia={biografia} setBiografia={setBiografia} />
+      <InteresesVenta intereses={intereses} setIntereses={setIntereses} />
       <RedesSociales />
 
       <ActualizarCorreoContraseña 
-        correo={correo}
-        setCorreo={setCorreo}
-        setContraseña={() => {}}
+        correo={correo} 
+        setCorreo={setCorreo} 
+        setContraseña={setContraseña} 
       />
-
       <HistorialActividades />
     </div>
   );

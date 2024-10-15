@@ -1,5 +1,5 @@
 const express = require('express');
-const { login, register , get_feria_Encargado } = require('../controllers/usuarioController.js');
+const { login, register , get_feria_Encargado,tb_pago } = require('../controllers/usuarioController.js');
 const { get_feria,get_puestos_feria ,  } = require('../controllers/feedController.js');
 const router = express.Router();
 
@@ -34,5 +34,9 @@ router.post('/login', (req, res) => {
     get_feria_Encargado(req,res,pool);
   })
   
+
+  router.post('mi-sitio.com/retorno') , (req , res) =>{
+    tb_pago(req,res);
+  }
 
 module.exports = router;

@@ -1,12 +1,13 @@
 const express = require('express');
-const bodyParser = require('body-parser');
-const { WebpayPlus } = require('transbank-sdk'); // Usar solo transbank-sdk
+const { WebpayPlus } = require('transbank-sdk');
 
 const router = express.Router();
-router.use(bodyParser.json());
+router.use(express.json());
+
+// Configura el entorno de testing
+WebpayPlus.configureForTesting();
 
 const webpayPlus = new WebpayPlus.Transaction();
-WebpayPlus.configureForTesting();
 
 router.post('/webpay/init', async (req, res) => {
   const { amount } = req.body;
@@ -23,13 +24,15 @@ router.post('/webpay/init', async (req, res) => {
     );
 
     console.log('URL de Webpay:', response.url);  // Agregar esto
-    res.json({ url: response.url, token: response.token });
+
+    const {url , token} = req.body;
+
+
+    res.json({ url, token});
   } catch (error) {
     console.error('Error en la transacción:', error);
     res.status(500).send('Error en el proceso de pago');
   }
 });
-
-
 
 module.exports = router;

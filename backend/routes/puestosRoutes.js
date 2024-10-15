@@ -49,7 +49,7 @@ router.post('/api/feria', async (req, res) => {
   const pool = req.pool; 
   try {
       const result = await pool.query(
-          'INSERT INTO ferias (datos) VALUES ($1) RETURNING *',
+          'INSERT INTO json_ferias (datos) VALUES ($1) RETURNING *',
           [JSON.stringify(jsonData)] 
       );
       console.log('Feria guardada:', result.rows[0]);

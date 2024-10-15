@@ -41,6 +41,7 @@ app.use(usuarioRoutes);
 app.use(puestosRoutes);
 
 app.use(perfilferianteRoutes);
+app.use('/uploads', express.static('uploads'));
 
 app.use('/api', paymentRoutes);
 

@@ -1,25 +1,43 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface FotoPerfilProps {
-  fotoPerfil: string;
+  userMail: string;
   setFotoPerfil: (url: string) => void;
 }
 
-const FotoPerfil: React.FC<FotoPerfilProps> = ({ fotoPerfil, setFotoPerfil }) => {
-  const [preview, setPreview] = useState<string | null>(fotoPerfil); // Previsualización de la foto
+const FotoPerfil: React.FC<FotoPerfilProps> = ({ userMail, setFotoPerfil }) => {
+  const [preview, setPreview] = useState<string | null>(null);
+
+  useEffect(() => {
+    const obtenerPerfil = async () => {
+      try {
+        const response = await fetch(`http://localhost:5000/api/perfil/${userMail}`);
+        if (response.ok) {
+          const data = await response.json();
+          setPreview(data.url_foto_perfil); 
+          setFotoPerfil(data.url_foto_perfil);
+        } else {
+          console.error('Error al obtener el perfil:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error al obtener el perfil:', error);
+      }
+    };
+
+    obtenerPerfil();
+  }, [userMail, setFotoPerfil]);
 
   const handleFotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const fileSizeLimit = 2 * 1024 * 1024; // 2 MB
+      const fileSizeLimit = 2 * 1024 * 1024; 
       const fileType = file.type;
 
-      // Validar formato y tamaño del archivo
       if ((fileType === 'image/jpeg' || fileType === 'image/png') && file.size <= fileSizeLimit) {
         const reader = new FileReader();
         reader.onloadend = () => {
           const result = reader.result as string;
-          setPreview(result);
+          setPreview(result); 
         };
         reader.readAsDataURL(file);
       } else {
@@ -28,15 +46,36 @@ const FotoPerfil: React.FC<FotoPerfilProps> = ({ fotoPerfil, setFotoPerfil }) =>
     }
   };
 
-  const handleSavePhoto = () => {
+  const handleSavePhoto = async () => {
     if (preview) {
-      setFotoPerfil(preview);
-      alert('Foto de perfil actualizada con éxito.');
+      try {
+        const response = await fetch('http://localhost:5000/api/foto', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            foto: preview,
+            userMail,
+          }),
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          setFotoPerfil(result.url_foto);
+          alert('Foto de perfil actualizada con éxito.');
+        } else {
+          alert('Error al guardar la foto.');
+        }
+      } catch (error) {
+        console.error('Error al conectar con el servidor:', error);
+        alert('Error al conectar con el servidor.');
+      }
     }
   };
 
   const handleRemovePhoto = () => {
-    setFotoPerfil('');
+    setFotoPerfil(''); 
     setPreview(null);
     alert('Foto de perfil eliminada con éxito.');
   };
