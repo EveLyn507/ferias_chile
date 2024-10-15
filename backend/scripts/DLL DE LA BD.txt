@@ -139,11 +139,13 @@ CREATE TABLE region (
     PRIMARY KEY (id_region)
 );
 
+
 CREATE TABLE solicitudes_apertura (
-    id_solicitud    INTEGER NOT NULL,
+    id_solicitud    SERIAL  NOT NULL,
     encargado_mail  CHARACTER VARYING(80) NOT NULL,
     admin_muni_mail CHARACTER VARYING(80) NOT NULL,
     id_feria INTEGER NOT NULL ,
+    estado CHARACTER VARYING(30), 
     PRIMARY KEY (id_solicitud)
 );
 
@@ -155,7 +157,7 @@ CREATE TABLE supervisor (
 
 CREATE TABLE team_supervisor (
     id_team        SERIAL             NOT NULL,
-    encargado_feria_user_mail CHARACTER VARYING(80) NOT NULL,
+    user_mail CHARACTER VARYING(80) NOT NULL,
     PRIMARY KEY (id_team)
 );
 
@@ -219,9 +221,6 @@ ALTER TABLE feria
         REFERENCES encargado_feria (user_mail);
 
 
-ALTER TABLE feria
-	ADD CONSTRAINT id_estado_feria_fk FOREIGN KEY (id_estado)
-		REFERENCES estado_feria (id_estado_feria);
 
 ALTER TABLE encargado_feria
     ADD CONSTRAINT encargado_feria_usuario_fk FOREIGN KEY (user_mail)
@@ -242,6 +241,11 @@ ALTER TABLE feriante
 ALTER TABLE solicitudes_apertura
     ADD CONSTRAINT id_admin_soli_fk FOREIGN KEY (admin_muni_mail)
         REFERENCES administrador_municipal (user_mail);
+
+ALTER TABLE feria
+    ADD CONSTRAINT id_estado_feria_fk FOREIGN KEY (id_estado)
+        REFERENCES estado_feria (id_estado_feria);
+
 
 ALTER TABLE detalle
     ADD CONSTRAINT id_apertura_fk FOREIGN KEY (solicitud_apertura_id)

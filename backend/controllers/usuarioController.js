@@ -26,14 +26,9 @@ const login = async (req, res, pool) => {
   }
 };
 
-
-
-
 // Lógica para registro (ejemplo)
 const register = async (req, res, pool) => {
   const { mail , rut ,nombre , apellido , telefono  , role, contrasena} = req.body;
-
-
   try {
     await pool.query(`INSERT INTO public.usuario (mail, rut, nombre, apellido, telefono, id_tipo_usuario, contrasena) VALUES ($1, $2, $3, $4, $5, $6, $7)`, [mail, rut, nombre, apellido, telefono, role, contrasena]);
 res.status(201).send('Usuario registrado correctamente');
@@ -43,11 +38,7 @@ res.status(201).send('Usuario registrado correctamente');
   }
 };
 
-
-
-
 // PERFIL ENCARGADO FUNCIONES
-
 
 // get id_feria nombre nombre_region nombre_comuna
 const get_feria_Encargado = async (req, res, pool) => {
@@ -67,14 +58,14 @@ const get_feria_Encargado = async (req, res, pool) => {
   
   }
 
-
-
   const abrirTiketFeria = async (req, res, pool) => {
-    const {id_feria} = req.body;
+    const {id_feria , mail} = req.body;
+    const admin = '3@3';
+    const estado = 'En revision'
   try {
   
   const result = await pool.query(
-    '' , [id_feria]);
+    'SELECT insert_solicitud_apertura($1,$2,$3,$4);' , [mail,admin,id_feria,estado]);
   res.json(result.rows)
   
   }catch (err){
@@ -85,11 +76,26 @@ const get_feria_Encargado = async (req, res, pool) => {
   
   }
 
+  //FUNCIONES ADMIN MUNICIPAL 
+
+  const obtenerSolicitudes = async (req, res, pool) => {
+
+    const {mail} = req.body;
+  try {
+  
+  const result = await pool.query(
+     ` SELECT * FROM solicitudes_apertura where admin_muni_mail = $1;` , [mail]);
+  res.json(result.rows)
+  
+  }catch (err){
+      console.error('Error al obtener las ferias:', err);
+      res.status(500).send('Error al obtener las ferias');
+  
+  }
+  
+  }
 
 
 
 
-
-
-
-module.exports = { login, register, get_feria_Encargado , abrirTiketFeria };
+module.exports = { login, register, get_feria_Encargado , abrirTiketFeria ,obtenerSolicitudes};
