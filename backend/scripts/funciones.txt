@@ -1,5 +1,5 @@
 
-
+-- OBTENER LAS FERIAS EN FEED FERIAS
 CREATE OR REPLACE FUNCTION obtener_ferias()
 RETURNS TABLE (
     id_feria INTEGER,
@@ -24,7 +24,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-
+-- CUENTA LOS PUESTOS DE UNA FERIA 
 
 CREATE OR REPLACE FUNCTION contar_puestos_actuales(id_feria INT)
 RETURNS INT AS $$
