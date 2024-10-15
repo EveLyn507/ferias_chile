@@ -16,6 +16,7 @@ export const Card_feria_encargado = ({ferias} : FeriasProps) => {
                         <li> region : {feria.region} </li>
                         <li>< Link to={`administracion/${feria.id_feria}`}> Administrar feria</Link></li>  
                         <button onClick={() => OpenTiket(feria.id_feria)}> Solicitar apertura de feria </button>
+                        <li>< Link to={`administrxdacion/${feria.id_feria}`}> Administrar feria</Link></li>  
                                 
                     </ul>
                 </div>
