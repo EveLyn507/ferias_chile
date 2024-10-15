@@ -1,26 +1,48 @@
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
+const pool = require('../server.js');
 
 
-const saveFeria = async (jsonData, pool) => {
+// Controlador para guardar la feria
+
+
+const saveFeria = async (req, res) => {
+  const { puestos, areas, calles, id_feria } = req.body; // Incluye id_feria en la desestructuración
+
+  const pool = req.pool;
+
   try {
-    const { puestos, areas, calles, encargadoId } = jsonData; // Desestructuramos el objeto
-    const res = await pool.query(
-      'INSERT INTO json_feria (nombre_json, encargado_id) VALUES ($1, $2) RETURNING *',
-      [JSON.stringify({ puestos, areas, calles }), encargadoId] // Guardamos el JSON y el ID del encargado
-    );
-    console.log('Feria guardada:', res.rows[0]);
-  } catch (err) {
-    console.error('Error al guardar la feria:', err);
+      const queryText = `
+          INSERT INTO json_feria (nombre_json, id_feria)
+          VALUES ($1, $2)
+          RETURNING id_json
+      `;
+
+      // Crear un objeto que contenga todos los datos en JSONB
+      const nombre_json = {
+          puestos,
+          areas,
+          calles,
+      };
+
+      // Asegúrate de pasar el id_feria desde el cuerpo de la solicitud
+      const values = [JSON.stringify(nombre_json), id_feria]; // Usa id_feria aquí
+
+      const result = await pool.query(queryText, values);
+      res.status(201).json({ id_feria: result.rows[0].id_json });
+  } catch (error) {
+      console.error('Error al guardar la feria:', error);
+      res.status(500).json({ error: 'Error al guardar la feria' });
   }
 };
+// Controlador para obtener la feria
+const getFeria = async (req, res) => {
+  const pool = req.pool;
 
-
-const getFeria = async (req, res, pool) => {
   try {
-    const result = await pool.query('SELECT datos FROM json_ferias WHERE id = $1', [req.params.id]);
+    const result = await pool.query('SELECT nombre_json FROM json_feria WHERE id_feria = $1', [req.params.id]);
     if (result.rows.length > 0) {
-      res.json(result.rows[0].datos); 
+      res.json(result.rows[0].nombre_json);
     } else {
       res.status(404).json({ error: 'Feria no encontrada' });
     }
@@ -30,9 +52,8 @@ const getFeria = async (req, res, pool) => {
   }
 };
 
-  
-  module.exports = {
-    saveFeria,
-    getFeria
-  };
-  
+
+module.exports = {
+  saveFeria,
+  getFeria
+};
