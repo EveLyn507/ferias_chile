@@ -3,8 +3,6 @@ const { getPuestos, savePuestos, getPlano, getCalles, saveCalles, getAreas, save
 const router = express.Router();
 
 
-
-
 // Ruta para guardar una feria
 router.post('/api/feria', async (req, res) => {
   const jsonData = req.body; 

@@ -6,7 +6,7 @@ const saveFeria = async (jsonData, pool) => {
   try {
     const { puestos, areas, calles, encargadoId } = jsonData; // Desestructuramos el objeto
     const res = await pool.query(
-      'INSERT INTO ferias (datos, encargado_id) VALUES ($1, $2) RETURNING *',
+      'INSERT INTO json_feria (nombre_json, encargado_id) VALUES ($1, $2) RETURNING *',
       [JSON.stringify({ puestos, areas, calles }), encargadoId] // Guardamos el JSON y el ID del encargado
     );
     console.log('Feria guardada:', res.rows[0]);
@@ -32,7 +32,6 @@ const getFeria = async (req, res, pool) => {
 
   
   module.exports = {
-
     saveFeria,
     getFeria
   };
