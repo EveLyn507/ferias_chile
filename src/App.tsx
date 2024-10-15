@@ -11,9 +11,8 @@ import { View_detalle_feria } from './pages/pages.publicas/feed_ferias';
 import { Nav_bar } from './components';
 const View_feed = lazy(() => import ('./pages/pages.publicas/feed_ferias/view_feed'));
 const Privado = lazy(() => import ('./pages/pages.privadas/routes.private'));
-import Flow from './pages/pages.publicas/pagos/pagos';
 import PaymentButton from './pages/pages.publicas/feed_ferias/pagos/view_pago';
-import { Pago_ok } from './pages/pages.publicas/feed_ferias/pagos/pago_ok';
+import ConfirmPayment from './pages/pages.publicas/feed_ferias/pagos/pago_ok';
 
 
 function App() {
@@ -29,12 +28,11 @@ function App() {
               <Route path={PublicRoutes.FEEDFERIAS} element = {<View_feed/>} />
               <Route path={PublicRoutes.HERRAMIENTA} element = {<Vistaplano/>} />
               <Route path={PublicRoutes.LOGIN} element = {<Login/>} />
-              <Route path={PublicRoutes.PAGOS} element = {<Flow/>} />
               <Route path={PublicRoutes.REGISTRO} element = {<Registro/>} />
               <Route path={PublicRoutes.PAGOS2} element = {<PaymentButton/>} />
               <Route path={PublicRoutes.DATOSENCARGADO} element={<PerfilFeriantes />} />
               <Route path={`${PublicRoutes.DETALLEFERIA}`} element={<View_detalle_feria />} />
-              <Route path={`${PublicRoutes.PAGOOK}`} element={<Pago_ok />} />
+              <Route path={`${PublicRoutes.PAGOOK}`} element={<ConfirmPayment />} />
               <Route element= {<AuthGuard privateValidation={true} />}>
                 <Route  path={`${PrivateRoutes.PRIVATE}/*`} element= {<Privado/>} />
               </Route>

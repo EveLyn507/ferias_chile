@@ -1,5 +1,10 @@
+import TraerMuniSolicitudes from "./traer_ferias_encargado"
+
 export const Perfil_admin = () => {
   return (
-    <div>perfil_admin</div>
+   <>
+   
+   <TraerMuniSolicitudes/>
+   </>
   )
 }

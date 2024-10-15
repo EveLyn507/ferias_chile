@@ -1,14 +1,21 @@
-#root {
- 
-  text-align: center;
+html, body {
+  height: 100%; /* Asegura que html y body ocupen toda la altura de la ventana */
+  margin: 0; /* Elimina el margen del body */
+  padding: 0; /* Elimina el relleno del body */
   width: 100%;
-  color: red;
+}
+
+#root {
+  height: 100vh;
+  width: 100%;
+  background: lightblue; /* Agrega un color de fondo para visualizar el área ocupada */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
 
 
-}
-body{ 
-  background-color: rgb(255, 255, 255);
-}
 
 .card { 
 

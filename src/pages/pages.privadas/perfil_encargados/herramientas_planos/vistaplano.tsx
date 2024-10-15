@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import Canvas from './Canvas';
 import Toolbar from './Toolbar';
+import { setIdFeria } from '../../../../redux/states/user';
+import axios from 'axios';
 
 interface Rectangle {
   id: number;
@@ -26,6 +28,12 @@ interface Street {
   width: number;
 }
 
+interface FeriaData {
+  puestos: Rectangle[];
+  areas: Area[];
+  calles: Street[];
+}
+
 const API_URL = 'http://localhost:5000'; // Cambia a la URL de tu servidor
 
 const Vista = () => {
@@ -34,10 +42,32 @@ const Vista = () => {
   const [planHeight, setPlanHeight] = useState<number>(400);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-
   const [areas, setAreas] = useState<Area[]>([]);
   const [streets, setStreets] = useState<Street[]>([]);
 
+  const fetchFeriaData = async () => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await axios.get(`${API_URL}/api/feria/1`);
+      const data: FeriaData = response.data;
+      
+      // Asignar los datos del backend a los estados
+      setRectangles(data.puestos);
+      setAreas(data.areas);
+      setStreets(data.calles);
+    } catch (error) {
+      console.error('Error al obtener los datos de la feria:', error);
+      setError('Error al obtener los datos de la feria');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchFeriaData(); // Cargar los datos cuando el componente se monta
+  }, []);
 
   const handleAddRectangle = () => {
     const newRectangle: Rectangle = {
@@ -54,33 +84,6 @@ const Vista = () => {
   const handleRemoveRectangle = (id: number) => {
     setRectangles((prev) => prev.filter(rect => rect.id !== id));
   };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const [rectanglesRes, planRes] = await Promise.all([
-          fetch(`${API_URL}/puestos`),
-          fetch(`${API_URL}/plano`)
-        ]);
-        if (!rectanglesRes.ok || !planRes.ok) {
-          throw new Error('Error al obtener los datos');
-        }
-        const rectanglesData = await rectanglesRes.json();
-        const planData = await planRes.json();
-        setRectangles(rectanglesData);
-        setPlanWidth(planData.width);
-        setPlanHeight(planData.height);
-      } catch (error) {
-        console.error('Error al cargar los datos', error);
-        setError('Error al cargar los datos del servidor');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
 
   const handleAddArea = () => {
     const newArea: Area = {
@@ -118,67 +121,40 @@ const Vista = () => {
   const handleRemoveStreet = (id: number) => {
     setStreets(streets.filter(street => street.id !== id));
   };
-  
 
-  const saveData = async () => {
-    setIsLoading(true);
-    setError(null);
-    console.log('Datos a guardar:', { rectangles, planWidth, planHeight, areas, streets }); // Para depuración
-    try {
-      const response = await fetch(`${API_URL}/puestos`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ rectangles, planWidth, planHeight, areas, streets }),
-      });
-      if (!response.ok) {
-        throw new Error('Error al guardar los datos');
-      }
-      console.log('Datos guardados correctamente');
-    } catch (error) {
-      console.error('Error al guardar los datos:', error);
-      setError('Error al guardar los datos en la base de datos');
-    } finally {
-      setIsLoading(false);
-    }
-  };  
-  
   const handleSaveFeria = async () => {
     const feriaData = {
-        nombre: "Feria Internacional 2024",
-        ubicacion: "Santiago, Chile",
-        fechas: {
-            inicio: "2024-10-20",
-            fin: "2024-10-25"
-        },
-        puestos: rectangles, // Asegúrate de que esta variable contiene los datos correctos
-        areas: areas,
-        calles: streets
+      puestos: rectangles,
+      areas: areas,
+      calles: streets,
+      id_feria: 1, // Aquí debes asignar el id_feria correcto
     };
 
     try {
-      const response = await fetch('http://localhost:5000/api/feria', {
+      const response = await fetch(`${API_URL}/api/feria`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(feriaData),
       });
-    
-      // Verifica el tipo de respuesta
-      const text = await response.text(); // Obtiene la respuesta como texto
-    
-      // Verifica si la respuesta fue exitosa
+
+      const result = await response.json();
+
       if (!response.ok) {
-        throw new Error('Error al guardar la feria: ' + text); // Muestra la respuesta en caso de error
+        throw new Error('Error al guardar la feria: ' + result.error);
       }
-    
-      // Ahora puedes analizar la respuesta como JSON
-      const result = JSON.parse(text); // Intenta convertirlo a JSON
-      console.log(result);
+
+      const feriaId = result.id_feria;
+      console.log('Feria guardada con ID:', feriaId);
+
+      dispatch(setIdFeria(feriaId)); // Usar la acción para establecer el id_feria en el estado de Redux
+
+      alert('Feria guardada correctamente');
     } catch (error) {
       console.error('Error al guardar la feria:', error);
     }
-};
+  };
 
   return (
     <div className="App">
@@ -205,11 +181,8 @@ const Vista = () => {
           onUpdateStreet={handleUpdateStreet}
           onRemoveStreet={handleRemoveStreet}
         />
-        <button onClick={saveData} disabled={isLoading}>
-          {isLoading ? 'Guardando...' : 'Guardar en la base de datos'}
-        </button>
         <button onClick={handleSaveFeria} disabled={isLoading}>
-          {isLoading ? 'Guardando feria...' : 'Guardar Feria json'}
+          {isLoading ? 'Guardando...' : 'Guardar Feria JSON'}
         </button>
       </div>
     </div>
@@ -217,3 +190,7 @@ const Vista = () => {
 };
 
 export default Vista;
+function dispatch(_arg0: { payload: any; type: "user/setIdFeria"; }) {
+  throw new Error('Function not implemented.');
+}
+

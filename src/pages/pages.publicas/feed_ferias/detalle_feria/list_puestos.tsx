@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { PuestosProp } from "../../../interfaces";
 
 
@@ -15,7 +16,7 @@ export const Item_list_puestos = ({ puestos }: PuestosProp) => {
                             <li> hora inicio : {puesto.hora_inicio} </li>
                             <li> hora termino : {puesto.hora_termino} </li>
                             <li> precio : {puesto.precio} </li>
-                            <li>  <a href="">  contratar</a></li>  
+                            <li>   <Link to={"/pagosss"}>   contratar</Link>   </li>  
                                         
                         </ul>
                     </div>

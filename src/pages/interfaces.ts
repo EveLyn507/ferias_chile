@@ -26,3 +26,18 @@ export interface puesto {
 export interface PuestosProp {
     puestos: puesto[];
 }
+
+
+export interface solicitud {
+idSolicitud : number,
+encargadoMail : string,
+muniMail : string,
+idFeria: number,
+estado : string,
+}
+
+
+export interface soliProps {
+solicitudes : solicitud[]
+
+}

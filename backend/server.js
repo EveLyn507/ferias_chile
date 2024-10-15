@@ -27,8 +27,6 @@ const pool = new Pool({
 app.use(cors());
 app.use(express.json());
 
-app.use('/api', paymentRoutes);
-
 //midware , le da el pool a las peticiones para que conecten
 app.use((req, res, next) => {
   req.pool = pool; 
