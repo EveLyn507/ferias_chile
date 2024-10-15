@@ -77,7 +77,7 @@ CREATE TABLE feria (
     nombre                    CHARACTER VARYING(80) NOT NULL,
     id_comuna                 INTEGER NOT NULL,
     id_region                 INTEGER NOT NULL,
-    encargado_feria_user_mail CHARACTER VARYING(80) NOT NULL,
+    user_mail CHARACTER VARYING(80) NOT NULL,
     id_json INTEGER ,
     id_estado INTEGER NOT NULL,
     PRIMARY KEY (id_feria)
@@ -98,8 +98,9 @@ CREATE TABLE intereses (
 );
 
 CREATE TABLE json_feria (
-    nombre_json CHARACTER VARYING(100) NOT NULL,
+    nombre_json JSONB NOT NULL,
     id_json     SERIAL   NOT NULL,
+    id_feria INTEGER NOT NULL ,
     PRIMARY KEY (id_json)
 );
 
@@ -251,9 +252,9 @@ ALTER TABLE feria
         REFERENCES comuna (id_comuna, id_region);
 
 		
-ALTER TABLE feria 
-    ADD CONSTRAINT id_json_feria_fk FOREIGN KEY (id_json)
-        REFERENCES json_feria (id_json);
+ALTER TABLE json_feria 
+    ADD CONSTRAINT id_json_feria_fk FOREIGN KEY (id_feria)
+        REFERENCES feria (id_feria);
 
 
 ALTER TABLE solicitudes_apertura
