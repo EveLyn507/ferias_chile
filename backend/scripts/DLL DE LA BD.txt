@@ -215,7 +215,7 @@ ALTER TABLE contrato_puesto
         REFERENCES tipo_pago (id_tipo_pago);
 
 ALTER TABLE feria
-    ADD CONSTRAINT encargado_feria_fk FOREIGN KEY (encargado_feria_user_mail)
+    ADD CONSTRAINT encargado_feria_fk FOREIGN KEY (user_mail)
         REFERENCES encargado_feria (user_mail);
 
 
@@ -228,7 +228,7 @@ ALTER TABLE encargado_feria
         REFERENCES usuario (mail);
 
 ALTER TABLE team_supervisor
-    ADD CONSTRAINT encargado_id_fk FOREIGN KEY (encargado_feria_user_mail)
+    ADD CONSTRAINT encargado_id_fk FOREIGN KEY (user_mail)
         REFERENCES encargado_feria (user_mail);
 
 ALTER TABLE contrato_puesto
