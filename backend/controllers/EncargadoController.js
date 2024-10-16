@@ -19,11 +19,10 @@ const get_feria_Encargado = async (req, res, pool) => {
 const abrirTiketFeria = async (req, res, pool) => {
   const {id_feria , mail} = req.body;
   const admin = '3@3';
-  const estado = 'En revision'
 try {
 
 const result = await pool.query(
-  'SELECT insert_solicitud_apertura($1,$2,$3,$4);' , [mail,admin,id_feria,estado]);
+  'SELECT insertar_solicitud_apertura($1,$2,$3);' , [mail,admin,id_feria]);
 res.json(result.rows)
 
 }catch (err){

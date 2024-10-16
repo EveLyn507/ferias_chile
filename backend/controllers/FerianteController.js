@@ -11,7 +11,7 @@ const guardarPerfil = async (req, res) => {
 
   try {
     const queryUsuario = `
-      UPDATE usuario
+      UPDATE feriante
       SET nombre = $2, telefono = $3, url_foto_perfil = $4
       WHERE mail = $1;
     `;
@@ -24,10 +24,9 @@ const guardarPerfil = async (req, res) => {
 
   try {
     const queryFeriante = `
-      INSERT INTO feriante (biografia, user_mail)
-      VALUES ($1, $2)
-      ON CONFLICT (user_mail) DO UPDATE
-      SET biografia = EXCLUDED.biografia;
+      UPDATE feriante 
+      SET biografia = $1
+      WHERE user_mail = $2;
     `;
     const valuesFeriante = [biografia, userMail];
     await pool.query(queryFeriante, valuesFeriante);
@@ -63,9 +62,9 @@ const obtenerPerfil = async (req, res) => {
 
   try {
     const usuarioResult = await pool.query(`
-      SELECT nombre, telefono, mail, url_foto_perfil
-      FROM usuario
-      WHERE mail = $1;
+      SELECT nombre, telefono, user_mail, url_foto_perfil
+      FROM feriante
+      WHERE user_mail = $1;
     `, [userMail]);
 
     if (usuarioResult.rows.length === 0) {
@@ -185,9 +184,9 @@ const actualizarContraseña = async (req, res) => {
     const hashedPassword = await bcrypt.hash(nuevaContraseña, 10);
 
     const query = `
-      UPDATE usuario
+      UPDATE feriante
       SET contrasena = $1
-      WHERE mail = $2; /
+      WHERE user_mail = $2; /
     `;
     await req.pool.query(query, [hashedPassword, userMail]); 
 

@@ -102,11 +102,11 @@ BEGIN
         es.estado,
         contar_puestos_actuales(f.id_feria) AS puestos_actuales  -- Llamada a la función
     FROM encargado_feria ef
-    JOIN feria f ON ef.user_mail = f.user_mail
+    JOIN feria f ON ef.user_mail = f.encargado_mail
     JOIN comuna c ON f.id_comuna = c.id_comuna
     JOIN region g ON c.id_region = g.id_region
-    JOIN estado_feria es ON f.id_estado = es.id_estado_feria
-    WHERE ef.user_mail = mail;  -- Uso directo del parámetro mail
+    JOIN estado_feria es ON f.id_estado = es.id_estado
+    WHERE ef.user_mail = '1@1';  -- Uso directo del parámetro mail
 END;
 $$ LANGUAGE plpgsql;
 
@@ -114,14 +114,14 @@ $$ LANGUAGE plpgsql;
 
 -- INSERTA LOS TIKET
 
-CREATE OR REPLACE FUNCTION insert_solicitud_apertura(
+CREATE OR REPLACE FUNCTION insertar_solicitud_apertura(
     encargado_mail CHARACTER VARYING,
     admin_muni_mail CHARACTER VARYING,
     id_feria INTEGER,
     estado CHARACTER VARYING(30)
 ) RETURNS VOID AS $$
 BEGIN
-    INSERT INTO solicitudes_apertura (encargado_mail, admin_muni_mail, id_feria,estado)
-    VALUES (encargado_mail, admin_muni_mail, id_feria, estado);
+    INSERT INTO solicitudes_apertura (encargado_mail, admin_muni_mail, id_feria)
+    VALUES (encargado_mail, admin_muni_mail, id_feria);
 END;
 $$ LANGUAGE plpgsql;

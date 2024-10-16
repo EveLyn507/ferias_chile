@@ -1,31 +1,25 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import  { useEffect, useState } from 'react';
+
+import  { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { clearLocalStorage } from '../../../utilities/localStorage.utilities';
-import { createUser, resetUser, UserKey } from '../../../redux/states/user';
-import {  PrivateRoutes, PublicRoutes } from '../../../models';
+
+import { createUser } from '../../../../redux/states/user';
+import {  PrivateRoutes } from '../../../../models';
 
 
-function Login() {
+function LoginFeriante() {
   const [mail, setmail] = useState('');
   const [contrasena, setContrasena] = useState('');
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    clearLocalStorage(UserKey);
-    dispatch(resetUser());
-    navigate(`/${PublicRoutes.LOGIN}`, { replace: true });
-  }, []);
-
 
 
 const login = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/login', { mail, contrasena });
+      const response = await axios.post('http://localhost:5000/login2', { mail, contrasena });
       const {token , role, email} = response.data
 
       dispatch(createUser({ token , role , email}));
@@ -43,7 +37,7 @@ const login = async () => {
     <>  
  
     <div>
-      <h1>Login</h1>
+      <h1>Login Feriante</h1>
       <input
         type="text"
         placeholder="Username"
@@ -63,6 +57,6 @@ const login = async () => {
   );
 };
 
-export default Login
+export default LoginFeriante
 
 

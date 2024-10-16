@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // Ajustamos el tipo CardProps para que incluya renderFields y actions
 interface CardProps<T> {
     items: T[]; // Lista de elementos que quieres renderizar

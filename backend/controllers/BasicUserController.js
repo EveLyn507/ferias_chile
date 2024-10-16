@@ -5,11 +5,13 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 
+
+
 // LOGIN -> BUSCA Y EXTRAE EL USUARIO QUE SE LOGEA
-const login = async (req, res, pool) => {
+const login_encargado = async (req, res, pool) => {
   const { mail, contrasena } = req.body;
   try {
-    const result = await pool.query('SELECT * FROM public.usuario WHERE mail = $1', [mail]);
+    const result = await pool.query('SELECT * FROM public.encargado_feria WHERE user_mail = $1', [mail]);
     const user = result.rows[0];
 
     if (!user || contrasena !== user.contrasena) {
@@ -18,13 +20,64 @@ const login = async (req, res, pool) => {
 
     const token = jwt.sign({ id: user.id }, 'xd', { expiresIn: '1h' });
     const role =  user.id_tipo_usuario;
-    const email = user.mail
+    const email = user.user_mail
     res.json({ token, role, email });
   } catch (err) {
     console.error(err);
     res.status(500).send('Error al iniciar sesión');
   }
 };
+
+
+
+
+
+
+// LOGIN -> BUSCA Y EXTRAE EL USUARIO QUE SE LOGEA
+const login_feriante = async (req, res, pool) => {
+  const { mail, contrasena } = req.body;
+  try {
+    const result = await pool.query('SELECT * FROM public.feriante WHERE user_mail = $1', [mail]);
+    const user = result.rows[0];
+
+    if (!user || contrasena !== user.contrasena) {
+      return res.status(401).json({ message: 'Credenciales incorrectas' });
+    }
+
+    const token = jwt.sign({ id: user.id }, 'xd', { expiresIn: '1h' });
+    const role =  user.id_tipo_usuario;
+    const email = user.user_mail
+    res.json({ token, role, email });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error al iniciar sesión');
+  }
+};
+
+
+
+// LOGIN -> BUSCA Y EXTRAE EL USUARIO QUE SE LOGEA
+const login_municipal = async (req, res, pool) => {
+  const { mail, contrasena } = req.body;
+  try {
+    const result = await pool.query('SELECT * FROM public.administrador_municipal WHERE user_mail = $1', [mail]);
+    const user = result.rows[0];
+
+    if (!user || contrasena !== user.contrasena) {
+      return res.status(401).json({ message: 'Credenciales incorrectas' });
+    }
+
+    const token = jwt.sign({ id: user.id }, 'xd', { expiresIn: '1h' });
+    const role =  user.id_tipo_usuario;
+    const email = user.user_mail
+    res.json({ token, role, email });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error al iniciar sesión');
+  }
+};
+
+
 
 
 
@@ -45,4 +98,4 @@ res.status(201).send('Usuario registrado correctamente');
 };
 
 
-module.exports = { login, register};
+module.exports = { login_encargado,login_feriante,login_municipal, register};

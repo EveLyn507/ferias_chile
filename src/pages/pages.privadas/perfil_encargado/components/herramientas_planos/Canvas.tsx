@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Stage, Layer, Rect, Line } from 'react-konva';
 import AreaPage from './Areapage';
 import StreetPage from './StreetPage';

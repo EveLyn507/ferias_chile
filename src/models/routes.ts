@@ -1,6 +1,9 @@
 export const PublicRoutes = { 
     FEEDFERIAS : 'Feed-Ferias' ,
-    LOGIN : 'login',
+    LOGIN: 'login',
+    LOGINEN : 'login1',
+    LOGINFE : 'login2',
+    LOGINMUNI : 'login3',
     HERRAMIENTA : 'Plano',
     REGISTRO: 'registro',
     DATOSENCARGADO : 'actualizar-datos',

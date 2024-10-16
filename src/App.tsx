@@ -5,7 +5,7 @@ import {AuthGuard} from './guard/auth.guard';
 import store from './redux/store';
 import { Nav_bar } from './components';
 import { NotFound,PrivateRoutes, PublicRoutes } from './models/index'; // rutas url 
-import { Login, Registro } from './pages/pages.publicas/registro_y_login/index';
+import {  LoginHome, Registro } from './pages/pages.publicas/registro_y_login/index';
 import Vistaplano from './pages/pages.privadas/perfil_encargado/components/herramientas_planos/vistaplano';
 import PerfilFeriantes from './pages/pages.privadas/perfil_feriante/perfil_feriante';
 import PaymentButton from './pages/pages.privadas/pagos/components/view_pago';
@@ -28,7 +28,7 @@ function App() {
               <Route path="/" element = {<Navigate to ={ PublicRoutes.FEEDFERIAS}/> } />
               <Route path={PublicRoutes.FEEDFERIAS} element = {<View_feed/>} />
               <Route path={PublicRoutes.HERRAMIENTA} element = {<Vistaplano/>} />
-              <Route path={PublicRoutes.LOGIN} element = {<Login/>} />
+              <Route path={PublicRoutes.LOGIN} element = {<LoginHome/>} />
               <Route path={PublicRoutes.REGISTRO} element = {<Registro/>} />
               <Route path={PublicRoutes.PAGOS2} element = {<PaymentButton/>} />
               <Route path={PublicRoutes.DATOSENCARGADO} element={<PerfilFeriantes />} />
