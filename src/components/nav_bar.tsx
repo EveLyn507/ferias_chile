@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Link } from "react-router-dom"
 import { Logeado } from "./perfil_loged"
 import { useSelector } from "react-redux";
@@ -8,6 +9,7 @@ export const Nav_bar = () => {
   return (
     <nav className='Nav_bar'>
       <ul className="Nav_item">
+      <li>   <Link to={"/pagosss"}>  pago simulado</Link>   </li>  
         <li><Link to="/registro">Registrate</Link></li>
         <li>empresas</li>
         <li><Link to="/Feed-ferias">Feed-ferias</Link></li>

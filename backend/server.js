@@ -1,12 +1,15 @@
 const express = require('express');
 const { Pool } = require('pg');
 const cors = require('cors');
-const dotenv = require('dotenv');
-const usuarioRoutes = require('./routes/user.routes'); // rutas
-const puestosRoutes = require('./routes/puestosRoutes'); 
-const perfilferianteRoutes = require('./routes/perfilferianteRoutes');
 const credencial = require('./credenciales'); // Importa el archivo de configuración
-const paymentRoutes = require('./routes/paymentRoutes');
+const dotenv = require('dotenv');
+// Importe de routers
+const BasicUserRoutes = require('./routes/BasicUser.routes'); 
+const EncargadoRoutes = require('./routes/Encargado.routes'); 
+const FerianteRoutes = require('./routes/Feriante.routes');
+const MunicipalRoutes = require('./routes/Municipal.routes');
+const PagosRoutes = require('./routes/Pagos.routes');
+const FeedRouter = require('./routes/Feed.routes');
 
 dotenv.config();
 const app = express();
@@ -33,15 +36,23 @@ app.use((req, res, next) => {
   next(); // Pasar al siguiente middleware o ruta
 });
 
-//resgistra las rutas en el sv y las saca desde  routes
-app.use(usuarioRoutes); 
 
-app.use(puestosRoutes);
 
-app.use(perfilferianteRoutes);
-app.use('/uploads', express.static('uploads'));
+// ROUTERS 
 
-app.use('/api', paymentRoutes);
+// rutas publicas
+app.use(BasicUserRoutes); 
+app.use(FeedRouter); 
+
+//rutas privadas
+app.use(EncargadoRoutes);  // rutas del perfil encargado
+app.use(FerianteRoutes);  // rutas del perfil feriante
+app.use('/uploads', express.static('uploads'));  // foto feriante
+app.use(MunicipalRoutes); 
+app.use(PagosRoutes); 
+
+
+
 
 // Iniciar el servidor
 app.listen(port, () => {

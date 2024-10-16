@@ -4,10 +4,7 @@ interface Props{
      children : JSX.Element[] | JSX.Element;
 }
 
-
-
 export const NotFound = ({children} : Props) => {
- 
 
   return(
     

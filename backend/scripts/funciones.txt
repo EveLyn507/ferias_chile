@@ -117,7 +117,7 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION insert_solicitud_apertura(
     encargado_mail CHARACTER VARYING,
     admin_muni_mail CHARACTER VARYING,
-    id_feria INTEGER
+    id_feria INTEGER,
     estado CHARACTER VARYING(30)
 ) RETURNS VOID AS $$
 BEGIN

@@ -1,18 +1,19 @@
 import { BrowserRouter, Navigate, Route} from 'react-router-dom';
-import {AuthGuard} from './guard/auth.guard';
-import { NotFound,PrivateRoutes, PublicRoutes } from './models/index';
 import { Suspense ,lazy} from 'react';
 import { Provider } from 'react-redux';
-import { Login, Registro } from './pages/pages.publicas/registro_login/index';
-import Vistaplano from './pages/pages.privadas/perfil_encargados/herramientas_planos/vistaplano';
+import {AuthGuard} from './guard/auth.guard';
 import store from './redux/store';
-import PerfilFeriantes from './pages/pages.privadas/perfil_feriante/perfil_feriante';
-import { View_detalle_feria } from './pages/pages.publicas/feed_ferias';
 import { Nav_bar } from './components';
-const View_feed = lazy(() => import ('./pages/pages.publicas/feed_ferias/view_feed'));
-const Privado = lazy(() => import ('./pages/pages.privadas/routes.private'));
-import PaymentButton from './pages/pages.publicas/feed_ferias/pagos/view_pago';
-import ConfirmPayment from './pages/pages.publicas/feed_ferias/pagos/pago_ok';
+import { NotFound,PrivateRoutes, PublicRoutes } from './models/index'; // rutas url 
+import { Login, Registro } from './pages/pages.publicas/registro_y_login/index';
+import Vistaplano from './pages/pages.privadas/perfil_encargado/components/herramientas_planos/vistaplano';
+import PerfilFeriantes from './pages/pages.privadas/perfil_feriante/perfil_feriante';
+import PaymentButton from './pages/pages.privadas/pagos/components/view_pago';
+import View_detalle_feria from './pages/pages.publicas/feed_ferias/vista_detalle_feria';
+import ConfirmPayment from './pages/pages.privadas/pagos/components/voucher_pago';
+const View_feed = lazy(() => import ('./pages/pages.publicas/feed_ferias/home_feed_feria'));
+const Privado = lazy(() => import ('./pages/pages.privadas/Private.routes'));
+
 
 
 function App() {

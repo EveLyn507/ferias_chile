@@ -91,7 +91,6 @@ CREATE TABLE feriante (
 
 CREATE TABLE intereses (
     id_interes  SERIAL  NOT NULL,
-    id_feriante INTEGER NOT NULL,
     interes     CHARACTER VARYING(40) NOT NULL,
     user_mail   CHARACTER VARYING(80) NOT NULL,
     PRIMARY KEY (id_feriante, id_interes)

@@ -24,7 +24,7 @@ const get_puestos_feria = async (req, res, pool) => {
     const id_feria = parseInt(req.params.id_feria, 10); // Convertir a entero
 
 try{
-const resutl = await pool.query( 'SELECT * FROM public.obtener_horarios_por_puesto($1)' , [id_feria])
+const resutl = await pool.query( 'SELECT * FROM public.traer_puestos_feria($1)' , [id_feria])
 res.json(resutl.rows)
 
 }catch (err){
