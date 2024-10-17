@@ -8,9 +8,9 @@ import { NotFound,PrivateRoutes, PublicRoutes } from './models/index'; // rutas 
 import {  LoginHome, Registro } from './pages/pages.publicas/registro_y_login/index';
 import Vistaplano from './pages/pages.privadas/perfil_encargado/components/herramientas_planos/vistaplano';
 import PerfilFeriantes from './pages/pages.privadas/perfil_feriante/perfil_feriante';
-import PaymentButton from './pages/pages.privadas/pagos/components/view_pago';
 import View_detalle_feria from './pages/pages.publicas/feed_ferias/vista_detalle_feria';
-import ConfirmPayment from './pages/pages.privadas/pagos/components/voucher_pago';
+import ConfirmPayment from './pages/pages.privadas/perfil_feriante/components/voucher_pago';
+import PaymentButton from './pages/pages.privadas/perfil_feriante/components/view_pago';
 const View_feed = lazy(() => import ('./pages/pages.publicas/feed_ferias/home_feed_feria'));
 const Privado = lazy(() => import ('./pages/pages.privadas/Private.routes'));
 

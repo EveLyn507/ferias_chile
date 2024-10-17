@@ -5,7 +5,7 @@ import { Card } from "../../../../components/card";
 
 
 export const Card_puestos = ({ puestos }: PuestosProp) => {
-   
+   console.log(puestos)
     const navigate = useNavigate();
     const handleContratarClick = (puesto: puesto) => {
         // Navega a /pagosss y pasa el puesto seleccionado en el estado

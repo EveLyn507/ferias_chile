@@ -1,12 +1,14 @@
 // service.tb.ts
 
-export const createTransaction = async (buyOrder: string, sessionId: string, amount: number, ) => {
+import { puesto } from "../../../../../models/interfaces";
+
+export const createTransaction = async (puesto : puesto , mail : string) => {
   const response = await fetch('http://localhost:5000/api/webpay/create', {  
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ buyOrder, sessionId, amount })
+    body: JSON.stringify({ puesto , mail})
   });
 
   if (!response.ok) {

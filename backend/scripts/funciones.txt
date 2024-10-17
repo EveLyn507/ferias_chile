@@ -45,11 +45,13 @@ $$ LANGUAGE plpgsql;
 
 
 ------------------
-
+-- TRAE LOS PUESTOS + SU HORARIO + feria a la que pertenece
 
 CREATE OR REPLACE FUNCTION traer_puestos_feria(id_de_feria INTEGER)
 RETURNS TABLE (
     id_puesto INTEGER,
+    id_feria INTEGER,
+    nombre_feria CHARACTER VARYING(50),
     num_puesto INTEGER,
     num_horario INTEGER,
     hora_inicio TIME WITH TIME ZONE,
@@ -63,6 +65,8 @@ RETURNS TABLE (
 
         
         p.id_puesto ,
+        p.id_feria ,
+        f.nombre,
         p.numero,
         hp.num_horario ,
         hp.hora_inicio,
@@ -82,6 +86,8 @@ RETURNS TABLE (
    $$ LANGUAGE plpgsql;
 
 
+
+// OBTIENE LAS FERIAS DE UN ENCARGADO
 
 CREATE OR REPLACE FUNCTION obtener_ferias_encargado(mail character varying)
 RETURNS TABLE (

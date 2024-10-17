@@ -15,6 +15,8 @@ export interface FeriasProps {
 
 export interface puesto {
     id_puesto :number,
+    id_feria : number
+    nombre_feria : string,
     num_puesto: number,
     num_horario: number,
     hora_inicio :string,
@@ -39,5 +41,17 @@ estado : string,
 
 export interface soliProps {
 solicitudes : solicitud[]
+
+}
+
+
+export interface contrato {
+    id_contrato: string,
+    fecha : string,
+    id_puesto: number,
+    mail_feriante : string,
+    id_tipo_pago : number,
+    estado_contrato : number,
+    precio : number,
 
 }

@@ -1,7 +1,7 @@
 // ConfirmPayment.tsx
 import React, { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { confirmPayment } from '../services/commit_pago.ts';
+import { confirmPayment } from './pagos/services/commit_pago.ts';
 
 const ConfirmPayment: React.FC = () => {
   const [searchParams] = useSearchParams();
