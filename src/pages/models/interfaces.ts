@@ -15,7 +15,8 @@ export interface FeriasProps {
 
 export interface puesto {
     id_puesto :number,
-    id_feria : number
+    id_feria : number,
+    estado_puesto : string,
     nombre_feria : string,
     num_puesto: number,
     num_horario: number,

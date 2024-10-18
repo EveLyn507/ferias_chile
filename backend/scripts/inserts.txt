@@ -34,6 +34,16 @@ INSERT INTO tipo_estado_contrato (id_status_contrato, detalle)
 VALUES (3, 'cancelado');
 
 
+INSERT INTO estado_puesto (id_estado_puesto,estado) 
+VALUES (1, 'Disponible');
+
+INSERT INTO estado_puesto (id_estado_puesto,estado) 
+VALUES (2, 'Ocupado');
+
+INSERT INTO estado_puesto (id_estado_puesto,estado) 
+VALUES (3, 'Mantenimiento');
+
+
 --tipo puesto
 
 INSERT INTO tipo_puesto (id_tipo_puesto, detalle)

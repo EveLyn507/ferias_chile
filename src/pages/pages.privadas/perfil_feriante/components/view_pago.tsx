@@ -4,6 +4,7 @@ import { useLocation } from 'react-router-dom';
 import { puesto } from '../../../models/interfaces';
 import { useSelector } from 'react-redux';
 import { AppStore } from '../../../../redux/store';
+import { id_datos_puesto } from './pagos/rxjsx/sharing.puesto.pago';
 
 
 
@@ -15,7 +16,8 @@ const PaymentButton: React.FC = () => {
   const mail = useSelector((store : AppStore) =>  store.user.email)
 
   const handlePayment = async (puesto : puesto, mail : string) => {
-
+    
+     await id_datos_puesto.setSubject(puesto.id_puesto); 
     try {
       const { url, token } = await createTransaction(puesto, mail);
       // Redirigir al usuario a la página de pago

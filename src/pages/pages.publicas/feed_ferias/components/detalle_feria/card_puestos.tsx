@@ -21,6 +21,7 @@ export const Card_puestos = ({ puestos }: PuestosProp) => {
             { label: "hora inicio", value: puesto.hora_inicio },
             { label: "hora termino", value: puesto.hora_termino },
             { label: "precio", value: puesto.precio },
+            { label: "estado", value: puesto.estado_puesto },
           ]}
           actions={(puesto) => (
             <>

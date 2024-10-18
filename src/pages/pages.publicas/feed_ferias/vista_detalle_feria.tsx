@@ -5,17 +5,9 @@ import { Traer_puestos } from "./services/traer_puestos_feria";
 import { Card_puestos } from "./components/detalle_feria/card_puestos";
 import { useParams } from "react-router-dom";
 import '../../../css/base.css'
+import { puesto } from "../../models/interfaces";
 
 
-
-interface puesto {
-    id_puesto :number,
-    num_puesto: number,
-    num_horario: number,
-    hora_inicio :string,
-    hora_termino :string,
-    precio :number
-}
 
 export const View_detalle_feria = () => {
 

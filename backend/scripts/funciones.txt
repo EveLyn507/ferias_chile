@@ -51,6 +51,7 @@ CREATE OR REPLACE FUNCTION traer_puestos_feria(id_de_feria INTEGER)
 RETURNS TABLE (
     id_puesto INTEGER,
     id_feria INTEGER,
+	estado_puesto CHARACTER VARYING(20),
     nombre_feria CHARACTER VARYING(50),
     num_puesto INTEGER,
     num_horario INTEGER,
@@ -61,11 +62,13 @@ RETURNS TABLE (
 ) AS $$
     BEGIN
         RETURN QUERY
-        SELECT 
+     
+ SELECT 
 
         
         p.id_puesto ,
         p.id_feria ,
+        ap.estado,
         f.nombre,
         p.numero,
         hp.num_horario ,
@@ -74,11 +77,12 @@ RETURNS TABLE (
         hp.precio
 
         FROM 
-        public.feria as f 
+        public.feria  f 
         JOIN 
-        public.puesto as p ON f.id_feria = p.id_feria
+        public.puesto p ON f.id_feria = p.id_feria
         RIGHT JOIN
-        public.horario_puesto as hp ON p.id_puesto = hp.id_puesto
+        public.horario_puesto  hp ON p.id_puesto = hp.id_puesto
+        JOIN estado_puesto ap ON p.id_estado_puesto = ap.id_estado_puesto
         WHERE
         f.id_feria = id_de_feria
         ORDER BY p.numero,num_horario;

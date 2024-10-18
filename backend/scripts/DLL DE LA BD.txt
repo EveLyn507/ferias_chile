@@ -193,12 +193,24 @@ CREATE TABLE programa_feria (
 
 ALTER TABLE programa_feria ADD CONSTRAINT programa_feria_pk PRIMARY KEY ( id_feria );
 
+
+CREATE TABLE estado_puesto (
+
+id_estado_puesto INTEGER,
+estado CHARACTER VARYING,
+PRIMARY KEY (id_estado_puesto)
+
+)
+
+
+
 CREATE TABLE puesto (
     id_puesto      SERIAL  NOT NULL,
     numero         INTEGER NOT NULL,
     id_tipo_puesto INTEGER NOT NULL,
     id_feria       INTEGER NOT NULL,
-    descripcion    TEXT NOT NULL
+    descripcion    TEXT NOT NULL,
+    id_estado_puesto    INTEGER NOT NULL
 );
 
 ALTER TABLE puesto ADD CONSTRAINT puesto_pk PRIMARY KEY ( id_puesto );
@@ -367,6 +379,11 @@ ALTER TABLE puesto
 ALTER TABLE puesto
     ADD CONSTRAINT puesto_tipo_puesto_fk FOREIGN KEY ( id_tipo_puesto )
         REFERENCES tipo_puesto ( id_tipo_puesto );
+
+
+ALTER TABLE puesto 
+	ADD CONSTRAINT id_estado_puesto_fk FOREIGN KEY(id_estado_puesto)
+		REFERENCES estado_puesto (id_estado_puesto)
 
 ALTER TABLE encargado_feria
     ADD CONSTRAINT tipo_user_to_encargado_fk FOREIGN KEY ( id_tipo_usuario )

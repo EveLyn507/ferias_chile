@@ -3,6 +3,8 @@ const { Pool } = require('pg');
 const cors = require('cors');
 const credencial = require('./credenciales'); // Importa el archivo de configuración
 const dotenv = require('dotenv');
+const cron = require('node-cron'); // Importar node-cron
+
 // Importe de routers
 const BasicUserRoutes = require('./routes/BasicUser.routes'); 
 const EncargadoRoutes = require('./routes/Encargado.routes'); 
