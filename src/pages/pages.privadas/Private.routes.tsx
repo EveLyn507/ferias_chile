@@ -6,8 +6,8 @@ import { Logout } from '../../components/index';
 import RoleGuard from '../../guard/rol.guard.tsx';
 import { Roles } from '../../models/rol.ts';
 import Perfil_feriante from './perfil_feriante/perfil_feriante.tsx';
-import { Admin_de_feria } from './perfil_encargado/admin_de_feria.tsx';
 import { Perfil_admin } from './perfil_muni/home_administrador.tsx';
+import { Admin_de_feria } from './perfil_encargado/vista_admin_de_feria.tsx';
 
 
 

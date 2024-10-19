@@ -19,7 +19,7 @@ const Feed_d_ferias = () => {
       
     }) ,[]);
 
-   
+    console.log(ferias)
     return (
     <CardFerias ferias={ferias} />
 
