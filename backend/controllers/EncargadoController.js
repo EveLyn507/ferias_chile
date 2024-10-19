@@ -48,7 +48,7 @@ const saveFeria = async (req, res) => {
       const queryText = `
           INSERT INTO json_feria (nombre_json, id_feria)
           VALUES ($1, $2)
-          RETURNING id_json
+          WHERE id_feria = $4
       `;
 
       // Crear un objeto que contenga todos los datos en JSONB
@@ -59,7 +59,7 @@ const saveFeria = async (req, res) => {
       };
 
       // Asegúrate de pasar el id_feria desde el cuerpo de la solicitud
-      const values = [JSON.stringify(nombre_json), 14]; // Usa id_feria aquí
+      const values = [JSON.stringify(nombre_json), 3 , 3,4]; // Usa id_feria aquí
 
       const result = await pool.query(queryText, values);
       res.status(201).json({ id_feria: result.rows[0].id_json });
@@ -76,7 +76,7 @@ const getFeria = async (req, res) => {
   const pool = req.pool;
 
   try {
-    const result = await pool.query('SELECT nombre_json FROM json_feria WHERE id_feria = $1', [14]);
+    const result = await pool.query('SELECT nombre_json FROM json_feria WHERE id_feria = $1', [3]);
     if (result.rows.length > 0) {
       res.json(result.rows[0].nombre_json);
     } else {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
  export interface Feria {
     id_feria: number;
     nombre_feria: string;
@@ -56,3 +57,25 @@ export interface contrato {
     precio : number,
 
 }
+
+
+
+
+// INTERFACES HERRAMIENTA DE PLANOS
+
+
+
+ export interface PuestoData {
+    x: number;
+    y: number;
+    id: string;
+    fill: string;
+    width: number;
+    height: number;
+  }
+  
+export interface FeriaData {
+    areas: any[]; 
+    calles: any[]; 
+    puestos: PuestoData[];
+  }
