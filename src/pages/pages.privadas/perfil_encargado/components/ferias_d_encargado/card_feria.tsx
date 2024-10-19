@@ -19,7 +19,7 @@ const mail = useSelector((state : AppStore) => state.user.email)
                         <li> region : {feria.region} </li>
                         <li>< Link to={`administracion/${feria.id_feria}`}> Administrar feria</Link></li>  
                         <button onClick={() => OpenTiket(feria.id_feria , mail)}> Solicitar apertura de feria </button>
-          
+                        <li>< Link to={`/Plano/${feria.id_feria}`}> Administrar plano</Link></li>  
                                 
                     </ul>
                 </div>

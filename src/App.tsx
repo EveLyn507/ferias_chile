@@ -27,7 +27,7 @@ function App() {
             <NotFound>
               <Route path="/" element = {<Navigate to ={ PublicRoutes.FEEDFERIAS}/> } />
               <Route path={PublicRoutes.FEEDFERIAS} element = {<View_feed/>} />
-              <Route path={PublicRoutes.HERRAMIENTA} element = {<Vistaplano/>} />
+              <Route path={`${PublicRoutes.HERRAMIENTA}`}element = {<Vistaplano/>} />
               <Route path={PublicRoutes.LOGIN} element = {<LoginHome/>} />
               <Route path={PublicRoutes.REGISTRO} element = {<Registro/>} />
               <Route path={PublicRoutes.PAGOS2} element = {<PaymentButton/>} />
