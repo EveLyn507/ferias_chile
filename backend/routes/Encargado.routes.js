@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { saveFeria, getFeria ,get_feria_Encargado ,abrirTiketFeria} = require('../controllers/EncargadoController');
-
+const puestoRoutes = require('./Puesto.routes');
 
 //PERFIL ENCARGADO 
 
@@ -30,5 +30,6 @@ router.post('/api/feria', saveFeria); // Cambiado para incluir '/api'
 // Ruta para obtener una feria por ID
 router.get('/api/feria/:id_feria', getFeria);
 
+router.use(puestoRoutes);
 
 module.exports = router;
