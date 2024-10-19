@@ -26,6 +26,7 @@ DROP TABLE IF EXISTS programa_feria CASCADE;
 DROP TABLE IF EXISTS detalle_team_supervisor CASCADE;
 DROP TABLE IF EXISTS public.banco_encargado CASCADE;
 DROP TABLE IF EXISTS public.detalle_feria_banco CASCADE;
+DROP TABLE IF EXISTS estado_puesto CASCADE;
 
 
 CREATE TABLE administrador_municipal (
@@ -127,7 +128,6 @@ CREATE TABLE feria (
     id_comuna      INTEGER NOT NULL,
     id_region      INTEGER NOT NULL,
     encargado_mail CHARACTER VARYING(100) NOT NULL,
-    estado         CHARACTER VARYING(30) NOT NULL,
     id_estado      INTEGER NOT NULL
 );
 
@@ -171,7 +171,7 @@ CREATE TABLE intereses (
 ALTER TABLE intereses ADD CONSTRAINT intereses_pk PRIMARY KEY ( id_interes );
 
 CREATE TABLE json_feria (
-    nombre_json TEXT NOT NULL,
+    nombre_json jsonb NOT NULL,
     id_json     SERIAL  NOT NULL,
     id_feria    INTEGER NOT NULL
 );
@@ -200,7 +200,7 @@ id_estado_puesto INTEGER,
 estado CHARACTER VARYING,
 PRIMARY KEY (id_estado_puesto)
 
-)
+);
 
 
 
@@ -287,7 +287,7 @@ ALTER TABLE comuna
         REFERENCES region ( id_region );
 
 ALTER TABLE contrato_puesto
-    ADD CONSTRAINT contrato_diario_puesto_fk FOREIGN KEY ( puesto_id_puesto )
+    ADD CONSTRAINT contrato_diario_puesto_fk FOREIGN KEY ( id_puesto )
         REFERENCES puesto ( id_puesto );
 
 ALTER TABLE contrato_puesto
@@ -316,14 +316,14 @@ ALTER TABLE feria
 
 ALTER TABLE feria
     ADD CONSTRAINT  mail_encargado_to_feria_fk FOREIGN KEY (encargado_mail)
-        REFERENCES encargado_feria (user_mail)
+        REFERENCES encargado_feria (user_mail);
 
 ALTER TABLE programa_feria
     ADD CONSTRAINT horario_feria_feria_fk FOREIGN KEY ( id_feria )
         REFERENCES feria ( id_feria );
 
 ALTER TABLE horario_puesto
-    ADD CONSTRAINT horario_puesto_puesto_fk FOREIGN KEY ( puesto_id_puesto )
+    ADD CONSTRAINT horario_puesto_puesto_fk FOREIGN KEY ( id_puesto )
         REFERENCES puesto ( id_puesto );
 
 ALTER TABLE solicitudes_apertura
@@ -383,7 +383,7 @@ ALTER TABLE puesto
 
 ALTER TABLE puesto 
 	ADD CONSTRAINT id_estado_puesto_fk FOREIGN KEY(id_estado_puesto)
-		REFERENCES estado_puesto (id_estado_puesto)
+		REFERENCES estado_puesto (id_estado_puesto);
 
 ALTER TABLE encargado_feria
     ADD CONSTRAINT tipo_user_to_encargado_fk FOREIGN KEY ( id_tipo_usuario )

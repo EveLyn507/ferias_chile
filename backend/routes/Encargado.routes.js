@@ -28,7 +28,7 @@ router.post('/tiket', (req , res) => {
 router.post('/api/feria', saveFeria); // Cambiado para incluir '/api'
 
 // Ruta para obtener una feria por ID
-router.get('/api/feria/:id', getFeria);
+router.get('/api/feria/:id_feria', getFeria);
 
 
 module.exports = router;

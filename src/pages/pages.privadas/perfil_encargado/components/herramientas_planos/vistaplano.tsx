@@ -5,6 +5,7 @@ import Canvas from './Canvas';
 import Toolbar from './Toolbar';
 import { setIdFeria } from '../../../../../redux/states/user';
 import axios from 'axios';
+import { useParams } from 'react-router-dom';
 
 interface Rectangle {
   id: number;
@@ -46,13 +47,12 @@ const Vista = () => {
   const [error, setError] = useState<string | null>(null);
   const [areas, setAreas] = useState<Area[]>([]);
   const [streets, setStreets] = useState<Street[]>([]);
-
+  const { id_feria } = useParams<{ id_feria: string }>();
   const fetchFeriaData = async () => {
     setIsLoading(true);
     setError(null);
-
     try {
-      const response = await axios.get(`${API_URL}/api/feria/1`);
+      const response = await axios.get(`${API_URL}/api/feria/${id_feria}`);
       const data: FeriaData = response.data;
       
       // Asignar los datos del backend a los estados
@@ -129,7 +129,7 @@ const Vista = () => {
       puestos: rectangles,
       areas: areas,
       calles: streets,
-      id_feria: 1, // Aquí debes asignar el id_feria correcto
+      id_feria: id_feria, // Aquí debes asignar el id_feria correcto
     };
 
     try {
