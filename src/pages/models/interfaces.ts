@@ -1,17 +1,38 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
- export interface Feria {
+ 
+
+  // SE USA EN -- FEED FERIAS -- ADMINISTRACION FERIAS
+
+  export interface ProgramaFeria {
+    lunes: string,   // '1' o '0'
+    martes: string,  // '1' o '0'
+    miercoles: string,  // '1' o '0'
+    jueves: string,  // '1' o '0'
+    viernes: string,  // '1' o '0'
+    sabado: string,  // '1' o '0'
+    domingo: string,  // '1' o '0'
+}
+
+
+//FEED  DE FERIAS 
+export interface Feria {
     id_feria: number;
     nombre_feria: string;
     comuna : string;
     region: string;
+    programa : ProgramaFeria[];
     
 }
 
 
+
+
+
+// SE USA EN -- CARD_FERIAS 
 export interface FeriasProps {
     ferias: Feria[];
+  
 }
-
 
 
 export interface puesto {
@@ -26,7 +47,7 @@ export interface puesto {
     precio :number
 }
 
-// Define las props del componente, en este caso un array de objetos Feria
+// USADO EN 
 export interface PuestosProp {
     puestos: puesto[];
 }
@@ -79,3 +100,4 @@ export interface FeriaData {
     calles: any[]; 
     puestos: PuestoData[];
   }
+

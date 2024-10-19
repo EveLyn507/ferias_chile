@@ -13,7 +13,14 @@ RETURNS TABLE (
     id_feria INTEGER,
     nombre_feria CHARACTER VARYING(80),
     comuna CHARACTER VARYING(80),
-    region CHARACTER VARYING(100)
+    region CHARACTER VARYING(100),
+    lunes CHAR(1),
+    martes CHAR(1),
+    miercoles CHAR(1),
+    jueves CHAR(1),
+    viernes CHAR(1),
+    sabado CHAR(1),
+    domingo CHAR(1)
 ) AS $$
 BEGIN
     RETURN QUERY
@@ -21,34 +28,24 @@ BEGIN
         f.id_feria, 
         f.nombre AS nombre_feria, 
         c.comuna, 
-        g.nombre AS region 
+        g.nombre AS region,
+        p.lunes,
+        p.martes,
+        p.miercoles,
+        p.jueves,
+        p.viernes,
+        p.sabado,
+        p.domingo
     FROM 
         public.feria AS f 
     JOIN 
         COMUNA c ON f.id_comuna = c.id_comuna 
     JOIN 
-        REGION g ON c.id_region = g.id_region;
+        REGION g ON c.id_region = g.id_region 
+    LEFT JOIN 
+        programa_feria p ON f.id_feria = p.id_feria; -- Se utiliza un LEFT JOIN para incluir ferias sin programación
 END;
 $$ LANGUAGE plpgsql;
-
-
--- CUENTA LOS PUESTOS DE UNA FERIA 
-
-CREATE OR REPLACE FUNCTION contar_puestos_actuales(id_feria INT)
-RETURNS INT AS $$
-DECLARE
-    puestos_actuales INT;
-BEGIN
-    SELECT COUNT(*) INTO puestos_actuales
-    FROM puesto
-    WHERE puesto.id_feria = contar_puestos_actuales.id_feria;
-    
-    RETURN puestos_actuales;
-END;
-$$ LANGUAGE plpgsql;
-
-
-
 
 
 

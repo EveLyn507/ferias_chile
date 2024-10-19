@@ -91,9 +91,52 @@ const getFeria = async (req, res) => {
 };
 
 
+
+
+
+// ADMINISTRACION DE LA FERIA
+const saveProgramacionFeria = async (req, res, pool) => {
+  const { id_feria, programacion } = req.body;
+  const { lunes, martes, miercoles, jueves, viernes, sabado, domingo } = programacion;
+
+  try {
+    // Verificar si ya existe un registro para el id_feria
+    const existingResult = await pool.query(
+      `SELECT * FROM programa_feria WHERE id_feria = $1;`,
+      [id_feria]
+    );
+
+    if (existingResult.rows.length > 0) {
+      // Si existe, hacer un UPDATE
+      await pool.query(
+        `UPDATE programa_feria
+         SET lunes = $1, martes = $2, miercoles = $3, jueves = $4, viernes = $5, sabado = $6, domingo = $7
+         WHERE id_feria = $8;`,
+        [lunes, martes, miercoles, jueves, viernes, sabado, domingo, id_feria]
+      );
+      return res.status(200).json({ message: 'Programación de Feria actualizada correctamente' });
+    } else {
+      // Si no existe, hacer un INSERT
+      await pool.query(
+        `INSERT INTO programa_feria (id_feria, lunes, martes, miercoles, jueves, viernes, sabado, domingo)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8);`,
+        [id_feria, lunes, martes, miercoles, jueves, viernes, sabado, domingo]
+      );
+      return res.status(200).json({ message: 'Programación de Feria insertada correctamente' });
+    }
+  } catch (err) {
+    console.log('Error al insertar o actualizar la programación', err);
+    return res.status(500).json({ message: 'Error al insertar o actualizar la programación de la feria', error: err.message });
+  }
+};
+
+
+
+
 module.exports = {
   saveFeria,
   getFeria,
   get_feria_Encargado,
-  abrirTiketFeria
+  abrirTiketFeria,
+  saveProgramacionFeria
 };
