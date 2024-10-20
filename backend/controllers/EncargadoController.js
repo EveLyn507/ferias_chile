@@ -60,9 +60,6 @@ res.json(result.rows)
 }
 
 
-
-
-
 //HERRAMIENTA DE PLANOS
 // Controlador para guardar la feria
 const saveFeria = async (req, res) => {
@@ -115,10 +112,6 @@ const getFeria = async (req, res) => {
     res.status(500).json({ error: 'Error al obtener la feria' });
   }
 };
-
-
-
-
 
 // ADMINISTRACION DE LA FERIA
 const saveProgramacionFeria = async (req, res, pool) => {

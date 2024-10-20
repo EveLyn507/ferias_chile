@@ -15,7 +15,6 @@ interface Rectangle {
 interface CanvasProps {
   rectangles: Rectangle[];
   setRectangles: React.Dispatch<React.SetStateAction<Rectangle[]>>;
-  onRemoveRectangle: (id: number) => void;
   planWidth: number;
   planHeight: number;
   setPlanWidth: (width: number) => void;  
@@ -26,12 +25,12 @@ interface CanvasProps {
   onUpdateArea: (id: number, updatedProps: any) => void; 
   onUpdateStreet: (id: number, updatedProps: any) => void; 
   onRemoveStreet: (id: number) => void; 
+  onRectangleClick: (id: number) => void; 
 }
 
 const Canvas: React.FC<CanvasProps> = ({
   rectangles,
   setRectangles,
-  onRemoveRectangle,
   planWidth,
   planHeight,
   setPlanWidth,  
@@ -42,6 +41,7 @@ const Canvas: React.FC<CanvasProps> = ({
   onUpdateArea,
   onUpdateStreet,
   onRemoveStreet,
+  onRectangleClick, 
 }) => {
   const planX = 50; 
   const planY = 50; 
@@ -50,7 +50,7 @@ const Canvas: React.FC<CanvasProps> = ({
 
   const gridLines: JSX.Element[] = [];
 
-
+  // Crear las líneas de la cuadrícula
   for (let i = 0; i < planWidth / gridSize; i++) {
     gridLines.push(
       <Line
@@ -76,7 +76,7 @@ const Canvas: React.FC<CanvasProps> = ({
   return (
     <Stage width={window.innerWidth} height={window.innerHeight}>
       <Layer>
-      <Rect
+        <Rect
           x={planX}
           y={planY}
           width={planWidth}
@@ -96,16 +96,16 @@ const Canvas: React.FC<CanvasProps> = ({
           fill="blue"
           draggable
           dragBoundFunc={(pos) => {
-            const newX = Math.max(planX + controlSize, pos.x); // Ancho mínimo
-            const newY = Math.max(planY + controlSize, pos.y); // Alto mínimo
-            setPlanWidth(newX - planX); // Actualiza el ancho del plano
-            setPlanHeight(newY - planY); // Actualiza el alto del plano
-            return { x: newX, y: newY }; // Retorna la nueva posición del controlador
+            const newX = Math.max(planX + controlSize, pos.x); 
+            const newY = Math.max(planY + controlSize, pos.y); 
+            setPlanWidth(newX - planX); 
+            setPlanHeight(newY - planY); 
+            return { x: newX, y: newY };
           }}
         />
-        </Layer>
+      </Layer>
 
-        <Layer>
+      <Layer>
         {rectangles.map((rect) => (
           <Rect
             key={rect.id}
@@ -115,7 +115,7 @@ const Canvas: React.FC<CanvasProps> = ({
             height={rect.height}
             fill={rect.fill}
             draggable
-            onClick={() => onRemoveRectangle(rect.id)}
+            onClick={() => onRectangleClick(rect.id)} 
             onDragEnd={(e) => {
               const updatedRectangles = rectangles.map(r => 
                 r.id === rect.id
