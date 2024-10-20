@@ -151,21 +151,21 @@ const saveProgramacionFeria = async (req, res, pool) => {
 
 const getPrograma = async (req , res , pool) => {
 
-  const {id_feria} = req.body
+    const id_feria = parseInt(req.params.id_feria, 10);
 try{
-  const result = pool.query(`
+  const result = await pool.query(`
     SELECT lunes, martes, miercoles, jueves, viernes, sabado, domingo 
     FROM programa_feria 
-    WHERE id_feria = 1$`,[id_feria])
+    WHERE id_feria = $1`,[id_feria])
+
+
   res.json(result.rows[0])
 
 }catch (err){
   console.error('Error al obtener la feria:', err);
   res.status(500).json({ error: 'Error al obtener la feria' });
 
-}
-
-
+  }
 }
 
 

@@ -30,9 +30,6 @@ router.post('/api/feria', saveFeria); // Cambiado para incluir '/api'
 // Ruta para obtener una feria por ID
 router.get('/api/feria/:id_feria', getFeria);
 
-router.use(puestoRoutes);
-
-
 router.post('/tiket', (req , res) => {
   const pool = req.pool; 
       abrirTiketFeria(req,res,pool);
@@ -48,7 +45,7 @@ const pool = req.pool
 }) 
 
 
-router.post('/getPrograma', (req, res) => {
+router.get('/getProgramacion/:id_feria', (req, res) => {
   const pool = req.pool
     getPrograma(req,res,pool)
   

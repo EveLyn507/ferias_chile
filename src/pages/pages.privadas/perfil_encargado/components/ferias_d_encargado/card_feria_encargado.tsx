@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { OpenTiket } from "../../services/open_tikek";
 import { useSelector } from "react-redux";
@@ -17,12 +18,7 @@ export const Card_feria_encargado = ({ ferias }: FeriasProps) => {
               <li>Comuna: {feria.comuna}</li>
               <li>Región: {feria.region}</li>
               
-              {/* Enlace a administración de feria, pasando el programa como estado */}
-              <li>
-                <Link
-                  to={{
-                    pathname: `administracion/${feria.id_feria}`,}}state={{ programa: feria.programa }}>Administrar feria</Link>
-              </li>
+              <li> <Link to={`administracion/${feria.id_feria}`} >Administrar feria</Link></li>
 
               <button onClick={() => OpenTiket(feria.id_feria, mail)}>
                 Solicitar apertura de feria
