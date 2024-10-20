@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { saveFeria, getFeria ,get_feria_Encargado ,abrirTiketFeria, saveProgramacionFeria} = require('../controllers/EncargadoController');
+const { saveFeria, getFeria ,get_feria_Encargado ,abrirTiketFeria, saveProgramacionFeria ,getPrograma} = require('../controllers/EncargadoController');
 
 
 //PERFIL ENCARGADO 
@@ -45,6 +45,13 @@ const pool = req.pool
   saveProgramacionFeria(req,res,pool)
 
 }) 
+
+
+router.post('/getPrograma', (req, res) => {
+  const pool = req.pool
+    getPrograma(req,res,pool)
+  
+  }) 
 
 
 module.exports = router;

@@ -1,10 +1,10 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { useEffect, useState } from 'react';
 import { Feria } from '../../../../models/interfaces';
 import { useSelector } from 'react-redux';
+import { Card_feria_encargado } from './card_feria_encargado';
 import { TraerFeriasEncargado } from '../../services/traer_ferias_encargado';
-import { Card_feria_encargado } from './card_feria';
 
 // Define la interfaz para los objetos de feria
 

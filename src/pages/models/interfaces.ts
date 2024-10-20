@@ -28,7 +28,7 @@ export interface Feria {
 
 
 
-// SE USA EN -- CARD_FERIAS 
+// SE USA EN -- CARD_FERIAS  -- CARD_FERIAS_ENCARGADO
 export interface FeriasProps {
     ferias: Feria[];
   

@@ -2,19 +2,45 @@
 // FUNCIONES PERFIL 
 // get id_feria nombre nombre_region nombre_comuna
 const get_feria_Encargado = async (req, res, pool) => {
+  const { mail } = req.body;
+  
+  try {
+    const result = await pool.query(`SELECT * FROM obtener_ferias_encargado($1);`, [mail]);
 
-      const {mail} = req.body;
-    try {
+    // Procesar cada fila para incluir la programación como un objeto en una lista
+    const feriasConProgramacion = result.rows.map((feria) => {
+      // Crear un objeto para los días de la semana
+      const programa = [{
+        lunes: feria.progra_lunes,
+        martes: feria.progra_martes,
+        miercoles: feria.progra_miercoles,
+        jueves: feria.progra_jueves,
+        viernes: feria.progra_viernes,
+        sabado: feria.progra_sabado,
+        domingo: feria.progra_domingo
+      }];
 
-    const result = await pool.query(
-      ` SELECT * FROM obtener_ferias_encargado($1);` , [mail]);
-    res.json(result.rows)
+      // Retornar el objeto de la feria con la programación en formato de lista
+      return {
+        id_feria: feria.id_feria,
+        nombre_feria: feria.nombre_feria,
+        comuna: feria.comuna,
+        region: feria.region,
+        estado: feria.estado,
+        puestos_actuales: feria.puestos_actuales,
+        programa: programa  // Aquí asignas la programación en formato de lista
+      };
+    });
 
-    }catch (err){
-        console.error('Error al obtener las ferias:', err);
-        res.status(500).send('Error al obtener las ferias');
-    }
-}
+    // Enviar la respuesta con los datos procesados
+    res.json(feriasConProgramacion);
+
+  } catch (err) {
+    console.error('Error al obtener las ferias:', err);
+    res.status(500).send('Error al obtener las ferias');
+  }
+};
+
 
 const abrirTiketFeria = async (req, res, pool) => {
   const {id_feria , mail} = req.body;
@@ -130,6 +156,25 @@ const saveProgramacionFeria = async (req, res, pool) => {
   }
 };
 
+const getPrograma = async (req , res , pool) => {
+
+  const {id_feria} = req.body
+try{
+  const result = pool.query(`
+    SELECT lunes, martes, miercoles, jueves, viernes, sabado, domingo 
+    FROM programa_feria 
+    WHERE id_feria = 1$`,[id_feria])
+  res.json(result.rows[0])
+
+}catch (err){
+  console.error('Error al obtener la feria:', err);
+  res.status(500).json({ error: 'Error al obtener la feria' });
+
+}
+
+
+}
+
 
 
 
@@ -138,5 +183,6 @@ module.exports = {
   getFeria,
   get_feria_Encargado,
   abrirTiketFeria,
-  saveProgramacionFeria
+  saveProgramacionFeria,
+  getPrograma
 };
