@@ -3,29 +3,33 @@ import React, { useEffect, useState } from 'react';
 interface FotoPerfilProps {
   userMail: string;
   setFotoPerfil: (url: string) => void;
+  fotoPerfil: string;  
 }
 
-const FotoPerfil: React.FC<FotoPerfilProps> = ({ userMail, setFotoPerfil }) => {
-  const [preview, setPreview] = useState<string | null>(null);
+const FotoPerfil: React.FC<FotoPerfilProps> = ({ userMail, setFotoPerfil, fotoPerfil }) => {
+  const [preview, setPreview] = useState<string | null>(fotoPerfil); 
 
   useEffect(() => {
-    const obtenerPerfil = async () => {
+    const obtenerFotoPerfil = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/perfil/${userMail}`);
+        const response = await fetch(`http://localhost:5000/api/foto/${userMail}`);
         if (response.ok) {
-          const data = await response.json();
-          setPreview(data.url_foto_perfil); 
-          setFotoPerfil(data.url_foto_perfil);
+          const data = await response.blob();  
+          const imageUrl = URL.createObjectURL(data);
+          setPreview(imageUrl); 
+          setFotoPerfil(imageUrl); 
         } else {
-          console.error('Error al obtener el perfil:', response.statusText);
+          console.error('Error al obtener la foto de perfil:', response.statusText);
         }
       } catch (error) {
-        console.error('Error al obtener el perfil:', error);
+        console.error('Error al obtener la foto de perfil:', error);
       }
     };
 
-    obtenerPerfil();
-  }, [userMail, setFotoPerfil]);
+    if (!fotoPerfil) {  
+      obtenerFotoPerfil();
+    }
+  }, [userMail, fotoPerfil, setFotoPerfil]);
 
   const handleFotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -62,7 +66,7 @@ const FotoPerfil: React.FC<FotoPerfilProps> = ({ userMail, setFotoPerfil }) => {
 
         if (response.ok) {
           const result = await response.json();
-          setFotoPerfil(result.url_foto);
+          setFotoPerfil(result.url_foto); 
           alert('Foto de perfil actualizada con éxito.');
         } else {
           alert('Error al guardar la foto.');
@@ -75,7 +79,7 @@ const FotoPerfil: React.FC<FotoPerfilProps> = ({ userMail, setFotoPerfil }) => {
   };
 
   const handleRemovePhoto = () => {
-    setFotoPerfil(''); 
+    setFotoPerfil('');  
     setPreview(null);
     alert('Foto de perfil eliminada con éxito.');
   };

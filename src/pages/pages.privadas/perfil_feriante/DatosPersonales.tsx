@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface DatosPersonalesProps {
   nombre: string;
+  apellido: string;
   telefono: string;
-  setDatosPersonales: (datos: { nombre: string; telefono: string }) => void;
+  setDatosPersonales: (datos: { nombre: string; apellido: string; telefono: string }) => void;
 }
 
-const DatosPersonales: React.FC<DatosPersonalesProps> = ({ nombre, telefono, setDatosPersonales }) => {
-  const [nombreActualizado, setNombreActualizado] = useState(nombre);
-  const [telefonoActualizado, setTelefonoActualizado] = useState(telefono);
+const DatosPersonales: React.FC<DatosPersonalesProps> = ({ nombre, apellido, telefono, setDatosPersonales }) => {
+  const [nombreActualizado, setNombreActualizado] = useState<string>(nombre || ''); 
+  const [apellidoActualizado, setApellidoActualizado] = useState<string>(apellido || '');  
+  const [telefonoActualizado, setTelefonoActualizado] = useState<string>(telefono || '');  
   const [mensajeError, setMensajeError] = useState<string | null>(null);
   const [mensajeExito, setMensajeExito] = useState<string | null>(null);
 
@@ -24,6 +26,12 @@ const DatosPersonales: React.FC<DatosPersonalesProps> = ({ nombre, telefono, set
       return;
     }
 
+    if (!apellidoActualizado.trim()) {
+      setMensajeError('El apellido no puede estar vacío.');
+      setMensajeExito(null);
+      return;
+    }
+
     if (!validarTelefono(telefonoActualizado)) {
       setMensajeError('El número de teléfono debe tener entre 8 y 15 dígitos.');
       setMensajeExito(null);
@@ -32,12 +40,19 @@ const DatosPersonales: React.FC<DatosPersonalesProps> = ({ nombre, telefono, set
 
     setDatosPersonales({
       nombre: nombreActualizado,
+      apellido: apellidoActualizado,
       telefono: telefonoActualizado,
     });
 
     setMensajeExito('Datos actualizados con éxito.');
     setMensajeError(null);
   };
+
+  useEffect(() => {
+    setNombreActualizado(nombre || '');  
+    setApellidoActualizado(apellido || '');  
+    setTelefonoActualizado(telefono || '');  
+  }, [nombre, apellido, telefono]);
 
   return (
     <div>
@@ -51,6 +66,14 @@ const DatosPersonales: React.FC<DatosPersonalesProps> = ({ nombre, telefono, set
         value={nombreActualizado}
         onChange={e => setNombreActualizado(e.target.value)}
         placeholder="Escribe tu nombre"
+      />
+
+      <label>Apellido:</label>
+      <input
+        type="text"
+        value={apellidoActualizado}
+        onChange={e => setApellidoActualizado(e.target.value)}
+        placeholder="Escribe tu apellido"
       />
       
       <label>Teléfono:</label>

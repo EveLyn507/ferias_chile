@@ -4,25 +4,21 @@ const bcrypt = require('bcrypt');
 ;
 
 const guardarPerfil = async (req, res) => {
-  const { nombre, biografia, correo, intereses, userMail, url_foto_perfil } = req.body;
+  const { nombre, biografia, intereses, userMail, url_foto_perfil } = req.body;
   const telefono = parseInt(req.body.telefono, 10);
-
   const pool = req.pool;
 
   try {
+    await pool.query('BEGIN');
+
     const queryUsuario = `
       UPDATE feriante
       SET nombre = $2, telefono = $3, url_foto_perfil = $4
-      WHERE mail = $1;
+      WHERE user_mail = $1;
     `;
     const valuesUsuario = [userMail, nombre, telefono, url_foto_perfil]; 
     await pool.query(queryUsuario, valuesUsuario);
-  } catch (error) {
-    console.error('Error al actualizar usuario:', error);
-    return res.status(500).json({ message: 'Error al actualizar usuario' });
-  }
 
-  try {
     const queryFeriante = `
       UPDATE feriante 
       SET biografia = $1
@@ -30,29 +26,26 @@ const guardarPerfil = async (req, res) => {
     `;
     const valuesFeriante = [biografia, userMail];
     await pool.query(queryFeriante, valuesFeriante);
-  } catch (error) {
-    console.error('Error al actualizar feriante:', error);
-    return res.status(500).json({ message: 'Error al actualizar feriante' });
-  }
 
-  if (intereses && intereses.length > 0) {
-    try {
+    if (intereses && intereses.length > 0) {
       await pool.query(`DELETE FROM intereses WHERE user_mail = $1;`, [userMail]);
 
       const queryIntereses = `
-        INSERT INTO intereses (id_interes, interes, user_mail)
-        VALUES ($1, $2, $3);
+        INSERT INTO intereses (interes, user_mail)
+        VALUES ($1, $2);
       `;
       for (const interes of intereses) {
-        await pool.query(queryIntereses, [1, interes, userMail]);
+        await pool.query(queryIntereses, [interes, userMail]);
       }
-    } catch (error) {
-      console.error('Error al insertar intereses:', error);
-      return res.status(500).json({ message: 'Error al insertar intereses' });
     }
-  }
 
-  res.status(201).json({ message: 'Perfil guardado correctamente' });
+    await pool.query('COMMIT');
+    res.status(201).json({ message: 'Perfil guardado correctamente' });
+  } catch (error) {
+    await pool.query('ROLLBACK');
+    console.error('Error al guardar el perfil:', error);
+    res.status(500).json({ message: 'Error al guardar el perfil' });
+  }
 };
 
 
@@ -62,7 +55,7 @@ const obtenerPerfil = async (req, res) => {
 
   try {
     const usuarioResult = await pool.query(`
-      SELECT nombre, telefono, user_mail, url_foto_perfil
+      SELECT nombre, apellido, telefono, user_mail, url_foto_perfil
       FROM feriante
       WHERE user_mail = $1;
     `, [userMail]);
@@ -99,24 +92,25 @@ const obtenerPerfil = async (req, res) => {
       console.error('Error al obtener los intereses:', error);
     }
 
-   
     const fotoPerfilUrl = usuario.url_foto_perfil
       ? `${req.protocol}://${req.get('host')}${usuario.url_foto_perfil}`
       : ''; 
 
     res.status(200).json({
       nombre: usuario.nombre,
+      apellido: usuario.apellido,  
       telefono: usuario.telefono,
-      biografia: feriante.biografia || '',
+      biografia: feriante.biografia || '',  
       intereses: intereses,
-      correo: usuario.mail,
-      url_foto_perfil: fotoPerfilUrl, 
+      correo: usuario.user_mail,
+      url_foto_perfil: fotoPerfilUrl 
     });
   } catch (error) {
     console.error('Error al obtener el perfil:', error);
     res.status(500).json({ message: 'Error al obtener el perfil' });
   }
 };
+
 
 const uploadDir = path.join(__dirname, '..', 'uploads');
 if (!fs.existsSync(uploadDir)) {
@@ -143,40 +137,63 @@ const guardarFotoPerfil = async (req, res) => {
   }
 };
 
-const actualizarCorreo = async (req, res) => {
-  const { correo, userMail } = req.body; 
+const cargarFotoPerfil = (req, res) => {
+  const { userMail } = req.params;
+  const filename = sanitizeFilename(userMail);
+  const filePath = path.join(uploadDir, filename);
 
-  if (!userMail) {
-    return res.status(400).json({ message: 'El correo del usuario es requerido' });
+  if (fs.existsSync(filePath)) {
+    res.sendFile(filePath); 
+  } else {
+    res.status(404).json({ message: 'Foto de perfil no encontrada' });
   }
+};
 
-  if (!correo) {
-    return res.status(400).json({ message: 'El nuevo correo es requerido' });
+const actualizarCorreo = async (req, res) => {
+  const { correo, user_mail } = req.body; 
+  const pool = req.pool;
+
+  if (!user_mail || !correo) {
+    return res.status(400).json({ message: 'El correo actual y el nuevo correo son requeridos' });
   }
 
   try {
-    const query = `
+    await pool.query('BEGIN');
+
+    const queryIntereses = `
+      UPDATE intereses
+      SET user_mail = $1
+      WHERE user_mail = $2;
+    `;
+    await pool.query(queryIntereses, [correo, user_mail]);
+
+    const queryFeriante = `
       UPDATE feriante
       SET user_mail = $1
       WHERE user_mail = $2;
     `;
-    await req.pool.query(query, [correo, userMail]); 
+    await pool.query(queryFeriante, [correo, user_mail]);
+
+    await pool.query('COMMIT');
 
     res.status(200).json({ message: 'Correo actualizado correctamente' });
   } catch (error) {
-    console.error('Error al actualizar el correo:', error); 
+    await pool.query('ROLLBACK');
+    console.error('Error al actualizar el correo:', error);
     res.status(500).json({ message: 'Error interno del servidor' });
   }
 };
 
+
 const actualizarContraseña = async (req, res) => {
-  const { nuevaContraseña, userMail } = req.body; 
+  const { nuevaContraseña, user_mail } = req.body;
+  const pool = req.pool;
 
   if (!nuevaContraseña) {
-    return res.status(400).json({ message: 'Nueva contraseña es requerida' });
+    return res.status(400).json({ message: 'La nueva contraseña es requerida' });
   }
 
-  if (!userMail) {
+  if (!user_mail) {
     return res.status(400).json({ message: 'El correo del usuario es requerido' });
   }
 
@@ -186,17 +203,18 @@ const actualizarContraseña = async (req, res) => {
     const query = `
       UPDATE feriante
       SET contrasena = $1
-      WHERE user_mail = $2; /
+      WHERE user_mail = $2;
     `;
-    await req.pool.query(query, [hashedPassword, userMail]); 
+    await pool.query(query, [hashedPassword, user_mail]);
 
     res.status(200).json({ message: 'Contraseña actualizada correctamente' });
   } catch (error) {
-    console.error('Error al actualizar la contraseña:', error); 
+    console.error('Error al actualizar la contraseña:', error);
     res.status(500).json({ message: 'Error interno del servidor' });
   }
 };
 
 
 
-module.exports = { guardarPerfil, obtenerPerfil, guardarFotoPerfil, actualizarCorreo, actualizarContraseña};
+
+module.exports = { guardarPerfil, obtenerPerfil, guardarFotoPerfil, cargarFotoPerfil, actualizarCorreo, actualizarContraseña};
