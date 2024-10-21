@@ -1,12 +1,7 @@
 const express = require('express');
 const router = express.Router();
-<<<<<<< HEAD
-const { saveFeria, getFeria ,get_feria_Encargado ,abrirTiketFeria} = require('../controllers/EncargadoController');
-const puestoRoutes = require('./Puesto.routes');
-=======
 const { saveFeria, getFeria ,get_feria_Encargado ,abrirTiketFeria, saveProgramacionFeria} = require('../controllers/EncargadoController');
-
->>>>>>> f177093b4fcf13ced00237472aff5dd3717704e7
+const puestoRoutes = require('./Puesto.routes');
 
 //PERFIL ENCARGADO 
 
