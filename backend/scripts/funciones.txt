@@ -152,3 +152,19 @@ BEGIN
     VALUES (encargado_mail, admin_muni_mail, id_feria);
 END;
 $$ LANGUAGE plpgsql;
+
+
+
+
+CREATE OR REPLACE FUNCTION contar_puestos_actuales(id_feria_param INT)
+RETURNS INT AS $$
+DECLARE
+    puestos_actuales INT;
+BEGIN
+    SELECT COUNT(*) INTO puestos_actuales
+    FROM puesto
+    WHERE puesto.id_feria = id_feria_param;
+    
+    RETURN puestos_actuales;
+END;
+$$ LANGUAGE plpgsql;

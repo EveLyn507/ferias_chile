@@ -101,3 +101,17 @@ export interface FeriaData {
     puestos: PuestoData[];
   }
 
+
+// se usa en bancos_home
+export interface DatosBank {
+    mail_banco: string,
+    nombre_asociado: string,
+    numero_cuenta: string,
+    encargado_mail: string
+}
+
+
+export interface listBanks {
+    bancos : DatosBank[]
+
+}

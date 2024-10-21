@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { saveFeria, getFeria ,get_feria_Encargado ,abrirTiketFeria, saveProgramacionFeria ,getPrograma} = require('../controllers/EncargadoController');
+const { saveFeria, getFeria ,get_feria_Encargado ,abrirTiketFeria, saveProgramacionFeria ,getPrograma ,saveDatosBank,getDatosBank} = require('../controllers/EncargadoController');
 
 
 //PERFIL ENCARGADO 
@@ -48,6 +48,20 @@ const pool = req.pool
 router.get('/getProgramacion/:id_feria', (req, res) => {
   const pool = req.pool
     getPrograma(req,res,pool)
+  
+  }) 
+
+
+
+router.post('/saveBank', (req, res) => {
+  const pool = req.pool
+  saveDatosBank(req,res,pool)
+  
+  }) 
+
+router.post('/getBank', (req, res) => {
+  const pool = req.pool
+  getDatosBank(req,res,pool)
   
   }) 
 

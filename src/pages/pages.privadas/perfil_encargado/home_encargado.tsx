@@ -1,4 +1,7 @@
+
+import { Link } from "react-router-dom"
 import TraerEncargadoFerias from "./components/ferias_d_encargado/traer_ferias_encargado"
+import { PrivateRoutes } from "../../../models"
 
 
 
@@ -12,8 +15,9 @@ import TraerEncargadoFerias from "./components/ferias_d_encargado/traer_ferias_e
        
       <div>
       <TraerEncargadoFerias/>
-
+      
       </div>
+      <li> <Link to={`${PrivateRoutes.BANCOS}`} >BANCOS</Link></li>
 
 
 

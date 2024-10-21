@@ -1,3 +1,5 @@
+
+import { DatosBanco } from "./components/administrador_feria/datosBank"
 import BooleanDaysSelector from "./components/administrador_feria/programacion"
 
 
@@ -13,7 +15,12 @@ export const Admin_de_feria = () => {
         <h3>Elige los dias en que la feria estara disponible</h3>
         <BooleanDaysSelector/>
 
-        <h2>  eleccion de datos   bancarios </h2>
+              
+      <div>
+  
+      <DatosBanco/>
+
+      </div>
 
         <h2>  detalle de la feria </h2>
     

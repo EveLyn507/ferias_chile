@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { ProgramaFeria } from '../../../../models/interfaces';
-import { getProgramaFeria, GuardarProgramacionFeria } from '../../services/funcProgramacion';
+import { getProgramaFeria, GuardarProgramacionFeria } from '../../services/admin_feria_fuctions';
+
 
 // Lista de días de la semana
 const daysOfWeek = [
@@ -69,8 +70,6 @@ const BooleanDaysSelector = () => {
   const sendData = async () => {
     if (idFeria !== '') {
       await GuardarProgramacionFeria(newPrograma, idFeria);
-
-     
       console.log('Datos enviados:', newPrograma);
       setActual(newPrograma)
     
