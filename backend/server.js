@@ -4,6 +4,7 @@ const cors = require('cors');
 const credencial = require('./credenciales'); // Importa el archivo de configuración
 const dotenv = require('dotenv');
 const cron = require('node-cron'); // Importar node-cron
+const path = require('path');
 
 // Importe de routers
 const BasicUserRoutes = require('./routes/BasicUser.routes'); 
@@ -12,7 +13,7 @@ const FerianteRoutes = require('./routes/Feriante.routes');
 const MunicipalRoutes = require('./routes/Municipal.routes');
 const PagosRoutes = require('./routes/Pagos.routes');
 const FeedRouter = require('./routes/Feed.routes');
-
+const puestoRoutes = require('./routes/Puesto.routes')
 dotenv.config();
 const app = express();
 const port = process.env.PORT || 5000;
@@ -26,7 +27,6 @@ const pool = new Pool({
   password: credencial.pass,
   port: credencial.puerto // Puerto predeterminado de PostgreSQL
 });
-
 
 //uso de cors que recibe peticiones https
 app.use(cors());
@@ -49,10 +49,11 @@ app.use(FeedRouter);
 //rutas privadas
 app.use(EncargadoRoutes);  // rutas del perfil encargado
 app.use(FerianteRoutes);  // rutas del perfil feriante
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/uploads', express.static('uploads'));  // foto feriante
 app.use(MunicipalRoutes); 
 app.use(PagosRoutes); 
-
+app.use(puestoRoutes);
 
 
 

@@ -97,7 +97,6 @@ RETURNS TABLE (
 
 
 // OBTIENE LAS FERIAS DE UN ENCARGADO
-
 CREATE OR REPLACE FUNCTION obtener_ferias_encargado(mail character varying)
 RETURNS TABLE (
     id_feria INT,
@@ -105,7 +104,14 @@ RETURNS TABLE (
     comuna character varying(80),
     region character varying(80),
     estado character varying(80),
-    puestos_actuales INT
+    puestos_actuales INT,
+    progra_lunes CHAR(1),
+    progra_martes CHAR(1),
+    progra_miercoles CHAR(1),
+    progra_jueves CHAR(1),
+    progra_viernes CHAR(1),
+    progra_sabado CHAR(1),
+    progra_domingo CHAR(1)
 ) AS $$
 BEGIN
     RETURN QUERY
@@ -115,17 +121,23 @@ BEGIN
         c.comuna, 
         g.nombre AS region,
         es.estado,
-        contar_puestos_actuales(f.id_feria) AS puestos_actuales  -- Llamada a la función
+        contar_puestos_actuales(f.id_feria) AS puestos_actuales,
+        pf.lunes AS progra_lunes,
+        pf.martes AS progra_martes,
+        pf.miercoles AS progra_miercoles,
+        pf.jueves AS progra_jueves,
+        pf.viernes AS progra_viernes,
+        pf.sabado AS progra_sabado,
+        pf.domingo AS progra_domingo
     FROM encargado_feria ef
     JOIN feria f ON ef.user_mail = f.encargado_mail
     JOIN comuna c ON f.id_comuna = c.id_comuna
     JOIN region g ON c.id_region = g.id_region
     JOIN estado_feria es ON f.id_estado = es.id_estado
-    WHERE ef.user_mail = '1@1';  -- Uso directo del parámetro mail
+    LEFT JOIN programa_feria pf ON f.id_feria = pf.id_feria  -- Agregar la programación de la feria
+    WHERE ef.user_mail = mail;  -- Uso del parámetro 'mail' correctamente
 END;
 $$ LANGUAGE plpgsql;
-
-
 
 -- INSERTA LOS TIKET
 
@@ -138,5 +150,21 @@ CREATE OR REPLACE FUNCTION insertar_solicitud_apertura(
 BEGIN
     INSERT INTO solicitudes_apertura (encargado_mail, admin_muni_mail, id_feria)
     VALUES (encargado_mail, admin_muni_mail, id_feria);
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+
+CREATE OR REPLACE FUNCTION contar_puestos_actuales(id_feria_param INT)
+RETURNS INT AS $$
+DECLARE
+    puestos_actuales INT;
+BEGIN
+    SELECT COUNT(*) INTO puestos_actuales
+    FROM puesto
+    WHERE puesto.id_feria = id_feria_param;
+    
+    RETURN puestos_actuales;
 END;
 $$ LANGUAGE plpgsql;

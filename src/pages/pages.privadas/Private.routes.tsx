@@ -1,5 +1,5 @@
 import { PrivateRoutes } from '../../models/index.ts';
-import PerfilEn from './perfil_encargado/home_encargado.tsx';
+
 import  {NotFound}  from '../../models/index.ts';
 import {  Route } from 'react-router-dom';
 import { Logout } from '../../components/index';
@@ -8,6 +8,11 @@ import { Roles } from '../../models/rol.ts';
 import Perfil_feriante from './perfil_feriante/perfil_feriante.tsx';
 import { Perfil_admin } from './perfil_muni/home_administrador.tsx';
 import { Admin_de_feria } from './perfil_encargado/vista_admin_de_feria.tsx';
+import PerfilEn from './perfil_encargado/home_encargado.tsx';
+import { Bancos_home } from './perfil_encargado/components/bancos/bancos_home.tsx';
+
+
+
 
 
 
@@ -22,6 +27,7 @@ function Privado(){
     <Route element={<RoleGuard rol={Roles.ENCARGADO} />}>
       <Route path={PrivateRoutes.PERFILENCARGADO} element={<PerfilEn />} />
       <Route path={`${PrivateRoutes.ADMINFERIA}`} element={<Admin_de_feria />} />
+      <Route path={PrivateRoutes.BANCOS} element={<Bancos_home />} />
     </Route>
 
     <Route element={<RoleGuard rol={Roles.FERIANTE} />}>

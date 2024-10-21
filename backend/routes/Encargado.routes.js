@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { saveFeria, getFeria ,get_feria_Encargado ,abrirTiketFeria, saveProgramacionFeria} = require('../controllers/EncargadoController');
+const { saveFeria, getFeria ,get_feria_Encargado ,abrirTiketFeria, saveProgramacionFeria ,getPrograma ,saveDatosBank,getDatosBank} = require('../controllers/EncargadoController');
 const puestoRoutes = require('./Puesto.routes');
 
 //PERFIL ENCARGADO 
@@ -30,9 +30,6 @@ router.post('/api/feria', saveFeria); // Cambiado para incluir '/api'
 // Ruta para obtener una feria por ID
 router.get('/api/feria/:id_feria', getFeria);
 
-router.use(puestoRoutes);
-
-
 router.post('/tiket', (req , res) => {
   const pool = req.pool; 
       abrirTiketFeria(req,res,pool);
@@ -46,6 +43,27 @@ const pool = req.pool
   saveProgramacionFeria(req,res,pool)
 
 }) 
+
+
+router.get('/getProgramacion/:id_feria', (req, res) => {
+  const pool = req.pool
+    getPrograma(req,res,pool)
+  
+  }) 
+
+
+
+router.post('/saveBank', (req, res) => {
+  const pool = req.pool
+  saveDatosBank(req,res,pool)
+  
+  }) 
+
+router.post('/getBank', (req, res) => {
+  const pool = req.pool
+  getDatosBank(req,res,pool)
+  
+  }) 
 
 
 module.exports = router;

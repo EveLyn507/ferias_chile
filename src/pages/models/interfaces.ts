@@ -28,7 +28,7 @@ export interface Feria {
 
 
 
-// SE USA EN -- CARD_FERIAS 
+// SE USA EN -- CARD_FERIAS  -- CARD_FERIAS_ENCARGADO
 export interface FeriasProps {
     ferias: Feria[];
   
@@ -101,3 +101,17 @@ export interface FeriaData {
     puestos: PuestoData[];
   }
 
+
+// se usa en bancos_home
+export interface DatosBank {
+    mail_banco: string,
+    nombre_asociado: string,
+    numero_cuenta: string,
+    encargado_mail: string
+}
+
+
+export interface listBanks {
+    bancos : DatosBank[]
+
+}

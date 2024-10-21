@@ -13,11 +13,8 @@ const ActualizarCorreoContraseña: React.FC<ActualizarCorreoContraseñaProps> = 
 }) => {
   const [correoActualizado, setCorreoActualizado] = useState(correo);
   const [nuevaContraseña, setNuevaContraseña] = useState('');
-
   const [mensajeError, setMensajeError] = useState<string | null>(null);
   const [mensajeExito, setMensajeExito] = useState<string | null>(null);
-
-
 
   const validarCorreo = (correo: string): boolean => {
     const correoRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -27,70 +24,100 @@ const ActualizarCorreoContraseña: React.FC<ActualizarCorreoContraseñaProps> = 
   const actualizarCorreo = async () => {
     setMensajeError(null);
     setMensajeExito(null);
-  
+    
+    
+
+     if (!correoActualizado || !correo) {
+      setMensajeError('El correo actual y el nuevo correo son requeridos.');
+      return;
+    }
+    
+
     if (!correoActualizado) {
       setMensajeError('El correo es requerido.');
       return;
     }
-  
+
     if (!validarCorreo(correoActualizado)) {
       setMensajeError('El formato del correo no es válido.');
       return;
     }
-  
+
+   
+
     try {
+      
+      console.log({ correoActualizado, user_mail: correo });
       const response = await fetch('http://localhost:5000/api/actualizar-correo', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ correo: correoActualizado, userMail: correo }), 
+        body: JSON.stringify({
+          correo: correoActualizado,
+          user_mail: correo,
+        }),
       });
-  
+
       if (response.ok) {
-        setCorreo(correoActualizado); 
+        setCorreo(correoActualizado);
         setMensajeExito('Correo actualizado con éxito.');
         setCorreoActualizado(''); 
       } else {
-        throw new Error('Error al actualizar el correo');
+        const errorData = await response.json();
+        setMensajeError('Error al actualizar el correo: ' + errorData.message);
       }
-    } catch (error) {
-      setMensajeError('Error al actualizar el correo: ' + error.message);
+    } catch (error: any) {
+      setMensajeError('Error al conectar con el servidor: ' + error.message);
     }
   };
-  
+
   const actualizarContraseña = async () => {
     setMensajeError(null);
     setMensajeExito(null);
-  
+
+    
+
+    if (!nuevaContraseña || !correo) {
+      setMensajeError('La nueva contraseña y el correo son requeridos.');
+      return;
+    }
+
+
     if (!nuevaContraseña) {
       setMensajeError('La nueva contraseña es requerida.');
       return;
     }
-  
+
     if (nuevaContraseña.length < 8) {
       setMensajeError('La contraseña debe tener al menos 8 caracteres.');
       return;
     }
-  
+
     try {
+      
+      console.log({ nuevaContraseña, correo });
       const response = await fetch('http://localhost:5000/api/actualizar-contraseña', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ nuevaContraseña, userMail: correo }), 
+        body: JSON.stringify({
+          nuevaContraseña,
+          user_mail: correo,
+        }),
       });
-  
+
       if (response.ok) {
-        setContraseña(nuevaContraseña); 
+        setContraseña(nuevaContraseña);
         setMensajeExito('Contraseña actualizada con éxito.');
         setNuevaContraseña(''); 
       } else {
-        throw new Error('Error al actualizar la contraseña');
+        const errorData = await response.json();
+        setMensajeError('Error al actualizar la contraseña: ' + errorData.message);
       }
-    } catch (error) {
-      setMensajeError('Error al actualizar la contraseña: ' + error.message);
+    } catch (error: any) {
+      setMensajeError('Error al conectar con el servidor: ' + error.message);
     }
   };
 

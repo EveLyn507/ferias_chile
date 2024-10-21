@@ -1,20 +1,49 @@
 
 // FUNCIONES PERFIL 
+
+const req = require("express/lib/request");
+
 // get id_feria nombre nombre_region nombre_comuna
 const get_feria_Encargado = async (req, res, pool) => {
+  const { mail } = req.body;
+  
+  try {
+    const result = await pool.query(`SELECT * FROM obtener_ferias_encargado($1);`, [mail]);
 
-      const {mail} = req.body;
-    try {
+    // Procesar cada fila para incluir la programación como un objeto en una lista
+    const feriasConProgramacion = result.rows.map((feria) => {
+      // Crear un objeto para los días de la semana
+      const programa = [{
+        lunes: feria.progra_lunes,
+        martes: feria.progra_martes,
+        miercoles: feria.progra_miercoles,
+        jueves: feria.progra_jueves,
+        viernes: feria.progra_viernes,
+        sabado: feria.progra_sabado,
+        domingo: feria.progra_domingo
+      }];
 
-    const result = await pool.query(
-      ` SELECT * FROM obtener_ferias_encargado($1);` , [mail]);
-    res.json(result.rows)
+      // Retornar el objeto de la feria con la programación en formato de lista
+      return {
+        id_feria: feria.id_feria,
+        nombre_feria: feria.nombre_feria,
+        comuna: feria.comuna,
+        region: feria.region,
+        estado: feria.estado,
+        puestos_actuales: feria.puestos_actuales,
+        programa: programa  // Aquí asignas la programación en formato de lista
+      };
+    });
 
-    }catch (err){
-        console.error('Error al obtener las ferias:', err);
-        res.status(500).send('Error al obtener las ferias');
-    }
-}
+    // Enviar la respuesta con los datos procesados
+    res.json(feriasConProgramacion);
+
+  } catch (err) {
+    console.error('Error al obtener las ferias:', err);
+    res.status(500).send('Error al obtener las ferias');
+  }
+};
+
 
 const abrirTiketFeria = async (req, res, pool) => {
   const {id_feria , mail} = req.body;
@@ -29,7 +58,7 @@ res.json(result.rows)
     console.error('Error al abrir tiket:', err);
     res.status(500).send('Error al  abrir tiket');
 
-}
+  }
 
 }
 
@@ -87,6 +116,12 @@ const getFeria = async (req, res) => {
   }
 };
 
+
+
+
+
+
+
 // ADMINISTRACION DE LA FERIA
 const saveProgramacionFeria = async (req, res, pool) => {
   const { id_feria, programacion } = req.body;
@@ -123,6 +158,81 @@ const saveProgramacionFeria = async (req, res, pool) => {
   }
 };
 
+const getPrograma = async (req , res , pool) => {
+
+    const id_feria = parseInt(req.params.id_feria, 10);
+try{
+  const result = await pool.query(`
+    SELECT lunes, martes, miercoles, jueves, viernes, sabado, domingo 
+    FROM programa_feria 
+    WHERE id_feria = $1`,[id_feria])
+
+
+  res.json(result.rows[0])
+
+}catch (err){
+  console.error('Error al obtener la feria:', err);
+  res.status(500).json({ error: 'Error al obtener la feria' });
+
+  }
+}
+
+
+const saveDatosBank = async (req , res ,pool ) => {
+
+  const {mail_banco, nombre_asociado, numero_cuenta, encargado_mail} = req.body.encargadoBank
+  try {
+
+
+    const result = await pool.query (`
+    INSERT INTO banco_encargado (mail_banco, nombre_asociado, numero_cuenta, encargado_mail)
+    VALUES ($1, $2, $3, $4)
+    ON CONFLICT (mail_banco)
+    DO UPDATE
+    SET 
+    nombre_asociado = EXCLUDED.nombre_asociado,
+    numero_cuenta = EXCLUDED.numero_cuenta,
+    encargado_mail = EXCLUDED.encargado_mail
+  
+    
+  ` , [mail_banco, nombre_asociado, numero_cuenta, encargado_mail])
+  
+  return res.status(200);
+  }catch {
+    console.log('error al iinsertar banco ' ,err)
+    res.status(500).json({ error: 'Error al guardar banco' });
+  }
+
+
+}
+
+
+const getDatosBank = async (req , res , pool) => {
+const {mail} = req.body
+
+try{
+  const result = await pool.query (`
+    SELECT mail_banco, nombre_asociado, numero_cuenta, encargado_mail
+    FROM banco_encargado 
+    WHERE encargado_mail = $1;`, [mail])
+    
+    if (result.rows != undefined) {
+      res.json(result.rows)
+ 
+    }else {
+      res.status(500).json({ error: 'Error al obtener datos del  banco o no existen' });
+ 
+    }
+
+ 
+
+}catch(err){ 
+
+  console.log('error al iinsertar banco ' ,err)
+}
+
+
+}
 
 
 
@@ -131,5 +241,8 @@ module.exports = {
   getFeria,
   get_feria_Encargado,
   abrirTiketFeria,
-  saveProgramacionFeria
+  saveProgramacionFeria,
+  getPrograma,
+  saveDatosBank,
+  getDatosBank
 };

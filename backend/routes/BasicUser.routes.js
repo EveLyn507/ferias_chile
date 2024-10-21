@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { login_encargado,login_feriante,login_municipal, register  } = require('../controllers/BasicUserController.js');
+const { login_encargado,login_feriante,login_municipal, registerEncargado_feria, registerFeriante, registerAdministrador_municipal  } = require('../controllers/BasicUserController.js');
 const { get_feria,get_puestos_feria  } = require('../controllers/FeedController.js');
 
 // Ruta de login
@@ -22,16 +22,21 @@ router.post('/login1', (req, res) => {
   });
 
 
-
-
-
-
-
-
-  router.post('/registro', (req, res) => {
-    const pool = req.pool; // Recuperar el pool del objeto req
-    register(req, res, pool); // Pasar el pool a la función de login
+  router.post('/registro/encargado', (req, res) => {
+    const pool = req.pool;
+    registerEncargado_feria(req, res, pool);
   });
+
+  router.post('/registro/feriante', (req, res) => {
+    const pool = req.pool;
+    registerFeriante(req, res, pool);
+  });
+
+  router.post('/registro/municipal', (req, res) => {
+    const pool = req.pool;
+    registerAdministrador_municipal(req, res, pool);
+  });
+
 
   router.get('/Feed-ferias', (req , res) => {
     const pool = req.pool; // Recuperar el pool del objeto req

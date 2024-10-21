@@ -79,18 +79,36 @@ const login_municipal = async (req, res, pool) => {
 
 
 
+// REGISTRO USUARIO -> encargado_feria
+const registerEncargado_feria = async (req, res, pool) => {
+  const { user_mail, rut, rut_div, nombre, apellido, telefono, role, contrasena } = req.body;
+  try {
+    await pool.query(`INSERT INTO public.encargado_feria (user_mail, rut, rut_div, nombre, apellido, telefono, id_tipo_usuario, contrasena) VALUES ($1, $2, $3, $4, $5, $6, $7,$8)`, [user_mail, rut, rut_div, nombre, apellido, telefono, role, contrasena]);
+    res.status(201).send('Usuario registrado correctamente');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error al registrar usuario');
+  }
+};
 
-
-
-
-
+// REGISTRO USUARIO -> public.feriante
+const registerFeriante = async (req, res, pool) => {
+  const { user_mail, rut, rut_div, nombre, apellido, telefono, role, contrasena } = req.body;
+  try {
+    await pool.query(`INSERT INTO public.feriante (user_mail, rut, rut_div, nombre, apellido, telefono, id_tipo_usuario, contrasena) VALUES ($1, $2, $3, $4, $5, $6, $7,$8)`, [user_mail, rut, rut_div, nombre, apellido, telefono, role, contrasena]);
+    res.status(201).send('Usuario registrado correctamente');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error al registrar usuario');
+  }
+};
 
 // REGISTRO USUARIO -> LO REGISTRA EN LA BD
-const register = async (req, res, pool) => {
-  const { mail , rut ,nombre , apellido , telefono  , role, contrasena} = req.body;
+const registerAdministrador_municipal = async (req, res, pool) => {
+  const { user_mail, rut, rut_div, nombre, apellido, telefono, role, contrasena } = req.body;
   try {
-    await pool.query(`INSERT INTO public.usuario (mail, rut, nombre, apellido, telefono, id_tipo_usuario, contrasena) VALUES ($1, $2, $3, $4, $5, $6, $7)`, [mail, rut, nombre, apellido, telefono, role, contrasena]);
-res.status(201).send('Usuario registrado correctamente');
+    await pool.query(`INSERT INTO public.administrador_municipal (user_mail, rut, rut_div, nombre, apellido, telefono, id_tipo_usuario, contrasena) VALUES ($1, $2, $3, $4, $5, $6, $7,$8 )`, [user_mail, rut, rut_div, nombre, apellido, telefono, role, contrasena]);
+    res.status(201).send('Usuario registrado correctamente');
   } catch (err) {
     console.error(err);
     res.status(500).send('Error al registrar usuario');
@@ -98,4 +116,5 @@ res.status(201).send('Usuario registrado correctamente');
 };
 
 
-module.exports = { login_encargado,login_feriante,login_municipal, register};
+
+module.exports = { login_encargado,login_feriante,login_municipal, registerEncargado_feria, registerFeriante, registerAdministrador_municipal};

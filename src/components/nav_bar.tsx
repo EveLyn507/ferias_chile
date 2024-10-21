@@ -13,6 +13,7 @@ export const Nav_bar = () => {
         <li><Link to="/registro">Registrate</Link></li>
         <li>empresas</li>
         <li><Link to="/Feed-ferias">Feed-ferias</Link></li>
+        <li> <Link to='private/1/bancos' >BANCOS</Link></li>
         <Logeado/>
         {role == 1 && ( 
           <li><Link to="/plano">herramientas_planos</Link></li>
