@@ -1,10 +1,13 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
 import Canvas from './Canvas';
 import Toolbar from './Toolbar';
+import MenuDerecha from './MenuDerecha';
 import { setIdFeria } from '../../../../../redux/states/user';
 import axios from 'axios';
+import { useParams } from 'react-router-dom';
 
 interface Rectangle {
   id: number;
@@ -13,6 +16,9 @@ interface Rectangle {
   width: number;
   height: number;
   fill: string;
+  descripcion?: string; 
+  tipoPuesto?: string;   
+  estadoPuesto?: string; 
 }
 
 interface Area {
@@ -46,16 +52,18 @@ const Vista = () => {
   const [error, setError] = useState<string | null>(null);
   const [areas, setAreas] = useState<Area[]>([]);
   const [streets, setStreets] = useState<Street[]>([]);
+  const { id_feria } = useParams<{ id_feria: string }>();
+  const [selectedRectangleId, setSelectedRectangleId] = useState<number | null>(null);
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+  const [selectedPuesto, setSelectedPuesto] = useState<Rectangle | null>(null); 
 
   const fetchFeriaData = async () => {
     setIsLoading(true);
     setError(null);
-
     try {
-      const response = await axios.get(`${API_URL}/api/feria/1`);
+      const response = await axios.get(`${API_URL}/api/feria/${id_feria}`);
       const data: FeriaData = response.data;
       
-      // Asignar los datos del backend a los estados
       setRectangles(data.puestos);
       setAreas(data.areas);
       setStreets(data.calles);
@@ -68,7 +76,7 @@ const Vista = () => {
   };
 
   useEffect(() => {
-    fetchFeriaData(); // Cargar los datos cuando el componente se monta
+    fetchFeriaData();
   }, []);
 
   const handleAddRectangle = () => {
@@ -85,7 +93,24 @@ const Vista = () => {
 
   const handleRemoveRectangle = (id: number) => {
     setRectangles((prev) => prev.filter(rect => rect.id !== id));
+    setIsMenuOpen(false);
   };
+
+  const handleRectangleClick = (id: number) => {
+    const clickedRectangle = rectangles.find((rect) => rect.id === id);
+    setSelectedRectangleId(id);
+    setSelectedPuesto(clickedRectangle || null); 
+    setIsMenuOpen(true);
+  };
+
+  const handleSavePuesto = (updatedPuesto: Partial<Rectangle>) => {
+    if (selectedPuesto) {
+        setRectangles(prev =>
+            prev.map(rect => (rect.id === selectedRectangleId ? { ...rect, ...updatedPuesto } : rect))
+        );
+        setIsMenuOpen(false);
+    }
+};
 
   const handleAddArea = () => {
     const newArea: Area = {
@@ -129,7 +154,7 @@ const Vista = () => {
       puestos: rectangles,
       areas: areas,
       calles: streets,
-      id_feria: 1, // Aquí debes asignar el id_feria correcto
+      id_feria: id_feria,
     };
 
     try {
@@ -164,28 +189,38 @@ const Vista = () => {
         <h1>Ferias Chile</h1>
       </header>
 
-      <div className="main-content">
-        {isLoading && <p>Cargando...</p>}
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-        <Toolbar onAddRectangle={handleAddRectangle} onAddArea={handleAddArea} onAddStreet={handleAddStreet} />
-        <Canvas
-          rectangles={rectangles}
-          setRectangles={setRectangles}
-          onRemoveRectangle={handleRemoveRectangle}
-          planWidth={planWidth}
-          planHeight={planHeight}
-          setPlanWidth={setPlanWidth}
-          setPlanHeight={setPlanHeight}
-          areas={areas}
-          onRemoveArea={handleRemoveArea}
-          streets={streets}
-          onUpdateArea={handleUpdateArea}
-          onUpdateStreet={handleUpdateStreet}
-          onRemoveStreet={handleRemoveStreet}
-        />
-        <button onClick={handleSaveFeria} disabled={isLoading}>
-          {isLoading ? 'Guardando...' : 'Guardar Feria JSON'}
-        </button>
+      <div className="main-content" style={{ display: 'flex', flexDirection: 'row', height: '100vh' }}>
+        <div style={{ flex: 1, padding: '10px' }}>
+          {isLoading && <p>Cargando...</p>}
+          {error && <p style={{ color: 'red' }}>{error}</p>}
+          <Toolbar onAddRectangle={handleAddRectangle} onAddArea={handleAddArea} onAddStreet={handleAddStreet} />
+          <Canvas
+            rectangles={rectangles}
+            setRectangles={setRectangles}
+            onRectangleClick={handleRectangleClick}
+            planWidth={planWidth}
+            planHeight={planHeight}
+            setPlanWidth={setPlanWidth}
+            setPlanHeight={setPlanHeight}
+            areas={areas}
+            onRemoveArea={handleRemoveArea}
+            streets={streets}
+            onUpdateArea={handleUpdateArea}
+            onUpdateStreet={handleUpdateStreet}
+            onRemoveStreet={handleRemoveStreet}
+          />
+          <button onClick={handleSaveFeria} disabled={isLoading}>
+            {isLoading ? 'Guardando...' : 'Guardar Feria JSON'}
+          </button>
+        </div>
+        {isMenuOpen && (
+          <MenuDerecha
+            selectedPuesto={selectedPuesto} 
+            onSavePuesto={handleSavePuesto} 
+            onRemoveRectangle={handleRemoveRectangle}
+            onClose={() => setIsMenuOpen(false)}
+          />
+        )}
       </div>
     </div>
   );
@@ -195,4 +230,3 @@ export default Vista;
 function dispatch(_arg0: { payload: any; type: "user/setIdFeria"; }) {
   throw new Error('Function not implemented.');
 }
-

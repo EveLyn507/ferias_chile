@@ -12,6 +12,8 @@ import { AppStore } from '../../../redux/store';
 const PerfilFeriantes: React.FC = () => {
   const userMail = useSelector((state: AppStore) => state.user.email);
 
+  const [mailActual, setmailActual] = useState (userMail);
+
   const [perfilPublico, setPerfilPublico] = useState<boolean>(true);
   const [intereses, setIntereses] = useState<string[]>([]);
   const [fotoPerfil, setFotoPerfil] = useState<string>('');  
@@ -27,7 +29,7 @@ const PerfilFeriantes: React.FC = () => {
   useEffect(() => {
     const cargarPerfil = async () => {
       try {
-        const encodedMail = encodeURIComponent(userMail);  
+        const encodedMail = encodeURIComponent(mailActual);  
         const response = await fetch(`http://localhost:5000/api/perfil/${encodedMail}`);
         
         if (response.ok) {
@@ -53,7 +55,7 @@ const PerfilFeriantes: React.FC = () => {
     };
 
     cargarPerfil();  
-  }, [userMail]);
+  }, [mailActual]);
     
   const togglePerfil = () => {
     setPerfilPublico(!perfilPublico);
@@ -67,7 +69,7 @@ const PerfilFeriantes: React.FC = () => {
       intereses: intereses,
       correo: correo,
       contraseña: contraseña, 
-      userMail: userMail,
+      mailActual: mailActual,
       url_foto_perfil: fotoPerfil, 
     };
 
@@ -101,7 +103,7 @@ const PerfilFeriantes: React.FC = () => {
 
       <button onClick={guardarPerfil}>Guardar Perfil</button>
 
-      <FotoPerfil setFotoPerfil={setFotoPerfil} userMail={userMail} fotoPerfil={fotoPerfil} />
+      <FotoPerfil setFotoPerfil={setFotoPerfil} mailActual={mailActual} fotoPerfil={fotoPerfil} />
 
       <DatosPersonales 
         setDatosPersonales={setDatosPersonales} 

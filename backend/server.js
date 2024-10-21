@@ -13,7 +13,7 @@ const FerianteRoutes = require('./routes/Feriante.routes');
 const MunicipalRoutes = require('./routes/Municipal.routes');
 const PagosRoutes = require('./routes/Pagos.routes');
 const FeedRouter = require('./routes/Feed.routes');
-
+const puestoRoutes = require('./routes/Puesto.routes')
 dotenv.config();
 const app = express();
 const port = process.env.PORT || 5000;
@@ -53,7 +53,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/uploads', express.static('uploads'));  // foto feriante
 app.use(MunicipalRoutes); 
 app.use(PagosRoutes); 
-
+app.use(puestoRoutes);
 
 
 

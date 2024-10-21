@@ -4,7 +4,7 @@ export const PublicRoutes = {
     LOGINEN : 'login1',
     LOGINFE : 'login2',
     LOGINMUNI : 'login3',
-    HERRAMIENTA : 'Plano',
+    HERRAMIENTA : '/Plano/:id_feria',
     REGISTRO: 'registro',
     DATOSENCARGADO : 'actualizar-datos',
     DETALLEFERIA : "/feria/:id_feria",
@@ -17,6 +17,7 @@ export const PrivateRoutes = {
     PRIVATE : 'private',
     PERFILENCARGADO : '1',
     ADMINFERIA : '1/administracion/:id_feria',
+    BANCOS : '1/bancos',
 
     PERFILADMIN : '3',
 

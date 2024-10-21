@@ -1,16 +1,38 @@
- export interface Feria {
+/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
+
+  // SE USA EN -- FEED FERIAS -- ADMINISTRACION FERIAS
+
+  export interface ProgramaFeria {
+    lunes: string,   // '1' o '0'
+    martes: string,  // '1' o '0'
+    miercoles: string,  // '1' o '0'
+    jueves: string,  // '1' o '0'
+    viernes: string,  // '1' o '0'
+    sabado: string,  // '1' o '0'
+    domingo: string,  // '1' o '0'
+}
+
+
+//FEED  DE FERIAS 
+export interface Feria {
     id_feria: number;
     nombre_feria: string;
     comuna : string;
     region: string;
+    programa : ProgramaFeria[];
     
 }
 
 
+
+
+
+// SE USA EN -- CARD_FERIAS  -- CARD_FERIAS_ENCARGADO
 export interface FeriasProps {
     ferias: Feria[];
+  
 }
-
 
 
 export interface puesto {
@@ -25,7 +47,7 @@ export interface puesto {
     precio :number
 }
 
-// Define las props del componente, en este caso un array de objetos Feria
+// USADO EN 
 export interface PuestosProp {
     puestos: puesto[];
 }
@@ -54,5 +76,42 @@ export interface contrato {
     id_tipo_pago : number,
     estado_contrato : number,
     precio : number,
+
+}
+
+
+
+
+// INTERFACES HERRAMIENTA DE PLANOS
+
+
+
+ export interface PuestoData {
+    x: number;
+    y: number;
+    id: string;
+    fill: string;
+    width: number;
+    height: number;
+  }
+  
+export interface FeriaData {
+    areas: any[]; 
+    calles: any[]; 
+    puestos: PuestoData[];
+  }
+
+
+// se usa en bancos_home
+export interface DatosBank {
+    mail_banco: string,
+    nombre_asociado: string,
+    numero_cuenta: string,
+    encargado_mail: string
+}
+
+
+export interface listBanks {
+    bancos : DatosBank[]
 
 }
