@@ -79,3 +79,20 @@ export const  GuardarProgramacionFeria = async (programacion : ProgramaFeria ,id
   
     }
   } 
+
+
+
+
+  export const  deleteBank = async (mail_banco : string)  =>  {
+
+    try{
+      const response  = await axios.post(`http://localhost:5000/deleteBank` ,{mail_banco})
+      return response
+        
+
+  }
+  catch (error) {
+      console.error('Error al cargar los datos del banco : ', error);
+  
+    }
+  } 

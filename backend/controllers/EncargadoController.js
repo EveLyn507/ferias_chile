@@ -182,7 +182,7 @@ const saveDatosBank = async (req , res ,pool ) => {
 
   const {mail_banco, nombre_asociado, numero_cuenta, encargado_mail} = req.body.encargadoBank
   try {
-
+    
 
     const result = await pool.query (`
     INSERT INTO banco_encargado (mail_banco, nombre_asociado, numero_cuenta, encargado_mail)
@@ -198,7 +198,7 @@ const saveDatosBank = async (req , res ,pool ) => {
   ` , [mail_banco, nombre_asociado, numero_cuenta, encargado_mail])
   
   return res.status(200);
-  }catch {
+  }catch (err){
     console.log('error al iinsertar banco ' ,err)
     res.status(500).json({ error: 'Error al guardar banco' });
   }
@@ -234,6 +234,22 @@ try{
 
 }
 
+const deleteBank = async (req,res, pool) => {
+
+ const  {mail_banco} = req.body
+ 
+try{
+  await pool.query(` 
+    DELETE FROM banco_encargado 
+    WHERE mail_banco = $1 `, [mail_banco]) 
+    res.status(200).json({message : 'borrado correctamente'})
+}catch (err){
+
+  console.log('error al borrar banco ' ,err)
+  }
+}
+
+
 
 
 module.exports = {
@@ -244,5 +260,6 @@ module.exports = {
   saveProgramacionFeria,
   getPrograma,
   saveDatosBank,
-  getDatosBank
+  getDatosBank,
+  deleteBank
 };

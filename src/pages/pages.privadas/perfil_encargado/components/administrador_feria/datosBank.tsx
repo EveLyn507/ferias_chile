@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useSelector } from "react-redux";
-import { getDatosBank, saveDatosBank } from "../../services/admin_feria_fuctions";
+import { getDatosBank } from "../../services/admin_feria_fuctions";
 import { AppStore } from "../../../../../redux/store";
 import { useEffect, useState } from "react";
 import { DatosBank } from "../../../../models/interfaces";
@@ -30,39 +30,10 @@ export const DatosBanco = () => {
   }, []);
   console.log(encargadoBank)
   return (
-    <>
-
-    <div>
-        <label> Correo de la cuenta </label>
-        <input
-          type="text"
-          value={encargadoBank.mail_banco}
-          onChange={(e) => setEncargadoBank(prev => ({ ...prev, mail_banco: e.target.value }))}
-        />
-    </div>
-
-
-      <div>
-        <label> Número de cuenta </label>
-        <input
-          type="text"
-          value={encargadoBank.numero_cuenta}
-          onChange={(e) => setEncargadoBank(prev => ({ ...prev, numero_cuenta: e.target.value }))}
-        />
-      </div>
-
-      <div>
-        <label> Nombre asociado </label>
-        <input
-          type="text"
-          value={encargadoBank.nombre_asociado}
-          onChange={(e) => setEncargadoBank(prev => ({ ...prev, nombre_asociado: e.target.value }))}
-        />
-      </div>
-
-      <button onClick={() => saveDatosBank(encargadoBank)}>
-        Guardar datos
-      </button>
-    </>
+   <>
+   
+   <h1>aca deberia haber dropdown</h1>
+   
+   </>
   );
 };

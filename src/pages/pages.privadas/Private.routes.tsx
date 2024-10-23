@@ -9,7 +9,8 @@ import Perfil_feriante from './perfil_feriante/perfil_feriante.tsx';
 import { Perfil_admin } from './perfil_muni/home_administrador.tsx';
 import { Admin_de_feria } from './perfil_encargado/vista_admin_de_feria.tsx';
 import PerfilEn from './perfil_encargado/home_encargado.tsx';
-import { Bancos_home } from './perfil_encargado/components/bancos/bancos_home.tsx';
+import Bancos_home from './perfil_encargado/components/bancos/bancos_home.tsx';
+
 
 
 
