@@ -30,6 +30,7 @@ DROP TABLE IF EXISTS detalle_solicitud CASCADE;
 DROP TABLE IF EXISTS detalle_supervisor CASCADE;
 DROP TABLE IF EXISTS redes_sociales CASCADE;
 DROP TABLE IF EXISTS tipo_red CASCADE;
+DROP TABLE IF EXISTS estado_puesto CASCADE;
 
 CREATE TABLE administrador_municipal (
     user_mail       CHARACTER VARYING(80) NOT NULL,
@@ -79,8 +80,8 @@ CREATE TABLE detalle_programa (
     id_detalle_programa SERIAL NOT NULL,		
     id_feria       INTEGER NOT NULL,
     dia            CHARACTER VARYING(10) NOT NULL,
-    hora_inicio    DATE NOT NULL,
-    hora_termino   DATE NOT NULL,
+    hora_inicio    TIME WITH TIME ZONE NOT NULL,
+    hora_termino   TIME WITH TIME ZONE NOT NULL,
     detalle_armado TEXT NOT NULL,
     PRIMARY KEY (id_detalle_programa)
 );
@@ -156,8 +157,8 @@ ALTER TABLE feriante ADD CONSTRAINT feriante_pk PRIMARY KEY ( user_mail );
 
 CREATE TABLE horario_puesto (
     id_horario   SERIAL NOT NULL,
-    hora_inicio  DATE NOT NULL,
-    hora_termino DATE NOT NULL,
+    hora_inicio  TIME WITH TIME ZONE NOT NULL,
+    hora_termino TIME WITH TIME ZONE NOT NULL,
     precio       INTEGER NOT NULL,
     num_horario  INTEGER NOT NULL,
     id_puesto    INTEGER NOT NULL

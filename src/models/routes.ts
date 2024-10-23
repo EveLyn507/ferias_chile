@@ -19,8 +19,13 @@ export const PrivateRoutes = {
     ADMINFERIA : '1/administracion/:id_feria',
     BANCOS : '1/bancos',
 
-    PERFILADMIN : '3',
 
     PERFILFERIANTE : '2',
+
+    SUPERVISOR: '2/supervisor',
+
+    PERFILADMIN : '3',
+
+ 
 
 } 

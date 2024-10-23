@@ -10,6 +10,7 @@ import { Perfil_admin } from './perfil_muni/home_administrador.tsx';
 import { Admin_de_feria } from './perfil_encargado/vista_admin_de_feria.tsx';
 import PerfilEn from './perfil_encargado/home_encargado.tsx';
 import Bancos_home from './perfil_encargado/components/bancos/bancos_home.tsx';
+import { HomeSupervisor } from './perfil_feriante/components/supervisor/homeSupervisor.tsx';
 
 
 
@@ -33,6 +34,7 @@ function Privado(){
 
     <Route element={<RoleGuard rol={Roles.FERIANTE} />}>
       <Route path={PrivateRoutes.PERFILFERIANTE} element={<Perfil_feriante />} />
+      <Route path={PrivateRoutes.SUPERVISOR} element={< HomeSupervisor/>} />
     </Route>
 
     <Route element={<RoleGuard rol={Roles.MUNICIPAL} />}>
