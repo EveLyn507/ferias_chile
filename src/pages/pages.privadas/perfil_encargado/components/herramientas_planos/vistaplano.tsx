@@ -9,7 +9,7 @@ import { setIdFeria } from '../../../../../redux/states/user';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 
-interface Rectangle {
+export interface Rectangle {
   id: number;
   x: number;
   y: number;

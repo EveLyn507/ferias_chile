@@ -23,8 +23,8 @@ const getPuestos = async (req, res) => {
       );
       res.status(201).json(result.rows[0]);
     } catch (err) {
-      console.error('Error al crear puesto:', err);
-      res.status(500).send('Error al crear puesto');
+      console.error('Error al crear puesto:', err);  // Esto debería darte más detalles sobre el error
+      res.status(500).json({ error: 'Error al crear puesto', details: err.message });
     }
   };
   
