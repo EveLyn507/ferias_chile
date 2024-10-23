@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+
+import { idService } from "../../rxjs_id_feria/sharing.id_feria";
 
 interface Rectangle {
   id: number;
@@ -31,7 +32,7 @@ const MenuDerecha: React.FC<MenuDerechaProps> = ({
   onRemoveRectangle,
   onClose,
 }) => {
-  const { id_feria } = useParams<{ id_feria: string }>(); // Call useParams in the component body
+  const id_feria = idService.getId();
 
   const [descripcion, setDescripcion] = useState(selectedPuesto?.descripcion || '');
   const [tipoPuesto, setTipoPuesto] = useState(selectedPuesto?.tipoPuesto || '');

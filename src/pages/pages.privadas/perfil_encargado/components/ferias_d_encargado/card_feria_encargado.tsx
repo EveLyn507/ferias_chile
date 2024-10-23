@@ -4,6 +4,7 @@ import { OpenTiket } from "../../services/open_tikek";
 import { useSelector } from "react-redux";
 import { AppStore } from "../../../../../redux/store";
 import { FeriasProps } from "../../../../models/interfaces";
+import { idService } from "../../rxjs_id_feria/sharing.id_feria";
 
 export const Card_feria_encargado = ({ ferias }: FeriasProps) => {
   const mail = useSelector((state: AppStore) => state.user.email);
@@ -25,7 +26,11 @@ export const Card_feria_encargado = ({ ferias }: FeriasProps) => {
               </button>
 
               <li>
-                <Link to={`/Plano/${feria.id_feria}`}>Administrar plano</Link>
+              <Link 
+  to={`/Plano/${feria.id_feria}`} 
+  onClick={() => idService.setId(feria.id_feria)} >
+  Administrar plano
+</Link>
               </li>
             </ul>
           </div>
