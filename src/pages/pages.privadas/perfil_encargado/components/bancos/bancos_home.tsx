@@ -1,33 +1,36 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState } from "react"
-import { getDatosBank } from "../../services/admin_feria_fuctions"
-import { useSelector } from "react-redux"
-import { AppStore } from "../../../../../redux/store"
-import { DatosBank } from "../../../../models/interfaces"
-import { CardDatosBank } from "./card_bancos"
+import { useEffect } from "react";
+import { bancoService } from "./rxjs/sharingbankslist";
+import { useSelector } from "react-redux";
+import { AppStore } from "../../../../../redux/store";
+import { NuevoBanco } from "./newbank";
+import { CardDatosBank } from "./card_bancos";
 
+const BancosHome = () => {
+  const mail = useSelector((store: AppStore) => store.user.email); // Obtener el mail del usuario
 
-export const Bancos_home = () => {
+  useEffect(() => {
+    if (mail) {
+      bancoService.loadInitialBancos(mail); // Cargar la lista inicial de bancos
+    }
+  }, []); // Solo se ejecuta cuando cambia el mail
 
-    const mail = useSelector((store : AppStore) => store.user.email)
-
-    const [bancos , setBancos] = useState<DatosBank[]>([]);
-
-    useEffect(() => {   
-
-        getDatosBank(mail).then( (res: DatosBank[]) => {setBancos(res);}).
-        catch((error ) => { console.error("Error al cargar ferias:", error)})
-
-    }, [])
-
-    console.log(bancos)
   return (
+
     <>
-    <h2>holaaaaaaaaaaaaa</h2>
-
-
-        <CardDatosBank   bancos={bancos}/>
     
+   
+    <div>
+      
+      <NuevoBanco/>
+    </div>
+
+    <div>
+<CardDatosBank/>
+
+    </div>
     </>
-  )
-}
+  );
+};
+
+export default BancosHome;
