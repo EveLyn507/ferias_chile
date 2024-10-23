@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 interface Rectangle {
   id: number;
@@ -8,12 +9,14 @@ interface Rectangle {
   width: number;
   height: number;
   fill: string;
-  descripcion?: string;  
-  tipoPuesto?: string;   
-  estadoPuesto?: string; 
-  numero?: number; 
-  id_feria?: number; 
+  descripcion?: string;
+  tipoPuesto?: string;
+  estadoPuesto?: string;
+  numero?: number;
+  id_feria?: number;
 }
+
+const API_URL = 'http://localhost:5000';
 
 interface MenuDerechaProps {
   selectedPuesto: Rectangle | null;
@@ -28,43 +31,46 @@ const MenuDerecha: React.FC<MenuDerechaProps> = ({
   onRemoveRectangle,
   onClose,
 }) => {
+  const { id_feria } = useParams<{ id_feria: string }>(); // Call useParams in the component body
+
   const [descripcion, setDescripcion] = useState(selectedPuesto?.descripcion || '');
   const [tipoPuesto, setTipoPuesto] = useState(selectedPuesto?.tipoPuesto || '');
   const [estadoPuesto, setEstadoPuesto] = useState(selectedPuesto?.estadoPuesto || '');
+  const [numero, setNumero] = useState(selectedPuesto?.numero || 1); 
 
   useEffect(() => {
     if (selectedPuesto) {
       setDescripcion(selectedPuesto.descripcion || '');
       setTipoPuesto(selectedPuesto.tipoPuesto || '');
       setEstadoPuesto(selectedPuesto.estadoPuesto || '');
-      console.log('Selected Puesto:', selectedPuesto); // Log del puesto seleccionado
+      setNumero(selectedPuesto.numero || 1); 
+      console.log('Selected Puesto:', selectedPuesto); 
     }
   }, [selectedPuesto]);
 
   const handleSave = async () => {
+    if (!selectedPuesto) {
+      console.error('No hay puesto seleccionado.');
+      return;
+    }
+
+    console.log('ID Feria:', selectedPuesto.id_feria); 
     const updatedPuesto = {
-      numero: selectedPuesto?.numero || 1,
+      numero: numero, 
       id_tipo_puesto: tipoPuesto,
-      id_feria: selectedPuesto?.id_feria || 1,  // Verifica si esto tiene valor
+      id_feria: selectedPuesto.id_feria || id_feria, // Use id_feria from useParams
       descripcion: descripcion,
       id_estado_puesto: estadoPuesto,
     };
-  
-    console.log('Puesto a guardar:', updatedPuesto);
-    
-    // Verifica que selectedPuesto no sea undefined y tenga el id_feria
-    console.log('Selected Puesto antes de guardar:', selectedPuesto); 
-    console.log('ID Feria:', selectedPuesto?.id_feria);
-  
+
     try {
-      const response = await axios.post('/api/puestos', updatedPuesto);
+      const response = await axios.post(`${API_URL}/api/puestos`, updatedPuesto);
       console.log('Puesto creado:', response.data);
       onSavePuesto(response.data);
     } catch (error) {
       console.error('Error al crear puesto:', error);
     }
   };
-  
 
   if (!selectedPuesto) {
     return null;
@@ -72,49 +78,123 @@ const MenuDerecha: React.FC<MenuDerechaProps> = ({
 
   return (
     <div style={{
-      width: '200px',
+      width: '250px',
       height: '100vh',
       position: 'fixed',
       right: 0,
       top: 0,
       backgroundColor: '#f0f0f0',
-      padding: '10px',
+      padding: '20px',
+      boxShadow: '-2px 0 5px rgba(0, 0, 0, 0.1)',
+      overflowY: 'auto',
     }}>
-      <h3>Editar Puesto {selectedPuesto.id}</h3>
-      <label>
-        Descripción:
+      <h3 style={{ marginBottom: '20px' }}>Editar Puesto {selectedPuesto.id}</h3>
+      <div style={{ marginBottom: '15px' }}>
+        <label style={{ display: 'block', marginBottom: '5px' }}>
+          Descripción:
+        </label>
         <input
           type="text"
           value={descripcion}
           onChange={(e) => setDescripcion(e.target.value)}
+          style={{
+            width: '100%',
+            padding: '8px',
+            borderRadius: '4px',
+            border: '1px solid #ccc',
+            boxSizing: 'border-box',
+          }}
         />
-      </label>
-      <label>
-        Tipo de Puesto:
+      </div>
+      <div style={{ marginBottom: '15px' }}>
+        <label style={{ display: 'block', marginBottom: '5px' }}>
+          Tipo de Puesto:
+        </label>
         <input
           type="text"
           value={tipoPuesto}
           onChange={(e) => setTipoPuesto(e.target.value)}
+          style={{
+            width: '100%',
+            padding: '8px',
+            borderRadius: '4px',
+            border: '1px solid #ccc',
+            boxSizing: 'border-box',
+          }}
         />
-      </label>
-      <label>
-        Estado del Puesto:
+      </div>
+      <div style={{ marginBottom: '15px' }}>
+        <label style={{ display: 'block', marginBottom: '5px' }}>
+          Número:
+        </label>
+        <input
+          type="number"
+          value={numero}
+          onChange={(e) => setNumero(parseInt(e.target.value))}
+          style={{
+            width: '100%',
+            padding: '8px',
+            borderRadius: '4px',
+            border: '1px solid #ccc',
+            boxSizing: 'border-box',
+          }}
+        />
+      </div>
+      <div style={{ marginBottom: '20px' }}>
+        <label style={{ display: 'block', marginBottom: '5px' }}>
+          Estado del Puesto:
+        </label>
         <input
           type="text"
           value={estadoPuesto}
           onChange={(e) => setEstadoPuesto(e.target.value)}
+          style={{
+            width: '100%',
+            padding: '8px',
+            borderRadius: '4px',
+            border: '1px solid #ccc',
+            boxSizing: 'border-box',
+          }}
         />
-      </label>
-      <button onClick={handleSave}>Guardar</button>
+      </div>
+      <button onClick={handleSave} style={{
+        width: '100%',
+        padding: '10px',
+        backgroundColor: '#4CAF50',
+        color: 'white',
+        border: 'none',
+        borderRadius: '4px',
+        cursor: 'pointer',
+        marginBottom: '10px',
+      }}>
+        Guardar
+      </button>
       <button onClick={() => {
-        console.log('Eliminando puesto con ID:', selectedPuesto.id); // Log del ID del puesto a eliminar
+        console.log('Eliminando puesto con ID:', selectedPuesto.id);
         onRemoveRectangle(selectedPuesto.id);
-      }} style={{ marginBottom: '10px' }}>
+      }} style={{
+        width: '100%',
+        padding: '10px',
+        backgroundColor: '#f44336',
+        color: 'white',
+        border: 'none',
+        borderRadius: '4px',
+        cursor: 'pointer',
+        marginBottom: '10px',
+      }}>
         Eliminar Puesto
       </button>
       <button onClick={() => {
-        console.log('Cerrando el menú'); // Log cuando se cierra el menú
+        console.log('Cerrando el menú');
         onClose();
+      }} style={{
+        width: '100%',
+        padding: '10px',
+        backgroundColor: '#2196F3',
+        color: 'white',
+        border: 'none',
+        borderRadius: '4px',
+        cursor: 'pointer',
       }}>
         Cerrar
       </button>
