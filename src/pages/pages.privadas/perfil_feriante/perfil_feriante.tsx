@@ -8,7 +8,6 @@ import FotoPerfil from './FotoPerfil';
 import HistorialActividades from './HistorialActividades';
 import { useSelector } from 'react-redux';
 import { AppStore } from '../../../redux/store';
-import { PrivateRoutes } from '../../../models';
 import { Link } from 'react-router-dom';
 
 const PerfilFeriantes: React.FC = () => {
@@ -115,7 +114,7 @@ const PerfilFeriantes: React.FC = () => {
     </div>
 
     <div>
-      <Link to={PrivateRoutes.SUPERVISOR}></Link>
+      <Link to='2/supervisor'> SUPERVISOR </Link>
 
     </div>
 

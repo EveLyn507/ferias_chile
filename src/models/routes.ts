@@ -18,6 +18,7 @@ export const PrivateRoutes = {
     PERFILENCARGADO : '1',
     ADMINFERIA : '1/administracion/:id_feria',
     BANCOS : '1/bancos',
+    TEAM : '1/TEAM',
 
 
     PERFILFERIANTE : '2',
