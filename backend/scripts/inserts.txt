@@ -112,6 +112,22 @@ insert into estado_feria (id_estado,estado)
 values (4,'Aceptada');
 -- FERIAS DE LOS ENCARGADOS 
 
+
+insert into estado_horario_feria (id_estado_programa,estado)
+values (1,'Armando');
+
+insert into estado_horario_feria (id_estado_programa,estado)
+values (2,'Trabajando');
+
+insert into estado_horario_feria (id_estado_programa,estado)
+values (3,'En espera');
+
+insert into estado_horario_feria (id_estado_programa,estado)
+values (1,'Aceptada');
+
+
+-- FERIAS DE LOS ENCARGADOS 
+
 INSERT INTO feria (nombre,id_comuna,id_region,encargado_mail,id_estado)
 VALUES ('feria 1', 1, 1,'1@1',1);
 

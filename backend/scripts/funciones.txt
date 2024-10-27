@@ -7,20 +7,17 @@ DROP FUNCTION IF EXISTS insertar_solicitud_apertura(CHARACTER VARYING, CHARACTER
 
 
 
--- OBTENER LAS FERIAS EN FEED FERIAS
-CREATE OR REPLACE FUNCTION obtener_ferias()
+
+
+CREATE OR REPLACE FUNCTION obtener_ferias_paginado(
+    p_limit INTEGER,
+    p_offset INTEGER
+)
 RETURNS TABLE (
     id_feria INTEGER,
     nombre_feria CHARACTER VARYING(80),
     comuna CHARACTER VARYING(80),
-    region CHARACTER VARYING(100),
-    lunes CHAR(1),
-    martes CHAR(1),
-    miercoles CHAR(1),
-    jueves CHAR(1),
-    viernes CHAR(1),
-    sabado CHAR(1),
-    domingo CHAR(1)
+    region CHARACTER VARYING(100)
 ) AS $$
 BEGIN
     RETURN QUERY
@@ -28,29 +25,62 @@ BEGIN
         f.id_feria, 
         f.nombre AS nombre_feria, 
         c.comuna, 
-        g.nombre AS region,
-        p.lunes,
-        p.martes,
-        p.miercoles,
-        p.jueves,
-        p.viernes,
-        p.sabado,
-        p.domingo
+        g.nombre AS region
     FROM 
         public.feria AS f 
     JOIN 
         COMUNA c ON f.id_comuna = c.id_comuna 
     JOIN 
-        REGION g ON c.id_region = g.id_region 
-    LEFT JOIN 
-        programa_feria p ON f.id_feria = p.id_feria; -- Se utiliza un LEFT JOIN para incluir ferias sin programación
+        REGION g ON c.id_region = g.id_region
+    LIMIT p_limit
+    OFFSET p_offset;
 END;
 $$ LANGUAGE plpgsql;
 
 
 
+
+
+CREATE OR REPLACE FUNCTION obtener_horarios_para_ferias(p_ferias INTEGER[])
+RETURNS TABLE (
+    id_feria INTEGER,
+    dia CHARACTER VARYING(10),
+    hora_inicio TIME WITH TIME ZONE,
+    hora_termino TIME WITH TIME ZONE,
+    dia_armado DATE,
+    hora_inicio_armado TIME WITH TIME ZONE,
+    hora_termino_armado TIME WITH TIME ZONE
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        h.id_feria,
+        h.dia,
+        h.hora_inicio,
+        h.hora_termino,
+        h.dia_armado,
+        h.hora_inicio_armado,
+        h.hora_termino_armado
+    FROM 
+        detalle_programa_feria h
+    WHERE 
+        h.id_feria = ANY(p_ferias);
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+
+
+
+
+
+
+
+
+
 ------------------
--- TRAE LOS PUESTOS + SU HORARIO + feria a la que pertenece
+-- TRAE LOS PUESTOS y SU HORARIO + feria a la que pertenece
 
 CREATE OR REPLACE FUNCTION traer_puestos_feria(id_de_feria INTEGER)
 RETURNS TABLE (
@@ -104,14 +134,8 @@ RETURNS TABLE (
     comuna character varying(80),
     region character varying(80),
     estado character varying(80),
-    puestos_actuales INT,
-    progra_lunes CHAR(1),
-    progra_martes CHAR(1),
-    progra_miercoles CHAR(1),
-    progra_jueves CHAR(1),
-    progra_viernes CHAR(1),
-    progra_sabado CHAR(1),
-    progra_domingo CHAR(1)
+    puestos_actuales INT
+
 ) AS $$
 BEGIN
     RETURN QUERY
@@ -122,19 +146,12 @@ BEGIN
         g.nombre AS region,
         es.estado,
         contar_puestos_actuales(f.id_feria) AS puestos_actuales,
-        pf.lunes AS progra_lunes,
-        pf.martes AS progra_martes,
-        pf.miercoles AS progra_miercoles,
-        pf.jueves AS progra_jueves,
-        pf.viernes AS progra_viernes,
-        pf.sabado AS progra_sabado,
-        pf.domingo AS progra_domingo
+
     FROM encargado_feria ef
     JOIN feria f ON ef.user_mail = f.encargado_mail
     JOIN comuna c ON f.id_comuna = c.id_comuna
     JOIN region g ON c.id_region = g.id_region
     JOIN estado_feria es ON f.id_estado = es.id_estado
-    LEFT JOIN programa_feria pf ON f.id_feria = pf.id_feria  -- Agregar la programación de la feria
     WHERE ef.user_mail = mail;  -- Uso del parámetro 'mail' correctamente
 END;
 $$ LANGUAGE plpgsql;

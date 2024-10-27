@@ -8,6 +8,7 @@ import FotoPerfil from './FotoPerfil';
 import HistorialActividades from './HistorialActividades';
 import { useSelector } from 'react-redux';
 import { AppStore } from '../../../redux/store';
+import { Link } from 'react-router-dom';
 
 const PerfilFeriantes: React.FC = () => {
   const userMail = useSelector((state: AppStore) => state.user.email);
@@ -86,6 +87,7 @@ const PerfilFeriantes: React.FC = () => {
   };
 
   return (
+    <>
     <div>
       <h1>Perfil del Comerciante</h1>
 
@@ -110,6 +112,13 @@ const PerfilFeriantes: React.FC = () => {
       />
       <HistorialActividades />
     </div>
+
+    <div>
+      <Link to='2/supervisor'> SUPERVISOR </Link>
+
+    </div>
+
+   </>
   );
 };
 

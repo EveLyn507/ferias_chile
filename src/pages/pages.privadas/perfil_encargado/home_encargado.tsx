@@ -19,7 +19,7 @@ import { PrivateRoutes } from "../../../models"
       </div>
       <li> <Link to={`${PrivateRoutes.BANCOS}`} >BANCOS</Link></li>
 
-
+      <li> <Link to="TEAM" >EMPLEADOS </Link></li>
 
     </>
 

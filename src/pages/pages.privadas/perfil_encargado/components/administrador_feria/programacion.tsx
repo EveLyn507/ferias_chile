@@ -3,49 +3,19 @@ import { useParams } from 'react-router-dom';
 import { ProgramaFeria } from '../../../../models/interfaces';
 import { getProgramaFeria, GuardarProgramacionFeria } from '../../services/admin_feria_fuctions';
 
-
-// Lista de días de la semana
-const daysOfWeek = [
-  { name: 'lunes', label: 'Lunes' },
-  { name: 'martes', label: 'Martes' },
-  { name: 'miercoles', label: 'Miércoles' },
-  { name: 'jueves', label: 'Jueves' },
-  { name: 'viernes', label: 'Viernes' },
-  { name: 'sabado', label: 'Sábado' },
-  { name: 'domingo', label: 'Domingo' },
-];
-
 const BooleanDaysSelector = () => {
-  const { id_feria } = useParams<{ id_feria: string }>() ;
+  const { id_feria } = useParams<{ id_feria: string }>();
   const idFeria = id_feria ?? ''; // O puedes usar un valor como '0' o 'default'
 
-  const [actualPrograma, setActual] = useState<ProgramaFeria>({
-    lunes: '0',
-    martes: '0',
-    miercoles: '0',
-    jueves: '0',
-    viernes: '0',
-    sabado: '0',
-    domingo: '0',
-  });
-
-  const [newPrograma, setNew] = useState<ProgramaFeria>({
-    lunes: '0',
-    martes: '0',
-    miercoles: '0',
-    jueves: '0',
-    viernes: '0',
-    sabado: '0',
-    domingo: '0',
-  });
-
+  const [actualPrograma, setActual] = useState<ProgramaFeria[]>([]); // Lista de programas
+  const [newPrograma, setNew] = useState<ProgramaFeria[]>([]); // Lista de nuevos programas
   const [isModified, setIsModified] = useState(false);
 
   useEffect(() => {
     getProgramaFeria(idFeria)
-      .then((res: ProgramaFeria) => {
-        setActual(res);
-        setNew(res);
+      .then((res: ProgramaFeria[]) => {
+        setActual(res); // Actualiza con la lista de programas actuales
+        setNew([...res]); // Inicializa la nueva lista con los valores actuales
       })
       .catch((error) => {
         console.error("Error al cargar la programación:", error);
@@ -57,13 +27,14 @@ const BooleanDaysSelector = () => {
     setIsModified(JSON.stringify(actualPrograma) !== JSON.stringify(newPrograma));
   }, [actualPrograma, newPrograma]);
 
-  // Maneja el cambio de los checkboxes
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, checked } = e.target;
-    setNew((prevState) => ({
-      ...prevState,
-      [name]: checked ? '1' : '0', // Cambia a '1' o '0'
-    }));
+  // Maneja el cambio de los inputs de texto
+  const handleInputChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setNew((prevState) =>
+      prevState.map((programa, i) =>
+        i === index ? { ...programa, [name]: value } : programa
+      )
+    );
   };
 
   // Función para enviar los datos
@@ -71,8 +42,7 @@ const BooleanDaysSelector = () => {
     if (idFeria !== '') {
       await GuardarProgramacionFeria(newPrograma, idFeria);
       console.log('Datos enviados:', newPrograma);
-      setActual(newPrograma)
-    
+      setActual(newPrograma); // Actualiza el estado actual con los datos nuevos
     } else {
       console.log('Error: id_feria es null o undefined', idFeria);
     }
@@ -80,16 +50,38 @@ const BooleanDaysSelector = () => {
 
   return (
     <div>
-      {daysOfWeek.map((day) => (
-        <label key={day.name}>
-          <input
-            type="checkbox"
-            name={day.name}
-            checked={newPrograma[day.name as keyof ProgramaFeria] === '1'}  // Refleja el nuevo estado
-            onChange={handleCheckboxChange}
-          />
-          {day.label}
-        </label>
+      {newPrograma.map((programa, index) => (
+        <div key={index} style={{ marginBottom: '20px' }}>
+          <label>
+            Día:
+            <input
+              type="text"
+              name="dia"
+              value={programa.dia}
+              onChange={(e) => handleInputChange(index, e)}
+            />
+          </label>
+          <br />
+          <label>
+            Hora de inicio:
+            <input
+              type="time"
+              name="hora_inicio"
+              value={programa.hora_inicio}
+              onChange={(e) => handleInputChange(index, e)}
+            />
+          </label>
+          <br />
+          <label>
+            Hora de término:
+            <input
+              type="time"
+              name="hora_termino"
+              value={programa.hora_termino}
+              onChange={(e) => handleInputChange(index, e)}
+            />
+          </label>
+        </div>
       ))}
 
       <button onClick={sendData} disabled={!isModified}>

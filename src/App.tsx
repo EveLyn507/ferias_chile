@@ -37,9 +37,6 @@ function App() {
               <Route element= {<AuthGuard privateValidation={true} />}>
                 <Route  path={`${PrivateRoutes.PRIVATE}/*`} element= {<Privado/>} />
               </Route>
-
-              
-
             </NotFound>
           </BrowserRouter>
         </Provider>
