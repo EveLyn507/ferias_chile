@@ -70,7 +70,7 @@ res.json(result.rows)
 //HERRAMIENTA DE PLANOS
 // Controlador para guardar la feria
 const saveFeria = async (req, res) => {
-  const { puestos, areas, calles, id_feria } = req.body; // Incluye id_feria en la desestructuración
+  const { puestos, areas, calles, planWidth, planHeight, id_feria } = req.body; // Incluye id_feria en la desestructuración
   const pool = req.pool;
 
   try {
@@ -81,6 +81,8 @@ const saveFeria = async (req, res) => {
       puestos,
       areas,
       calles,
+      planWidth, 
+      planHeight
     };
     if (existingFeria.rows.length > 0) {
       // Actualizar el registro existente

@@ -37,6 +37,17 @@ const StreetPage: React.FC<StreetPageProps> = ({ streets, onRemoveStreet, onUpda
     onUpdateStreet(streetId, { points: updatedPoints });
   };
 
+  const handleWidthControl = (e: any, streetId: number) => {
+    const street = streets.find((street) => street.id === streetId);
+    if (!street) return;
+
+    // Calculamos el nuevo ancho usando la distancia entre el primer punto y el controlador
+    const dx = e.target.x() - street.points[0];
+    const dy = e.target.y() - street.points[1];
+    const newWidth = Math.sqrt(dx * dx + dy * dy); // Calcula el ancho como la distancia entre puntos
+    onUpdateStreet(streetId, { width: newWidth });
+  };
+
   return (
     <>
       {streets.map((street) => (
@@ -66,6 +77,17 @@ const StreetPage: React.FC<StreetPageProps> = ({ streets, onRemoveStreet, onUpda
             }
             return null;
           })}
+          {/* Controlador para modificar el ancho de la calle */}
+          {selectedStreetId === street.id && (
+            <Circle
+              x={street.points[0] + (street.points[2] - street.points[0]) / 2} // Centrado en el punto medio de la calle
+              y={street.points[1] + (street.points[3] - street.points[1]) / 2} // Centrado en el punto medio de la calle
+              radius={6}
+              fill="blue"
+              draggable
+              onDragMove={(e) => handleWidthControl(e, street.id)}
+            />
+          )}
         </React.Fragment>
       ))}
     </>

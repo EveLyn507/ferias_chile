@@ -35,9 +35,14 @@ export const userSlice = createSlice({
       persistLocalStorage<UserInfo>(UserKey, result);
       return result;
     },
+    setIdPuesto: (state, action) => {
+      const result = { ...state, id_puesto: action.payload };
+      persistLocalStorage<UserInfo>(UserKey, result);
+      return result;
+    },
   },
 });
 
-export const { createUser, updateUser, resetUser, setIdFeria } = userSlice.actions;
+export const { createUser, updateUser, resetUser, setIdFeria, setIdPuesto } = userSlice.actions;
 
 export default userSlice.reducer;

@@ -1,7 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Stage, Layer, Rect, Line } from 'react-konva';
+import { Stage, Layer, Rect, Line, Image as KonvaImage, Text } from 'react-konva';
+import { useState, useEffect } from 'react';
 import AreaPage from './Areapage';
 import StreetPage from './StreetPage';
+import React from 'react';
 
 interface Rectangle {
   id: number;
@@ -33,45 +34,36 @@ const Canvas: React.FC<CanvasProps> = ({
   setRectangles,
   planWidth,
   planHeight,
-  setPlanWidth,  
+  setPlanWidth,
   setPlanHeight,
-  areas, 
+  areas,
   onRemoveArea,
   streets,
   onUpdateArea,
   onUpdateStreet,
   onRemoveStreet,
-  onRectangleClick, 
+  onRectangleClick,
 }) => {
-  const planX = 50; 
-  const planY = 50; 
-  const gridSize = 50; 
-  const controlSize = 10;
+  const planX = 50;
+  const planY = 50;
+  const gridSize = 50;
+  const controlSize = 8;
 
-  const gridLines: JSX.Element[] = [];
+  const [image, setImage] = useState<HTMLImageElement | null>(null);
 
-  // Crear las líneas de la cuadrícula
-  for (let i = 0; i < planWidth / gridSize; i++) {
-    gridLines.push(
-      <Line
-        key={`v-${i}`}
-        points={[planX + i * gridSize, planY, planX + i * gridSize, planY + planHeight]}
-        stroke="#ddd"
-        strokeWidth={1}
-      />
-    );
-  }
+  useEffect(() => {
+    const img = new window.Image();
+    img.src = '/imagenes/puesto.png';
+    img.onload = () => {
+      setImage(img);
+    };
+  }, []);
 
-  for (let i = 0; i < planHeight / gridSize; i++) {
-    gridLines.push(
-      <Line
-        key={`h-${i}`}
-        points={[planX, planY + i * gridSize, planX + planWidth, planY + i * gridSize]}
-        stroke="#ddd"
-        strokeWidth={1}
-      />
-    );
-  }
+  const calculateDimensionsInMeters = (width: number, height: number) => {
+    const metersWidth = (width / gridSize) * 2; // Convertimos basado en tamaño base de 2 metros
+    const metersHeight = (height / gridSize) * 2;
+    return { metersWidth, metersHeight };
+  };
 
   return (
     <Stage width={window.innerWidth} height={window.innerHeight}>
@@ -86,8 +78,25 @@ const Canvas: React.FC<CanvasProps> = ({
           strokeWidth={2}
         />
 
-        {gridLines}
+        {Array.from({ length: planWidth / gridSize }, (_, i) => (
+          <Line
+            key={`v-${i}`}
+            points={[planX + i * gridSize, planY, planX + i * gridSize, planY + planHeight]}
+            stroke="#ddd"
+            strokeWidth={1}
+          />
+        ))}
 
+        {Array.from({ length: planHeight / gridSize }, (_, i) => (
+          <Line
+            key={`h-${i}`}
+            points={[planX, planY + i * gridSize, planX + planWidth, planY + i * gridSize]}
+            stroke="#ddd"
+            strokeWidth={1}
+          />
+        ))}
+
+        {/* Controlador para redimensionar el plano */}
         <Rect
           x={planX + planWidth - controlSize / 2}
           y={planY + planHeight - controlSize / 2}
@@ -96,36 +105,65 @@ const Canvas: React.FC<CanvasProps> = ({
           fill="blue"
           draggable
           dragBoundFunc={(pos) => {
-            const newX = Math.max(planX + controlSize, pos.x); 
-            const newY = Math.max(planY + controlSize, pos.y); 
-            setPlanWidth(newX - planX); 
-            setPlanHeight(newY - planY); 
-            return { x: newX, y: newY };
+            const newWidth = Math.max(controlSize, pos.x - planX);
+            const newHeight = Math.max(controlSize, pos.y - planY);
+            setPlanWidth(newWidth);
+            setPlanHeight(newHeight);
+            return pos;
           }}
         />
       </Layer>
 
       <Layer>
-        {rectangles.map((rect) => (
-          <Rect
-            key={rect.id}
-            x={rect.x}
-            y={rect.y}
-            width={rect.width}
-            height={rect.height}
-            fill={rect.fill}
-            draggable
-            onClick={() => onRectangleClick(rect.id)} 
-            onDragEnd={(e) => {
-              const updatedRectangles = rectangles.map(r => 
-                r.id === rect.id
-                  ? { ...r, x: e.target.x(), y: e.target.y() }
-                  : r
-              );
-              setRectangles(updatedRectangles);
-            }}
-          />
-        ))}
+        {rectangles.map((rect) => {
+          const { metersWidth, metersHeight } = calculateDimensionsInMeters(rect.width, rect.height);
+
+          return (
+            <React.Fragment key={rect.id}>
+              <KonvaImage
+                image={image || undefined}
+                x={rect.x}
+                y={rect.y}
+                width={rect.width}
+                height={rect.height}
+                draggable
+                onClick={() => onRectangleClick(rect.id)}
+                onDragEnd={(e) => {
+                  const updatedRectangles = rectangles.map((r) =>
+                    r.id === rect.id ? { ...r, x: e.target.x(), y: e.target.y() } : r
+                  );
+                  setRectangles(updatedRectangles);
+                }}
+              />
+              <Text
+                x={rect.x}
+                y={rect.y - 20}
+                text={`${metersWidth.toFixed(2)}m x ${metersHeight.toFixed(2)}m`}
+                fontSize={12}
+                fill="black"
+              />
+              <Rect
+                x={rect.x + rect.width - controlSize / 2}
+                y={rect.y + rect.height - controlSize / 2}
+                width={controlSize}
+                height={controlSize}
+                fill="red"
+                draggable
+                dragBoundFunc={(pos) => {
+                  const newWidth = Math.max(controlSize, pos.x - rect.x);
+                  const newHeight = Math.max(controlSize, pos.y - rect.y);
+
+                  const updatedRectangles = rectangles.map((r) =>
+                    r.id === rect.id ? { ...r, width: newWidth, height: newHeight } : r
+                  );
+                  setRectangles(updatedRectangles);
+
+                  return pos;
+                }}
+              />
+            </React.Fragment>
+          );
+        })}
         <AreaPage areas={areas} onRemoveArea={onRemoveArea} onUpdateArea={onUpdateArea} />
         <StreetPage streets={streets} onRemoveStreet={onRemoveStreet} onUpdateStreet={onUpdateStreet} />
       </Layer>
