@@ -31,15 +31,12 @@ function App() {
               <Route path={PublicRoutes.LOGIN} element = {<LoginHome/>} />
               <Route path={PublicRoutes.REGISTRO} element = {<Registro/>} />
               <Route path={PublicRoutes.PAGOS2} element = {<PaymentButton/>} />
-              <Route path={PublicRoutes.DATOSENCARGADO} element={<PerfilFeriantes />} />
+              <Route path={PublicRoutes.DATOSENCARGADO} element={<PerfilFeriantes />} />        
               <Route path={`${PublicRoutes.DETALLEFERIA}`} element={<View_detalle_feria />} />
               <Route path={`${PublicRoutes.PAGOOK}`} element={<ConfirmPayment />} />
               <Route element= {<AuthGuard privateValidation={true} />}>
                 <Route  path={`${PrivateRoutes.PRIVATE}/*`} element= {<Privado/>} />
               </Route>
-
-              
-
             </NotFound>
           </BrowserRouter>
         </Provider>

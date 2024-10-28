@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { saveFeria, getFeria ,get_feria_Encargado ,abrirTiketFeria, saveProgramacionFeria ,getPrograma ,saveDatosBank,getDatosBank, deleteBank} = require('../controllers/EncargadoController');
+const puestoRoutes = require('./Puesto.routes');
+const { saveFeria, getFeria ,get_feria_Encargado ,abrirTiketFeria, UpdateProgramaFeria ,getPrograma ,saveDatosBank,getDatosBank, deleteBank,getVacantesFeria,SaveVacantesFeria, deleteVacante,updateVacanteFeria} = require('../controllers/EncargadoController');
 
 
 //PERFIL ENCARGADO 
@@ -38,7 +39,7 @@ router.post('/tiket', (req , res) => {
 
 router.post('/administracion/:id_feria', (req, res) => {
 const pool = req.pool
-  saveProgramacionFeria(req,res,pool)
+UpdateProgramaFeria(req,res,pool)
 
 }) 
 
@@ -68,5 +69,30 @@ router.post('/getBank', (req, res) => {
     const pool = req.pool
     deleteBank(req,res,pool)
     }) 
+
+
+
+  router.post('/GetVacantesFeria', (req, res) => {
+    const pool = req.pool
+    getVacantesFeria(req,res,pool)
+    }) 
+
+
+
+router.post('/SaveVacantesFeria', (req, res) => {
+  const pool = req.pool
+  SaveVacantesFeria(req,res,pool)
+  }) 
+
+  router.post('/updateVacanteFeria', (req, res) => {
+    const pool = req.pool
+    updateVacanteFeria(req,res,pool)
+    }) 
+
+  router.post('/deleteVacante', (req, res) => {
+    const pool = req.pool
+    deleteVacante(req,res,pool)
+    }) 
+    
 
 module.exports = router;

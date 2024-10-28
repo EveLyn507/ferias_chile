@@ -1,39 +1,59 @@
 
 // TRAE LA FERIA , PROGRAMACION DE LA FERIA Y LA UBICACION
+
+
+// Función para obtener ferias con paginación
+const getFeriasPaginado = async (limit, offset,pool) => {
+  const result = await pool.query('SELECT * FROM obtener_ferias_paginado($1, $2)', [limit, offset]);
+  return result.rows;
+};
+
+// Función para obtener horarios de un grupo de ferias
+const getHorariosFerias = async (feriasIds,pool) => {
+  const result = await pool.query('SELECT * FROM obtener_horarios_ferias_feedFerias($1)', [feriasIds]);
+  return result.rows;
+};
+
+
+
 const get_feria = async (req , res , pool) => {
-    try {
-      const result = await pool.query('SELECT * FROM obtener_ferias();');
-  
-      // Mapea los resultados para transformar la programación a una lista
-      const ferias = result.rows.map(feria => {
-        // Crea la lista de programación a partir de los valores de los días
-        const programa = [{
-          lunes: feria.lunes,
-          martes: feria.martes,
-          miercoles: feria.miercoles,
-          jueves: feria.jueves,
-          viernes: feria.viernes,
-          sabado: feria.sabado,
-          domingo: feria.domingo
-        }];
-  
-        return {
-          id_feria: feria.id_feria,
-          nombre_feria: feria.nombre_feria,
-          comuna: feria.comuna,
-          region: feria.region,
-          programa: programa // Aquí asignas la programación en formato de lista
-        };
-      });
-  
-      res.json(ferias)// Devuelve el array de ferias transformadas
-    } catch (err) {
-      console.error('Error al obtener ferias', err);
-      throw err; // Maneja el error según tus necesidades
-    }
+  const { page = 1, limit = 10 } = req.query; // Paginación: página y límite
+  const offset = (page - 1) * limit;
+
+  try {
+    // 1. Obtiene las ferias paginadas
+    const ferias = await getFeriasPaginado(limit, offset,pool);
+    
+    // 2. Obtiene los IDs de las ferias para la página actual
+    const feriasIds = ferias.map(feria => feria.id_feria);
+    
+    // 3. Obtiene los horarios solo para esas ferias
+    const horarios = await getHorariosFerias(feriasIds,pool);
+
+    // 4. Combina las ferias con sus horarios
+    const feriasConHorarios = ferias.map(feria => {
+      const horariosFeria = horarios.filter(horario => horario.id_feria === feria.id_feria);
+      return {
+        ...feria,
+        horarios: horariosFeria
+      };
+    });
+
+
+    res.json(feriasConHorarios);
+  } catch (error) {
+    console.error('Error al obtener ferias:', error);
+    res.status(500).json({ error: 'Error al obtener ferias' });
+  }
+
   };
 
 
+
+
+
+
+  
 const get_puestos_feria = async (req, res, pool) => {
     const id_feria = parseInt(req.params.id_feria, 10); // Convertir a entero
 

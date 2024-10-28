@@ -4,14 +4,47 @@
   // SE USA EN -- FEED FERIAS -- ADMINISTRACION FERIAS
 
   export interface ProgramaFeria {
-    lunes: string,   // '1' o '0'
-    martes: string,  // '1' o '0'
-    miercoles: string,  // '1' o '0'
-    jueves: string,  // '1' o '0'
-    viernes: string,  // '1' o '0'
-    sabado: string,  // '1' o '0'
-    domingo: string,  // '1' o '0'
+    id_feria: number;
+    dia: string;
+    hora_inicio: string; // Cambiado a string para representar el tiempo
+    hora_termino: string; // Cambiado a string para representar el tiempo
+    id_dia_armado: number;
+    hora_inicio_armado: string; // Cambiado a string para representar el tiempo
+    hora_termino_armado: string; // Cambiado a string para representar el tiempo
+    activo : boolean
 }
+
+export interface listHorario{
+    horarios : ProgramaFeria[]
+}
+
+
+
+// USO EN -- admin feria -- feriante postulaciones
+
+export interface horarioVacante {
+    id_detalle_horario : number | null,
+    id_vacante : number | null,
+    id_dia: number ,
+    hora_inicio: string,
+    hora_termino: string
+
+}
+
+
+export interface vacante {
+    id_vacante : number,
+    feriante_mail : string | null,
+    supervisa_id_feria :number,
+    id_rol : number,
+    ingreso : string,
+    termino : string,
+    estado_vacante : number
+    horarios: horarioVacante[]
+  }
+
+
+
 
 
 //FEED  DE FERIAS 
@@ -20,7 +53,7 @@ export interface Feria {
     nombre_feria: string;
     comuna : string;
     region: string;
-    programa : ProgramaFeria[];
+    horarios : ProgramaFeria[];
     
 }
 

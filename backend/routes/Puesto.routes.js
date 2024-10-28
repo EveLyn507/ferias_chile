@@ -2,7 +2,7 @@
 
 const express = require('express');
 const router = express.Router();
-const { getPuestos, createPuesto, deletePuesto } = require('../controllers/PuestoController');
+const { getPuestos, createPuesto, deletePuesto, insertHorarioPuesto } = require('../controllers/PuestoController');
 
 // Obtener todos los puestos de una feria
 router.get('/api/puestos/:id_feria', getPuestos);
@@ -13,5 +13,7 @@ router.post('/api/puestos', createPuesto);
 
 // Eliminar un puesto por ID
 router.delete('/api/puestos/:id_puesto', deletePuesto);
+
+router.post('/api/horario_puesto', insertHorarioPuesto);
 
 module.exports = router;

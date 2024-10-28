@@ -11,6 +11,8 @@ const {
   cargarIntereses,
   actualizarCorreo,
   actualizarContraseña,
+  getVacantesVacias,
+  savePostulacion
 } = require('../controllers/FerianteController');
 
 // Rutas para actualizar y cargar datos personales
@@ -54,5 +56,18 @@ router.post('/api/actualizar-correo', (req, res) => {
 router.post('/api/actualizar-contrasena', (req, res) => {
   actualizarContraseña(req, res);
 });
+
+
+//INICIO MODULO POSTULACIONES 
+router.post('/getVacantes', (req, res) => {
+  const pool = req.pool;
+  getVacantesVacias(req, res, pool);
+});
+
+router.post('/savePostulacion', (req, res) => {
+  const pool = req.pool;
+  savePostulacion(req, res, pool);
+});
+
 
 module.exports = router;

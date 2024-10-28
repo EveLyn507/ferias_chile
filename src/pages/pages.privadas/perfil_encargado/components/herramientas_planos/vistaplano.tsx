@@ -9,7 +9,7 @@ import { setIdFeria } from '../../../../../redux/states/user';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 
-interface Rectangle {
+export interface Rectangle {
   id: number;
   x: number;
   y: number;
@@ -40,6 +40,8 @@ interface FeriaData {
   puestos: Rectangle[];
   areas: Area[];
   calles: Street[];
+  planWidth: number; 
+  planHeight: number; 
 }
 
 const API_URL = 'http://localhost:5000'; // Cambia a la URL de tu servidor
@@ -63,10 +65,11 @@ const Vista = () => {
     try {
       const response = await axios.get(`${API_URL}/api/feria/${id_feria}`);
       const data: FeriaData = response.data;
-      
       setRectangles(data.puestos);
       setAreas(data.areas);
       setStreets(data.calles);
+      setPlanWidth(data.planWidth); // Establecer el ancho del plano
+      setPlanHeight(data.planHeight);
     } catch (error) {
       console.error('Error al obtener los datos de la feria:', error);
       setError('Error al obtener los datos de la feria');
@@ -155,6 +158,8 @@ const Vista = () => {
       areas: areas,
       calles: streets,
       id_feria: id_feria,
+      planWidth: planWidth, // Añade el ancho del plano
+      planHeight: planHeight // Añade el alto del plano
     };
 
     try {
