@@ -1,39 +1,58 @@
 const express = require('express');
 const router = express.Router();
-const { guardarPerfil, obtenerPerfil, guardarFotoPerfil, cargarFotoPerfil, actualizarCorreo, actualizarContraseña } = require('../controllers/FerianteController');
+const {
+  actualizarDatosPersonales,
+  cargarDatosPersonales,
+  guardarBiografia,
+  cargarBiografia,
+  guardarFotoPerfil,
+  cargarFotoPerfil,
+  actualizarIntereses,
+  cargarIntereses,
+  actualizarCorreo,
+  actualizarContraseña,
+} = require('../controllers/FerianteController');
 
-// Ruta para obtener el perfil
-router.get('/api/perfil/:userMail', (req, res) => {
-  const pool = req.pool;
-  obtenerPerfil(req, res, pool);
+// Rutas para actualizar y cargar datos personales
+router.post('/api/actualizar-datos-personales', (req, res) => {
+  actualizarDatosPersonales(req, res);
+});
+router.get('/api/cargar-datos-personales/:userMail', (req, res) => {
+  cargarDatosPersonales(req, res);
 });
 
-// Ruta para guardar el perfil
-router.post('/api/perfil', (req, res) => {
-  const pool = req.pool; 
-  guardarPerfil(req, res, pool); 
+// Rutas para actualizar y cargar biografía
+router.post('/api/guardar-biografia', (req, res) => {
+  guardarBiografia(req, res);
+});
+router.get('/api/cargar-biografia/:userMail', (req, res) => {
+  cargarBiografia(req, res);
 });
 
-// Ruta para guardar la foto de perfil
-router.post('/api/foto', (req, res) => {
-  const pool = req.pool;
-  guardarFotoPerfil(req, res, pool);
+// Rutas para gestionar foto de perfil
+router.post('/api/guardar-foto-perfil', (req, res) => {
+  guardarFotoPerfil(req, res);
 });
-
-// Ruta para cargar la foto de perfil desde la carpeta uploads
-router.get('/api/foto/:userMail', (req, res) => {
+router.get('/api/cargar-foto-perfil/:userMail', (req, res) => {
   cargarFotoPerfil(req, res);
 });
 
-// Rutas para actualizar correo y contraseña
-router.post('/api/actualizar-correo', (req, res) => {
-  const pool = req.pool;
-  actualizarCorreo(req, res, pool);
+// Rutas para actualizar y cargar intereses
+router.post('/api/actualizar-intereses', (req, res) => {
+  actualizarIntereses(req, res);
+});
+router.get('/api/cargar-intereses/:userMail', (req, res) => {
+  cargarIntereses(req, res);
 });
 
-router.post('/api/actualizar-contraseña', (req, res) => {
-  const pool = req.pool;
-  actualizarContraseña(req, res, pool);
+// Rutas para actualizar correo
+router.post('/api/actualizar-correo', (req, res) => {
+  actualizarCorreo(req, res);
+});
+
+// Rutas para actualizar contraseña
+router.post('/api/actualizar-contrasena', (req, res) => {
+  actualizarContraseña(req, res);
 });
 
 module.exports = router;

@@ -1,41 +1,63 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { AppStore } from '../../../redux/store';
 
 interface BiografiaProps {
+  userMail: string;
   biografia: string;
   setBiografia: (bio: string) => void;
 }
 
-const Biografia: React.FC<BiografiaProps> = ({ biografia, setBiografia }) => {
-  const [biografiaActualizada, setBiografiaActualizada] = useState(biografia);
+const Biografia: React.FC<BiografiaProps> = ({  biografia, setBiografia }) => {
+  const userMail = useSelector((state: AppStore) => state.user.email);
   const [mensajeError, setMensajeError] = useState<string | null>(null);
   const [mensajeExito, setMensajeExito] = useState<string | null>(null);
-
   const maxCaracteres = 500;
 
-  const handleBiografiaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const nuevaBiografia = e.target.value;
-
-    // Validar si la biografía excede el límite de caracteres
-    if (nuevaBiografia.length > maxCaracteres) {
-      setMensajeError(`La biografía no puede exceder los ${maxCaracteres} caracteres.`);
-      setMensajeExito(null);
-    } else {
-      setBiografiaActualizada(nuevaBiografia);
-      setMensajeError(null);
+  useEffect(() => {
+    const cargarBiografia = async () => {
+      try {
+        const response = await fetch(`http://localhost:5000/api/cargar-biografia/${userMail}`);
+        if (response.ok) {
+          const data = await response.json();
+          setBiografia(data.biografia || '');
+        } else {
+          console.error('Error al cargar la biografía');
+        }
+      } catch (error) {
+        console.error('Error al conectar con el servidor:', error);
+      }
+    };
+    if (userMail) {
+      cargarBiografia();
     }
-  };
+  }, [userMail, setBiografia]);
 
-  const actualizarBiografia = () => {
-    if (biografiaActualizada.trim() === '') {
+  const guardarBiografia = async () => {
+    if (biografia.trim() === '') {
       setMensajeError('La biografía no puede estar vacía.');
-      setMensajeExito(null);
       return;
     }
 
-    // Si la biografía es válida, actualizamos
-    setBiografia(biografiaActualizada);
-    setMensajeExito('Biografía actualizada con éxito.');
-    setMensajeError(null);
+    try {
+      const response = await fetch('http://localhost:5000/api/guardar-biografia', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userMail, biografia }),
+      });
+
+      if (response.ok) {
+        setMensajeExito('Biografía actualizada con éxito.');
+        setMensajeError(null);
+      } else {
+        console.error('Error al actualizar la biografía');
+      }
+    } catch (error) {
+      console.error('Error al conectar con el servidor:', error);
+      setMensajeError('Error al conectar con el servidor.');
+    }
   };
 
   return (
@@ -44,14 +66,14 @@ const Biografia: React.FC<BiografiaProps> = ({ biografia, setBiografia }) => {
       {mensajeError && <p style={{ color: 'red' }}>{mensajeError}</p>}
       {mensajeExito && <p style={{ color: 'green' }}>{mensajeExito}</p>}
       <textarea
-        value={biografiaActualizada}
-        onChange={handleBiografiaChange}
+        value={biografia}
+        onChange={(e) => setBiografia(e.target.value)}
         placeholder="Escribe una breve biografía (máx. 500 caracteres)"
         rows={5}
         maxLength={maxCaracteres}
       />
-      <p>{biografiaActualizada.length}/{maxCaracteres} caracteres</p>
-      <button onClick={actualizarBiografia}>Actualizar Biografía</button>
+      <p>{biografia.length}/{maxCaracteres} caracteres</p>
+      <button onClick={guardarBiografia}>Actualizar Biografía</button>
     </div>
   );
 };
