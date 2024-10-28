@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { guardarPerfil, obtenerPerfil, guardarFotoPerfil, cargarFotoPerfil, actualizarCorreo, actualizarContraseña } = require('../controllers/FerianteController');
+const { guardarPerfil, obtenerPerfil, guardarFotoPerfil, cargarFotoPerfil, actualizarCorreo, actualizarContraseña ,getVacantesVacias,savePostulacion} = require('../controllers/FerianteController');
 
 // Ruta para obtener el perfil
 router.get('/api/perfil/:userMail', (req, res) => {
@@ -35,5 +35,18 @@ router.post('/api/actualizar-contraseña', (req, res) => {
   const pool = req.pool;
   actualizarContraseña(req, res, pool);
 });
+
+
+//INICIO MODULO POSTULACIONES 
+router.post('/getVacantes', (req, res) => {
+  const pool = req.pool;
+  getVacantesVacias(req, res, pool);
+});
+
+router.post('/savePostulacion', (req, res) => {
+  const pool = req.pool;
+  savePostulacion(req, res, pool);
+});
+
 
 module.exports = router;

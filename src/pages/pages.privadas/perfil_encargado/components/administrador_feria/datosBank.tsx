@@ -31,9 +31,8 @@ export const DatosBanco = () => {
   console.log(encargadoBank)
   return (
    <>
-   
-   <h1>aca deberia haber dropdown</h1>
-   
+     
+
    </>
   );
 };

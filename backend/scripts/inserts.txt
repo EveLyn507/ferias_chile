@@ -110,6 +110,9 @@ values (3,'Rechazada');
 
 insert into estado_feria (id_estado,estado)
 values (4,'Aceptada');
+
+insert into estado_feria (id_estado,estado)
+values (5,'Eliminada');
 -- FERIAS DE LOS ENCARGADOS 
 
 
@@ -123,8 +126,30 @@ insert into estado_horario_feria (id_estado_programa,estado)
 values (3,'En espera');
 
 insert into estado_horario_feria (id_estado_programa,estado)
-values (1,'Aceptada');
+values (4,'Aceptada');
 
+
+insert into rol_empleado (id_rol, rol)
+	values(1,'supervisor');
+	
+insert into rol_empleado (id_rol, rol)
+	values(2,'ayudante');
+	
+
+INSERT INTO dia_semana (id_dia, dia) VALUES
+(1, 'Lunes'),
+(2, 'Martes'),
+(3, 'Miércoles'),
+(4, 'Jueves'),
+(5, 'Viernes'),
+(6, 'Sábado'),
+(7, 'Domingo');
+
+insert into dia_armado (id_dia_armado, cuando) VALUES
+(1, 'No Seleccionado'),
+(2, 'mismo dia'),
+(3, 'un dia antes'),
+(4, 'dejame elegir');
 
 -- FERIAS DE LOS ENCARGADOS 
 

@@ -215,6 +215,56 @@ const actualizarContraseña = async (req, res) => {
 };
 
 
+// INICIO MODULO POSTULACIONES 
 
 
-module.exports = { guardarPerfil, obtenerPerfil, guardarFotoPerfil, cargarFotoPerfil, actualizarCorreo, actualizarContraseña};
+// obtiene todas las vacantes donde feriante sea null -- osea que esten vacias/disponibles
+const getVacantesVacias = async (req , res, pool) =>{
+
+  const { } = req.body.vacante;
+
+  try {
+    const result = await pool.query(
+      `SELECT * from detalle_team_vacante 
+      WHERE feriante_mail = null;`
+    );
+
+    return res.json(result.rows)
+  } catch (error) {
+    console.error('Error al ingresar la postulacion:', error);
+    throw error;
+  }
+
+
+}
+
+const savePostulacion = async (req , res, pool) =>{
+
+  const { feriante_mail, id_vacante, estado} = req.body.postulacion;
+
+  try {
+    const result = await pool.query(
+      `INSERT INTO postulaciones (feriante_mail,id_vacante,estado) 
+      VALUES (1$,$2,$3)`, [feriante_mail, id_vacante, estado]
+    );
+
+    return res.json(result.rowCount > 0)
+  } catch (error) {
+    console.error('Error al ingresar la postulacion:', error);
+    throw error;
+  }
+
+
+}
+
+
+module.exports = { 
+  guardarPerfil, 
+  obtenerPerfil,
+  guardarFotoPerfil,
+  cargarFotoPerfil,
+  actualizarCorreo,
+  actualizarContraseña,
+  getVacantesVacias,   //inicio modulo postulaciones
+  savePostulacion
+};

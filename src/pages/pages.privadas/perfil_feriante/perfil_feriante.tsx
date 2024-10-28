@@ -100,7 +100,7 @@ const PerfilFeriantes: React.FC = () => {
       <FotoPerfil setFotoPerfil={setFotoPerfil} userMail={userMail} fotoPerfil={''} />
 
       <DatosPersonales 
-        setDatosPersonales={setDatosPersonales} nombre={''} telefono={''} apellido={''}      />
+        setDatosPersonales={setDatosPersonales} nombre={''} telefono={''} apellido={''} />
       <Biografia biografia={biografia} setBiografia={setBiografia} />
       <InteresesVenta intereses={intereses} setIntereses={setIntereses} />
       <RedesSociales />

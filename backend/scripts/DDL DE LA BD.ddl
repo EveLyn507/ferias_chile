@@ -1,5 +1,6 @@
 -- Drop existing tables aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 
+DROP TABLE IF EXISTS dia_semana CASCADE;
 DROP TABLE IF EXISTS puesto_archivado CASCADE;
 DROP TABLE IF EXISTS puesto CASCADE;
 DROP TABLE IF EXISTS json_feria CASCADE;
@@ -32,12 +33,16 @@ DROP TABLE IF EXISTS redes_sociales CASCADE;
 DROP TABLE IF EXISTS tipo_red CASCADE;
 DROP TABLE IF EXISTS estado_puesto CASCADE;
 DROP TABLE IF EXISTS estado_actividad CASCADE;
-DROP TABLE IF EXISTS public.detalle_horario_empleado CASCADE;
-DROP TABLE IF EXISTS public.detalle_team_vacante CASCADE;
-DROP TABLE IF EXISTS public.estado_horario_feria CASCADE;
-DROP TABLE IF EXISTS public.log_empleado CASCADE;
-DROP TABLE IF EXISTS public.postulaciones CASCADE;
-DROP TABLE IF EXISTS public.rol_empleado CASCADE;
+DROP TABLE IF EXISTS detalle_horario_empleado CASCADE;
+DROP TABLE IF EXISTS detalle_team_vacante CASCADE;
+DROP TABLE IF EXISTS estado_horario_feria CASCADE;
+DROP TABLE IF EXISTS log_empleado CASCADE;
+DROP TABLE IF EXISTS postulaciones CASCADE;
+DROP TABLE IF EXISTS actividad_feria CASCADE;
+DROP TABLE IF EXISTS dia_armado CASCADE;
+DROP TABLE IF EXISTS log_actividad_feria CASCADE;
+DROP TABLE IF EXISTS log_detalle_programa CASCADE;
+DROP TABLE IF EXISTS rol_empleado CASCADE;
 
 CREATE TABLE administrador_municipal (
     user_mail       CHARACTER VARYING(80) NOT NULL,
@@ -82,30 +87,65 @@ CREATE TABLE contrato_puesto (
 
 ALTER TABLE contrato_puesto ADD CONSTRAINT contrato_diario_pk PRIMARY KEY ( id_contrato );
 
+CREATE TABLE dia_semana (
+    id_dia INTEGER NOT NULL,
+    dia CHARACTER VARYING(20),
+    PRIMARY KEY(id_dia)
+);
+
+
+
 CREATE TABLE detalle_horario_empleado (
     id_detalle_horario SERIAL NOT NULL,
     id_vacante         INTEGER NOT NULL,
-    dia                CHARACTER VARYING(10) NOT NULL,
-    inicio             TIME WITH TIME ZONE NOT NULL,
-    termino            TIME WITH TIME ZONE NOT NULL
+    id_dia             INTEGER NOT NULL,
+    hora_entrada       TIME WITHOUT TIME ZONE NOT NULL,
+    hora_salida        TIME WITHOUT TIME ZONE NOT NULL
 );
 
 ALTER TABLE detalle_horario_empleado ADD CONSTRAINT detalle_horario_empleado_pk PRIMARY KEY ( id_detalle_horario );
 
+ALTER TABLE detalle_horario_empleado 
+    ADD CONSTRAINT id_dia_to_emphorario_FK FOREIGN KEY ( id_dia )
+        REFERENCES dia_semana(id_dia);
+
+CREATE TABLE dia_armado (
+    id_dia_armado INTEGER NOT NULL,
+    cuando CHARACTER VARYING(20),
+    PRIMARY KEY (id_dia_armado)
+);
+
+
+
+
 CREATE TABLE detalle_programa_feria (
     id_horario_feria    SERIAL NOT NULL,
     id_feria            INTEGER NOT NULL,
-    id_estado_programa  INTEGER NOT NULL,
     dia                 CHARACTER VARYING(10) NOT NULL,
-    dia_inicio_fecha 	DATE NOT NULL,
-    hora_inicio         TIME WITH TIME ZONE NOT NULL,
-    hora_termino        TIME WITH TIME ZONE NOT NULL,
-    dia_armado          DATE NOT NULL,
-    hora_inicio_armado  TIME WITH TIME ZONE NOT NULL,
-    hora_termino_armado TIME WITH TIME ZONE NOT NULL
+    hora_inicio         TIME WITHOUT TIME ZONE NOT NULL,
+    hora_termino        TIME WITHOUT TIME ZONE NOT NULL,
+    id_dia_armado       INTEGER NOT NULL,
+    hora_inicio_armado  TIME WITHOUT TIME ZONE NOT NULL,
+    hora_termino_armado TIME WITHOUT TIME ZONE NOT NULL,
+    activo              boolean NOT NULL
 );
 
 ALTER TABLE detalle_programa_feria ADD CONSTRAINT detalle_programa_pk PRIMARY KEY ( id_horario_feria );
+
+CREATE TABLE ACTIVIDAD_FERIA (
+    id_actividad_feria SERIAL,
+    id_horario_feria INTEGER,
+    fecha DATE,
+    armado_hecho CHAR(1),
+    feria_hecha CHAR(1),
+    activo boolean,
+    PRIMARY KEY (id_actividad_feria)
+);
+
+ALTER TABLE ACTIVIDAD_FERIA 
+    ADD CONSTRAINT id_horario_to_actividad_fk FOREIGN KEY (id_horario_feria)
+        REFERENCES detalle_programa_feria (id_horario_feria);
+
 
 CREATE TABLE detalle_solicitud (
     id_archivo            SERIAL NOT NULL,
@@ -121,8 +161,8 @@ CREATE TABLE detalle_team_vacante (
     feriante_mail      CHARACTER VARYING(80),
     supervisa_id_feria INTEGER NOT NULL,
     id_rol             INTEGER NOT NULL,
-    ingreso            TIME WITH TIME ZONE NOT NULL,
-    termino            TIME WITH TIME ZONE NOT NULL,
+    ingreso            DATE NOT NULL,
+    termino            DATE NOT NULL,
     estado_vacante     CHAR(1) NOT NULL
 );
 
@@ -142,13 +182,6 @@ CREATE TABLE encargado_feria (
 
 ALTER TABLE encargado_feria ADD CONSTRAINT encargado_feria_pk PRIMARY KEY ( user_mail );
 
-CREATE TABLE estado_feria (
-    estado    CHARACTER VARYING(20) NOT NULL,
-    id_estado INTEGER NOT NULL
-);
-
-ALTER TABLE estado_feria ADD CONSTRAINT estado_feria_pk PRIMARY KEY ( id_estado );
-
 CREATE TABLE estado_horario_feria (
     id_estado_programa INTEGER NOT NULL,
     estado             CHARACTER VARYING(20) NOT NULL
@@ -163,6 +196,15 @@ CREATE TABLE estado_puesto (
 
 ALTER TABLE estado_puesto ADD CONSTRAINT estado_puesto_pk PRIMARY KEY ( id_estado_puesto );
 
+
+CREATE TABLE estado_feria (
+    id_estado INTEGER NOT NULL,
+    estado CHARACTER VARYING(20),
+    PRIMARY KEY (id_estado)
+);
+
+
+
 CREATE TABLE feria (
     id_feria       SERIAL NOT NULL,
     nombre         CHARACTER VARYING(80) NOT NULL,
@@ -175,7 +217,6 @@ CREATE TABLE feria (
 
 ALTER TABLE feria ADD CONSTRAINT feria_pk PRIMARY KEY ( id_feria );
 
-ALTER TABLE feria ADD CONSTRAINT feria__un UNIQUE ( id_feria );
 
 CREATE TABLE feriante (
     user_mail       CHARACTER VARYING(80) NOT NULL,
@@ -195,8 +236,8 @@ ALTER TABLE feriante ADD CONSTRAINT feriante_pk PRIMARY KEY ( user_mail );
 
 CREATE TABLE horario_puesto (
     id_horario   SERIAL NOT NULL,
-    hora_inicio  TIME WITH TIME ZONE NOT NULL,
-    hora_termino TIME WITH TIME ZONE NOT NULL,
+    hora_inicio  DATE NOT NULL,
+    hora_termino DATE NOT NULL,
     precio       INTEGER NOT NULL,
     num_horario  INTEGER NOT NULL,
     id_puesto    INTEGER NOT NULL
@@ -329,6 +370,46 @@ CREATE TABLE tipo_usuario (
 
 ALTER TABLE tipo_usuario ADD CONSTRAINT tipo_usuario_pk PRIMARY KEY ( id_tipo_usuario );
 
+
+
+
+
+
+-- TABLAS EXCLUSIVAS PARA AUDITORIA --> DATA ELIMINADA
+
+
+CREATE TABLE log_detalle_programa (
+    id_horario_feria    SERIAL NOT NULL,
+    id_feria            INTEGER NOT NULL,
+    id_dia_armado       INTEGER NOT NULL,
+    dia                 CHARACTER VARYING(10) NOT NULL,
+    hora_inicio         TIME WITHOUT TIME ZONE NOT NULL,
+    hora_termino        TIME WITHOUT TIME ZONE NOT NULL,
+    hora_inicio_armado  TIME WITHOUT TIME ZONE NOT NULL,
+    hora_termino_armado TIME WITHOUT TIME ZONE NOT NULL,
+    activo              boolean NOT NULL,
+    PRIMARY KEY (id_horario_feria)
+);
+
+
+CREATE TABLE LOG_ACTIVIDAD_FERIA (
+    id_actividad_feria SERIAL,
+    id_horario_feria INTEGER,
+    fecha DATE,
+    armado_hecho CHAR(1),
+    feria_hecha CHAR(1),
+    activo boolean,
+    PRIMARY KEY (id_actividad_feria)
+);
+
+
+ALTER TABLE LOG_ACTIVIDAD_FERIA 
+    ADD CONSTRAINT id_horario_to_log_fk FOREIGN KEY (id_horario_feria)
+        REFERENCES log_detalle_programa (id_horario_feria);
+
+
+-- INICIO ALTERRRRRRRRRRRRRRRRRRRRRRRS
+
 ALTER TABLE comuna
     ADD CONSTRAINT comuna_region_fk FOREIGN KEY ( id_region )
         REFERENCES region ( id_region );
@@ -374,7 +455,7 @@ ALTER TABLE feria
         REFERENCES encargado_feria ( user_mail );
 
 ALTER TABLE feria
-    ADD CONSTRAINT feria_estado_solicitud_fk FOREIGN KEY ( id_estado )
+    ADD CONSTRAINT id_feria_estado_FK FOREIGN KEY ( id_estado )
         REFERENCES estado_feria ( id_estado );
 
 ALTER TABLE horario_puesto
@@ -398,8 +479,8 @@ ALTER TABLE solicitudes_apertura
         REFERENCES encargado_feria ( user_mail );
 
 ALTER TABLE detalle_programa_feria
-    ADD CONSTRAINT id_estado_programa_fk FOREIGN KEY ( id_estado_programa )
-        REFERENCES estado_horario_feria ( id_estado_programa );
+    ADD CONSTRAINT id_dia_armado_fk FOREIGN KEY ( id_dia_armado )
+        REFERENCES dia_armado ( id_dia_armado );
 
 ALTER TABLE json_feria
     ADD CONSTRAINT id_feria_to_json_fk FOREIGN KEY ( id_feria )
@@ -460,5 +541,6 @@ ALTER TABLE redes_sociales
 ALTER TABLE encargado_feria
     ADD CONSTRAINT tipo_user_to_encargado_fk FOREIGN KEY ( id_tipo_usuario )
         REFERENCES tipo_usuario ( id_tipo_usuario );
+
 
 

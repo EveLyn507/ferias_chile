@@ -1,7 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { idFeriaService } from "../../rxjs/sharing.id_feria";
 
-import { idService } from "../../rxjs_id_feria/sharing.id_feria";
+
 
 interface Rectangle {
   id: number;
@@ -32,7 +33,7 @@ const MenuDerecha: React.FC<MenuDerechaProps> = ({
   onRemoveRectangle,
   onClose,
 }) => {
-  const id_feria = idService.getId();
+  const id_feria = idFeriaService.id$;
 
   const [descripcion, setDescripcion] = useState(selectedPuesto?.descripcion || '');
   const [tipoPuesto, setTipoPuesto] = useState(selectedPuesto?.tipoPuesto || '');

@@ -16,7 +16,7 @@ export const PublicRoutes = {
 export const PrivateRoutes = {
     PRIVATE : 'private',
     PERFILENCARGADO : '1',
-    ADMINFERIA : '1/administracion/:id_feria',
+    ADMINFERIA : '1/administracion/:id_feria/:nombre',
     BANCOS : '1/bancos',
     TEAM : '1/TEAM',
 

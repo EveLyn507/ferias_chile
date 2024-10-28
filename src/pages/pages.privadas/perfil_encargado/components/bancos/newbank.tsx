@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { DatosBank } from "../../../../models/interfaces";
 import { saveDatosBank } from "../../services/admin_feria_fuctions";
-import { bancoService } from "./rxjs/sharingbankslist";
+import { bancoService } from "../../rxjs/sharingbankslist";
 import { useSelector } from "react-redux";
 import { AppStore } from "../../../../../redux/store";
 
