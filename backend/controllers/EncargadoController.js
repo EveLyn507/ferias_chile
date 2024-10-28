@@ -133,7 +133,7 @@ const UpdateProgramaFeria = async (req, res, pool) => {
     // Recorre cada elemento de la programación (debe ser un array)
     for (const programa of programacion) {
       const { dia, hora_inicio, hora_termino, id_dia_armado, hora_inicio_armado, hora_termino_armado, activo } = programa;
-      s
+      
 
       // Si los datos existen, hacer el UPDATE
       await pool.query(
@@ -165,9 +165,9 @@ const getPrograma = async (req , res , pool) => {
 
 try{
   const result = await pool.query(`
-    SELECT *
-    FROM detalle_programa_feria 
-    WHERE id_feria = $1`,[id_feria])
+  SELECT * FROM detalle_programa_feria
+  WHERE id_feria = $1
+  ORDER BY id_horario_feria ASC `,[id_feria])
 
 
   res.json(result.rows)
