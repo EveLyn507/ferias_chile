@@ -298,6 +298,7 @@ const SaveVacantesFeria = async (req, res, pool) => {
     await Promise.all(
       horarios.map(async (horario) => {
         const { id_dia, hora_inicio, hora_termino } = horario; // Desestructuración de horario
+        console.log(id_dia)
         const resultHorario = await SaveHorarioVacante(id_vacante, id_dia, hora_inicio, hora_termino, pool); // Llamada a la función asíncrona
         horariosGuardados.push(resultHorario); // Guardar el resultado en la lista de horarios
       })
