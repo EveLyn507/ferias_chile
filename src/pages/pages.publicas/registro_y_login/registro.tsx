@@ -68,27 +68,26 @@ export const Registro = () => {
 
     try {
       let response;
-      
       if (role === '1') {
-        response = await axios.post('http://localhost:5000/registro/encargado', {
-          user_mail, rut: parseInt(rut), rut_div, nombre, apellido, telefono: parseInt(telefono), role, contrasena
-        });
+          response = await axios.post('http://localhost:5000/registro/encargado', {
+              user_mail, rut: parseInt(rut), rut_div, nombre, apellido, telefono: parseInt(telefono), role, contrasena
+          });
       } else if (role === '2') {
-        response = await axios.post('http://localhost:5000/registro/feriante', {
-          user_mail, rut: parseInt(rut), rut_div, nombre, apellido, telefono: parseInt(telefono), role, contrasena
-        });
+          response = await axios.post('http://localhost:5000/registro/feriante', {
+              user_mail, rut: parseInt(rut), rut_div, nombre, apellido, telefono: parseInt(telefono), role, contrasena
+          });
       } else if (role === '3') {
-        response = await axios.post('http://localhost:5000/registro/municipal', {
-          user_mail, rut: parseInt(rut), rut_div, nombre, apellido, telefono: parseInt(telefono), role, contrasena
-        });
+          response = await axios.post('http://localhost:5000/registro/municipal', {
+              user_mail, rut: parseInt(rut), rut_div, nombre, apellido, telefono: parseInt(telefono), role, contrasena
+          });
       }
 
       console.log('Registro exitoso:', response?.data);
-    } catch (err) {
+  } catch (err) {
       setError2('Error al registrar usuario');
       console.error(err);
-    }
-  };
+  }
+};
 
 return (
 <>
