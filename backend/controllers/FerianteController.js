@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const bcrypt = require('bcrypt');
+const pool = require('../server');
 
 // Función para actualizar datos personales
 const actualizarDatosPersonales = async (req, res) => {
@@ -38,8 +39,8 @@ const cargarDatosPersonales = async (req, res) => {
     
     res.status(200).json(result.rows[0]);
   } catch (error) {
-    console.error('Error al cargar nombre, apellido telefono:', error);
-    res.status(500).json({ message: 'Error al cargar nombre, apellido y telefono' });
+    console.error('Error al cargar nombre, apellido y teléfono:', error);
+    res.status(500).json({ message: 'Error al cargar nombre, apellido y teléfono' });
   }
 };
 
@@ -145,6 +146,10 @@ const cargarIntereses = async (req, res) => {
   try {
     const query = 'SELECT interes FROM intereses WHERE user_mail = $1;';
     const result = await req.pool.query(query, [userMail]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'No se encontraron intereses para este usuario' });
+    }
 
     res.status(200).json(result.rows.map(row => row.interes));
   } catch (error) {

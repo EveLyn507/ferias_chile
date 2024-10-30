@@ -26,10 +26,16 @@ function LoginFeriante() {
 
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
+      const { credential } = credentialResponse;
+  
+      if (!credential) {
+        throw new Error('El token de Google es inválido o está vacío.');
+      }
+  
       const googleResponse = await axios.post('http://localhost:5000/registro/google', {
-        credential: credentialResponse.credential,
+        credential,
       });
-
+  
       const { token, role, email } = googleResponse.data;
       dispatch(createUser({ token, role, email }));
       navigate(`/${PrivateRoutes.PRIVATE + '/' + role}`, { replace: true });
