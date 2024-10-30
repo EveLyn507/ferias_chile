@@ -20,7 +20,7 @@ export const CardFerias = ({ ferias }: FeriasProps) => {
                                     <strong>Día:</strong> {horario.dia}<br />
                                     <strong>Hora Inicio:</strong> {horario.hora_inicio}<br />
                                     <strong>Hora Término:</strong> {horario.hora_termino}<br />
-                                    <strong>Día Armado:</strong> {horario.dia_armado.toString()}<br />
+                                    <strong>Día Armado:</strong> {horario.id_dia_armado.toString()}<br />
                                     <strong>Hora Inicio Armado:</strong> {horario.hora_inicio_armado}<br />
                                     <strong>Hora Término Armado:</strong> {horario.hora_termino_armado}<br />
                                 </li>
@@ -33,6 +33,7 @@ export const CardFerias = ({ ferias }: FeriasProps) => {
                 <li>
                     <Link to={`/feria/${feria.id_feria}`}>Ver Puestos Feria</Link>
                 </li>
+                
             )}
         />
     );

@@ -24,9 +24,6 @@ const PerfilFeriantes: React.FC = () => {
   const [correo, setCorreo] = useState<string>(userMail);
   const [contraseña, setContraseña] = useState<string>('');
 
-  useEffect(() => {
-    setCorreo(userMail); // Actualiza el estado local con el correo global
-  }, [userMail]);
 
   // Manejar la actualización global del correo
   const handleCorreoActualizado = (nuevoCorreo: string) => {

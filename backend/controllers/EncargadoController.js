@@ -13,15 +13,15 @@ const getHorariosFerias = async (feriasIds,pool) => {
 
 // Obtener ferias del encargado +  horarios
 const get_feria_Encargado = async (req, res, pool) => {
-  const { mail } = req.body;
+  const { id_user } = req.body;
   
   try {
     // 1. Obtiene las ferias del encargado
-    const ferias = await pool.query(`SELECT * FROM obtener_ferias_encargado($1);`, [mail]);
+    const ferias = await pool.query(`SELECT * FROM obtener_ferias_encargado($1);`, [id_user]);
     
     // Verifica si hay ferias
     if (ferias.rows.length === 0) {
-      return res.status(404).json({ message: "No se encontraron ferias para el encargado." });
+      return res.status(404);
     }
 
     // 2. Obtiene los IDs de las ferias para la página actual

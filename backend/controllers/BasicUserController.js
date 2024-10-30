@@ -22,7 +22,8 @@ const login_encargado = async (req, res, pool) => {
     const token = jwt.sign({ id: user.id }, 'xd', { expiresIn: '1h' });
     const role = user.id_tipo_usuario;
     const email = user.user_mail;
-    res.json({ token, role, email });
+    const id_user = user.id_user_enf;
+    res.json({ token, role, email ,id_user});
   } catch (err) {
     console.error(err);
     res.status(500).send('Error al iniciar sesión');
@@ -43,7 +44,9 @@ const login_feriante = async (req, res, pool) => {
     const token = jwt.sign({ id: user.id }, 'xd', { expiresIn: '1h' });
     const role = user.id_tipo_usuario;
     const email = user.user_mail;
-    res.json({ token, role, email });
+    const id_user = user.id_user_fte;
+    console.log(id_user)
+    res.json({ token, role, email ,id_user});
   } catch (err) {
     console.error(err);
     res.status(500).send('Error al iniciar sesión');
@@ -64,7 +67,8 @@ const login_municipal = async (req, res, pool) => {
     const token = jwt.sign({ id: user.id }, 'xd', { expiresIn: '1h' });
     const role = user.id_tipo_usuario;
     const email = user.user_mail;
-    res.json({ token, role, email });
+    const id_user = user.id_user_adm;
+    res.json({ token, role, email ,id_user});
   } catch (err) {
     console.error(err);
     res.status(500).send('Error al iniciar sesión');

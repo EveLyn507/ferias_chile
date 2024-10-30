@@ -1,0 +1,60 @@
+
+
+PARA TODAS LAS COLUMNAS CON  TIPO DE DATO : VARCHAR2 REMPLAZALO POR EL TIPO DE DATO : CHARACTER VARYING
+FIN DE ESTA SECCION
+
+MODIFICA LAS COLUMNAS  PRIMARY KEY INTEGER POR EL TIPO DE DATO : SERIAL,  PARA LAS SIGUENTES TABLAS :
+
+encargado_feria
+feriante,
+puesto_archivado,
+intereses,
+redes_sociales,
+administrador_municipal,
+detalle_solicitud,
+solicitudes_apertura,
+feria,
+json_feria,
+detalle_programa_feria,
+actividad_feria,
+puesto,
+horario_puesto,
+detalle_team_vacante,
+detalle_horario_empleado,
+contrato_puesto,
+
+FIN DE ESTA SECCION
+MODIFICA LAS COLUMNAS DE TIPO DE DATO : DATE  POR TIME WITHOUT TIME ZONE , PARA LAS SIGUIENTES TABLAS :
+
+detalle_horario_empleado,
+detalle_programa_feria,
+horario_puesto,
+log_detalle_programa
+
+
+FIN DE ESTA SECCION
+
+MODIFICA LAS COLUMNAS DE TIPO DE DATO : CLOB POR JSONB, PARA LAS SIGUIENTES TABLAS :
+
+json_feria
+
+MODIFICA LAS COLUMNAS DE TIPO DE DATO : CLOB POR TEXT, PARA LAS SIGUIENTES TABLAS :
+
+puesto,
+feriante
+
+
+
+MODIFICA LAS COLUMNAS DE TIPO DE CHAR : CLOB POR BOOLEAN, PARA LAS SIGUIENTES TABLAS :
+feriante
+detalle_programa_feria
+log_detalle_programa
+actividad_feria
+
+FIN DE LAS INSTRUCCIONES
+
+
+
+
+
+
