@@ -10,12 +10,13 @@ interface InteresesVentaProps {
 
 const InteresesVenta: React.FC<InteresesVentaProps> = ({ intereses, setIntereses }) => {
   const userMail = useSelector((state: AppStore) => state.user.email);
+  const id_user = useSelector((state: AppStore) => state.user.id_user);
   const [nuevoInteres, setNuevoInteres] = useState('');
 
   useEffect(() => {
     const cargarIntereses = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/cargar-intereses/${userMail}`);
+        const response = await fetch(`http://localhost:5000/api/cargar-intereses/${id_user}`);
         if (response.ok) {
           const data = await response.json();
           setIntereses(data);
@@ -25,10 +26,10 @@ const InteresesVenta: React.FC<InteresesVentaProps> = ({ intereses, setIntereses
       }
     };
 
-    if (userMail) {
+    if (id_user) {
       cargarIntereses();
     }
-  }, [userMail, setIntereses]);
+  }, [id_user, setIntereses]);
 
   const agregarInteres = async () => {
     if (nuevoInteres && intereses.length < 10) {
@@ -38,7 +39,7 @@ const InteresesVenta: React.FC<InteresesVentaProps> = ({ intereses, setIntereses
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ userMail, intereses: [...intereses, nuevoInteres] }),
+          body: JSON.stringify({ id_user, intereses: [...intereses, nuevoInteres] }),
         });
 
         if (response.ok) {
@@ -58,7 +59,7 @@ const InteresesVenta: React.FC<InteresesVentaProps> = ({ intereses, setIntereses
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ userMail, intereses: intereses.filter(i => i !== interes) }),
+        body: JSON.stringify({ id_user, intereses: intereses.filter(i => i !== interes) }),
       });
 
       if (response.ok) {

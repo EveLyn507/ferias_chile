@@ -28,11 +28,8 @@ export const Card_feria_encargado = ({ ferias }: FeriasProps) => {
                              
                                     <li key={horario.id_feria}>
                                     <strong>Día:</strong> {horario.dia}<br />
-                                    <strong>Hora Inicio:</strong> {horario.hora_inicio}<br />
-                                    <strong>Hora Término:</strong> {horario.hora_termino}<br />
                                     <strong>Día Armado:</strong> {horario.id_dia_armado}<br />
-                                    <strong>Hora Inicio Armado:</strong> {horario.hora_inicio_armado}<br />
-                                    <strong>Hora Término Armado:</strong> {horario.hora_termino_armado}<br />
+
                                 </li>
                        
                             ))}
@@ -41,12 +38,12 @@ export const Card_feria_encargado = ({ ferias }: FeriasProps) => {
                 },
             ]}
             actions={(feria) => (
-              <li>
+              <ul>
                 <li><Link to={`/feria/${feria.id_feria}`}>Ver Puestos Feria</Link> </li>
                 <li> <Link to={`administracion/${feria.id_feria}/${feria.nombre_feria}`} >Administrar feria</Link></li>
                 <button onClick={() => OpenTiket(feria.id_feria, mail)}>Solicitar apertura de feria</button>
                 <li><Link to={`/Plano/${feria.id_feria}`} onClick={() => idFeriaService.setId(feria.id_feria)} >Administrar plano</Link></li>
-                </li>
+                </ul>
 
 
 

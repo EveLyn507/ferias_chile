@@ -8,27 +8,37 @@ import { useSelector } from 'react-redux';
 import { TraerFeriasEncargado } from '../../services/traer_ferias_encargado';
 import { Card_feria_encargado } from './card_feria_encargado';
 
-// Define la interfaz para los objetos de feria
-
-
 const TraerEncargadoFerias = () => {
+  const id_user = useSelector((state: any) => state.user.id_user);
+  const [feriasEn, setFeriasEn] = useState<Feria[]>([]); // Asegúrate de inicializar como array vacío
 
-const mail = useSelector((state: any) => state.user.email);
+  const GetData = async () => {
+    const data = await TraerFeriasEncargado(id_user)
 
-    const [feriasEn, setFeriasEn] = useState<Feria[]>([]);
-   
-    useEffect((() => { 
-      TraerFeriasEncargado(mail).then( (res: Feria[]) => {setFeriasEn(res)}).
-        catch((error ) => { console.error("Error al cargar ferias del encargado:", error)})
+    if (data.status === 404) {
       
-    }) ,[]);
-  console.log(feriasEn)
-   
-    return (
-    <Card_feria_encargado ferias={feriasEn} />
+      console.log('no hay datos');
+    }else {
+      setFeriasEn(data)
+      console.log('datos cargados', data);     
+    }
+  } 
 
-    )
-    
+  useEffect( () => { 
+    GetData()
+  }, []);
+
+  console.log(feriasEn);
+
+  return (
+    <div>
+      {Array.isArray(feriasEn) && feriasEn.length === 0 ? ( // Verifica que feriasEn sea un array
+        <p>Aún no has creado tu primera feria.</p>
+      ) : (
+        <Card_feria_encargado ferias={feriasEn} />
+      )}
+    </div>
+  );
 };
 
 export default TraerEncargadoFerias;

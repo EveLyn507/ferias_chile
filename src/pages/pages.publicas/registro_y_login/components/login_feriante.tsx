@@ -16,8 +16,10 @@ function LoginFeriante() {
   const login = async () => {
     try {
       const response = await axios.post('http://localhost:5000/login2', { mail, contrasena });
-      const { token, role, email } = response.data;
-      dispatch(createUser({ token, role, email }));
+      const { token, role, email, id_user } = response.data;
+      console.log(id_user)
+
+      dispatch(createUser({ token, role, email, id_user }));
       navigate(`/${PrivateRoutes.PRIVATE + '/' + role}`, { replace: true });
     } catch (error) {
       console.error('Error de login', error);

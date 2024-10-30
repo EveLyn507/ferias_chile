@@ -43,8 +43,22 @@ DROP TABLE IF EXISTS dia_armado CASCADE;
 DROP TABLE IF EXISTS log_actividad_feria CASCADE;
 DROP TABLE IF EXISTS log_detalle_programa CASCADE;
 DROP TABLE IF EXISTS rol_empleado CASCADE;
+DROP TABLE IF EXISTS estado_solicitud CASCADE;
+DROP TABLE IF EXISTS estado_vacante CASCADE;
+
+
+CREATE TABLE actividad_feria (
+    id_actividad_feria SERIAL NOT NULL,
+    id_horario_feria   INTEGER NOT NULL,
+    fecha              DATE NOT NULL,
+    armado_hecho       BOOLEAN NOT NULL,
+    feria_hecha        BOOLEAN NOT NULL
+);
+
+ALTER TABLE actividad_feria ADD CONSTRAINT actividad_feria_pk PRIMARY KEY ( id_actividad_feria );
 
 CREATE TABLE administrador_municipal (
+    id_use_adm      SERIAL NOT NULL,
     user_mail       CHARACTER VARYING(80) NOT NULL,
     id_tipo_usuario INTEGER NOT NULL,
     nombre          CHARACTER VARYING(40) NOT NULL,
@@ -52,17 +66,19 @@ CREATE TABLE administrador_municipal (
     rut             INTEGER NOT NULL,
     rut_div         CHARACTER VARYING(1) NOT NULL,
     telefono        INTEGER,
-    url_foto_perfil CHARACTER VARYING(200),
-    contrasena      CHARACTER VARYING(200) NOT NULL
+    contrasena      CHARACTER VARYING(200) NOT NULL,
+    url_foto_perfil CHARACTER VARYING(200)
 );
 
-ALTER TABLE administrador_municipal ADD CONSTRAINT administrador_pk PRIMARY KEY ( user_mail );
+ALTER TABLE administrador_municipal ADD CONSTRAINT administrador_pk PRIMARY KEY ( id_use_adm );
+
+ALTER TABLE administrador_municipal ADD CONSTRAINT adm_mail__un UNIQUE ( user_mail );
 
 CREATE TABLE banco_encargado (
     mail_banco      CHARACTER VARYING(100) NOT NULL,
+    id_user_enf     INTEGER NOT NULL,
     nombre_asociado CHARACTER VARYING(50) NOT NULL,
-    numero_cuenta   CHARACTER VARYING(50) NOT NULL,
-    encargado_mail  CHARACTER VARYING(80) NOT NULL
+    numero_cuenta   CHARACTER VARYING(50) NOT NULL
 );
 
 ALTER TABLE banco_encargado ADD CONSTRAINT banco_encargado_pk PRIMARY KEY ( mail_banco );
@@ -77,23 +93,15 @@ ALTER TABLE comuna ADD CONSTRAINT comuna_pk PRIMARY KEY ( id_comuna );
 
 CREATE TABLE contrato_puesto (
     id_contrato     SERIAL NOT NULL,
-    fecha           TIMESTAMP NOT NULL,
+    id_user_fte     INTEGER NOT NULL,
+    fecha           DATE NOT NULL,
     id_puesto       INTEGER NOT NULL,
     id_tipo_pago    INTEGER NOT NULL,
     estado_contrato INTEGER NOT NULL,
-    precio          INTEGER NOT NULL,
-    feriante_mail   CHARACTER VARYING(80) NOT NULL
+    precio          INTEGER NOT NULL
 );
 
 ALTER TABLE contrato_puesto ADD CONSTRAINT contrato_diario_pk PRIMARY KEY ( id_contrato );
-
-CREATE TABLE dia_semana (
-    id_dia INTEGER NOT NULL,
-    dia CHARACTER VARYING(20),
-    PRIMARY KEY(id_dia)
-);
-
-
 
 CREATE TABLE detalle_horario_empleado (
     id_detalle_horario SERIAL NOT NULL,
@@ -105,47 +113,19 @@ CREATE TABLE detalle_horario_empleado (
 
 ALTER TABLE detalle_horario_empleado ADD CONSTRAINT detalle_horario_empleado_pk PRIMARY KEY ( id_detalle_horario );
 
-ALTER TABLE detalle_horario_empleado 
-    ADD CONSTRAINT id_dia_to_emphorario_FK FOREIGN KEY ( id_dia )
-        REFERENCES dia_semana(id_dia);
-
-CREATE TABLE dia_armado (
-    id_dia_armado INTEGER NOT NULL,
-    cuando CHARACTER VARYING(20),
-    PRIMARY KEY (id_dia_armado)
-);
-
-
-
-
 CREATE TABLE detalle_programa_feria (
     id_horario_feria    SERIAL NOT NULL,
     id_feria            INTEGER NOT NULL,
-    dia                 CHARACTER VARYING(10) NOT NULL,
+    dia                 CHARACTER VARYING(20) NOT NULL,
     hora_inicio         TIME WITHOUT TIME ZONE NOT NULL,
     hora_termino        TIME WITHOUT TIME ZONE NOT NULL,
     id_dia_armado       INTEGER NOT NULL,
     hora_inicio_armado  TIME WITHOUT TIME ZONE NOT NULL,
     hora_termino_armado TIME WITHOUT TIME ZONE NOT NULL,
-    activo              boolean NOT NULL
+    activo              BOOLEAN NOT NULL
 );
 
 ALTER TABLE detalle_programa_feria ADD CONSTRAINT detalle_programa_pk PRIMARY KEY ( id_horario_feria );
-
-CREATE TABLE ACTIVIDAD_FERIA (
-    id_actividad_feria SERIAL,
-    id_horario_feria INTEGER,
-    fecha DATE,
-    armado_hecho CHAR(1),
-    feria_hecha CHAR(1),
-    activo boolean,
-    PRIMARY KEY (id_actividad_feria)
-);
-
-ALTER TABLE ACTIVIDAD_FERIA 
-    ADD CONSTRAINT id_horario_to_actividad_fk FOREIGN KEY (id_horario_feria)
-        REFERENCES detalle_programa_feria (id_horario_feria);
-
 
 CREATE TABLE detalle_solicitud (
     id_archivo            SERIAL NOT NULL,
@@ -157,18 +137,33 @@ CREATE TABLE detalle_solicitud (
 ALTER TABLE detalle_solicitud ADD CONSTRAINT detalle_pk PRIMARY KEY ( id_archivo );
 
 CREATE TABLE detalle_team_vacante (
-    id_vacante         SERIAL NOT NULL,
-    feriante_mail      CHARACTER VARYING(80),
-    supervisa_id_feria INTEGER NOT NULL,
-    id_rol             INTEGER NOT NULL,
-    ingreso            DATE NOT NULL,
-    termino            DATE NOT NULL,
-    estado_vacante     CHAR(1) NOT NULL
+    id_vacante        SERIAL NOT NULL,
+    id_user_fte       INTEGER,
+    id_feria          INTEGER NOT NULL,
+    id_rol            INTEGER NOT NULL,
+    ingreso           DATE NOT NULL,
+    termino           DATE NOT NULL,
+    id_estado_vacante INTEGER NOT NULL
 );
 
 ALTER TABLE detalle_team_vacante ADD CONSTRAINT team_supervisor_pk PRIMARY KEY ( id_vacante );
 
+CREATE TABLE dia_armado (
+    id_dia_armado INTEGER NOT NULL,
+    cuando        CHARACTER VARYING(20) NOT NULL
+);
+
+ALTER TABLE dia_armado ADD CONSTRAINT dia_armado_pk PRIMARY KEY ( id_dia_armado );
+
+CREATE TABLE dia_semana (
+    id_dia INTEGER NOT NULL,
+    dia    CHARACTER VARYING(20) NOT NULL
+);
+
+ALTER TABLE dia_semana ADD CONSTRAINT dia_semana_pk PRIMARY KEY ( id_dia );
+
 CREATE TABLE encargado_feria (
+    id_user_enf     SERIAL NOT NULL,
     user_mail       CHARACTER VARYING(80) NOT NULL,
     id_tipo_usuario INTEGER NOT NULL,
     nombre          CHARACTER VARYING(40) NOT NULL,
@@ -176,18 +171,20 @@ CREATE TABLE encargado_feria (
     rut             INTEGER NOT NULL,
     rut_div         CHARACTER VARYING(1) NOT NULL,
     telefono        INTEGER,
-    url_foto_perfil CHARACTER VARYING(200),
-    contrasena      CHARACTER VARYING(200) NOT NULL
+    contrasena      CHARACTER VARYING(200) NOT NULL,
+    url_foto_perfil CHARACTER VARYING(200)
 );
 
-ALTER TABLE encargado_feria ADD CONSTRAINT encargado_feria_pk PRIMARY KEY ( user_mail );
+ALTER TABLE encargado_feria ADD CONSTRAINT encargado_feria_pk PRIMARY KEY ( id_user_enf );
 
-CREATE TABLE estado_horario_feria (
-    id_estado_programa INTEGER NOT NULL,
-    estado             CHARACTER VARYING(20) NOT NULL
+ALTER TABLE encargado_feria ADD CONSTRAINT encargado_feria__un UNIQUE ( user_mail );
+
+CREATE TABLE estado_feria (
+    id_estado INTEGER NOT NULL,
+    estado    CHARACTER VARYING(20) NOT NULL
 );
 
-ALTER TABLE estado_horario_feria ADD CONSTRAINT estado_horario_feria_pk PRIMARY KEY ( id_estado_programa );
+ALTER TABLE estado_feria ADD CONSTRAINT estado_feria_pk PRIMARY KEY ( id_estado );
 
 CREATE TABLE estado_puesto (
     id_estado_puesto INTEGER NOT NULL,
@@ -196,29 +193,33 @@ CREATE TABLE estado_puesto (
 
 ALTER TABLE estado_puesto ADD CONSTRAINT estado_puesto_pk PRIMARY KEY ( id_estado_puesto );
 
-
-CREATE TABLE estado_feria (
+CREATE TABLE estado_solicitud (
     id_estado INTEGER NOT NULL,
-    estado CHARACTER VARYING(20),
-    PRIMARY KEY (id_estado)
+    estado    CHARACTER VARYING(20) NOT NULL
 );
 
+ALTER TABLE estado_solicitud ADD CONSTRAINT estado_solicitud_pk PRIMARY KEY ( id_estado );
 
+CREATE TABLE estado_vacante (
+    id_estado INTEGER NOT NULL,
+    estado    CHARACTER VARYING(20) NOT NULL
+);
+
+ALTER TABLE estado_vacante ADD CONSTRAINT estado_vacante_pk PRIMARY KEY ( id_estado );
 
 CREATE TABLE feria (
-    id_feria       SERIAL NOT NULL,
-    nombre         CHARACTER VARYING(80) NOT NULL,
-    id_comuna      INTEGER NOT NULL,
-    encargado_mail CHARACTER VARYING(80) NOT NULL,
-    id_region      INTEGER NOT NULL,
-    id_estado      INTEGER NOT NULL,
-    mail_banco     CHARACTER VARYING(100)
+    id_feria    SERIAL NOT NULL,
+    id_user_enf INTEGER NOT NULL,
+    nombre      CHARACTER VARYING(80) NOT NULL,
+    id_comuna   INTEGER NOT NULL,
+    id_estado   INTEGER NOT NULL,
+    mail_banco  CHARACTER VARYING(100)
 );
 
 ALTER TABLE feria ADD CONSTRAINT feria_pk PRIMARY KEY ( id_feria );
 
-
 CREATE TABLE feriante (
+    id_user_fte     SERIAL NOT NULL,
     user_mail       CHARACTER VARYING(80) NOT NULL,
     id_tipo_usuario INTEGER NOT NULL,
     nombre          CHARACTER VARYING(40) NOT NULL,
@@ -227,45 +228,72 @@ CREATE TABLE feriante (
     rut_div         CHARACTER VARYING(1) NOT NULL,
     biografia       TEXT,
     telefono        INTEGER,
-    url_foto_perfil CHARACTER VARYING(200),
     auth_google     CHARACTER VARYING(100),
-    contrasena      CHARACTER VARYING(200) NOT NULL
+    contrasena      CHARACTER VARYING(200) NOT NULL,
+    perfil_privado  BOOLEAN NOT NULL,
+    url_foto_perfil CHARACTER VARYING(200)
 );
 
-ALTER TABLE feriante ADD CONSTRAINT feriante_pk PRIMARY KEY ( user_mail );
+ALTER TABLE feriante ADD CONSTRAINT feriante_pk PRIMARY KEY ( id_user_fte );
+
+ALTER TABLE feriante ADD CONSTRAINT feriante__un UNIQUE ( user_mail );
 
 CREATE TABLE horario_puesto (
     id_horario   SERIAL NOT NULL,
-    hora_inicio  DATE NOT NULL,
-    hora_termino DATE NOT NULL,
+    id_puesto    INTEGER NOT NULL,
+    hora_inicio  TIME WITHOUT TIME ZONE NOT NULL,
+    hora_termino TIME WITHOUT TIME ZONE NOT NULL,
     precio       INTEGER NOT NULL,
-    num_horario  INTEGER NOT NULL,
-    id_puesto    INTEGER NOT NULL
+    num_horario  INTEGER NOT NULL
 );
 
 ALTER TABLE horario_puesto ADD CONSTRAINT horario_puesto_pk PRIMARY KEY ( id_horario );
 
 CREATE TABLE intereses (
-    id_interes SERIAL NOT NULL,
-    interes    CHARACTER VARYING(40) NOT NULL,
-    user_mail  CHARACTER VARYING(80) NOT NULL
+    id_interes  SERIAL NOT NULL,
+    id_user_fte INTEGER NOT NULL,
+    interes     CHARACTER VARYING(40) NOT NULL
 );
 
 ALTER TABLE intereses ADD CONSTRAINT intereses_pk PRIMARY KEY ( id_interes );
 
 CREATE TABLE json_feria (
-    nombre_json JSONB NOT NULL,
     id_json     SERIAL NOT NULL,
-    id_feria    INTEGER NOT NULL
+    id_feria    INTEGER NOT NULL,
+    nombre_json JSONB NOT NULL
 );
 
 ALTER TABLE json_feria ADD CONSTRAINT json_feria_pk PRIMARY KEY ( id_json );
 
 ALTER TABLE json_feria ADD CONSTRAINT json_feria__un UNIQUE ( id_feria );
 
+CREATE TABLE log_actividad_feria (
+    id_actividad     INTEGER NOT NULL,
+    id_horario_feria INTEGER NOT NULL,
+    fecha            DATE NOT NULL,
+    armado_hecho     BOOLEAN NOT NULL,
+    feria_hecha      BOOLEAN NOT NULL
+);
+
+ALTER TABLE log_actividad_feria ADD CONSTRAINT log_actividad_feria_pk PRIMARY KEY ( id_actividad );
+
+CREATE TABLE log_detalle_programa (
+    id_horario_feria    INTEGER NOT NULL,
+    id_feria            INTEGER NOT NULL,
+    dia                 CHARACTER VARYING(20) NOT NULL,
+    hora_inicio         TIME WITHOUT TIME ZONE NOT NULL,
+    hora_termino        TIME WITHOUT TIME ZONE NOT NULL,
+    dia_armado          CHARACTER VARYING(20) NOT NULL,
+    hora_inicio_armado  time WITHOUT TIME ZONE NOT NULL,
+    hora_termino_armado TIME WITHOUT TIME ZONE NOT NULL,
+    activo              CHAR(1) NOT NULL
+);
+
+ALTER TABLE log_detalle_programa ADD CONSTRAINT log_detalle_programa_pk PRIMARY KEY ( id_horario_feria );
+
 CREATE TABLE log_empleado (
-    id_log  SERIAL NOT NULL,
-    feria   CHARACTER VARYING(100),
+    id_log  INTEGER NOT NULL,
+    feria   CHARACTER VARYING(100) NOT NULL,
     ingreso DATE NOT NULL,
     termino DATE NOT NULL
 );
@@ -273,9 +301,9 @@ CREATE TABLE log_empleado (
 ALTER TABLE log_empleado ADD CONSTRAINT log_empleado_pk PRIMARY KEY ( id_log );
 
 CREATE TABLE postulaciones (
-    id_postulacion SERIAL NOT NULL,
-    feriante_mail  CHARACTER VARYING(80) NOT NULL,
+    id_postulacion INTEGER NOT NULL,
     id_vacante     INTEGER NOT NULL,
+    id_user_fte    INTEGER NOT NULL,
     estado         CHAR(1) NOT NULL
 );
 
@@ -283,10 +311,10 @@ ALTER TABLE postulaciones ADD CONSTRAINT invitaciones_pk PRIMARY KEY ( id_postul
 
 CREATE TABLE puesto (
     id_puesto        SERIAL NOT NULL,
-    numero           INTEGER NOT NULL,
     id_tipo_puesto   INTEGER NOT NULL,
-    id_feria         INTEGER NOT NULL,
+    numero           INTEGER NOT NULL,
     descripcion      TEXT NOT NULL,
+    id_feria         INTEGER NOT NULL,
     id_estado_puesto INTEGER NOT NULL
 );
 
@@ -294,26 +322,26 @@ ALTER TABLE puesto ADD CONSTRAINT puesto_pk PRIMARY KEY ( id_puesto );
 
 CREATE TABLE puesto_archivado (
     id_archivado SERIAL NOT NULL,
+    id_user_fte  INTEGER NOT NULL,
     nombre_feria CHARACTER VARYING(50) NOT NULL,
     puesto_feria INTEGER NOT NULL,
-    id_feriante  INTEGER NOT NULL,
-    user_mail    CHARACTER VARYING(80) NOT NULL
+    id_feriante  INTEGER NOT NULL
 );
 
 ALTER TABLE puesto_archivado ADD CONSTRAINT puesto_archivado_pk PRIMARY KEY ( id_archivado );
 
 CREATE TABLE redes_sociales (
-    id_redes      SERIAL NOT NULL,
-    feriante_mail CHARACTER VARYING(80) NOT NULL,
-    tipo_red      INTEGER NOT NULL,
-    url_red       CHARACTER VARYING(200) NOT NULL
+    id_redes    SERIAL NOT NULL,
+    id_user_fte INTEGER NOT NULL,
+    tipo_red    INTEGER NOT NULL,
+    url_red     CHARACTER VARYING(200) NOT NULL
 );
 
 ALTER TABLE redes_sociales ADD CONSTRAINT redes_sociales_pk PRIMARY KEY ( id_redes );
 
 CREATE TABLE region (
     id_region INTEGER NOT NULL,
-    nombre    CHARACTER VARYING(100) NOT NULL
+    region    CHARACTER VARYING(100) NOT NULL
 );
 
 ALTER TABLE region ADD CONSTRAINT region_pk PRIMARY KEY ( id_region );
@@ -326,10 +354,10 @@ CREATE TABLE rol_empleado (
 ALTER TABLE rol_empleado ADD CONSTRAINT rol_empleado_pk PRIMARY KEY ( id_rol );
 
 CREATE TABLE solicitudes_apertura (
-    id_solicitud    SERIAL NOT NULL,
-    encargado_mail  CHARACTER VARYING(80) NOT NULL,
-    admin_muni_mail CHARACTER VARYING(80) NOT NULL,
-    id_feria        INTEGER NOT NULL
+    id_solicitud SERIAL NOT NULL,
+    id_user_adm  INTEGER NOT NULL,
+    id_feria     INTEGER NOT NULL,
+    id_estado    INTEGER NOT NULL
 );
 
 ALTER TABLE solicitudes_apertura ADD CONSTRAINT solicitudes_apertura_pk PRIMARY KEY ( id_solicitud );
@@ -370,46 +398,6 @@ CREATE TABLE tipo_usuario (
 
 ALTER TABLE tipo_usuario ADD CONSTRAINT tipo_usuario_pk PRIMARY KEY ( id_tipo_usuario );
 
-
-
-
-
-
--- TABLAS EXCLUSIVAS PARA AUDITORIA --> DATA ELIMINADA
-
-
-CREATE TABLE log_detalle_programa (
-    id_horario_feria    SERIAL NOT NULL,
-    id_feria            INTEGER NOT NULL,
-    id_dia_armado       INTEGER NOT NULL,
-    dia                 CHARACTER VARYING(10) NOT NULL,
-    hora_inicio         TIME WITHOUT TIME ZONE NOT NULL,
-    hora_termino        TIME WITHOUT TIME ZONE NOT NULL,
-    hora_inicio_armado  TIME WITHOUT TIME ZONE NOT NULL,
-    hora_termino_armado TIME WITHOUT TIME ZONE NOT NULL,
-    activo              boolean NOT NULL,
-    PRIMARY KEY (id_horario_feria)
-);
-
-
-CREATE TABLE LOG_ACTIVIDAD_FERIA (
-    id_actividad_feria SERIAL,
-    id_horario_feria INTEGER,
-    fecha DATE,
-    armado_hecho CHAR(1),
-    feria_hecha CHAR(1),
-    activo boolean,
-    PRIMARY KEY (id_actividad_feria)
-);
-
-
-ALTER TABLE LOG_ACTIVIDAD_FERIA 
-    ADD CONSTRAINT id_horario_to_log_fk FOREIGN KEY (id_horario_feria)
-        REFERENCES log_detalle_programa (id_horario_feria);
-
-
--- INICIO ALTERRRRRRRRRRRRRRRRRRRRRRRS
-
 ALTER TABLE comuna
     ADD CONSTRAINT comuna_region_fk FOREIGN KEY ( id_region )
         REFERENCES region ( id_region );
@@ -423,24 +411,12 @@ ALTER TABLE contrato_puesto
         REFERENCES tipo_pago ( id_tipo_pago );
 
 ALTER TABLE contrato_puesto
-    ADD CONSTRAINT contrato_puesto_feriante_fk FOREIGN KEY ( feriante_mail )
-        REFERENCES feriante ( user_mail );
-
-ALTER TABLE detalle_team_vacante
-    ADD CONSTRAINT detalle_supervisor_feria_fk FOREIGN KEY ( supervisa_id_feria )
-        REFERENCES feria ( id_feria );
-
-ALTER TABLE detalle_team_vacante
-    ADD CONSTRAINT detalle_supervisor_feriante_fk FOREIGN KEY ( feriante_mail )
-        REFERENCES feriante ( user_mail );
-
-ALTER TABLE detalle_team_vacante
-    ADD CONSTRAINT detalle_team_rol_empleado_fk FOREIGN KEY ( id_rol )
-        REFERENCES rol_empleado ( id_rol );
+    ADD CONSTRAINT contrato_puesto_feriante_fk FOREIGN KEY ( id_user_fte )
+        REFERENCES feriante ( id_user_fte );
 
 ALTER TABLE banco_encargado
-    ADD CONSTRAINT encargado_mail_to_banco_fk FOREIGN KEY ( encargado_mail )
-        REFERENCES encargado_feria ( user_mail );
+    ADD CONSTRAINT encargado_mail_to_banco_fk FOREIGN KEY ( id_user_enf )
+        REFERENCES encargado_feria ( id_user_enf );
 
 ALTER TABLE contrato_puesto
     ADD CONSTRAINT estado_puesto_contrato_fk FOREIGN KEY ( estado_contrato )
@@ -451,20 +427,16 @@ ALTER TABLE feria
         REFERENCES banco_encargado ( mail_banco );
 
 ALTER TABLE feria
-    ADD CONSTRAINT feria_encargado_feria_fk FOREIGN KEY ( encargado_mail )
-        REFERENCES encargado_feria ( user_mail );
-
-ALTER TABLE feria
-    ADD CONSTRAINT id_feria_estado_FK FOREIGN KEY ( id_estado )
-        REFERENCES estado_feria ( id_estado );
+    ADD CONSTRAINT feria_encargado_feria_fk FOREIGN KEY ( id_user_enf )
+        REFERENCES encargado_feria ( id_user_enf );
 
 ALTER TABLE horario_puesto
     ADD CONSTRAINT horario_puesto_puesto_fk FOREIGN KEY ( id_puesto )
         REFERENCES puesto ( id_puesto );
 
 ALTER TABLE solicitudes_apertura
-    ADD CONSTRAINT id_admin_soli_fk FOREIGN KEY ( admin_muni_mail )
-        REFERENCES administrador_municipal ( user_mail );
+    ADD CONSTRAINT id_admin_soli_fk FOREIGN KEY ( id_user_adm )
+        REFERENCES administrador_municipal ( id_use_adm );
 
 ALTER TABLE detalle_solicitud
     ADD CONSTRAINT id_apertura_fk FOREIGN KEY ( solicitud_apertura_id )
@@ -474,17 +446,65 @@ ALTER TABLE feria
     ADD CONSTRAINT id_comuna_fk FOREIGN KEY ( id_comuna )
         REFERENCES comuna ( id_comuna );
 
-ALTER TABLE solicitudes_apertura
-    ADD CONSTRAINT id_encargado_soli_fk FOREIGN KEY ( encargado_mail )
-        REFERENCES encargado_feria ( user_mail );
-
 ALTER TABLE detalle_programa_feria
     ADD CONSTRAINT id_dia_armado_fk FOREIGN KEY ( id_dia_armado )
         REFERENCES dia_armado ( id_dia_armado );
 
+ALTER TABLE detalle_horario_empleado
+    ADD CONSTRAINT id_dia_to_emphorario_fk FOREIGN KEY ( id_dia )
+        REFERENCES dia_semana ( id_dia );
+
+ALTER TABLE postulaciones
+    ADD CONSTRAINT id_dtv_to_postulaciones_fk FOREIGN KEY ( id_vacante )
+        REFERENCES detalle_team_vacante ( id_vacante );
+
+ALTER TABLE detalle_team_vacante
+    ADD CONSTRAINT id_estado_to_dtv_fk FOREIGN KEY ( id_estado_vacante )
+        REFERENCES estado_vacante ( id_estado );
+
+ALTER TABLE solicitudes_apertura
+    ADD CONSTRAINT id_estado_to_soli_fk FOREIGN KEY ( id_estado )
+        REFERENCES estado_solicitud ( id_estado );
+
+ALTER TABLE feria
+    ADD CONSTRAINT id_feria_estado_fk FOREIGN KEY ( id_estado )
+        REFERENCES estado_feria ( id_estado );
+
+ALTER TABLE detalle_team_vacante
+    ADD CONSTRAINT id_feria_to_dtv_fk FOREIGN KEY ( id_feria )
+        REFERENCES feria ( id_feria );
+
 ALTER TABLE json_feria
     ADD CONSTRAINT id_feria_to_json_fk FOREIGN KEY ( id_feria )
         REFERENCES feria ( id_feria );
+
+ALTER TABLE detalle_team_vacante
+    ADD CONSTRAINT id_fte_to_dtv_fk FOREIGN KEY ( id_user_fte )
+        REFERENCES feriante ( id_user_fte );
+
+ALTER TABLE postulaciones
+    ADD CONSTRAINT id_fte_to_postulaciones_fk FOREIGN KEY ( id_user_fte )
+        REFERENCES feriante ( id_user_fte );
+
+ALTER TABLE redes_sociales
+    ADD CONSTRAINT id_fte_to_redes_fk FOREIGN KEY ( id_user_fte )
+        REFERENCES feriante ( id_user_fte );
+
+ALTER TABLE actividad_feria
+    ADD CONSTRAINT id_horario_to_actividad_fk FOREIGN KEY ( id_horario_feria )
+        REFERENCES detalle_programa_feria ( id_horario_feria );
+
+ALTER TABLE log_actividad_feria
+    ADD CONSTRAINT id_horario_to_log_fk FOREIGN KEY ( id_horario_feria )
+        REFERENCES log_detalle_programa ( id_horario_feria );
+
+ALTER TABLE detalle_team_vacante
+    ADD CONSTRAINT id_rol_to_dtv_fk FOREIGN KEY ( id_rol )
+        REFERENCES rol_empleado ( id_rol );
+
+ALTER TABLE redes_sociales
+    ADD CONSTRAINT id_tipo_red_to_redes_fk FOREIGN KEY ( tipo_red )
+        REFERENCES tipo_red ( id_tipo_red );
 
 ALTER TABLE administrador_municipal
     ADD CONSTRAINT id_tipo_user_to_admin FOREIGN KEY ( id_tipo_usuario )
@@ -499,24 +519,16 @@ ALTER TABLE detalle_horario_empleado
         REFERENCES detalle_team_vacante ( id_vacante );
 
 ALTER TABLE intereses
-    ADD CONSTRAINT intereses_feriante_fk FOREIGN KEY ( user_mail )
-        REFERENCES feriante ( user_mail );
-
-ALTER TABLE postulaciones
-    ADD CONSTRAINT invitaciones_feriante_fk FOREIGN KEY ( feriante_mail )
-        REFERENCES feriante ( user_mail );
-
-ALTER TABLE postulaciones
-    ADD CONSTRAINT postulaciones_detalle_team_fk FOREIGN KEY ( id_vacante )
-        REFERENCES detalle_team_vacante ( id_vacante );
+    ADD CONSTRAINT intereses_feriante_fk FOREIGN KEY ( id_user_fte )
+        REFERENCES feriante ( id_user_fte );
 
 ALTER TABLE detalle_programa_feria
     ADD CONSTRAINT programa_id_feria_fk FOREIGN KEY ( id_feria )
         REFERENCES feria ( id_feria );
 
 ALTER TABLE puesto_archivado
-    ADD CONSTRAINT puesto_archivado_feriante_fk FOREIGN KEY ( user_mail )
-        REFERENCES feriante ( user_mail );
+    ADD CONSTRAINT puesto_archivado_feriante_fk FOREIGN KEY ( id_user_fte )
+        REFERENCES feriante ( id_user_fte );
 
 ALTER TABLE puesto
     ADD CONSTRAINT puesto_estado_puesto_fk FOREIGN KEY ( id_estado_puesto )
@@ -530,17 +542,12 @@ ALTER TABLE puesto
     ADD CONSTRAINT puesto_tipo_puesto_fk FOREIGN KEY ( id_tipo_puesto )
         REFERENCES tipo_puesto ( id_tipo_puesto );
 
-ALTER TABLE redes_sociales
-    ADD CONSTRAINT redes_sociales_feriante_fk FOREIGN KEY ( feriante_mail )
-        REFERENCES feriante ( user_mail );
-
-ALTER TABLE redes_sociales
-    ADD CONSTRAINT redes_sociales_tipo_red_fk FOREIGN KEY ( tipo_red )
-        REFERENCES tipo_red ( id_tipo_red );
+ALTER TABLE solicitudes_apertura
+    ADD CONSTRAINT solicitudes_apertura_feria_fk FOREIGN KEY ( id_feria )
+        REFERENCES feria ( id_feria );
 
 ALTER TABLE encargado_feria
     ADD CONSTRAINT tipo_user_to_encargado_fk FOREIGN KEY ( id_tipo_usuario )
         REFERENCES tipo_usuario ( id_tipo_usuario );
-
 
 

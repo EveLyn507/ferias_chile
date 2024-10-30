@@ -1,20 +1,20 @@
 const fs = require('fs');
 const path = require('path');
 const bcrypt = require('bcrypt');
+const { log } = require('console');
 const pool = require('../server');
 
-// Función para actualizar datos personales
-const actualizarDatosPersonales = async (req, res) => {
-  const { userMail, nombre, apellido, telefono } = req.body;
 
+// Función para actualizar datos personales
+const actualizarDatosPersonales = async (res,pool , userMail, nombre, apellido, telefono , id_user) => {
   try {
     const telefonoEntero = parseInt(telefono, 10);
     const query = `
       UPDATE feriante
       SET nombre = $1, apellido = $2, telefono = $3
-      WHERE user_mail = $4;
+      WHERE id_user_fte = $4;
     `;
-    await req.pool.query(query, [nombre, apellido, telefonoEntero, userMail]);
+    await pool.query(query, [nombre, apellido, telefonoEntero,id_user]);
     res.status(200).json({ message: 'Datos personales actualizados correctamente' });
   } catch (error) {
     console.error('Error al actualizar los datos personales:', error);
@@ -23,15 +23,15 @@ const actualizarDatosPersonales = async (req, res) => {
 };
 
 // Función para cargar datos personales
-const cargarDatosPersonales = async (req, res) => {
-  const { userMail } = req.params;
+const cargarDatosPersonales = async (res,pool,id_user) => {
+
   try {
     const query = `
       SELECT nombre, apellido, telefono
       FROM feriante
-      WHERE user_mail = $1;
+      WHERE id_user_fte = $1;
     `;
-    const result = await req.pool.query(query, [userMail]);
+    const result = await pool.query(query, [id_user]);
 
     if (result.rows.length === 0) {
       return res.status(404).json({ message: 'Usuario no encontrado' });
@@ -45,12 +45,13 @@ const cargarDatosPersonales = async (req, res) => {
 };
 
 // Función para actualizar biografía
-const guardarBiografia = async (req, res) => {
-  const { userMail, biografia } = req.body;
-
+const guardarBiografia = async (id_user, biografia, res,pool) => {
   try {
-    const query = 'UPDATE feriante SET biografia = $1 WHERE user_mail = $2;';
-    await req.pool.query(query, [biografia, userMail]);
+    const query = `UPDATE feriante 
+    SET biografia = $1 
+    WHERE id_user_fte = $2;`
+
+    await pool.query(query, [biografia,id_user]);
     res.status(200).json({ message: 'Biografía actualizada con éxito' });
   } catch (error) {
     console.error('Error al actualizar la biografía:', error);
@@ -59,12 +60,11 @@ const guardarBiografia = async (req, res) => {
 };
 
 // Función para cargar biografía
-const cargarBiografia = async (req, res) => {
-  const { userMail } = req.params;
+const cargarBiografia = async ( res, id_user, pool) => {
 
   try {
-    const query = 'SELECT biografia FROM feriante WHERE user_mail = $1;';
-    const result = await req.pool.query(query, [userMail]);
+    const query = 'SELECT biografia FROM feriante WHERE id_user_fte = $1;';
+    const result = await pool.query(query, [id_user]);
 
     if (result.rows.length === 0) {
       return res.status(404).json({ message: 'Usuario no encontrado' });
@@ -88,7 +88,7 @@ if (!fs.existsSync(uploadDir)) {
 }
 
 // Función para guardar foto de perfil
-const guardarFotoPerfil = async (req, res) => {
+const guardarFotoPerfil = async (req, res, pool) => {
   const { foto, userMail } = req.body;
   const filename = sanitizeFilename(userMail);
   const filePath = path.join(uploadDir, filename);
@@ -116,40 +116,31 @@ const cargarFotoPerfil = (req, res) => {
 };
 
 // Función para actualizar intereses
-const actualizarIntereses = async (req, res) => {
-  const { userMail, intereses } = req.body;
-
+const actualizarIntereses = async ( res,pool, id_user, intereses) => {
   try {
-    await req.pool.query('BEGIN');
-    await req.pool.query('DELETE FROM intereses WHERE user_mail = $1;', [userMail]);
+    await pool.query('BEGIN');
+    await pool.query('DELETE FROM intereses WHERE id_user_fte = $1;', [id_user]);
 
     if (intereses && intereses.length > 0) {
-      const queryIntereses = 'INSERT INTO intereses (interes, user_mail) VALUES ($1, $2);';
+      const queryIntereses = 'INSERT INTO intereses (interes, id_user_fte) VALUES ($1, $2);';
       for (const interes of intereses) {
-        await req.pool.query(queryIntereses, [interes, userMail]);
+        await pool.query(queryIntereses, [interes, id_user]);
       }
     }
-
-    await req.pool.query('COMMIT');
+    await pool.query('COMMIT');
     res.status(200).json({ message: 'Intereses actualizados correctamente' });
   } catch (error) {
-    await req.pool.query('ROLLBACK');
+    await pool.query('ROLLBACK');
     console.error('Error al actualizar intereses:', error);
     res.status(500).json({ message: 'Error al actualizar intereses' });
   }
 };
 
 // Función para cargar intereses
-const cargarIntereses = async (req, res) => {
-  const { userMail } = req.params;
-
+const cargarIntereses = async (res, pool, id_user) => {
   try {
-    const query = 'SELECT interes FROM intereses WHERE user_mail = $1;';
-    const result = await req.pool.query(query, [userMail]);
-
-    if (result.rows.length === 0) {
-      return res.status(404).json({ message: 'No se encontraron intereses para este usuario' });
-    }
+    const query = 'SELECT interes FROM intereses WHERE id_user_fte = $1;';
+    const result = await pool.query(query, [id_user]);
 
     res.status(200).json(result.rows.map(row => row.interes));
   } catch (error) {
@@ -158,16 +149,14 @@ const cargarIntereses = async (req, res) => {
   }
 };
 
-// Función para actualizar el correo
-const actualizarCorreo = async (req, res) => {
+const actualizarCorreo = async (req, res,pool) => { 
   const { nuevoCorreo, user_mail } = req.body;
-
   try {
     await req.pool.query('BEGIN');
 
     const updateQueries = [
-      'UPDATE feriante SET user_mail = $1 WHERE user_mail = $2;',
-      'UPDATE intereses SET user_mail = $1 WHERE user_mail = $2;',
+      'UPDATE feriante SET id_user_fte = $1 WHERE id_user_fte = $2;',
+      'UPDATE intereses SET id_user_fte = $1 WHERE id_user_fte = $2;',
       'UPDATE detalle_supervisor SET feriante_mail = $1 WHERE feriante_mail = $2;' 
     ];
 
@@ -182,12 +171,17 @@ const actualizarCorreo = async (req, res) => {
     console.error('Error al actualizar el correo:', error);
     res.status(500).json({ message: 'Error interno del servidor' });
   }
-};
+
+
+
+
+
+
 
 
 // Función para actualizar la contraseña
 const actualizarContraseña = async (req, res) => {
-  const { nuevaContraseña, userMail } = req.body;
+  const { nuevaContraseña, id_user_fte } = req.body;
 
   if (!nuevaContraseña) {
     return res.status(400).json({ message: 'La nueva contraseña es requerida' });
@@ -196,8 +190,8 @@ const actualizarContraseña = async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(nuevaContraseña, 10);
 
-    const query = 'UPDATE feriante SET contrasena = $1 WHERE user_mail = $2;';
-    await req.pool.query(query, [hashedPassword, userMail]);
+    const query = 'UPDATE feriante SET contrasena = $1 WHERE id_user_fte = $2;';
+    await req.pool.query(query, [hashedPassword, id_user_fte]);
 
     res.status(200).json({ message: 'Contraseña actualizada correctamente' });
   } catch (error) {
@@ -212,12 +206,10 @@ const actualizarContraseña = async (req, res) => {
 // obtiene todas las vacantes donde feriante sea null -- osea que esten vacias/disponibles
 const getVacantesVacias = async (req , res, pool) =>{
 
-  const { } = req.body.vacante;
-
   try {
     const result = await pool.query(
       `SELECT * from detalle_team_vacante 
-      WHERE feriante_mail = null;`
+      WHERE id_user_fte = null;`
     );
 
     return res.json(result.rows)
@@ -231,12 +223,12 @@ const getVacantesVacias = async (req , res, pool) =>{
 
 const savePostulacion = async (req , res, pool) =>{
 
-  const { feriante_mail, id_vacante, estado} = req.body.postulacion;
+  const { id_user_fte, id_vacante, estado} = req.body.postulacion;
 
   try {
     const result = await pool.query(
-      `INSERT INTO postulaciones (feriante_mail,id_vacante,estado) 
-      VALUES (1$,$2,$3)`, [feriante_mail, id_vacante, estado]
+      `INSERT INTO postulaciones (id_vacante,id_user_fte,estado) 
+      VALUES (1$,$2,$3)`, [id_vacante,id_user_fte, estado]
     );
 
     return res.json(result.rowCount > 0)

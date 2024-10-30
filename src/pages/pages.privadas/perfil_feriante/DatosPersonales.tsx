@@ -12,13 +12,14 @@ interface DatosPersonalesProps {
 
 const DatosPersonales: React.FC<DatosPersonalesProps> = ({  nombre, apellido, telefono, setDatosPersonales }) => {
   const userMail = useSelector((state: AppStore) => state.user.email);
+  const id_user = useSelector((state: AppStore) => state.user.id_user);
   const [mensajeError, setMensajeError] = useState<string | null>(null);
   const [mensajeExito, setMensajeExito] = useState<string | null>(null);
 
   useEffect(() => {
     const cargarDatosPersonales = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/cargar-datos-personales/${userMail}`);
+        const response = await fetch(`http://localhost:5000/api/cargar-datos-personales/${id_user}`);
         if (response.ok) {
           const data = await response.json();
           setDatosPersonales({ nombre: data.nombre, apellido: data.apellido, telefono: data.telefono });
@@ -30,10 +31,10 @@ const DatosPersonales: React.FC<DatosPersonalesProps> = ({  nombre, apellido, te
       }
     };
 
-    if (userMail) { 
+    if (id_user) { 
       cargarDatosPersonales();
     }
-  }, [userMail, setDatosPersonales]);
+  }, [id_user, setDatosPersonales]);
 
   const actualizarDatos = async () => {
     try {
@@ -42,7 +43,7 @@ const DatosPersonales: React.FC<DatosPersonalesProps> = ({  nombre, apellido, te
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ userMail, nombre, apellido, telefono }),
+        body: JSON.stringify({ id_user, nombre, apellido, telefono }),
       });
 
       if (response.ok) {

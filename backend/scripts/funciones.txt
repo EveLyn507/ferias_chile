@@ -1,7 +1,7 @@
 --- ELIMINAR LAS FUNCIONES
-DROP FUNCTION IF EXISTS contar_puestos_actuales(INT);
+DROP FUNCTION IF EXISTS contar_puestos_actuales(INTEGER);
 DROP FUNCTION IF EXISTS traer_puestos_feria(INTEGER);
-DROP FUNCTION IF EXISTS obtener_ferias_encargado(CHARACTER VARYING);
+DROP FUNCTION IF EXISTS obtener_ferias_encargado(INTEGER);
 DROP FUNCTION IF EXISTS insertar_solicitud_apertura(CHARACTER VARYING, CHARACTER VARYING, INTEGER, CHARACTER VARYING);
 DROP FUNCTION IF EXISTS obtener_horarios_ferias_encargado( integer[]);
 DROP FUNCTION IF EXISTS obtener_horarios_ferias_feedFerias( integer[]);
@@ -10,7 +10,7 @@ DROP FUNCTION IF EXISTS obtener_horarios_ferias_feedFerias( integer[]);
 -- FUNCIONES PARA EL ENCARGADOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 
 -- OBTIENE LAS FERIAS DE UN ENCARGADO
-CREATE OR REPLACE FUNCTION obtener_ferias_encargado(mail character varying)
+CREATE OR REPLACE FUNCTION obtener_ferias_encargado(id_user INTEGER)
 RETURNS TABLE (
     id_feria INT,
     nombre_feria character varying(80),
@@ -26,16 +26,16 @@ BEGIN
         f.id_feria, 
         f.nombre AS nombre_feria, 
         c.comuna, 
-        g.nombre AS region,
+        g.region ,
         es.estado,
         contar_puestos_actuales(f.id_feria) AS puestos_actuales
 
     FROM encargado_feria ef
-    JOIN feria f ON ef.user_mail = f.encargado_mail
+    JOIN feria f ON ef.id_user_enf = f.id_user_enf
     JOIN comuna c ON f.id_comuna = c.id_comuna
     JOIN region g ON c.id_region = g.id_region
     JOIN estado_feria es ON f.id_estado = es.id_estado
-    WHERE ef.user_mail = mail;  -- Uso del parámetro 'mail' correctamente
+    WHERE ef.id_user_enf = id_user;  -- uso del parametro
 END;
 $$ LANGUAGE plpgsql;
 
@@ -130,7 +130,7 @@ RETURNS TABLE (
     nombre_feria CHARACTER VARYING(50),
     num_puesto INTEGER,
     num_horario INTEGER,
-    hora_inicio TIME WITH TIME ZONE,
+    hora_inicio TIME WITHOUT TIME ZONE,
     hora_termino TIME WITH TIME ZONE,
     precio INTEGER
 
@@ -186,7 +186,7 @@ RETURNS TABLE (
     id_feria INTEGER,
     nombre_feria CHARACTER VARYING(80),
     comuna CHARACTER VARYING(80),
-    region CHARACTER VARYING(100)
+    region CHARACTER VARYING(50)
 ) AS $$
 BEGIN
     RETURN QUERY
@@ -194,7 +194,7 @@ BEGIN
         f.id_feria, 
         f.nombre AS nombre_feria, 
         c.comuna, 
-        g.nombre AS region
+        g.region AS region
     FROM 
         public.feria AS f 
     JOIN 

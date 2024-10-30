@@ -10,6 +10,7 @@ interface BiografiaProps {
 
 const Biografia: React.FC<BiografiaProps> = ({  biografia, setBiografia }) => {
   const userMail = useSelector((state: AppStore) => state.user.email);
+  const id_user = useSelector((state: AppStore) => state.user.id_user);
   const [mensajeError, setMensajeError] = useState<string | null>(null);
   const [mensajeExito, setMensajeExito] = useState<string | null>(null);
   const maxCaracteres = 500;
@@ -17,7 +18,7 @@ const Biografia: React.FC<BiografiaProps> = ({  biografia, setBiografia }) => {
   useEffect(() => {
     const cargarBiografia = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/cargar-biografia/${userMail}`);
+        const response = await fetch(`http://localhost:5000/api/cargar-biografia/${id_user}`);
         if (response.ok) {
           const data = await response.json();
           setBiografia(data.biografia || '');
@@ -28,10 +29,10 @@ const Biografia: React.FC<BiografiaProps> = ({  biografia, setBiografia }) => {
         console.error('Error al conectar con el servidor:', error);
       }
     };
-    if (userMail) {
+    if (id_user) {
       cargarBiografia();
     }
-  }, [userMail, setBiografia]);
+  }, [id_user, setBiografia]);
 
   const guardarBiografia = async () => {
     if (biografia.trim() === '') {
@@ -45,9 +46,9 @@ const Biografia: React.FC<BiografiaProps> = ({  biografia, setBiografia }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ userMail, biografia }),
+        body: JSON.stringify({ id_user, biografia }),
       });
-
+      console.log(id_user)
       if (response.ok) {
         setMensajeExito('Biografía actualizada con éxito.');
         setMensajeError(null);
@@ -73,7 +74,7 @@ const Biografia: React.FC<BiografiaProps> = ({  biografia, setBiografia }) => {
         maxLength={maxCaracteres}
       />
       <p>{biografia.length}/{maxCaracteres} caracteres</p>
-      <button onClick={guardarBiografia}>Actualizar Biografía</button>
+      <button onClick={guardarBiografia}>Guardar Biografía</button>
     </div>
   );
 };

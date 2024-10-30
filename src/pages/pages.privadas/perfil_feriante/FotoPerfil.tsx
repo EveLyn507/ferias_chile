@@ -10,12 +10,13 @@ interface FotoPerfilProps {
 
 const FotoPerfil: React.FC<FotoPerfilProps> = ({ setFotoPerfil, fotoPerfil }) => {
   const userMail = useSelector((state: AppStore) => state.user.email);
+  const id_user = useSelector((state: AppStore) => state.user.id_user);
   const [preview, setPreview] = useState<string | null>(fotoPerfil); 
 
   useEffect(() => {
     const obtenerFotoPerfil = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/cargar-foto-perfil/${userMail}`);
+        const response = await fetch(`http://localhost:5000/api/cargar-foto-perfil/${id_user}`);
         if (!response.ok) {
           throw new Error('Error al obtener la foto de perfil: ' + response.statusText);
         }
@@ -27,10 +28,10 @@ const FotoPerfil: React.FC<FotoPerfilProps> = ({ setFotoPerfil, fotoPerfil }) =>
       }
     };
 
-    if (userMail && !fotoPerfil) { 
+    if (id_user && !fotoPerfil) { 
       obtenerFotoPerfil();
     }
-  }, [userMail, fotoPerfil, setFotoPerfil]);
+  }, [id_user, fotoPerfil, setFotoPerfil]);
 
   const handleFotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
