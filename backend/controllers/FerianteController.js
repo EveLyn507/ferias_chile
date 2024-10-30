@@ -156,7 +156,7 @@ const actualizarCorreo = async (req, res,pool) => {
 
     const updateQueries = [
       'UPDATE feriante SET id_user_fte = $1 WHERE id_user_fte = $2;',
-      'UPDATE intereses SET id_user_fte = $1 WHERE id_user_fte = $2;',
+      'UPDATE intereses SET id_user_fte = $1 WHERE user_mail = $2;',
       'UPDATE detalle_supervisor SET feriante_mail = $1 WHERE feriante_mail = $2;' 
     ];
 
