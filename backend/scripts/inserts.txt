@@ -111,6 +111,11 @@ insert into estado_feria (id_estado,estado) VALUES
 (5,'ELIMINADO');
 
 
+insert into estado_vacante (id_estado,estado) VALUES
+(1,'vacia'),
+(2,'llena'),
+(3,'ELIMINADA');
+
 insert into rol_empleado (id_rol, rol)
 	values(1,'supervisor');
 	

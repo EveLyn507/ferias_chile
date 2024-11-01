@@ -9,8 +9,8 @@ const defaultHorario: horarioVacante = {
     id_detalle_horario: null,
     id_vacante: null,
     id_dia: 0,
-    hora_inicio: '',
-    hora_termino: ''
+    hora_entrada: '',
+    hora_salida: ''
 }
 
 export const NewHorario = ({ saveHorario }: newVacanteProps) => {
@@ -26,10 +26,10 @@ export const NewHorario = ({ saveHorario }: newVacanteProps) => {
         const newWarnings: string[] = []
 
         // Validar que los campos requeridos no estén vacíos
-        if (!addHorario.hora_inicio) {
+        if (!addHorario.hora_entrada) {
             newWarnings.push("La hora de inicio es requerida.");
         }
-        if (!addHorario.hora_termino) {
+        if (!addHorario.hora_salida) {
             newWarnings.push("La hora de término es requerida.");
         }
         if (addHorario.id_dia <= 0) {
@@ -49,15 +49,15 @@ export const NewHorario = ({ saveHorario }: newVacanteProps) => {
             <input 
                 type="time" 
                 placeholder="hora inicio" 
-                value={addHorario.hora_inicio}  
-                onChange={(e) => setAddHorario({ ...addHorario, hora_inicio: e.target.value })} 
+                value={addHorario.hora_entrada}  
+                onChange={(e) => setAddHorario({ ...addHorario, hora_entrada: e.target.value })} 
                 required 
             />
             <input 
                 type="time" 
                 placeholder="hora termino"  
-                value={addHorario.hora_termino} 
-                onChange={(e) => setAddHorario({ ...addHorario, hora_termino: e.target.value })} 
+                value={addHorario.hora_salida} 
+                onChange={(e) => setAddHorario({ ...addHorario, hora_salida: e.target.value })} 
                 required 
             />
             <select 

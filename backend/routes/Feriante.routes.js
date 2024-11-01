@@ -12,7 +12,7 @@ const {
   actualizarCorreo,
   actualizarContraseña,
   getVacantesVacias,
-  savePostulacion
+  insertPostulacion
 } = require('../controllers/FerianteController');
 
 // Rutas para actualizar y cargar datos personales
@@ -77,14 +77,15 @@ router.post('/api/actualizar-contrasena', (req, res) => {
 });
 
 //INICIO MODULO POSTULACIONES 
-router.post('/getVacantes', (req, res) => {
+router.post('/getVacantesVacias', (req, res) => {
   const pool = req.pool;
-  getVacantesVacias(req, res, pool);
+  getVacantesVacias(res, pool);
 });
 
-router.post('/savePostulacion', (req, res) => {
+router.post('/insertPostulacion', (req, res) => {
   const pool = req.pool;
-  savePostulacion(req, res, pool);
+  const {id_user_fte , user_mail, id_vacante} = req.body.postulacion
+  insertPostulacion(res, pool,id_user_fte , user_mail, id_vacante );
 });
 
 

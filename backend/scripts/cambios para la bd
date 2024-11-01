@@ -22,6 +22,7 @@ horario_puesto,
 detalle_team_vacante,
 detalle_horario_empleado,
 contrato_puesto,
+postulaciones
 
 FIN DE ESTA SECCION
 MODIFICA LAS COLUMNAS DE TIPO DE DATO : DATE  POR TIME WITHOUT TIME ZONE , PARA LAS SIGUIENTES TABLAS :

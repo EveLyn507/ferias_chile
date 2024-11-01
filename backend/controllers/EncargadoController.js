@@ -124,10 +124,30 @@ const getFeria = async (req, res) => {
 
 
 
+// INICIO ADMINISTRACION DE LAS FERIASSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
+
+//ADMINISTRACION FERIAS MODULO --> PROGRAMA DE LA FERIA
+
+const getPrograma = async (req , res , pool) => {
+
+  const id_feria = parseInt(req.params.id_feria, 10);
+
+try{
+const result = await pool.query(`
+SELECT * FROM detalle_programa_feria
+WHERE id_feria = $1
+ORDER BY id_horario_feria ASC `,[id_feria])
+res.json(result.rows)
+}catch (err){
+console.error('Error al obtener la feria:', err);
+res.status(500).json({ error: 'Error al obtener la feria' });
+
+}
+}
 
 
 const UpdateProgramaFeria = async (req, res, pool) => {
-  const { id_feria, programacion } = req.body; // Extrae la programación desde el body
+  const { id_feria, programacion } = req.body; 
 
   try {
     // Recorre cada elemento de la programación (debe ser un array)
@@ -158,33 +178,29 @@ const UpdateProgramaFeria = async (req, res, pool) => {
 };
 
 
-
-const getPrograma = async (req , res , pool) => {
-
-    const id_feria = parseInt(req.params.id_feria, 10);
-
-try{
-  const result = await pool.query(`
-  SELECT * FROM detalle_programa_feria
-  WHERE id_feria = $1
-  ORDER BY id_horario_feria ASC `,[id_feria])
-
-
-  res.json(result.rows)
-
-}catch (err){
-  console.error('Error al obtener la feria:', err);
-  res.status(500).json({ error: 'Error al obtener la feria' });
-
-  }
-}
-
-
-const saveDatosBank = async (req , res ,pool ) => {
-
-  const {mail_banco, nombre_asociado, numero_cuenta, encargado_mail} = req.body.encargadoBank
-  try {
+// PERFIL ENCARGADO MODULO --> BANCOS
+const getDatosBank = async (res , pool,id_user) => {
+  try{
     const result = await pool.query (`
+      SELECT mail_banco, id_user_enf,nombre_asociado, numero_cuenta
+      FROM banco_encargado 
+      WHERE id_user_enf = $1;`, [id_user])
+      
+      if (result.rows != undefined) {
+        res.json(result.rows)
+   
+      }else {
+        res.status(500).json({ error: 'Error al obtener datos del  banco o no existen' });
+   
+      }
+    }catch(err){ 
+    console.log('error al obtener los bancos ' ,err)
+    }
+  }
+
+const insertDatosBank = async (res ,pool ,mail_banco, nombre_asociado, numero_cuenta, encargado_mail) => {
+  try {
+    await pool.query (`
     INSERT INTO banco_encargado (mail_banco, nombre_asociado, numero_cuenta, encargado_mail)
     VALUES ($1, $2, $3, $4)
     ON CONFLICT (mail_banco)
@@ -194,42 +210,14 @@ const saveDatosBank = async (req , res ,pool ) => {
     numero_cuenta = EXCLUDED.numero_cuenta,
     encargado_mail = EXCLUDED.encargado_mail
   ` , [mail_banco, nombre_asociado, numero_cuenta, encargado_mail])
-  
   return res.status(200);
   }catch (err){
     console.log('error al iinsertar banco ' ,err)
     res.status(500).json({ error: 'Error al guardar banco' });
   }
-
-
 }
 
-
-const getDatosBank = async (req , res , pool) => {
-const {mail} = req.body
-
-try{
-  const result = await pool.query (`
-    SELECT mail_banco, nombre_asociado, numero_cuenta, encargado_mail
-    FROM banco_encargado 
-    WHERE encargado_mail = $1;`, [mail])
-    
-    if (result.rows != undefined) {
-      res.json(result.rows)
- 
-    }else {
-      res.status(500).json({ error: 'Error al obtener datos del  banco o no existen' });
- 
-    }
-  }catch(err){ 
-  console.log('error al obtener los bancos ' ,err)
-  }
-}
-
-const deleteBank = async (req,res, pool) => {
-
- const  {mail_banco} = req.body
- 
+const deleteBank = async (res, pool,mail_banco) => {
 try{
   await pool.query(` 
     DELETE FROM banco_encargado 
@@ -240,33 +228,58 @@ try{
   console.log('error al borrar banco ' ,err)
   }
 }
+// FIN PERFIL ENCARGADO MODULO --> BANCOS
+
+const getHorariosVacante = async (idsvacante, pool) =>{
+
+const result = await pool.query(`
+  SELECT * FROM detalle_horario_empleado 
+  WHERE id_vacante = ANY($1)
+  ` , [idsvacante])
+  return result.rows;
+}
+
+// ADMINISTRACION FERIAS MODULO --> VACANTES DE LA FERIA
+const getVacantesFeria = async (req, res, pool) => {
+  const { id_feria } = req.body;
+  try {
+    const result = await pool.query(` 
+      SELECT id_vacante ,id_user_fte, id_rol, id_feria, to_char(ingreso, 'YYYY-MM-DD') as ingreso,to_char(termino, 'YYYY-MM-DD') as termino, id_estado_vacante
+      FROM detalle_team_vacante
+      WHERE id_feria = $1; 
+    `, [id_feria]);
+
+      //añade los horarios de la vacante 
+      const  vacantes = result.rows
+      const vacantesIds = vacantes.map(vacante => vacante.id_vacante);
+    
+    // 3. Obtiene los horarios solo para esas ferias
+    const horarios = await getHorariosVacante(vacantesIds,pool);
+
+    // 4. Combina las ferias con sus horarios
+    const vacantesConHorarios = vacantes.map(vacante => {
+      const horariosVacante = horarios.filter(horario => horario.id_vacante === vacante.id_vacante);
+      return {
+        ...vacante,
+        horarios: horariosVacante
+      };
+    });
+    res.json(vacantesConHorarios);
+
+  } catch (err) {
+    console.log('error al obtener vacantes: ', err);
+  }
+};
 
 
-// Manda las vacantes a l a feria seleccionada
-const getVacantesFeria = async (req,res, pool) => {
-
-  const  {id_feria} = req.body
-  
- try{
-   const result = await pool.query(` 
-    SELECT * FROM detalle_team_vacante
-    WHERE supervisa_id_feria = $1; `, [id_feria]) 
-     res.json(result.rows)
- }catch (err){
- 
-   console.log('error al borrar banco ' ,err)
-   }
- }
- 
-//INICIO SAVEHORARIO --> SE INVOCA CUANDO SE GUARDA LA VACANTE
-
-const SaveHorarioVacante = async (id_vacante, id_dia, inicio, termino, pool) => {
+// SAVEHORARIO --> SE INVOCA CUANDO SE GUARDA LA VACANTE
+const SaveHorarioVacante = async (id_vacante, id_dia, hora_entrada, hora_salida, pool) => {
   try {
     const result = await pool.query(`
       INSERT INTO detalle_horario_empleado 
       (id_vacante, id_dia, hora_entrada, hora_salida)
       VALUES ($1, $2, $3, $4)
-      RETURNING *`, [id_vacante, id_dia, inicio, termino]
+      RETURNING *`, [id_vacante, id_dia, hora_entrada, hora_salida]
     );
     return result.rows[0];  // Retorna el resultado del horario insertado
   } catch (error) {
@@ -275,19 +288,16 @@ const SaveHorarioVacante = async (id_vacante, id_dia, inicio, termino, pool) => 
   }
 };
 
-
-// Función SaveVacantesFeria
-const SaveVacantesFeria = async (req, res, pool) => {
-  const { feriante_mail, supervisa_id_feria, id_rol, ingreso, termino, estado_vacante, horarios } = req.body.vacante;
-
+const insertVacantesFeria = async (res, pool , newVacante) => {
+  const { id_user_fte, id_feria, id_rol, ingreso, termino, id_estado_vacante, horarios } = newVacante;
   try {
     // Inserta la vacante y obtiene el id_vacante generado
     const result = await pool.query(
       `INSERT INTO detalle_team_vacante 
-      (feriante_mail, supervisa_id_feria, id_rol, ingreso, termino, estado_vacante)
+      (id_user_fte, id_feria, id_rol, ingreso, termino, id_estado_vacante)
       VALUES ($1, $2, $3, $4, $5, $6)
       RETURNING *`,
-      [feriante_mail, supervisa_id_feria, id_rol, ingreso, termino, estado_vacante]
+      [id_user_fte, id_feria, id_rol, ingreso, termino, id_estado_vacante]
     );
 
     const { id_vacante } = result.rows[0]; // Extrae el ID de la vacante insertada
@@ -297,9 +307,9 @@ const SaveVacantesFeria = async (req, res, pool) => {
     // Guarda cada horario asociado a la vacante
     await Promise.all(
       horarios.map(async (horario) => {
-        const { id_dia, hora_inicio, hora_termino } = horario; // Desestructuración de horario
-        console.log(id_dia)
-        const resultHorario = await SaveHorarioVacante(id_vacante, id_dia, hora_inicio, hora_termino, pool); // Llamada a la función asíncrona
+        const { id_dia, hora_entrada, hora_salida } = horario; // Desestructuración de horario
+
+        const resultHorario = await SaveHorarioVacante(id_vacante, id_dia, hora_entrada, hora_salida, pool); // Llamada a la función asíncrona
         horariosGuardados.push(resultHorario); // Guardar el resultado en la lista de horarios
       })
     );
@@ -315,62 +325,137 @@ const SaveVacantesFeria = async (req, res, pool) => {
   }
 };
 
-
-
-const updateVacanteFeria = async (req, res ,pool) => {
-  const { id_vacante, feriante_mail, supervisa_id_feria, id_rol, ingreso, termino, estado_vacante } = req.body.vacante;
+const updateHorarioVacante = async (req, res, pool) => {
+  const horarios = req.body.horarios;
 
   try {
-    const result = await pool.query(
+    for (const horario of horarios) {
+      const { id_detalle_horario, id_dia, hora_entrada, hora_salida } = horario;
+
+      // Ejecutar la consulta para cada horario
+      await pool.query(
+        `UPDATE detalle_horario_empleado 
+         SET id_dia = $1, hora_entrada = $2, hora_salida = $3
+         WHERE id_detalle_horario = $4`,
+        [id_dia, hora_entrada, hora_salida, id_detalle_horario]
+      );
+    }
+    return res.status(200).json({ msj: 'Horarios actualizados correctamente' });
+  } catch (error) {
+    console.error('Error al actualizar la vacante:', error);
+    return res.status(500).json({ error: 'Error al actualizar los horarios' });
+  }
+};
+
+const updateVacanteFeria = async (req, res ,pool) => {
+  const { id_vacante, feriante_mail, id_feria, id_rol, ingreso, termino, id_estado_vacante } = req.body.vacante;
+  console.log(req.body.vacante)
+  try {
+     await pool.query(
       `UPDATE detalle_team_vacante 
-       SET feriante_mail = $1, supervisa_id_feria = $2, id_rol = $3, ingreso = $4, termino = $5, estado_vacante = $6
+       SET id_user_fte = $1, id_feria = $2, id_rol = $3, ingreso = $4, termino = $5, id_estado_vacante = $6
        WHERE id_vacante = $7`,
-      [feriante_mail, supervisa_id_feria, id_rol, ingreso, termino, estado_vacante, id_vacante]
+      [feriante_mail, id_feria, id_rol, ingreso, termino, id_estado_vacante, id_vacante]
     );
-      const as = result.rowCount > 0;  // Retorna true si se actualizó, false si no.
-      console.log('me active xd')
-    return res.json(result.rowCount > 0)
+    return res.status(200).json({msj : 'me actualize'})
   } catch (error) {
     console.error('Error al actualizar la vacante:', error);
     throw error;
   }
 };
 
-
+//borra el horario primero y luego la vacante
 const deleteVacante = async (req,res, pool) => {
-
   const  {id_vacante} = req.body
-  
  try{
-
    await pool.query(` 
      DELETE FROM detalle_horario_empleado
      WHERE id_vacante = $1 `, [id_vacante]) 
-
    await pool.query(` 
      DELETE FROM detalle_team_vacante 
      WHERE id_vacante = $1 `, [id_vacante]) 
      res.status(200).json({message : 'vacante borrada correctamente'})
  }catch (err){
- 
    console.log('error al borrar banco ' ,err)
    }
  }
- //FIN SaveVacantesFeria
+
+//MODULO POSTULANTES 
+const getPostulaciones = async ( res , pool , id_feria) => {
+  try {
+    const result = await pool.query(`
+    SELECT f.id_feria , f.nombre, dtv.id_vacante , p.id_postulacion , p.id_user_fte, fte.nombre , fte.apellido FROM feria f 
+    JOIN detalle_team_vacante dtv on dtv.id_feria = f.id_feria
+    JOIN postulaciones p on p.id_vacante = dtv.id_vacante 
+    RIGHT JOIN feriante fte on fte.id_user_fte = p.id_user_fte
+    WHERE f.id_feria = $1`, [id_feria]
+    );
+     res.json(result.rows)  
+  } catch (error) {
+    console.error('Error al insertar el horario:', error);
+    throw error;  // Lanza el error para que sea capturado por la función que llama
+  }
+};
+
+
+const getALLPostulaciones = async ( res , pool , id_user_enf) => {
+  try {
+    const result = await pool.query(`
+    SELECT f.id_feria , f.nombre, dtv.id_vacante , p.id_postulacion , p.id_user_fte, fte.nombre , fte.apellido 
+    FROM encargado_feria enf 
+    JOIN feria f on  f.id_user_enf = enf.id_user_enf
+    JOIN detalle_team_vacante dtv on dtv.id_feria = f.id_feria
+    JOIN postulaciones p on p.id_vacante = dtv.id_vacante 
+    RIGHT JOIN feriante fte on fte.id_user_fte = p.id_user_fte
+    WHERE enf.id_user_enf  = $1`, [id_user_enf]
+    );
+    res.json(result.rows)  // Retorna el resultado del horario insertado
+  } catch (error) {
+    console.error('Error al insertar el horario:', error);
+    throw error;  // Lanza el error para que sea capturado por la función que llama
+  }
+};
+
+
+//borra el horario primero y luego la vacante
+const aceptarPostulacion = async (req,res, pool) => {
+  const  {id_vacante} = req.body
+ try{
+   await pool.query(` 
+     DELETE FROM detalle_horario_empleado
+     WHERE id_vacante = $1 `, [id_vacante]) 
+   await pool.query(` 
+     DELETE FROM detalle_team_vacante 
+     WHERE id_vacante = $1 `, [id_vacante]) 
+     res.status(200).json({message : 'vacante borrada correctamente'})
+ }catch (err){
+   console.log('error al borrar banco ' ,err)
+   }
+ }
+
+ //borra el horario primero y luego la vacante
+const rechazarPostulacion = async (req,res, pool) => {
+  const  {id_vacante} = req.body
+ try{
+   await pool.query(` 
+     DELETE FROM detalle_horario_empleado
+     WHERE id_vacante = $1 `, [id_vacante]) 
+   await pool.query(` 
+     DELETE FROM detalle_team_vacante 
+     WHERE id_vacante = $1 `, [id_vacante]) 
+     res.status(200).json({message : 'vacante borrada correctamente'})
+ }catch (err){
+   console.log('error al borrar banco ' ,err)
+   }
+ }
 
 
 module.exports = {
-  saveFeria,
-  getFeria,
-  get_feria_Encargado,
-  abrirTiketFeria,
-  UpdateProgramaFeria,
-  getPrograma,
-  saveDatosBank,
-  getDatosBank,
-  deleteBank,
-  getVacantesFeria,
-  SaveVacantesFeria,
-  updateVacanteFeria,
-  deleteVacante
+  saveFeria,getFeria,get_feria_Encargado,//HOME 
+  //ADMINISTRACION DE LA FERIA
+  abrirTiketFeria, 
+  UpdateProgramaFeria,getPrograma, // MODULO PROGRAMACION DE LA FERIA
+  insertDatosBank,getDatosBank,deleteBank,//MODULO BANCOS
+  getVacantesFeria,insertVacantesFeria,updateVacanteFeria,deleteVacante,updateHorarioVacante, // MODULO VACANTES
+  getPostulaciones,getALLPostulaciones,aceptarPostulacion,rechazarPostulacion //MODULO POSTULACIONES
 };

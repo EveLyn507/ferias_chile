@@ -20,9 +20,9 @@ export const PrivateRoutes = {
     BANCOS : '1/bancos',
     TEAM : '1/TEAM',
 
-
+    
     PERFILFERIANTE : '2',
-
+    POSTULACIONES : '2/postulaciones',
     SUPERVISOR: '2/supervisor',
 
     PERFILADMIN : '3',

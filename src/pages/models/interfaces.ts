@@ -26,8 +26,8 @@ export interface horarioVacante {
     id_detalle_horario : number | null,
     id_vacante : number | null,
     id_dia: number ,
-    hora_inicio: string,
-    hora_termino: string
+    hora_entrada: string,
+    hora_salida: string
 
 }
 
@@ -35,16 +35,22 @@ export interface horarioVacante {
 export interface vacante {
     id_vacante : number,
     feriante_mail : string | null,
-    supervisa_id_feria :number,
+    id_feria :number,
     id_rol : number,
     ingreso : string,
     termino : string,
-    estado_vacante : number
+    id_estado_vacante : number
     horarios: horarioVacante[]
   }
 
 
+// MODULO DE POSTULACIONES
 
+export interface postulacion {
+    id_user_fte : number ,
+    user_mail : string,
+    id_vacante : number |null
+}
 
 
 //FEED  DE FERIAS 

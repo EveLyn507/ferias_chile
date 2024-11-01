@@ -28,7 +28,7 @@ export const DatosBanco = () => {
         console.error("Error al cargar los datos de los bancos del encargado:", error);
       });
   }, []);
-  console.log(encargadoBank)
+
   return (
    <>
      
