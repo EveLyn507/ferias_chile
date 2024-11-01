@@ -256,7 +256,7 @@ module.exports = {
 };
 
 // Manda las vacantes a l a feria seleccionada
-const getVacantesFeria = async (req,res, pool) => {
+const getVacantesFeria1 = async (req,res, pool) => {}
 // FIN PERFIL ENCARGADO MODULO --> BANCOS
 
 const getHorariosVacante = async (idsvacante, pool) =>{
