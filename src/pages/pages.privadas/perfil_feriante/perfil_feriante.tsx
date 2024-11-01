@@ -114,10 +114,8 @@ const PerfilFeriantes: React.FC = () => {
       />
 
       <HistorialActividades />
-    </div>
-
       <Link to='2/supervisor'> SUPERVISOR </Link>
-    <Link to='postulaciones'> POSTULACIONES </Link>
+      <Link to='postulaciones'> POSTULACIONES </Link>
    </>
   );
 };
