@@ -1,19 +1,46 @@
-import React from 'react';
-import EstadoFeria from './EstadoFeria';
-import InvitacionesFeria from './InvitacionesFeria';
-import GestionPuestos from './GestionPuestos';
-import MapaFeria from './MapaFeria';
+// GestionSupervisor.tsx
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 const GestionSupervisor: React.FC = () => {
-  const idFeria = 1; // Ajusta el ID de la feria según sea necesario
+  const [alertas, setAlertas] = useState([]);
+
+  useEffect(() => {
+    const fetchAlertas = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/alertas');
+        setAlertas(response.data);
+      } catch (error) {
+        console.error('Error al cargar alertas:', error);
+      }
+    };
+    fetchAlertas();
+  }, []);
 
   return (
     <div>
-      <h1>Gestión de la Feria</h1>
-      <EstadoFeria idFeria={idFeria} />
-      <InvitacionesFeria />
-      <GestionPuestos />
-      <MapaFeria />
+      <h2>Gestión de Supervisor</h2>
+      <nav>
+        <ul>
+          <li>
+            <Link to="/estado-feria">Ver Estado de Feria</Link>
+          </li>
+          <li>
+            <Link to="/gestion-puestos">Gestión de Puestos</Link>
+          </li>
+          <li>
+            <Link to="/mapa-feria">Ver Mapa de la Feria</Link>
+          </li>
+        </ul>
+      </nav>
+      
+      <h3>Alertas e Incidentes</h3>
+      <ul>
+        {alertas.map((alerta, index) => (
+          <li key={index}>{alerta.descripcion}</li>
+        ))}
+      </ul>
     </div>
   );
 };

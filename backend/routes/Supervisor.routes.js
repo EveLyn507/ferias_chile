@@ -1,18 +1,18 @@
 const express = require('express');
-const supervisorController = require('../controllers/SupervisorController');
-
 const router = express.Router();
+const {
+  obtenerEstadoFeria,
+  obtenerMapaFeria,
+  obtenerAlertas,
+  obtenerPuestos,
+  agregarComentarioPuesto
+} = require('../controllers/SupervisorController');
 
-// Obtener el estado de los puestos en una feria específica
-router.get('/feria/:idFeria/estado', supervisorController.obtenerEstadoPuestos);
-
-// Aceptar invitación a una feria
-router.post('/invitacion/:idInvitacion/aceptar', supervisorController.aceptarInvitacion);
-
-// Agregar comentario en un puesto específico
-router.post('/puestos/comentario', supervisorController.agregarComentario);
-
-// Obtener alertas de incidentes en una feria específica
-router.get('/feria/:idFeria/alertas', supervisorController.obtenerAlertas);
+// Rutas para supervisores
+router.get('/estado-feria', obtenerEstadoFeria);
+router.get('/mapa-feria', obtenerMapaFeria);
+router.get('/alertas', obtenerAlertas);
+router.get('/puestos', obtenerPuestos);
+router.post('/puestos/:idPuesto/comentario', agregarComentarioPuesto);
 
 module.exports = router;
