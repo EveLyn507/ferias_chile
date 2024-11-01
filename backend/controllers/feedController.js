@@ -10,11 +10,10 @@ const getFeriasPaginado = async (limit, offset,pool) => {
 
 // Función para obtener horarios de un grupo de ferias
 const getHorariosFerias = async (feriasIds,pool) => {
+
   const result = await pool.query('SELECT * FROM obtener_horarios_ferias_feedFerias($1)', [feriasIds]);
   return result.rows;
 };
-
-
 
 const get_feria = async (req , res , pool) => {
   const { page = 1, limit = 10 } = req.query; // Paginación: página y límite

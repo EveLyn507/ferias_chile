@@ -1,6 +1,6 @@
 
 import axios from "axios";
-import { DatosBank, ProgramaFeria, vacante } from "../../../models/interfaces";
+import { DatosBank, horarioVacante, ProgramaFeria, vacante } from "../../../models/interfaces";
 import { vancanteService } from "../rxjs/sharingVacantes";
 
 // PROGRAMACION DE LA FERIA
@@ -46,7 +46,7 @@ export const  GuardarProgramacionFeria = async (programacion : ProgramaFeria[] ,
   export const  saveDatosBank = async ( encargadoBank : DatosBank)  =>  {
 
     try{
-      const response = await axios.post(`http://localhost:5000/saveBank` ,{encargadoBank})
+      const response = await axios.post(`http://localhost:5000/insertBank` ,{encargadoBank})
       console.log('Estado de la respuesta:', response.status);
       console.log('Datos de la respuesta:', response.data);
       console.log('Éxito al guardar banco');
@@ -96,14 +96,8 @@ export const  GuardarProgramacionFeria = async (programacion : ProgramaFeria[] ,
     }
   } 
 
-
-
-
-
 //VACANTES MODULO
 
-  
-  
   export const  getVacantesFeria = async (mail : string , id_feria : number)  =>  {
 
     try{
@@ -122,10 +116,10 @@ export const  GuardarProgramacionFeria = async (programacion : ProgramaFeria[] ,
 
 
 
-  export const  saveVacanteFeria = async (  vacante : vacante)   =>  {
+  export const  saveVacanteFeria = async (vacante : vacante)   =>  {
 
     try{
-      const response  = await axios.post(`http://localhost:5000/SaveVacantesFeria` ,{  vacante})
+      const response  = await axios.post(`http://localhost:5000/insertVacantesFeria` ,{ vacante})
     
       const resVacante = response.data;
 
@@ -142,21 +136,32 @@ export const  GuardarProgramacionFeria = async (programacion : ProgramaFeria[] ,
 
 
 
+  export const  updateHorarioVacante = async (horarios : horarioVacante[] , id_feria : number)  =>  {
+
+    try{
+        await axios.post(`http://localhost:5000/updateHorarioVacante` ,{horarios})
+       //elemina la vacante de rxjs vacantes
+       
+    }  catch (error) {
+      console.error('Error al cargar los datos del banco : ', error);
+  
+    }
+  }
+   
+      
 
 
 
-  export const  updateVacanteFeria = async (vacante : vacante , id_feria : number)  =>  {
+export const  updateVacanteFeria = async (vacante : vacante , id_feria : number)  =>  {
 
     try{
        const result = await axios.post(`http://localhost:5000/updateVacanteFeria` ,{vacante})
        //elemina la vacante de rxjs vacantes
-
+       await updateHorarioVacante(vacante.horarios, id_feria)
        const algo = result.data
+       console.log(algo);
+       
       vancanteService.updateVacante(vacante, id_feria); // Actualiza la lista usando RxJS
-      return algo
-      
-  
- 
       
   }
   catch (error) {

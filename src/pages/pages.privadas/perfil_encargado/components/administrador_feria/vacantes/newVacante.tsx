@@ -21,7 +21,7 @@ export const CrearVacante = () => {
     setHorarios([...horarios, newHorario]);
   }
 
-  console.log('horario asignado ', horarios);
+
 
   const todayISO = new Date().toISOString().split('T')[0];
 
@@ -46,11 +46,11 @@ export const CrearVacante = () => {
     const vacante: vacante = {
       id_vacante: 0,
       feriante_mail: null,
-      supervisa_id_feria: idFeria,
+      id_feria: idFeria,
       id_rol: parseInt(rol), // Asegurarse de que el rol sea un número
       ingreso: todayISO,
       termino: todayISO,
-      estado_vacante: 1,
+      id_estado_vacante: 1,
       horarios: horarios
     };
 
@@ -87,8 +87,8 @@ export const CrearVacante = () => {
               onChange={(e) => setRol(e.target.value)} 
               required>
               <option value="" disabled>Select a role</option>
-              <option value={1}>Supervisor</option>
-              <option value={2}>Ayudante</option> 
+              <option value="1">Supervisor</option>
+              <option value="2">Ayudante</option> 
           </select>
           <div><NewHorario saveHorario={saveHorario} /> {/* Pasas la función al hijo */}</div>
         </div>
@@ -96,7 +96,7 @@ export const CrearVacante = () => {
         <div>
           {horarios.map((horario, index) => (
             <div className="ferias" key={index}>
-              <strong>{semana[horario.id_dia]} de {horario.hora_inicio} a {horario.hora_termino}</strong>
+              <strong>{semana[horario.id_dia]} de {horario.hora_entrada} a {horario.hora_salida}</strong>
               <button onClick={() => eliminarHorario(horario.id_dia)}> eliminar Horario</button>
             </div>
           ))}
@@ -110,7 +110,6 @@ export const CrearVacante = () => {
             ))}
           </div>
         )}
-
         {/* Botón "Agregar vacante" */}
         <button onClick={guardarVacante}>agregar vacante</button>
       </div>

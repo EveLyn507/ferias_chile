@@ -1,5 +1,6 @@
 const express = require('express');
-const { Pool } = require('pg');
+const { Pool , types} = require('pg');
+types.setTypeParser(1083, (val) => val); // Esto devuelve el valor como string, sin converti
 const cors = require('cors');
 const credencial = require('./credenciales'); // Importa el archivo de configuración
 const dotenv = require('dotenv');

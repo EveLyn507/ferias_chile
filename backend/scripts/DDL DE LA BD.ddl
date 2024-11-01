@@ -304,7 +304,7 @@ CREATE TABLE log_empleado (
 ALTER TABLE log_empleado ADD CONSTRAINT log_empleado_pk PRIMARY KEY ( id_log );
 
 CREATE TABLE postulaciones (
-    id_postulacion INTEGER NOT NULL,
+    id_postulacion SERIAL NOT NULL,
     id_vacante     INTEGER NOT NULL,
     id_user_fte    INTEGER NOT NULL,
     estado         CHAR(1) NOT NULL
@@ -554,3 +554,8 @@ ALTER TABLE encargado_feria
         REFERENCES tipo_usuario ( id_tipo_usuario );
 
 
+--ALTERS PARA COLUMNAS DEFAULT
+
+
+ALTER TABLE postulaciones
+ALTER COLUMN estado SET DEFAULT 1;

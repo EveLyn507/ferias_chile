@@ -1,7 +1,8 @@
 // bancos.service.ts
 import { BehaviorSubject } from 'rxjs';
-import {  getVacantesFeria } from '../services/admin_feria_fuctions';
+
 import { vacante } from '../../../models/interfaces';
+import { getVacantesVaciasfte } from '../services/postulacionesFunction';
 
 
 
@@ -35,15 +36,15 @@ class PostulacionesService {
       b.id_vacante === updatedVacante.id_vacante ? updatedVacante : b
     );
     const idFeriaActual = id_feria; // Reemplaza esto con el id de la feria actual (puede venir de un parámetro o estado global)
-    const filteredVacantes = actuVacante.filter(v => v.supervisa_id_feria === idFeriaActual);
+    const filteredVacantes = actuVacante.filter(v => v.id_feria === idFeriaActual);
 
     this.vacanteSubject.next(filteredVacantes); 
 
   }
 
   // Función para cargar los bancos desde la base de datos, recibiendo el mail como argumento
-  loadInitialVacante(mail: string , id_feria : number) {
-    getVacantesFeria(mail,id_feria).then(vacante => {
+  loadInitialVacante() {
+    getVacantesVaciasfte().then(vacante => {
       this.setVacante(vacante); // Actualiza la lista con los datos obtenidos
     }).catch(error => {
       console.error("Error al cargar las vacantes:", error);

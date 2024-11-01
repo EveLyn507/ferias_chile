@@ -35,7 +35,7 @@ class VacanteService {
       b.id_vacante === updatedVacante.id_vacante ? updatedVacante : b
     );
     const idFeriaActual = id_feria; // Reemplaza esto con el id de la feria actual (puede venir de un parámetro o estado global)
-    const filteredVacantes = actuVacante.filter(v => v.supervisa_id_feria === idFeriaActual);
+    const filteredVacantes = actuVacante.filter(v => v.id_feria === idFeriaActual);
 
     this.vacanteSubject.next(filteredVacantes); 
 

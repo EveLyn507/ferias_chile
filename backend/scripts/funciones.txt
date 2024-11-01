@@ -131,7 +131,7 @@ RETURNS TABLE (
     num_puesto INTEGER,
     num_horario INTEGER,
     hora_inicio TIME WITHOUT TIME ZONE,
-    hora_termino TIME WITH TIME ZONE,
+    hora_termino TIME WITHOUT TIME ZONE,
     precio INTEGER
 
 ) AS $$

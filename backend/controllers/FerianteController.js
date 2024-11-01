@@ -224,7 +224,6 @@ const actualizarCorreo = async (req, res) => {
 // Función para actualizar la contraseña
 const actualizarContraseña = async (req, res) => {
   const { nuevaContraseña, id_user_fte } = req.body;
-
   if (!nuevaContraseña) {
     return res.status(400).json({ message: 'La nueva contraseña es requerida' });
   }
@@ -311,45 +310,83 @@ const eliminarRedSocial = async (req, res) => {
 
 
 // obtiene todas las vacantes donde feriante sea null -- osea que esten vacias/disponibles
-const getVacantesVacias = async (req , res, pool) =>{
-
-  try {
-    const result = await pool.query(
-      `SELECT * from detalle_team_vacante 
-      WHERE id_user_fte = null;`
-    );
-
-    return res.json(result.rows)
-  } catch (error) {
-    console.error('Error al ingresar la postulacion:', error);
-    throw error;
+const getHorariosVacante = async (idsvacante, pool) =>{
+  const result = await pool.query(`
+    SELECT * FROM detalle_horario_empleado 
+    WHERE id_vacante = ANY($1)
+    ` , [idsvacante])
+    return result.rows;
   }
+  
 
+  const getVacantesVacias = async ( res, pool) => {
 
-}
+    try {
+      const result = await pool.query(` 
+        SELECT id_vacante ,id_user_fte, id_rol, id_feria, to_char(ingreso, 'YYYY-MM-DD') as ingreso,to_char(termino, 'YYYY-MM-DD') as termino, id_estado_vacante
+        FROM detalle_team_vacante
+        WHERE id_user_fte IS NULL; 
+      `);
+  
+        //añade los horarios de la vacante 
+        const  vacantes = result.rows
+        const vacantesIds = vacantes.map(vacante => vacante.id_vacante);
+      
+      // 3. Obtiene los horarios solo para esas ferias
+      const horarios = await getHorariosVacante(vacantesIds,pool);
+  
+      // 4. Combina las ferias con sus horarios
+      const vacantesConHorarios = vacantes.map(vacante => {
+        const horariosVacante = horarios.filter(horario => horario.id_vacante === vacante.id_vacante);
+        return {
+          ...vacante,
+          horarios: horariosVacante
+        };
+      });
+      res.json(vacantesConHorarios);
+  
+    } catch (err) {
+      console.log('error al obtener vacantes: ', err);
+    }
+  };
 
-const savePostulacion = async (req , res, pool) =>{
-
-  const { id_user_fte, id_vacante, estado} = req.body.postulacion;
-
-  try {
-    const result = await pool.query(
-      `INSERT INTO postulaciones (id_vacante,id_user_fte,estado) 
-      VALUES (1$,$2,$3)`, [id_vacante,id_user_fte, estado]
-    );
-
-    return res.json(result.rowCount > 0)
-  } catch (error) {
-    console.error('Error al ingresar la postulacion:', error);
-    throw error;
-  }
-
-
-}
-
-
-
-
+  const insertPostulacion = async ( res, pool, id_user_fte , user_mail, id_vacante) => {
+    try {
+      // Consulta combinada para verificar usuario y postulación existente
+      const result = await pool.query(
+        `
+        SELECT 
+          EXISTS (SELECT 1 FROM feriante WHERE id_user_fte = $1 AND user_mail = $2) AS usuario_valido,
+          EXISTS (SELECT 1 FROM postulaciones WHERE id_user_fte = $1 AND id_vacante = $3) AS postulacion_duplicada
+        `,
+        [id_user_fte, user_mail, id_vacante]
+      );
+  
+      const { usuario_valido, postulacion_duplicada } = result.rows[0];
+  
+      // Validación de los resultados
+      if (!usuario_valido) {
+        return res.status(404).json({ msj: 'El usuario no coincide en sus credenciales' });
+      } 
+      
+      if (postulacion_duplicada) {
+        return res.status(409).json({ msj: 'Ya postulaste a esta vacante' });
+      }
+  
+      // Inserción de la postulación si las validaciones pasaron
+      await pool.query(
+        `INSERT INTO postulaciones (id_vacante, id_user_fte) VALUES ($1, $2)`,
+        [id_vacante, id_user_fte]
+      );
+      
+      res.json({ msj: 'Postulación exitosa' });
+    } catch (error) {
+      console.error('Error al ingresar la postulación:', error);
+      res.status(500).json({ msj: 'Error en el servidor' });
+    }
+  };
+  
+  
 module.exports = {
   getEstadoPerfil,
   togglePerfilPrivado,
@@ -368,5 +405,5 @@ module.exports = {
   agregarRedSocial,
   eliminarRedSocial,
   getVacantesVacias,   //inicio modulo postulaciones
-  savePostulacion
+  insertPostulacion
 };
