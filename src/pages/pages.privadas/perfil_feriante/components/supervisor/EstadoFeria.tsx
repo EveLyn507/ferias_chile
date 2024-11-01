@@ -1,34 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-interface Puesto {
-  numero: number;
-  estado: string;
-}
-
-const EstadoFeria: React.FC<{ idFeria: number }> = ({ idFeria }) => {
-  const [puestos, setPuestos] = useState<Puesto[]>([]);
+const EstadoFeria: React.FC = () => {
+  const [estadoFeria, setEstadoFeria] = useState([]);
 
   useEffect(() => {
-    const fetchEstadoPuestos = async () => {
+    const fetchEstadoFeria = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/supervisor/feria/${idFeria}/estado`);
-        setPuestos(response.data);
+        const response = await axios.get('http://localhost:5000/api/estado-feria');
+        setEstadoFeria(response.data);
       } catch (error) {
-        console.error('Error al obtener el estado de los puestos:', error);
+        console.error('Error al obtener el estado de la feria:', error);
       }
     };
-
-    fetchEstadoPuestos();
-  }, [idFeria]);
+    fetchEstadoFeria();
+  }, []);
 
   return (
     <div>
-      <h2>Estado de Puestos en la Feria</h2>
+      <h2>Ocupación de Ferias Activas</h2>
       <ul>
-        {puestos.map((puesto) => (
-          <li key={puesto.numero}>
-            Puesto #{puesto.numero}: {puesto.estado}
+        {estadoFeria.map((feria, index) => (
+          <li key={index}>
+            {feria.nombre}: {feria.ocupacion} puestos ocupados de {feria.total_puestos}
           </li>
         ))}
       </ul>

@@ -3,16 +3,21 @@ import axios from 'axios';
 
 const GestionPuestos: React.FC = () => {
   const [comentario, setComentario] = useState('');
-  const [puestoId, setPuestoId] = useState<number | null>(null);
+  const [puestos, setPuestos] = useState([]);
 
-  const agregarComentario = async () => {
+  const fetchPuestos = async () => {
     try {
-      await axios.post('http://localhost:5000/api/supervisor/puestos/comentario', {
-        puestoId,
-        comentario,
-      });
-      alert('Comentario agregado');
-      setComentario('');
+      const response = await axios.get('http://localhost:5000/api/puestos');
+      setPuestos(response.data);
+    } catch (error) {
+      console.error('Error al cargar puestos:', error);
+    }
+  };
+
+  const handleAgregarComentario = async (idPuesto: number) => {
+    try {
+      await axios.post(`http://localhost:5000/api/puestos/${idPuesto}/comentario`, { comentario });
+      fetchPuestos();
     } catch (error) {
       console.error('Error al agregar comentario:', error);
     }
@@ -21,18 +26,19 @@ const GestionPuestos: React.FC = () => {
   return (
     <div>
       <h2>Gestión de Puestos</h2>
-      <input
-        type="number"
-        placeholder="ID del Puesto"
-        value={puestoId || ''}
-        onChange={(e) => setPuestoId(parseInt(e.target.value))}
-      />
-      <textarea
-        placeholder="Comentario"
-        value={comentario}
-        onChange={(e) => setComentario(e.target.value)}
-      />
-      <button onClick={agregarComentario}>Agregar Comentario</button>
+      <ul>
+        {puestos.map((puesto) => (
+          <li key={puesto.id}>
+            <p>{puesto.nombre}</p>
+            <textarea
+              placeholder="Agregar comentario"
+              value={comentario}
+              onChange={(e) => setComentario(e.target.value)}
+            ></textarea>
+            <button onClick={() => handleAgregarComentario(puesto.id)}>Agregar Comentario</button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
