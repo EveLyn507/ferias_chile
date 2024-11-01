@@ -7,14 +7,14 @@ import { PrivateRoutes } from "../../../models"
 
  const PerfilEn = () => {
   return (
-
+    
     <>
 
 
      <h1>PERFIL ENCARGADO DE LAS FERIAS</h1>
        
       <div>
-      <TraerEncargadoFerias/>
+      <TraerEncargadoFerias />
       
       </div>
       <li> <Link to={`${PrivateRoutes.BANCOS}`} >BANCOS</Link></li>

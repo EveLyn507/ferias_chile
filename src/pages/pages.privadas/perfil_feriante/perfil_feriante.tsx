@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import DatosPersonales from './DatosPersonales';
 import Biografia from './Biografia';
 import InteresesVenta from './InteresesVentas';
@@ -6,119 +6,119 @@ import RedesSociales from './RedesSociales';
 import ActualizarCorreoContraseña from './ActualizarCorreoContraseña';
 import FotoPerfil from './FotoPerfil';
 import HistorialActividades from './HistorialActividades';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { AppStore } from '../../../redux/store';
 import { Link } from 'react-router-dom';
+import { setUserEmail } from '../../../redux/actions/userActions';
+import axios from 'axios';
 
 const PerfilFeriantes: React.FC = () => {
-  const userMail = useSelector((state: AppStore) => state.user.email);
-  const [perfilPublico, setPerfilPublico] = useState<boolean>(true);
-  const [intereses, setIntereses] = useState<string[]>([]);
-  const [fotoPerfil, setFotoPerfil] = useState<string>('');
-  const [datosPersonales, setDatosPersonales] = useState<{ nombre: string; telefono: string }>({
-    nombre: '',
-    telefono: '',
-  });
-  const [biografia, setBiografia] = useState<string>('');
-  const [correo, setCorreo] = useState<string>('');
-  const [, setContraseña] = useState<string>('');
+  const userMail = useSelector((state: AppStore) => state.user.email); // Obtener correo del estado global
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    const cargarPerfil = async () => {
-      try {
-        const encodedMail = encodeURIComponent(userMail);  
-        const response = await fetch(`http://localhost:5000/api/perfil/${encodedMail}`);
-        
-        if (response.ok) {
-          const perfilData = await response.json();
-          setDatosPersonales({
-            nombre: perfilData.nombre,
-            telefono: perfilData.telefono,
-          });
-          setBiografia(perfilData.biografia);
-          setIntereses(perfilData.intereses);
-          setCorreo(perfilData.correo);
-          setFotoPerfil(perfilData.url_foto_perfil || ''); 
-          console.log('Perfil cargado correctamente:', perfilData);
-        } else {
-          console.error('Error al cargar el perfil');
-        }
-      } catch (error) {
-        console.error('Error al conectar con el servidor:', error);
-      }
-    };
-  
-    cargarPerfil();
-  }, [userMail]);
-    
-  const togglePerfil = () => {
-    setPerfilPublico(!perfilPublico);
+  const [fotoPerfil, setFotoPerfil] = useState<string>('');
+  const [nombre, setNombre] = useState<string>('');
+  const [apellido, setApellido] = useState<string>('');
+  const [telefono, setTelefono] = useState<string>('');
+  const [biografia, setBiografia] = useState<string>('');
+  const [intereses, setIntereses] = useState<string[]>([]);
+  const [correo, setCorreo] = useState<string>(userMail);
+  const [, setContraseña] = useState<string>('');
+  const [perfilPrivado, setPerfilPrivado] = useState<boolean>(false);
+
+  // Manejar la actualización global del correo
+  const handleCorreoActualizado = (nuevoCorreo: string) => {
+    setCorreo(nuevoCorreo);
+    dispatch(setUserEmail(nuevoCorreo));
+    localStorage.setItem('userEmail', nuevoCorreo);
   };
 
-  const guardarPerfil = async () => {
-    const perfilData = {
-      nombre: datosPersonales.nombre,
-      telefono: datosPersonales.telefono,
-      biografia: biografia,
-      intereses: intereses,
-      correo: correo,
-      userMail: userMail,
-      url_foto_perfil: fotoPerfil, 
-    };
-
+  // Manejar el cambio de estado del perfil (público/privado)
+  const togglePerfilPrivado = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/perfil', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(perfilData),
+      const response = await axios.put('http://localhost:5000/api/perfil/toggle-privado', {
+        userMail: correo,
       });
 
-      if (response.ok) {
-        const result = await response.json();
-        console.log('Perfil guardado:', result);
-      } else {
-        console.error('Error al guardar el perfil');
+      if (response.status === 200) {
+        setPerfilPrivado(response.data.perfil_privado);
       }
     } catch (error) {
-      console.error('Error al conectar con el servidor:', error);
+      console.error('Error al cambiar el estado del perfil:', error);
     }
   };
 
+  useEffect(() => {
+    // Cargar estado inicial del perfil al montar el componente
+    const cargarEstadoPerfil = async () => {
+      try {
+          const response = await axios.get(`http://localhost:5000/api/perfil/estado/${correo}`);
+          if (response.status === 200) {
+              setPerfilPrivado(response.data.perfil_privado);
+          }
+      } catch (error) {
+          console.error('Error al cargar el estado del perfil:', error);
+      }
+  };
+
+  if (correo) {
+      cargarEstadoPerfil();
+  }
+}, [correo]);  
   return (
     <>
-    <div>
-      <h1>Perfil del Comerciante</h1>
+      <div>
+        <h1>Perfil del Feriante</h1>
+        <button onClick={togglePerfilPrivado}>
+          {perfilPrivado ? 'Hacer Perfil Público' : 'Hacer Perfil Privado'}
+        </button>
+      </div>
 
-      <button onClick={togglePerfil}>
-        {perfilPublico ? 'Ocultar Perfil (Privado)' : 'Hacer Perfil Público'}
-      </button>
-
-      <button onClick={guardarPerfil}>Guardar Perfil</button>
-
-      <FotoPerfil setFotoPerfil={setFotoPerfil} userMail={userMail} fotoPerfil={''} />
+      <FotoPerfil 
+        setFotoPerfil={setFotoPerfil} 
+        userMail={correo} 
+        fotoPerfil={fotoPerfil} 
+      />
 
       <DatosPersonales 
-        setDatosPersonales={setDatosPersonales} nombre={''} telefono={''} apellido={''}      />
-      <Biografia biografia={biografia} setBiografia={setBiografia} />
-      <InteresesVenta intereses={intereses} setIntereses={setIntereses} />
-      <RedesSociales />
+        userMail={correo}
+        nombre={nombre}
+        apellido={apellido}
+        telefono={telefono}
+        setDatosPersonales={({ nombre, apellido, telefono }) => {
+          setNombre(nombre);
+          setApellido(apellido);
+          setTelefono(telefono);
+        }}
+      />
+
+      <Biografia 
+        userMail={correo} 
+        biografia={biografia} 
+        setBiografia={setBiografia} 
+      />
+
+      <InteresesVenta 
+        userMail={correo} 
+        intereses={intereses} 
+        setIntereses={setIntereses} 
+      />
+
+      <RedesSociales userMail={correo} />
 
       <ActualizarCorreoContraseña 
-        correo={correo} 
+        correo={correo}
         setCorreo={setCorreo} 
         setContraseña={setContraseña} 
+        onCorreoActualizado={handleCorreoActualizado}
       />
+
       <HistorialActividades />
-    </div>
 
-    <div>
-      <Link to='2/supervisor'> SUPERVISOR </Link>
-
-    </div>
-
-   </>
+      <div>
+        <Link to='2/supervisor'> SUPERVISOR </Link>
+      </div>
+    </>
   );
 };
 

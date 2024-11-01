@@ -1,39 +1,130 @@
 const express = require('express');
 const router = express.Router();
-const { guardarPerfil, obtenerPerfil, guardarFotoPerfil, cargarFotoPerfil, actualizarCorreo, actualizarContraseña } = require('../controllers/FerianteController');
+const {
+  getEstadoPerfil,
+  togglePerfilPrivado,
+  actualizarDatosPersonales,
+  cargarDatosPersonales,
+  guardarBiografia,
+  cargarBiografia,
+  guardarFotoPerfil,
+  cargarFotoPerfil,
+  actualizarIntereses,
+  cargarIntereses,
+  actualizarCorreo,
+  actualizarContraseña,
+  obtenerTiposRed,
+  obtenerRedesSociales,
+  agregarRedSocial,
+  eliminarRedSocial,
+  getVacantesVacias,
+  savePostulacion
+} = require('../controllers/FerianteController');
 
-// Ruta para obtener el perfil
-router.get('/api/perfil/:userMail', (req, res) => {
+// Ruta para obtener el estado del perfil
+router.get('/api/perfil/estado/:userMail', (req, res) => {
   const pool = req.pool;
-  obtenerPerfil(req, res, pool);
+ getEstadoPerfil (req, res,pool);
 });
 
-// Ruta para guardar el perfil
-router.post('/api/perfil', (req, res) => {
-  const pool = req.pool; 
-  guardarPerfil(req, res, pool); 
-});
-
-// Ruta para guardar la foto de perfil
-router.post('/api/foto', (req, res) => {
+// Ruta para alternar el estado del perfil público/privado
+router.put('/api/perfil/toggle-privado',  (req, res) => {
   const pool = req.pool;
-  guardarFotoPerfil(req, res, pool);
+togglePerfilPrivado (req, res,pool);
 });
 
-// Ruta para cargar la foto de perfil desde la carpeta uploads
-router.get('/api/foto/:userMail', (req, res) => {
-  cargarFotoPerfil(req, res);
+// Rutas para actualizar y cargar datos personales
+router.post('/api/actualizar-datos-personales', (req, res) => {
+  const pool = req.pool;
+  const { userMail, nombre, apellido, telefono , id_user } = req.body;
+  actualizarDatosPersonales( res,pool , userMail, nombre, apellido, telefono , id_user);
 });
 
-// Rutas para actualizar correo y contraseña
+
+router.get('/api/cargar-datos-personales/:id_user', (req, res) => {
+  const pool = req.pool;
+  const { id_user } = req.params;
+  cargarDatosPersonales( res,pool,id_user);
+});
+
+// Rutas para actualizar y cargar biografía
+router.post('/api/guardar-biografia', (req, res) => {
+  const pool = req.pool;
+  const { userMail, biografia,id_user } = req.body;
+  guardarBiografia(id_user, biografia, res,pool);
+});
+
+
+router.get('/api/cargar-biografia/:id_user', (req, res) => {
+  const pool = req.pool;
+  const {id_user} = req.params
+  cargarBiografia( res,id_user ,pool);
+});
+
+// Rutas para gestionar foto de perfil
+router.post('/api/guardar-foto-perfil', (req, res) => {
+  const pool = req.pool;
+  guardarFotoPerfil(req, res,pool);
+});
+router.get('/api/cargar-foto-perfil/:userMail', (req, res) => {
+  const pool = req.pool;
+  cargarFotoPerfil(req, res,pool);
+});
+
+// Rutas para actualizar y cargar intereses
+router.post('/api/actualizar-intereses', (req, res) => {
+  const { id_user, intereses } = req.body;
+  const pool = req.pool;
+  actualizarIntereses( res,pool, id_user, intereses);
+});
+router.get('/api/cargar-intereses/:id_user', (req, res) => {
+  const pool = req.pool;
+  const { id_user } = req.params;
+  cargarIntereses(res, pool, id_user);
+});
+
+// Rutas para actualizar correo
 router.post('/api/actualizar-correo', (req, res) => {
   const pool = req.pool;
-  actualizarCorreo(req, res, pool);
+  actualizarCorreo(req, res,pool);
 });
 
-router.post('/api/actualizar-contraseña', (req, res) => {
-  const pool = req.pool;
-  actualizarContraseña(req, res, pool);
+// Rutas para actualizar contraseña
+router.post('/api/actualizar-contrasena', (req, res) => {
+  actualizarContraseña(req, res);
 });
+
+// Rutas para las redes sociales
+router.get('/api/tipos-red',  (req, res) => {
+  const pool = req.pool;
+  obtenerTiposRed (req, res,pool);
+});
+
+router.get('/api/redes-sociales/:userMail',  (req, res) => {
+  const pool = req.pool;
+  obtenerRedesSociales (req, res,pool);
+});
+
+router.post('/api/redes-sociales',  (req, res) => {
+  const pool = req.pool;
+  agregarRedSocial (req, res,pool);
+});
+
+router.put('/api/redes-sociales/:id',  (req, res) => {
+  const pool = req.pool;
+  eliminarRedSocial (req, res,pool);
+});
+
+//INICIO MODULO POSTULACIONES 
+router.post('/getVacantes', (req, res) => {
+  const pool = req.pool;
+  getVacantesVacias(req, res, pool);
+});
+
+router.post('/savePostulacion', (req, res) => {
+  const pool = req.pool;
+  savePostulacion(req, res, pool);
+});
+
 
 module.exports = router;

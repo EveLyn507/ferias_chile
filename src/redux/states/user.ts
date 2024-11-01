@@ -8,6 +8,7 @@ export const EmptyUserState: UserInfo = {
   token: "",
   role: Roles.NOTLOG,
   email: '',
+  id_user: 0,
   id_feria: undefined, // Agregar id_feria aquí
 };
 

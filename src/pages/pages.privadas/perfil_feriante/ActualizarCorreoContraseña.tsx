@@ -1,26 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface ActualizarCorreoContraseñaProps {
   correo: string;
   setCorreo: (correo: string) => void;
   setContraseña: (contraseña: string) => void;
+  onCorreoActualizado: (nuevoCorreo: string) => void;
 }
 
 const ActualizarCorreoContraseña: React.FC<ActualizarCorreoContraseñaProps> = ({
   correo,
   setCorreo,
   setContraseña,
+  onCorreoActualizado,
 }) => {
-  const [correoActualizado, setCorreoActualizado] = useState(correo);
-  const [nuevaContraseña, setNuevaContraseña] = useState('');
+  const [correoActualizado, setCorreoActualizado] = useState<string>(correo || ''); // Asegúrate de tener un valor inicial válido
+  const [nuevaContraseña, setNuevaContraseña] = useState<string>(''); // Asegúrate de tener un valor inicial vacío
   const [mensajeError, setMensajeError] = useState<string | null>(null);
   const [mensajeExito, setMensajeExito] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (correo) {
+      setCorreoActualizado(correo); // Sincroniza el valor de estado con el valor prop
+    }
+  }, [correo]);
 
   const validarCorreo = (correo: string): boolean => {
     const correoRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return correoRegex.test(correo);
   };
 
+  // Cuando se envía la solicitud para actualizar el correo
   const actualizarCorreo = async () => {
     setMensajeError(null);
     setMensajeExito(null);
@@ -54,38 +63,30 @@ const ActualizarCorreoContraseña: React.FC<ActualizarCorreoContraseñaProps> = 
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          correo: correoActualizado,
-          user_mail: correo,
+          nuevoCorreo: correoActualizado,
+          user_mail: correo, // Aquí debe ser el correo actual
         }),
       });
 
       if (response.ok) {
-        setCorreo(correoActualizado);
+        setCorreo(correoActualizado); // Actualiza el estado local del correo
+        onCorreoActualizado(correoActualizado); // Callback para manejar la actualización global
         setMensajeExito('Correo actualizado con éxito.');
-        setCorreoActualizado(''); 
       } else {
         const errorData = await response.json();
         setMensajeError('Error al actualizar el correo: ' + errorData.message);
       }
-    } catch (error: any) {
+    } catch (error) {
       setMensajeError('Error al conectar con el servidor: ' + error.message);
     }
   };
 
   const actualizarContraseña = async () => {
     setMensajeError(null);
-    setMensajeExito(null);
-
-    
+    setMensajeExito(null);    
 
     if (!nuevaContraseña || !correo) {
       setMensajeError('La nueva contraseña y el correo son requeridos.');
-      return;
-    }
-
-
-    if (!nuevaContraseña) {
-      setMensajeError('La nueva contraseña es requerida.');
       return;
     }
 
@@ -97,14 +98,14 @@ const ActualizarCorreoContraseña: React.FC<ActualizarCorreoContraseñaProps> = 
     try {
       
       console.log({ nuevaContraseña, correo });
-      const response = await fetch('http://localhost:5000/api/actualizar-contraseña', {
+      const response = await fetch('http://localhost:5000/api/actualizar-contrasena', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           nuevaContraseña,
-          user_mail: correo,
+          userMail: correo,
         }),
       });
 
@@ -128,7 +129,11 @@ const ActualizarCorreoContraseña: React.FC<ActualizarCorreoContraseñaProps> = 
       {mensajeExito && <p style={{ color: 'green' }}>{mensajeExito}</p>}
 
       <div>
+        <h3>Correo Actual</h3>
+        <p>{correo}</p>
+
         <h3>Actualizar Correo</h3>
+        <p>Nuevo correo: {correoActualizado}</p>
         <input
           type="email"
           value={correoActualizado}

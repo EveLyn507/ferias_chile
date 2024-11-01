@@ -12,46 +12,34 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 export const LoginHome = () => {
-
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     useEffect(() => {
-          clearLocalStorage(UserKey);
-          dispatch(resetUser());
-          navigate(`/${PublicRoutes.LOGIN}`, { replace: true });
-        }, []);
-      
-    return(
+        clearLocalStorage(UserKey);
+        dispatch(resetUser());
+        navigate(`/${PublicRoutes.LOGIN}`, { replace: true });
+    }, []);
 
+    return (
         <Tabs>
-        <TabList>
-          <Tab>Encargado</Tab>
-          <Tab>feriante</Tab>
-          <Tab>Municipal </Tab>
-        </TabList>
-    
-        <TabPanel>
-         <LoginEncargado/>
-        </TabPanel>
-        <TabPanel>
-         <LoginFeriante/>
-        </TabPanel>
-        <TabPanel>
-          <LoginMunicipal/>
-        </TabPanel>
-      </Tabs>
+            <TabList>
+                <Tab>Encargado</Tab>
+                <Tab>Feriante</Tab>
+                <Tab>Municipal</Tab>
+            </TabList>
+
+            <TabPanel>
+                <LoginEncargado />
+            </TabPanel>
+            <TabPanel>
+                <LoginFeriante />
+            </TabPanel>
+            <TabPanel>
+                <LoginMunicipal />
+            </TabPanel>
+        </Tabs>
     );
-
-    
-    
-    
-
-}
-
-
-
+};
 
 export default LoginHome;
-
-

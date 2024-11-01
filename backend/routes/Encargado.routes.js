@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const puestoRoutes = require('./Puesto.routes');
-const { saveFeria, getFeria ,get_feria_Encargado ,abrirTiketFeria, saveProgramacionFeria ,getPrograma ,saveDatosBank,getDatosBank, deleteBank, createFeria} = require('../controllers/EncargadoController');
+const { saveFeria, getFeria ,get_feria_Encargado ,abrirTiketFeria, UpdateProgramaFeria ,getPrograma ,saveDatosBank,getDatosBank, deleteBank,getVacantesFeria,SaveVacantesFeria, deleteVacante,updateVacanteFeria, createFeria} = require('../controllers/EncargadoController');
 
 
 //PERFIL ENCARGADO 
@@ -39,7 +39,7 @@ router.post('/tiket', (req , res) => {
 
 router.post('/administracion/:id_feria', (req, res) => {
 const pool = req.pool
-  saveProgramacionFeria(req,res,pool)
+UpdateProgramaFeria(req,res,pool)
 
 }) 
 
@@ -69,11 +69,5 @@ router.post('/getBank', (req, res) => {
     const pool = req.pool
     deleteBank(req,res,pool)
     }) 
-
-
-  ////// FORMULARIO FERIA
-
-  router.post('/api/feria', createFeria);
-
 
 module.exports = router;

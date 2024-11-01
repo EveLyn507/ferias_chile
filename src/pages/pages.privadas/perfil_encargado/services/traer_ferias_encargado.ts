@@ -3,10 +3,11 @@
 
 import axios from "axios";
 
-export const  TraerFeriasEncargado = async (mail : string)  =>  {
+
+export const  TraerFeriasEncargado = async (id_user : number)  =>  {
 
     try{
-      const response  = await axios.post(`http://localhost:5000/private/1` ,{mail})
+      const response  = await axios.post(`http://localhost:5000/private/1` ,{id_user})
       const feria = response.data
       return feria
   }

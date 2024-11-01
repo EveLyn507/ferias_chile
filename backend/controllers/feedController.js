@@ -9,13 +9,10 @@ const getFeriasPaginado = async (limit, offset,pool) => {
 };
 
 // Función para obtener horarios de un grupo de ferias
-const getHorariosParaFerias = async (feriasIds,pool) => {
-  const result = await pool.query('SELECT * FROM obtener_horarios_para_ferias($1)', [feriasIds]);
+const getHorariosFerias = async (feriasIds,pool) => {
+  const result = await pool.query('SELECT * FROM obtener_horarios_ferias_feedFerias($1)', [feriasIds]);
   return result.rows;
 };
-
-
-
 
 
 
@@ -31,7 +28,7 @@ const get_feria = async (req , res , pool) => {
     const feriasIds = ferias.map(feria => feria.id_feria);
     
     // 3. Obtiene los horarios solo para esas ferias
-    const horarios = await getHorariosParaFerias(feriasIds,pool);
+    const horarios = await getHorariosFerias(feriasIds,pool);
 
     // 4. Combina las ferias con sus horarios
     const feriasConHorarios = ferias.map(feria => {
@@ -42,7 +39,7 @@ const get_feria = async (req , res , pool) => {
       };
     });
 
-    console.log(feriasConHorarios)
+
     res.json(feriasConHorarios);
   } catch (error) {
     console.error('Error al obtener ferias:', error);
@@ -52,16 +49,11 @@ const get_feria = async (req , res , pool) => {
   };
 
 
-
-
-
-
-  
 const get_puestos_feria = async (req, res, pool) => {
     const id_feria = parseInt(req.params.id_feria, 10); // Convertir a entero
 
 try{
-const resutl = await pool.query( 'SELECT * FROM public.traer_puestos_feria($1)' , [id_feria])
+const resutl = await pool.query( 'SELECT * FROM traer_puestos_feria($1)' , [id_feria])
 res.json(resutl.rows)
 
 }catch (err){

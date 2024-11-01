@@ -8,14 +8,40 @@
     dia: string;
     hora_inicio: string; // Cambiado a string para representar el tiempo
     hora_termino: string; // Cambiado a string para representar el tiempo
-    dia_armado: Date;
+    id_dia_armado: number;
     hora_inicio_armado: string; // Cambiado a string para representar el tiempo
     hora_termino_armado: string; // Cambiado a string para representar el tiempo
+    activo : boolean
 }
 
 export interface listHorario{
     horarios : ProgramaFeria[]
 }
+
+
+
+// USO EN -- admin feria -- feriante postulaciones
+
+export interface horarioVacante {
+    id_detalle_horario : number | null,
+    id_vacante : number | null,
+    id_dia: number ,
+    hora_inicio: string,
+    hora_termino: string
+
+}
+
+
+export interface vacante {
+    id_vacante : number,
+    feriante_mail : string | null,
+    supervisa_id_feria :number,
+    id_rol : number,
+    ingreso : string,
+    termino : string,
+    estado_vacante : number
+    horarios: horarioVacante[]
+  }
 
 
 

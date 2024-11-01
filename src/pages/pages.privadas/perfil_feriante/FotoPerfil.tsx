@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { AppStore } from '../../../redux/store';
 
 interface FotoPerfilProps {
   userMail: string;
@@ -6,27 +8,27 @@ interface FotoPerfilProps {
   fotoPerfil: string;  
 }
 
-const FotoPerfil: React.FC<FotoPerfilProps> = ({ userMail, setFotoPerfil, fotoPerfil }) => {
+const FotoPerfil: React.FC<FotoPerfilProps> = ({ setFotoPerfil, fotoPerfil }) => {
+  const userMail = useSelector((state: AppStore) => state.user.email);
+  const id_user = useSelector((state: AppStore) => state.user.id_user);
   const [preview, setPreview] = useState<string | null>(fotoPerfil); 
 
   useEffect(() => {
     const obtenerFotoPerfil = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/foto/${userMail}`);
-        if (response.ok) {
-          const data = await response.blob();  
-          const imageUrl = URL.createObjectURL(data);
-          setPreview(imageUrl); 
-          setFotoPerfil(imageUrl); 
-        } else {
-          console.error('Error al obtener la foto de perfil:', response.statusText);
+        const response = await fetch(`http://localhost:5000/api/cargar-foto-perfil/${userMail}`);
+        if (!response.ok) {
+          throw new Error('Error al obtener la foto de perfil: ' + response.statusText);
         }
+        const imageUrl = response.url; 
+        setPreview(imageUrl);
+        setFotoPerfil(imageUrl);
       } catch (error) {
         console.error('Error al obtener la foto de perfil:', error);
       }
     };
-
-    if (!fotoPerfil) {  
+  
+    if (userMail && !fotoPerfil) { 
       obtenerFotoPerfil();
     }
   }, [userMail, fotoPerfil, setFotoPerfil]);
@@ -53,7 +55,7 @@ const FotoPerfil: React.FC<FotoPerfilProps> = ({ userMail, setFotoPerfil, fotoPe
   const handleSavePhoto = async () => {
     if (preview) {
       try {
-        const response = await fetch('http://localhost:5000/api/foto', {
+        const response = await fetch('http://localhost:5000/api/guardar-foto-perfil', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

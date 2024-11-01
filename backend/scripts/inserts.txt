@@ -43,6 +43,9 @@ VALUES (2, 'Ocupado');
 INSERT INTO estado_puesto (id_estado_puesto,estado) 
 VALUES (3, 'Mantenimiento');
 
+INSERT INTO estado_puesto (id_estado_puesto,estado) 
+VALUES (4, 'ELIMINADO');
+
 
 --tipo puesto
 
@@ -59,35 +62,35 @@ VALUES (3, 'contacto');
 
 -- USUARIOS POR DEFECTO 1 ENCARGADO 2 FERIANTE 3 municipal
 
-INSERT INTO encargado_feria (user_mail, id_tipo_usuario , nombre, apellido,rut,rut_div,telefono,url_foto_perfil,contrasena)
-VALUES ('1@1', 1, 'encargado' ,'te', 123222, 1,123433,null,123);
+INSERT INTO encargado_feria (user_mail, id_tipo_usuario , nombre, apellido,rut,rut_div,telefono,contrasena,url_foto_perfil)
+VALUES ('1@1.com', 1, 'encargado' ,'te', 123222, 1,123433,'$2b$10$PwTkJCXeUmpAb2E2iLhfHOKy.uYbQtRwAZHojsSrNNSWXMNnmXRwm',null);
 
-INSERT INTO feriante (user_mail, id_tipo_usuario , nombre, apellido,rut,rut_div,biografia,telefono,url_foto_perfil,auth_google,contrasena)
-VALUES ('2@2', 2, 'feriante' ,'te', 123222, 1,'biografia vacia',123433,null,null,123);
+INSERT INTO feriante (user_mail, id_tipo_usuario , nombre, apellido,rut,rut_div,biografia,telefono,auth_google,contrasena,perfil_privado,url_foto_perfil)
+VALUES ('2@2.com', 2, 'feriante' ,'te', 123222, 1,'biografia vacia',123433,null,'$2b$10$PwTkJCXeUmpAb2E2iLhfHOKy.uYbQtRwAZHojsSrNNSWXMNnmXRwm',false,null);
 
-INSERT INTO administrador_municipal (user_mail, id_tipo_usuario , nombre, apellido,rut,rut_div,telefono,url_foto_perfil,contrasena)
-VALUES ('3@3', 3, 'municipal' ,'te', 123222, 1,123433,null,123);
+INSERT INTO administrador_municipal (user_mail, id_tipo_usuario , nombre, apellido,rut,rut_div,telefono, contrasena,url_foto_perfil)
+VALUES ('3@3.com', 3, 'municipal' ,'te', 123222, 1,123433,'$2b$10$PwTkJCXeUmpAb2E2iLhfHOKy.uYbQtRwAZHojsSrNNSWXMNnmXRwm',null);
 
 
 
 -- regiones
 
-INSERT INTO region (id_region, nombre) VALUES (1, 'Arica y Parinacota');
-INSERT INTO region (id_region, nombre) VALUES (2, 'Tarapaca');
-INSERT INTO region (id_region, nombre) VALUES (3, 'Antofagasta');
-INSERT INTO region (id_region, nombre) VALUES (4, 'Atacama');
-INSERT INTO region (id_region, nombre) VALUES (5, 'Coquimbo');
-INSERT INTO region (id_region, nombre) VALUES (6, 'Valparaiso');
-INSERT INTO region (id_region, nombre) VALUES (7, 'Metropolitana de Santiago');
-INSERT INTO region (id_region, nombre) VALUES (8, 'O Higgins');
-INSERT INTO region (id_region, nombre) VALUES (9, 'Maule');
-INSERT INTO region (id_region, nombre) VALUES (10, 'Nuble');
-INSERT INTO region (id_region, nombre) VALUES (11, 'Biobio');
-INSERT INTO region (id_region, nombre) VALUES (12, 'La Araucania');
-INSERT INTO region (id_region, nombre) VALUES (13, 'Los Rios');
-INSERT INTO region (id_region, nombre) VALUES (14, 'Los Lagos');
-INSERT INTO region (id_region, nombre) VALUES (15, 'Aysen');
-INSERT INTO region (id_region, nombre) VALUES (16, 'Magallanes');
+INSERT INTO region (id_region, region) VALUES (1, 'Arica y Parinacota');
+INSERT INTO region (id_region, region) VALUES (2, 'Tarapaca');
+INSERT INTO region (id_region, region) VALUES (3, 'Antofagasta');
+INSERT INTO region (id_region, region) VALUES (4, 'Atacama');
+INSERT INTO region (id_region, region) VALUES (5, 'Coquimbo');
+INSERT INTO region (id_region, region) VALUES (6, 'Valparaiso');
+INSERT INTO region (id_region, region) VALUES (7, 'Metropolitana de Santiago');
+INSERT INTO region (id_region, region) VALUES (8, 'O Higgins');
+INSERT INTO region (id_region, region) VALUES (9, 'Maule');
+INSERT INTO region (id_region, region) VALUES (10, 'Nuble');
+INSERT INTO region (id_region, region) VALUES (11, 'Biobio');
+INSERT INTO region (id_region, region) VALUES (12, 'La Araucania');
+INSERT INTO region (id_region, region) VALUES (13, 'Los Rios');
+INSERT INTO region (id_region, region) VALUES (14, 'Los Lagos');
+INSERT INTO region (id_region, region) VALUES (15, 'Aysen');
+INSERT INTO region (id_region, region) VALUES (16, 'Magallanes');
 
 
 -- comunas
@@ -98,40 +101,51 @@ INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (3, 'Putre', 1);
 INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (4, 'Parinacota', 1);
 
 
+-- ESTADO FERIA
 
-insert into estado_feria (id_estado,estado)
-values (1,'No enviada');
+insert into estado_feria (id_estado,estado) VALUES
+(1,'No enviada'),
+(2,'En espera'),
+(3,'Rechazada'),
+(4,'Aceptada'),
+(5,'ELIMINADO');
 
-insert into estado_feria (id_estado,estado)
-values (2,'En espera');
 
-insert into estado_feria (id_estado,estado)
-values (3,'Rechazada');
+insert into rol_empleado (id_rol, rol)
+	values(1,'supervisor');
+	
+insert into rol_empleado (id_rol, rol)
+	values(2,'ayudante');
+	
 
-insert into estado_feria (id_estado,estado)
-values (4,'Aceptada');
+INSERT INTO dia_semana (id_dia, dia) VALUES
+(1, 'Lunes'),
+(2, 'Martes'),
+(3, 'Miércoles'),
+(4, 'Jueves'),
+(5, 'Viernes'),
+(6, 'Sábado'),
+(7, 'Domingo');
+
+insert into dia_armado (id_dia_armado, cuando) VALUES
+(1, 'No Seleccionado'),
+(2, 'mismo dia'),
+(3, 'un dia antes'),
+(4, 'dejame elegir');
+
 -- FERIAS DE LOS ENCARGADOS 
 
+INSERT INTO feria (nombre,id_comuna,id_user_enf,id_estado)
+VALUES ('feria 1', 1,1,1);
 
-insert into estado_horario_feria (id_estado_programa,estado)
-values (1,'Armando');
+INSERT INTO feria (nombre,id_comuna,id_user_enf,id_estado)
+VALUES ('feria 2',1,1,1);
 
-insert into estado_horario_feria (id_estado_programa,estado)
-values (2,'Trabajando');
+-- tipos de redes sociales
 
-insert into estado_horario_feria (id_estado_programa,estado)
-values (3,'En espera');
-
-insert into estado_horario_feria (id_estado_programa,estado)
-values (1,'Aceptada');
-
-
--- FERIAS DE LOS ENCARGADOS 
-
-INSERT INTO feria (nombre,id_comuna,id_region,encargado_mail,id_estado)
-VALUES ('feria 1', 1, 1,'1@1',1);
-
-INSERT INTO feria (nombre,id_comuna,id_region,encargado_mail,id_estado)
-VALUES ('feria 2', 1, 1,'1@1',1);
-
-
+INSERT INTO tipo_red (id_tipo_red, red_social, url_foto_red) VALUES 
+(1, 'Facebook', 'https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg'),
+(2, 'Instagram', 'https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png'),
+(3, 'Twitter', 'https://upload.wikimedia.org/wikipedia/en/6/60/Twitter_Logo_as_of_2021.svg'),
+(4, 'LinkedIn', 'https://upload.wikimedia.org/wikipedia/commons/8/81/LinkedIn_icon.svg'),
+(5, 'TikTok', 'https://upload.wikimedia.org/wikipedia/en/6/69/TikTok_logo.svg');

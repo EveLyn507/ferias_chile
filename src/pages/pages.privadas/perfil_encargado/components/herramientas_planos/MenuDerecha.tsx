@@ -1,5 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { idFeriaService } from "../../rxjs/sharing.id_feria";
+
 
 //import { idService } from "../../rxjs_id_feria/sharing.id_feria";
 import { useSelector } from "react-redux";

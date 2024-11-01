@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { login_encargado,login_feriante,login_municipal, registerEncargado_feria, registerFeriante, registerAdministrador_municipal  } = require('../controllers/BasicUserController.js');
+const pool = require('../credenciales');
+const { login_encargado,login_feriante,login_municipal, registerEncargado_feria, registerFeriante, registerAdministrador_municipal, registerGoogleFeriante  } = require('../controllers/BasicUserController.js');
 const { get_feria,get_puestos_feria  } = require('../controllers/FeedController.js');
 
 // Ruta de login
@@ -47,5 +48,11 @@ router.post('/login1', (req, res) => {
     const pool = req.pool;
     get_puestos_feria(req,res,pool);
   })
+
+  // Ruta de registro con Google
+router.post('/registro/google', (req , res) => {
+  const pool = req.pool;
+  registerGoogleFeriante(req,res,pool);
+})
 
 module.exports = router;

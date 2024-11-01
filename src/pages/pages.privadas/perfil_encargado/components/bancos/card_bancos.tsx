@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { DatosBank } from "../../../../models/interfaces";
-import { bancoService } from "./rxjs/sharingbankslist";
+import { bancoService } from "../../rxjs/sharingbankslist";
 import { deleteBank, saveDatosBank } from "../../services/admin_feria_fuctions";
 import { useSelector } from "react-redux";
 import { AppStore } from "../../../../../redux/store";
@@ -24,6 +24,8 @@ export const CardDatosBank = () => {
     return () => subscription.unsubscribe();
   }, [mail]); // Ejecuta el efecto nuevamente si cambia el mail
 
+
+  //FIN USEFFECT
   const handleEdit = (index: number) => {
     setEditStates((prev) => prev.map((editState, i) => (i === index ? true : editState)));
   };

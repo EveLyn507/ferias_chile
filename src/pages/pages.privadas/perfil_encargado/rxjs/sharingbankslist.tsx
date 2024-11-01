@@ -1,7 +1,7 @@
 // bancos.service.ts
 import { BehaviorSubject } from 'rxjs';
-import { DatosBank } from '../../../../../models/interfaces';
-import { getDatosBank } from '../../../services/admin_feria_fuctions';
+import { DatosBank } from '../../../models/interfaces';
+import { getDatosBank } from '../services/admin_feria_fuctions';
 
 class BancoService {
   private bancosSubject = new BehaviorSubject<DatosBank[]>([]);
