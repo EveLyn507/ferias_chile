@@ -1,4 +1,4 @@
-const pool = require('../dbConfig');
+
 
 // Obtener el estado de las ferias activas
 const obtenerEstadoFeria = async (req, res) => {
