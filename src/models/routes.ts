@@ -6,6 +6,7 @@ export const PublicRoutes = {
     LOGINMUNI : 'login3',
     HERRAMIENTA : '/Plano/:id_feria',
     REGISTRO: 'registro',
+    FORMFERIA: '/formulario-feria',
     DATOSENCARGADO : 'actualizar-datos',
     DETALLEFERIA : "/feria/:id_feria",
      PAGOS : 'pago',

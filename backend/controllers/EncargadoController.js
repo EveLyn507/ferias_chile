@@ -262,9 +262,31 @@ try{
   }
 }
 
+/////// FORMULARIO CREACION DE FERIA
 
+const createFeria = async (req, res) => {
+  const { nombre, id_comuna, encargado_mail, id_region, id_estado, mail_banco } = req.body;
+  const pool = req.pool;
 
+  try {
+      // Insertar el registro en la tabla feria
+      const result = await pool.query(
+          `INSERT INTO feria (nombre, id_comuna, encargado_mail, id_region, id_estado, mail_banco)
+           VALUES ($1, $2, $3, $4, $5, $6)
+           RETURNING *`,
+          [nombre, id_comuna, encargado_mail, id_region, id_estado, mail_banco]
+      );
 
+      res.status(201).json(result.rows[0]);  // Devolver el registro insertado
+  } catch (error) {
+      console.error('Error al insertar en feria:', error);
+      res.status(500).json({ error: 'Error al insertar en feria' });
+  }
+};
+
+module.exports = {
+  createFeria,
+};
 module.exports = {
   saveFeria,
   getFeria,
@@ -274,5 +296,6 @@ module.exports = {
   getPrograma,
   saveDatosBank,
   getDatosBank,
-  deleteBank
+  deleteBank,
+  createFeria
 };
