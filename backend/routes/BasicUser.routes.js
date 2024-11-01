@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const pool = require('../credenciales');
 const { login_encargado,login_feriante,login_municipal, registerEncargado_feria, registerFeriante, registerAdministrador_municipal, registerGoogleFeriante  } = require('../controllers/BasicUserController.js');
 const { get_feria,get_puestos_feria  } = require('../controllers/FeedController.js');
 

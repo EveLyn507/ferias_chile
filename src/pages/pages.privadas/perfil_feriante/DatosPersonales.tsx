@@ -11,7 +11,6 @@ interface DatosPersonalesProps {
 }
 
 const DatosPersonales: React.FC<DatosPersonalesProps> = ({  nombre, apellido, telefono, setDatosPersonales }) => {
-  const userMail = useSelector((state: AppStore) => state.user.email);
   const id_user = useSelector((state: AppStore) => state.user.id_user);
   const [mensajeError, setMensajeError] = useState<string | null>(null);
   const [mensajeExito, setMensajeExito] = useState<string | null>(null);

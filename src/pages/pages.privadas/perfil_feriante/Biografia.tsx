@@ -9,7 +9,6 @@ interface BiografiaProps {
 }
 
 const Biografia: React.FC<BiografiaProps> = ({  biografia, setBiografia }) => {
-  const userMail = useSelector((state: AppStore) => state.user.email);
   const id_user = useSelector((state: AppStore) => state.user.id_user);
   const [mensajeError, setMensajeError] = useState<string | null>(null);
   const [mensajeExito, setMensajeExito] = useState<string | null>(null);
