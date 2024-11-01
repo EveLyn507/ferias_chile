@@ -238,6 +238,9 @@ ALTER TABLE feriante ADD CONSTRAINT feriante_pk PRIMARY KEY ( id_user_fte );
 
 ALTER TABLE feriante ADD CONSTRAINT feriante__un UNIQUE ( user_mail );
 
+ALTER TABLE feriante
+ALTER COLUMN perfil_privado SET DEFAULT false;
+
 CREATE TABLE horario_puesto (
     id_horario   SERIAL NOT NULL,
     id_puesto    INTEGER NOT NULL,

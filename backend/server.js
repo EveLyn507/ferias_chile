@@ -14,6 +14,7 @@ const MunicipalRoutes = require('./routes/Municipal.routes');
 const PagosRoutes = require('./routes/Pagos.routes');
 const FeedRouter = require('./routes/Feed.routes');
 const puestoRoutes = require('./routes/Puesto.routes')
+const supervisorRoutes = require('./routes/Supervisor.routes');
 dotenv.config();
 const app = express();
 const port = process.env.PORT || 5000;
@@ -54,7 +55,7 @@ app.use('/uploads', express.static('uploads'));  // foto feriante
 app.use(MunicipalRoutes); 
 app.use(PagosRoutes); 
 app.use(puestoRoutes);
-
+app.use('/api/supervisor', supervisorRoutes);
 
 
 // Iniciar el servidor

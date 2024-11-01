@@ -17,7 +17,7 @@ function LoginFeriante() {
     try {
       const response = await axios.post('http://localhost:5000/login2', { mail, contrasena });
       const { token, role, email, id_user } = response.data;
-      console.log(id_user)
+      
 
       dispatch(createUser({ token, role, email, id_user }));
       navigate(`/${PrivateRoutes.PRIVATE + '/' + role}`, { replace: true });
@@ -26,20 +26,19 @@ function LoginFeriante() {
     }
   };
 
-  const handleGoogleSuccess = async (credentialResponse) => {
+  const handleGoogleSuccess = async (credentialResponse: { credential: any; }) => {
     try {
       const { credential } = credentialResponse;
-  
       if (!credential) {
         throw new Error('El token de Google es inválido o está vacío.');
       }
-  
+    
       const googleResponse = await axios.post('http://localhost:5000/registro/google', {
-        credential,
+        credential, 
       });
-  
-      const { token, role, email } = googleResponse.data;
-      dispatch(createUser({ token, role, email }));
+    
+      const { token, role, email, id_user } = googleResponse.data;
+      dispatch(createUser({ token, role, email, id_user}));
       navigate(`/${PrivateRoutes.PRIVATE + '/' + role}`, { replace: true });
     } catch (error) {
       console.error('Error al registrar con Google', error);

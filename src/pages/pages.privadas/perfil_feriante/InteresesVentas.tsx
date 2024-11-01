@@ -9,7 +9,6 @@ interface InteresesVentaProps {
 }
 
 const InteresesVenta: React.FC<InteresesVentaProps> = ({ intereses, setIntereses }) => {
-  const userMail = useSelector((state: AppStore) => state.user.email);
   const id_user = useSelector((state: AppStore) => state.user.id_user);
   const [nuevoInteres, setNuevoInteres] = useState('');
 

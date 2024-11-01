@@ -16,7 +16,7 @@ const FotoPerfil: React.FC<FotoPerfilProps> = ({ setFotoPerfil, fotoPerfil }) =>
   useEffect(() => {
     const obtenerFotoPerfil = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/cargar-foto-perfil/${id_user}`);
+        const response = await fetch(`http://localhost:5000/api/cargar-foto-perfil/${userMail}`);
         if (!response.ok) {
           throw new Error('Error al obtener la foto de perfil: ' + response.statusText);
         }
@@ -27,11 +27,11 @@ const FotoPerfil: React.FC<FotoPerfilProps> = ({ setFotoPerfil, fotoPerfil }) =>
         console.error('Error al obtener la foto de perfil:', error);
       }
     };
-
-    if (id_user && !fotoPerfil) { 
+  
+    if (userMail && !fotoPerfil) { 
       obtenerFotoPerfil();
     }
-  }, [id_user, fotoPerfil, setFotoPerfil]);
+  }, [userMail, fotoPerfil, setFotoPerfil]);
 
   const handleFotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

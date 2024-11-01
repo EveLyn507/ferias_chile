@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const {
+  getEstadoPerfil,
+  togglePerfilPrivado,
   actualizarDatosPersonales,
   cargarDatosPersonales,
   guardarBiografia,
@@ -11,9 +13,25 @@ const {
   cargarIntereses,
   actualizarCorreo,
   actualizarContraseña,
+  obtenerTiposRed,
+  obtenerRedesSociales,
+  agregarRedSocial,
+  eliminarRedSocial,
   getVacantesVacias,
   savePostulacion
 } = require('../controllers/FerianteController');
+
+// Ruta para obtener el estado del perfil
+router.get('/api/perfil/estado/:userMail', (req, res) => {
+  const pool = req.pool;
+ getEstadoPerfil (req, res,pool);
+});
+
+// Ruta para alternar el estado del perfil público/privado
+router.put('/api/perfil/toggle-privado',  (req, res) => {
+  const pool = req.pool;
+togglePerfilPrivado (req, res,pool);
+});
 
 // Rutas para actualizar y cargar datos personales
 router.post('/api/actualizar-datos-personales', (req, res) => {
@@ -74,6 +92,27 @@ router.post('/api/actualizar-correo', (req, res) => {
 // Rutas para actualizar contraseña
 router.post('/api/actualizar-contrasena', (req, res) => {
   actualizarContraseña(req, res);
+});
+
+// Rutas para las redes sociales
+router.get('/api/tipos-red',  (req, res) => {
+  const pool = req.pool;
+  obtenerTiposRed (req, res,pool);
+});
+
+router.get('/api/redes-sociales/:userMail',  (req, res) => {
+  const pool = req.pool;
+  obtenerRedesSociales (req, res,pool);
+});
+
+router.post('/api/redes-sociales',  (req, res) => {
+  const pool = req.pool;
+  agregarRedSocial (req, res,pool);
+});
+
+router.put('/api/redes-sociales/:id',  (req, res) => {
+  const pool = req.pool;
+  eliminarRedSocial (req, res,pool);
 });
 
 //INICIO MODULO POSTULACIONES 

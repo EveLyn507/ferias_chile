@@ -4,9 +4,56 @@ const bcrypt = require('bcrypt');
 const { log } = require('console');
 const pool = require('../server');
 
+// Controlador para obtener el estado del perfil
+const getEstadoPerfil = async (req, res) => {
+  const { userMail } = req.params;
+
+  try {
+    const query = 'SELECT perfil_privado FROM feriante WHERE user_mail = $1';
+    const result = await req.pool.query(query, [userMail]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+
+    res.status(200).json({ perfil_privado: result.rows[0].perfil_privado });
+  } catch (error) {
+    console.error('Error al obtener el estado del perfil:', error);
+    res.status(500).json({ message: 'Error al obtener el estado del perfil' });
+  }
+};
+
+// Función para alternar el estado de perfil (público/privado)
+const togglePerfilPrivado = async (req, res) => {
+  const { userMail } = req.body;
+
+  try {
+    const result = await req.pool.query(
+      'SELECT perfil_privado FROM feriante WHERE user_mail = $1',
+      [userMail]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+
+    const currentStatus = result.rows[0].perfil_privado;
+    const newStatus = !currentStatus;
+
+    await req.pool.query(
+      'UPDATE feriante SET perfil_privado = $1 WHERE user_mail = $2',
+      [newStatus, userMail]
+    );
+
+    res.status(200).json({ message: 'Estado del perfil actualizado correctamente', perfil_privado: newStatus });
+  } catch (error) {
+    console.error('Error al cambiar el estado del perfil:', error);
+    res.status(500).json({ message: 'Error al cambiar el estado del perfil' });
+  }
+};
 
 // Función para actualizar datos personales
-const actualizarDatosPersonales = async (res,pool , userMail, nombre, apellido, telefono , id_user) => {
+const actualizarDatosPersonales = async (res,pool ,  nombre, apellido, telefono , id_user) => {
   try {
     const telefonoEntero = parseInt(telefono, 10);
     const query = `
@@ -88,13 +135,14 @@ if (!fs.existsSync(uploadDir)) {
 }
 
 // Función para guardar foto de perfil
-const guardarFotoPerfil = async (req, res, pool) => {
+const guardarFotoPerfil = async (req, res) => {
   const { foto, userMail } = req.body;
   const filename = sanitizeFilename(userMail);
   const filePath = path.join(uploadDir, filename);
-  
+  const base64Data = foto.replace(/^data:image\/\w+;base64,/, "");
+
   try {
-    await fs.promises.writeFile(filePath, foto, 'base64');
+    await fs.promises.writeFile(filePath, base64Data, 'base64');
     res.json({ url_foto: `/uploads/${filename}` });
   } catch (error) {
     console.error('Error al guardar la foto de perfil:', error);
@@ -105,13 +153,13 @@ const guardarFotoPerfil = async (req, res, pool) => {
 // Función para cargar foto de perfil
 const cargarFotoPerfil = (req, res) => {
   const { userMail } = req.params;
-  const filename = sanitizeFilename(userMail);
+  const filename = sanitizeFilename(userMail); 
   const filePath = path.join(uploadDir, filename);
   
   if (fs.existsSync(filePath)) {
-    res.sendFile(filePath);
+    res.sendFile(filePath); 
   } else {
-    res.status(404).json({ message: 'Foto de perfil no encontrada' });
+    res.status(404).json({ message: 'Foto de perfil no encontrada' }); 
   }
 };
 
@@ -149,15 +197,15 @@ const cargarIntereses = async (res, pool, id_user) => {
   }
 };
 
-const actualizarCorreo = async (req, res,pool) => { 
+// Función para actualizar correo
+const actualizarCorreo = async (req, res) => { 
   const { nuevoCorreo, user_mail } = req.body;
+
   try {
     await req.pool.query('BEGIN');
-
     const updateQueries = [
-      'UPDATE feriante SET id_user_fte = $1 WHERE id_user_fte = $2;',
-      'UPDATE intereses SET id_user_fte = $1 WHERE user_mail = $2;',
-      'UPDATE detalle_supervisor SET feriante_mail = $1 WHERE feriante_mail = $2;' 
+      'UPDATE feriante SET user_mail = $1 WHERE user_mail = $2;',
+      'UPDATE intereses SET id_user_fte = (SELECT id_user_fte FROM feriante WHERE user_mail = $1) WHERE id_user_fte = (SELECT id_user_fte FROM feriante WHERE user_mail = $2);'
     ];
 
     for (const query of updateQueries) {
@@ -171,13 +219,7 @@ const actualizarCorreo = async (req, res,pool) => {
     console.error('Error al actualizar el correo:', error);
     res.status(500).json({ message: 'Error interno del servidor' });
   }
-
-
-
-
-
-
-
+};
 
 // Función para actualizar la contraseña
 const actualizarContraseña = async (req, res) => {
@@ -197,6 +239,71 @@ const actualizarContraseña = async (req, res) => {
   } catch (error) {
     console.error('Error al actualizar la contraseña:', error);
     res.status(500).json({ message: 'Error interno del servidor' });
+  }
+};
+
+// Función para obtener tipos de redes sociales
+const obtenerTiposRed = async (req, res) => {
+  try {
+    const query = 'SELECT id_tipo_red, red_social FROM tipo_red';
+    const result = await req.pool.query(query);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error('Error al obtener tipos de redes sociales:', error);
+    res.status(500).json({ message: 'Error al obtener tipos de redes sociales' });
+  }
+};
+
+// Función para obtener redes sociales del usuario
+const obtenerRedesSociales = async (req, res) => {
+  const { userMail } = req.params;
+  try {
+    const query = `
+      SELECT rs.id_redes AS id, tr.red_social AS tipo, rs.url_red AS url, tr.url_foto_red AS url_foto_red
+      FROM redes_sociales rs
+      JOIN tipo_red tr ON rs.tipo_red = tr.id_tipo_red
+      WHERE rs.id_user_fte = (SELECT id_user_fte FROM feriante WHERE user_mail = $1)
+    `;
+    const result = await req.pool.query(query, [userMail]);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error('Error al obtener redes sociales:', error);
+    res.status(500).json({ message: 'Error al obtener redes sociales' });
+  }
+};
+
+// Función para agregar una nueva red social
+const agregarRedSocial = async (req, res) => {
+  const { id_user, tipoRed, url } = req.body;
+
+  if (!id_user) {
+    return res.status(400).json({ message: 'ID de usuario es necesario para agregar una red social.' });
+  }
+
+  try {
+    const query = `
+      INSERT INTO redes_sociales (id_user_fte, tipo_red, url_red)
+      VALUES ($1, (SELECT id_tipo_red FROM tipo_red WHERE red_social = $2), $3)
+      RETURNING id_redes AS id
+    `;
+    const result = await req.pool.query(query, [id_user, tipoRed, url]);
+    res.status(200).json({ id: result.rows[0].id, tipo: tipoRed, url });
+  } catch (error) {
+    console.error('Error al agregar red social:', error);
+    res.status(500).json({ message: 'Error al agregar red social' });
+  }
+};
+
+// Función para eliminar una red social
+const eliminarRedSocial = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const query = 'DELETE FROM redes_sociales WHERE id_redes = $1';
+    await req.pool.query(query, [id]);
+    res.status(200).json({ message: 'Red social eliminada con éxito' });
+  } catch (error) {
+    console.error('Error al eliminar red social:', error);
+    res.status(500).json({ message: 'Error al eliminar red social' });
   }
 };
 
@@ -244,6 +351,8 @@ const savePostulacion = async (req , res, pool) =>{
 
 
 module.exports = {
+  getEstadoPerfil,
+  togglePerfilPrivado,
   actualizarDatosPersonales,
   cargarDatosPersonales,
   guardarBiografia,
@@ -254,6 +363,10 @@ module.exports = {
   cargarIntereses,
   actualizarCorreo,
   actualizarContraseña,
+  obtenerTiposRed,
+  obtenerRedesSociales,
+  agregarRedSocial,
+  eliminarRedSocial,
   getVacantesVacias,   //inicio modulo postulaciones
   savePostulacion
 };
