@@ -146,11 +146,24 @@ export interface DatosBank {
     mail_banco: string,
     nombre_asociado: string,
     numero_cuenta: string,
-    encargado_mail: string
+    id_user_enf: number | null
 }
 
 
 export interface listBanks {
     bancos : DatosBank[]
 
+}
+
+
+// admin feria --> postulaciones feria  
+
+export interface ftePostulacion{
+    id_feria : number,
+    f_nombre : string,
+    id_vacante : number,
+    id_postulacion : number,
+    id_user_fte : number,
+    fte_nombre : string,
+    fte_apellido : string
 }

@@ -303,14 +303,25 @@ CREATE TABLE log_empleado (
 
 ALTER TABLE log_empleado ADD CONSTRAINT log_empleado_pk PRIMARY KEY ( id_log );
 
+CREATE TABLE estado_postulacion (
+    id_estado INTEGER NOT NULL, 
+    estado CHARACTER VARYING, 
+    PRIMARY KEY (id_estado)
+);
+
+
 CREATE TABLE postulaciones (
     id_postulacion SERIAL NOT NULL,
     id_vacante     INTEGER NOT NULL,
     id_user_fte    INTEGER NOT NULL,
-    estado         CHAR(1) NOT NULL
+    id_estado      INTEGER NOT NULL
 );
 
 ALTER TABLE postulaciones ADD CONSTRAINT invitaciones_pk PRIMARY KEY ( id_postulacion );
+
+ALTER TABLE postulaciones 
+    ADD CONSTRAINT id_estado_postulacion_FK FOREIGN KEY (id_estado)
+         REFERENCES estado_postulacion (id_estado);
 
 CREATE TABLE puesto (
     id_puesto        SERIAL NOT NULL,
@@ -558,4 +569,4 @@ ALTER TABLE encargado_feria
 
 
 ALTER TABLE postulaciones
-ALTER COLUMN estado SET DEFAULT 1;
+ALTER COLUMN id_estado SET DEFAULT 1;
