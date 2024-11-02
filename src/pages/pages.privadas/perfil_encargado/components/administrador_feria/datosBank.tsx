@@ -9,18 +9,18 @@ import { DatosBank } from "../../../../models/interfaces";
 export const DatosBanco = () => {
 
 
-  const mail = useSelector((store: AppStore) => store.user.email);
+  const id_user = useSelector((store: AppStore) => store.user.id_user);
 
   const [encargadoBank, setEncargadoBank] = useState<DatosBank>({
     mail_banco: '',
     nombre_asociado: '',
     numero_cuenta: '',
-    encargado_mail: mail,
+    id_user_enf: null,
   });
 
   // Cargar los datos del banco en el useEffect
   useEffect(() => {
-    getDatosBank(mail)
+    getDatosBank(id_user)
       .then((res: DatosBank) => {
         setEncargadoBank(res);
       })

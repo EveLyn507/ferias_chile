@@ -179,12 +179,12 @@ const UpdateProgramaFeria = async (req, res, pool) => {
 
 
 // PERFIL ENCARGADO MODULO --> BANCOS
-const getDatosBank = async (res , pool,id_user) => {
+const getDatosBank = async (res , pool,id_user_enf) => {
   try{
     const result = await pool.query (`
       SELECT mail_banco, id_user_enf,nombre_asociado, numero_cuenta
       FROM banco_encargado 
-      WHERE id_user_enf = $1;`, [id_user])
+      WHERE id_user_enf = $1;`, [id_user_enf])
       
       if (result.rows != undefined) {
         res.json(result.rows)
@@ -198,24 +198,46 @@ const getDatosBank = async (res , pool,id_user) => {
     }
   }
 
-const insertDatosBank = async (res ,pool ,mail_banco, nombre_asociado, numero_cuenta, encargado_mail) => {
+const insertDatosBank = async (res ,pool ,mail_banco, nombre_asociado, numero_cuenta, id_user_enf) => {
   try {
-    await pool.query (`
-    INSERT INTO banco_encargado (mail_banco, nombre_asociado, numero_cuenta, encargado_mail)
-    VALUES ($1, $2, $3, $4)
-    ON CONFLICT (mail_banco)
-    DO UPDATE
-    SET 
-    nombre_asociado = EXCLUDED.nombre_asociado,
-    numero_cuenta = EXCLUDED.numero_cuenta,
-    encargado_mail = EXCLUDED.encargado_mail
-  ` , [mail_banco, nombre_asociado, numero_cuenta, encargado_mail])
-  return res.status(200);
+    const check = await pool.query(`
+      SELECT * from banco_encargado WHERE mail_banco = 1$` ,[mail_banco])
+      if(check.length > 0) {
+        res.status(409).json({msj: 'este banco ya existe'})
+      }else {
+        await pool.query (`
+          INSERT INTO banco_encargado (mail_banco,id_user_enf, nombre_asociado, numero_cuenta )
+          VALUES ($1, $2, $3, $4)
+        ` , [mail_banco, id_user_enf,nombre_asociado, numero_cuenta ])
+         res.status(200).json({msj : 'exito al agregar banco'});
+      }
+   
   }catch (err){
     console.log('error al iinsertar banco ' ,err)
     res.status(500).json({ error: 'Error al guardar banco' });
   }
 }
+
+
+
+const updateDatosBank = async (res ,pool ,mail_banco, nombre_asociado, numero_cuenta, id_user_enf) => {
+  try {
+    await pool.query (`
+ UPDATE banco_encargado
+    SET 
+    nombre_asociado = $3 , numero_cuenta = $4
+    WHERE mail_banco = $1 AND id_user_enf = $2
+  ` , [mail_banco, id_user_enf,nombre_asociado, numero_cuenta ])
+   res.status(200).json({msj : 'exito al actualizar banco'});
+  }catch (err){
+    console.log('error al iinsertar banco ' ,err)
+    res.status(500).json({ error: 'Error al guardar banco' });
+  }
+}
+
+
+
+
 
 const deleteBank = async (res, pool,mail_banco) => {
 try{
@@ -413,27 +435,10 @@ const deleteVacante = async (req,res, pool) => {
  }
 
 //MODULO POSTULANTES 
-const getPostulaciones = async ( res , pool , id_feria) => {
+const getPostulacionesEnf = async ( res , pool , id_user_enf) => {
   try {
     const result = await pool.query(`
-    SELECT f.id_feria , f.nombre, dtv.id_vacante , p.id_postulacion , p.id_user_fte, fte.nombre , fte.apellido FROM feria f 
-    JOIN detalle_team_vacante dtv on dtv.id_feria = f.id_feria
-    JOIN postulaciones p on p.id_vacante = dtv.id_vacante 
-    RIGHT JOIN feriante fte on fte.id_user_fte = p.id_user_fte
-    WHERE f.id_feria = $1`, [id_feria]
-    );
-     res.json(result.rows)  
-  } catch (error) {
-    console.error('Error al insertar el horario:', error);
-    throw error;  // Lanza el error para que sea capturado por la función que llama
-  }
-};
-
-
-const getALLPostulaciones = async ( res , pool , id_user_enf) => {
-  try {
-    const result = await pool.query(`
-    SELECT f.id_feria , f.nombre, dtv.id_vacante , p.id_postulacion , p.id_user_fte, fte.nombre , fte.apellido 
+    SELECT f.id_feria , f.nombre as f_nombre, dtv.id_vacante , p.id_postulacion , p.id_user_fte, fte.nombre as fte_nombre , fte.apellido as fte_apellido
     FROM encargado_feria enf 
     JOIN feria f on  f.id_user_enf = enf.id_user_enf
     JOIN detalle_team_vacante dtv on dtv.id_feria = f.id_feria
@@ -450,45 +455,69 @@ const getALLPostulaciones = async ( res , pool , id_user_enf) => {
 
 
 //borra el horario primero y luego la vacante
-const aceptarPostulacion = async (req,res, pool) => {
-  const  {id_vacante} = req.body
+const aceptarPostulacion = async (res, pool,id_vacante, id_user_fte) => {
+
  try{
-   await pool.query(` 
-     DELETE FROM detalle_horario_empleado
-     WHERE id_vacante = $1 `, [id_vacante]) 
-   await pool.query(` 
-     DELETE FROM detalle_team_vacante 
-     WHERE id_vacante = $1 `, [id_vacante]) 
-     res.status(200).json({message : 'vacante borrada correctamente'})
+
+  const chek = await pool.query(`
+    
+     SELECT 
+          EXISTS (SELECT 1 FROM postulaciones WHERE id_user_fte = $1 AND id_vacante = $2) AS postulacion_invalida`,
+           [id_user_fte,id_vacante])
+
+      if(chek.rows > 0) {
+        await pool.query(`
+          UPDATE detalle_team_vacante 
+          SET id_estado_vacante = 2 
+          WHERE id_user_fte = 1$ AND id_vacante = $2 AND id_feria = $3` , [id_user_fte,id_vacante,id_feria])
+         res.status(200).json({message : 'vacante aceptada correctamente'})
+
+      }else { 
+        res.status(404).json({msj : 'solicitud de vacante no encontrada'})
+      }
+
+   
  }catch (err){
-   console.log('error al borrar banco ' ,err)
+   console.log('error al aceptar el postulante ' ,err)
    }
  }
 
  //borra el horario primero y luego la vacante
-const rechazarPostulacion = async (req,res, pool) => {
-  const  {id_vacante} = req.body
- try{
-   await pool.query(` 
-     DELETE FROM detalle_horario_empleado
-     WHERE id_vacante = $1 `, [id_vacante]) 
-   await pool.query(` 
-     DELETE FROM detalle_team_vacante 
-     WHERE id_vacante = $1 `, [id_vacante]) 
-     res.status(200).json({message : 'vacante borrada correctamente'})
- }catch (err){
-   console.log('error al borrar banco ' ,err)
-   }
- }
+ const rechazarPostulacion = async (res, pool,id_vacante, id_user_fte) => {
 
+  try{
+ 
+   const chek = await pool.query(`
+     
+      SELECT 
+           EXISTS (SELECT 1 FROM postulaciones WHERE id_user_fte = $1 AND id_vacante = $2) AS postulacion_invalida`,
+            [id_user_fte,id_vacante])
+ 
+       if(chek.rows > 0) {
+         await pool.query(`
+           UPDATE detalle_team_vacante 
+           SET id_estado_vacante = 2 
+           WHERE id_user_fte = 1$ AND id_vacante = $2 AND id_feria = $3` , [id_user_fte,id_vacante,id_feria])
+          res.status(200).json({message : 'solicitud rechazada correctamente'})
+ 
+ 
+       }else { 
+         res.status(404).json({msj : 'solicitud de vacante no encontrada'})
+       }
+ 
+    
+  }catch (err){
+    console.log('error al rechazar al postulante ' ,err)
+    }
+  }
 //CAMBIO 
 module.exports = {
   saveFeria,getFeria,get_feria_Encargado,//HOME 
   //ADMINISTRACION DE LA FERIA
   abrirTiketFeria, 
   UpdateProgramaFeria,getPrograma, // MODULO PROGRAMACION DE LA FERIA
-  insertDatosBank,getDatosBank,deleteBank,//MODULO BANCOS
+  insertDatosBank,getDatosBank,updateDatosBank,deleteBank,//MODULO BANCOS
   getVacantesFeria,insertVacantesFeria,updateVacanteFeria,deleteVacante,updateHorarioVacante, // MODULO VACANTES
-  getPostulaciones,getALLPostulaciones,aceptarPostulacion,rechazarPostulacion, //MODULO POSTULACIONES
+  getPostulacionesEnf,aceptarPostulacion,rechazarPostulacion, //MODULO POSTULACIONES
   createFeria,//FORMULARIO DE FERIA
 };

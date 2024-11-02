@@ -8,7 +8,7 @@ const {
   ,getPrograma ,insertDatosBank,getDatosBank, 
   deleteBank,getVacantesFeria,insertVacantesFeria, 
   deleteVacante,updateVacanteFeria,updateHorarioVacante,
-  getPostulaciones,rechazarPostulacion,aceptarPostulacion,createFeria} = require('../controllers/EncargadoController');
+  getPostulacionesEnf,rechazarPostulacion,aceptarPostulacion,updateDatosBank,createFeria} = require('../controllers/EncargadoController');
 
 
 //PERFIL ENCARGADO 
@@ -59,16 +59,24 @@ router.get('/getProgramacion/:id_feria', (req, res) => {
 
 router.post('/insertBank', (req, res) => {
   const pool = req.pool
-  const {mail_banco, nombre_asociado, numero_cuenta, encargado_mail} = req.body.encargadoBank
-  insertDatosBank(res,pool,mail_banco, nombre_asociado, numero_cuenta, encargado_mail)
+  const {mail_banco, nombre_asociado, numero_cuenta, id_user_enf} = req.body.encargadoBank
+  insertDatosBank(res,pool,mail_banco, nombre_asociado, numero_cuenta, id_user_enf)
   }) 
 
 router.post('/getBank', (req, res) => {
   const pool = req.pool
-  const {id_user} = req.body
-  getDatosBank(res,pool,id_user)
+  const {id_user_enf} = req.body
+  getDatosBank(res,pool,id_user_enf)
   
   }) 
+
+
+  router.post('/updateDatosBank', (req, res) => {
+    const pool = req.pool
+    const {mail_banco, nombre_asociado, numero_cuenta, id_user_enf} = req.body.encargadoBank
+    updateDatosBank(res,pool,mail_banco, nombre_asociado, numero_cuenta, id_user_enf)
+    }) 
+
 
 router.post('/deleteBank', (req, res) => {
   const pool = req.pool
@@ -103,19 +111,29 @@ router.post('/updateHorarioVacante', (req, res) => {
   updateHorarioVacante(req,res,pool)
   }) 
 
-router.post('/getPostulaciones', (req, res) => {
+router.post('/getPostulacionesEnf', (req, res) => {
   const pool = req.pool
-  getPostulaciones(res,pool)
+  const {id_user_enf} = req.body
+  getPostulacionesEnf(res,pool,id_user_enf)
+  }) 
+
+
+router.post('/aceptarPostulacion', (req, res) => {
+  const pool = req.pool
+  const  {id_postulacion,id_vacante,id_user_fte} = req.body
+  aceptarPostulacion(res,pool,id_postulacion,id_vacante,id_user_fte)
   }) 
 
 router.post('/rechazarPostulacion', (req, res) => {
   const pool = req.pool
-  rechazarPostulacion(res,pool)
+  const  {id_postulacion,id_vacante,id_user_fte} = req.body
+  rechazarPostulacion(res,pool,id_postulacion,id_vacante,id_user_fte)
   }) 
 router.post('/aceptarPostulacion', (req, res) => {
   const pool = req.pool
   aceptarPostulacion(res,pool)
   }) 
+
 
 
 //// FORMULARIO CREACION DE FERIA

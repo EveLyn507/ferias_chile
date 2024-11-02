@@ -138,6 +138,12 @@ insert into dia_armado (id_dia_armado, cuando) VALUES
 (3, 'un dia antes'),
 (4, 'dejame elegir');
 
+insert into estado_postulacion VALUES
+(1,'En espera'),
+(2,'Aceptada'),
+(3,'Rechazada'),
+(4,'Cancelada');
+
 -- FERIAS DE LOS ENCARGADOS 
 
 INSERT INTO feria (nombre,id_comuna,id_user_enf,id_estado)

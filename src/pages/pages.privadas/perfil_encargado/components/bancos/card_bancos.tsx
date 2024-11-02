@@ -1,12 +1,12 @@
+
 import { useEffect, useState } from "react";
 import { DatosBank } from "../../../../models/interfaces";
 import { bancoService } from "../../rxjs/sharingbankslist";
-import { deleteBank, saveDatosBank } from "../../services/admin_feria_fuctions";
-import { useSelector } from "react-redux";
-import { AppStore } from "../../../../../redux/store";
+import { deleteBank, updateDatosBank } from "../../services/admin_feria_fuctions";
+
 
 export const CardDatosBank = () => {
-  const mail = useSelector((store: AppStore) => store.user.email);
+
   const [formDataList, setFormDataList] = useState<DatosBank[]>([]);
   const [editStates, setEditStates] = useState<boolean[]>([]);
 
@@ -17,12 +17,11 @@ export const CardDatosBank = () => {
       setEditStates(bancos.map(() => false)); // Inicializa los estados de edición
     });
 
-    // Cargar los bancos iniciales desde el backend
-    bancoService.loadInitialBancos(mail);
+
 
     // Cleanup: cancelar la suscripción cuando el componente se desmonte
     return () => subscription.unsubscribe();
-  }, [mail]); // Ejecuta el efecto nuevamente si cambia el mail
+  }, []); // Ejecuta el efecto nuevamente si cambia el mail
 
 
   //FIN USEFFECT
@@ -30,10 +29,12 @@ export const CardDatosBank = () => {
     setEditStates((prev) => prev.map((editState, i) => (i === index ? true : editState)));
   };
 
-  const handleSave = (index: number) => {
+
+  const handleUpdate = (index: number) => {
     setEditStates((prev) => prev.map((editState, i) => (i === index ? false : editState)));
-    saveDatosBank(formDataList[index]);
+    updateDatosBank(formDataList[index]);
   };
+
 
   const handleChange = (index: number, field: keyof DatosBank, value: string) => {
     setFormDataList((prevDataList) =>
@@ -42,6 +43,9 @@ export const CardDatosBank = () => {
       )
     );
   };
+
+
+
 
   const borrarBank = async (mail_banco: string) => {
     try {
@@ -80,7 +84,7 @@ export const CardDatosBank = () => {
           {!editStates[index] ? (
             <button onClick={() => handleEdit(index)}>Actualizar</button>
           ) : (
-            <button onClick={() => handleSave(index)}>Guardar Cambios</button>
+            <button onClick={() => handleUpdate(index)}>Guardar Cambios</button>
           )}
           <button onClick={() => borrarBank(formData.mail_banco)}>Borrar Banco</button>
         </div>
