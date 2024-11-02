@@ -8,7 +8,7 @@ const {
   ,getPrograma ,insertDatosBank,getDatosBank, 
   deleteBank,getVacantesFeria,insertVacantesFeria, 
   deleteVacante,updateVacanteFeria,updateHorarioVacante,
-  getPostulaciones,rechazarPostulacion,aceptarPostulacion, createFeria} = require('../controllers/EncargadoController');
+  getPostulaciones,rechazarPostulacion,aceptarPostulacion,createFeria} = require('../controllers/EncargadoController');
 
 
 //PERFIL ENCARGADO 
@@ -118,5 +118,7 @@ router.post('/aceptarPostulacion', (req, res) => {
   }) 
 
 
+//// FORMULARIO CREACION DE FERIA
+  router.post('/createFeria', createFeria);
 
 module.exports = router;
