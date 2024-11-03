@@ -284,6 +284,38 @@ try{
   console.log('error al borrar banco ' ,err)
   }
 }
+
+/////// FORMULARIO CREACION DE FERIA
+
+const createFeria = async (req, res) => {
+  const { id_user_enf, nombre, id_comuna, id_estado, mail_banco } = req.body;
+
+  try {
+    const query = `
+      INSERT INTO feria (id_user_enf, nombre, id_comuna, id_estado, mail_banco)
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING id_feria;
+    `;
+    const values = [id_user_enf, nombre, id_comuna, id_estado, mail_banco];
+
+    const result = await req.pool.query(query, values);
+    const nuevoIdFeria = result.rows[0].id_feria;
+
+    res.status(201).json({
+      message: 'Feria creada exitosamente',
+      id_feria: nuevoIdFeria,
+    });
+  } catch (error) {
+    console.error('Error al guardar la feria:', error);
+    res.status(500).json({
+      message: 'Error al guardar la feria',
+      error: error.message,
+    });
+  }
+};
+
+// Manda las vacantes a l a feria seleccionada
+const getVacantesFeria1 = async (req,res, pool) => {}
 // FIN PERFIL ENCARGADO MODULO --> BANCOS
 
 const getHorariosVacante = async (idsvacante, pool) =>{
@@ -524,5 +556,6 @@ module.exports = {
   UpdateProgramaFeria,getPrograma, // MODULO PROGRAMACION DE LA FERIA
   insertDatosBank,getDatosBank,updateDatosBank,deleteBank,//MODULO BANCOS
   getVacantesFeria,insertVacantesFeria,updateVacanteFeria,deleteVacante,updateHorarioVacante, // MODULO VACANTES
-  getPostulacionesEnf,aceptarPostulacion,rechazarPostulacion //MODULO POSTULACIONES
+  getPostulacionesEnf,aceptarPostulacion,rechazarPostulacion, //MODULO POSTULACIONES
+  createFeria,//FORMULARIO DE FERIA
 };
