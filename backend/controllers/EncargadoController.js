@@ -201,7 +201,7 @@ const getDatosBank = async (res , pool,id_user_enf) => {
 const insertDatosBank = async (res ,pool ,mail_banco, nombre_asociado, numero_cuenta, id_user_enf) => {
   try {
     const check = await pool.query(`
-      SELECT * from banco_encargado WHERE mail_banco = 1$` ,[mail_banco])
+      SELECT * from banco_encargado WHERE mail_banco = $1` ,[mail_banco])
       if(check.length > 0) {
         res.status(409).json({msj: 'este banco ya existe'})
       }else {

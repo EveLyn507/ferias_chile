@@ -26,7 +26,7 @@ const id_user_enf = useSelector((store : AppStore) => store.user.id_user)
 useEffect(()=> {
 
   vancanteService.loadInitialVacante(mail, idFeria)
-  bancoService.loadInitialBancos(mail)
+  bancoService.loadInitialBancos(id_user_enf)
   postulacionService.loadInitialVacante(id_user_enf)
 })
 

@@ -101,6 +101,214 @@ INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (3, 'Putre', 1);
 INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (4, 'Parinacota', 1);
 
 
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (5, 'Huara', 2);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (6, 'Camiña', 2);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (7, 'Colchane', 2);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (8, 'Pica', 2);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (9, 'Pozo', 2);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (10, 'Almonte', 2);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (11, 'Alto Hospicio', 2);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (12, 'Iquique', 2);
+
+-- Primera Región (Arica y Parinacota)
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (1, 'Arica', 1);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (2, 'Camarones', 1);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (3, 'Putre', 1);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (4, 'Parinacota', 1);
+
+-- Segunda Región (Tarapacá)
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (5, 'Huara', 2);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (6, 'Camiña', 2);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (7, 'Colchane', 2);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (8, 'Pica', 2);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (9, 'Pozo', 2);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (10, 'Almonte', 2);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (11, 'Alto Hospicio', 2);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (12, 'Iquique', 2);
+
+-- Tercera Región (Antofagasta)
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (13, 'Antofagasta', 3);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (14, 'Calama', 3);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (15, 'Tocopilla', 3);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (16, 'Mejillones', 3);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (17, 'San Pedro de Atacama', 3);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (18, 'Sierra Gorda', 3);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (19, 'Antofagasta', 3);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (20, 'El Loa', 3);
+
+-- Cuarta Región (Atacama)
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (21, 'Copiapó', 4);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (22, 'Caldera', 4);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (23, 'Tierra Amarilla', 4);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (24, 'Chañaral', 4);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (25, 'Diego de Almagro', 4);
+
+-- Quinta Región (Coquimbo)
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (26, 'La Serena', 5);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (27, 'Coquimbo', 5);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (28, 'Vicuña', 5);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (29, 'Andacollo', 5);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (30, 'Paiguano', 5);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (31, 'La Higuera', 5);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (32, 'Combarbalá', 5);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (33, 'Monte Patria', 5);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (34, 'Ovalle', 5);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (35, 'Punitaqui', 5);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (36, 'Río Hurtado', 5);
+
+-- Sexta Región (Valparaíso)
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (37, 'Valparaíso', 6);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (38, 'Viña del Mar', 6);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (39, 'Concón', 6);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (40, 'Quintero', 6);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (41, 'Puchuncaví', 6);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (42, 'Casablanca', 6);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (43, 'Los Andes', 6);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (44, 'San Esteban', 6);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (45, 'Llay Llay', 6);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (46, 'Zapallar', 6);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (47, 'Puchuncaví', 6);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (48, 'Quillota', 6);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (49, 'Limache', 6);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (50, 'Olmué', 6);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (51, 'San Antonio', 6);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (52, 'El Quisco', 6);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (53, 'La Ligua', 6);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (54, 'Petorca', 6);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (55, 'San Felipe', 6);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (56, 'Los Andes', 6);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (57, 'Rinconada', 6);
+
+-- Séptima Región (Metropolitana de Santiago)
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (58, 'Santiago', 7);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (59, 'Pudahuel', 7);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (60, 'Maipú', 7);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (61, 'La Florida', 7);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (62, 'Las Condes', 7);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (63, 'Vitacura', 7);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (64, 'Ñuñoa', 7);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (65, 'Recoleta', 7);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (66, 'Independencia', 7);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (67, 'El Bosque', 7);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (68, 'Cerro Navia', 7);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (69, 'Estación Central', 7);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (70, 'Lo Prado', 7);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (71, 'San Miguel', 7);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (72, 'San Joaquín', 7);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (73, 'La Granja', 7);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (74, 'El Bosque', 7);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (75, 'San Ramón', 7);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (76, 'Lo Barnechea', 7);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (77, 'Pedro Aguirre Cerda', 7);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (78, 'Cerro Navia', 7);
+
+-- Octava Región (O'Higgins)
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (79, 'Rancagua', 8);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (80, 'Machalí', 8);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (81, 'Coinco', 8);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (82, 'San Vicente', 8);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (83, 'Pichidegua', 8);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (84, 'Requínoa', 8);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (85, 'Graneros', 8);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (86, 'Mostazal', 8);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (87, 'Cunco', 8);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (88, 'Olivar', 8);
+
+-- Novena Región (Maule)
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (89, 'Talca', 9);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (90, 'Maule', 9);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (91, 'Linares', 9);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (92, 'Cauquenes', 9);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (93, 'Colbún', 9);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (94, 'Retiro', 9);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (95, 'San Javier', 9);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (96, 'Villa Alegre', 9);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (97, 'Yerbas Buenas', 9);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (98, 'Pelarco', 9);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (99, 'San Rafael', 9);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (100, 'Longaví', 9);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (101, 'Hualañé', 9);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (102, 'Sagrada Familia', 9);
+
+-- Décima Región (Ñuble)
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (103, 'Chillán', 10);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (104, 'Chillán Viejo', 10);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (105, 'Bulnes', 10);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (106, 'El Carmen', 10);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (107, 'Pinto', 10);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (108, 'San Ignacio', 10);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (109, 'Yungay', 10);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (110, 'Quillón', 10);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (111, 'Coihueco', 10);
+
+-- Undécima Región (Biobío)
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (112, 'Concepción', 11);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (113, 'Talcahuano', 11);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (114, 'Coronel', 11);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (115, 'San Pedro de la Paz', 11);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (116, 'Hualpén', 11);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (117, 'Penco', 11);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (118, 'Lota', 11);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (119, 'Tome', 11);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (120, 'Dichato', 11);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (121, 'San Juan de la Costa', 11);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (122, 'Santa Juana', 11);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (123, 'Los Ángeles', 11);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (124, 'Antuco', 11);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (125, 'Cabrero', 11);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (126, 'Yumbel', 11);
+
+-- Duodécima Región (La Araucanía)
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (127, 'Temuco', 12);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (128, 'Pucón', 12);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (129, 'Villarrica', 12);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (130, 'Cunco', 12);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (131, 'Lautaro', 12);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (132, 'Freire', 12);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (133, 'Cañete', 12);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (134, 'Carahue', 12);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (135, 'Nueva Imperial', 12);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (136, 'Temuco', 12);
+
+-- Decimotercera Región (Los Ríos)
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (137, 'Valdivia', 13);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (138, 'Lanco', 13);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (139, 'Los Lagos', 13);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (140, 'Panguipulli', 13);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (141, 'La Unión', 13);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (142, 'Futrono', 13);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (143, 'Paillaco', 13);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (144, 'Río Bueno', 13);
+
+-- Decimocuarta Región (Los Lagos)
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (145, 'Puerto Montt', 14);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (146, 'Puerto Varas', 14);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (147, 'Cochamó', 14);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (148, 'Fresia', 14);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (149, 'Frutillar', 14);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (150, 'Los Muermos', 14);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (151, 'Maullín', 14);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (152, 'Calbuco', 14);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (153, 'San Pablo', 14);
+
+-- Decimoquinta Región (Aysén)
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (154, 'Coyhaique', 15);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (155, 'Aysén', 15);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (156, 'Cisnes', 15);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (157, 'Guaitecas', 15);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (158, 'Chile Chico', 15);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (159, 'Rio Ibañez', 15);
+
+-- Decimosexta Región (Magallanes)
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (160, 'Punta Arenas', 16);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (161, 'Natales', 16);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (162, 'Porvenir', 16);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (163, 'Cabo de Hornos', 16);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (164, 'Timaukel', 16);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (165, 'Laguna Blanca', 16);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (166, 'Río Verde', 16);
+INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (167, 'Primavera', 16);
+
 -- ESTADO FERIA
 
 insert into estado_feria (id_estado,estado) VALUES
