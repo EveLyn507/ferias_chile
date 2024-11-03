@@ -50,6 +50,9 @@ class PostulacionesService {
       console.error("Error al cargar las vacantes:", error);
     });
   }
-}
+
+
+}//fin
+
 
 export const postulacionService = new PostulacionesService();

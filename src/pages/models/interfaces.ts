@@ -34,7 +34,7 @@ export interface horarioVacante {
 
 export interface vacante {
     id_vacante : number,
-    feriante_mail : string | null,
+    id_user_fte : number | null,
     id_feria :number,
     id_rol : number,
     ingreso : string,
@@ -50,15 +50,28 @@ export interface postulacion {
     id_user_fte : number ,
     user_mail : string,
     id_vacante : number |null
+
 }
 
 
-//FEED  DE FERIAS 
+export interface Mispostulacion {
+    id_postulacion : number,
+    estado : string,
+    nombre_feria : string,
+    rol : string ,
+    fecha_ingreso : string,
+    fecha_termino : string
+}
+
+
+
+
 export interface Feria {
     id_feria: number;
     nombre_feria: string;
     comuna : string;
     region: string;
+    estado : string
     horarios : ProgramaFeria[];
     
 }

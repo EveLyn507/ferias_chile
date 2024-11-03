@@ -3,6 +3,7 @@ import { resetUser } from '../redux/states/user'
 import {  PublicRoutes } from '../models';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { clearLocalStorage } from '../utilities/localStorage.utilities';
 
 export function Logout() {
     const navigate  = useNavigate();
@@ -10,7 +11,7 @@ export function Logout() {
     const logOut = () => {
         dispatch(resetUser());
         navigate(`/${PublicRoutes.LOGIN}`, {replace : true});
-
+        clearLocalStorage("feriasStatus")
     };
 
     return (

@@ -1,59 +1,55 @@
 import { Link } from "react-router-dom";
-import { FeriasProps } from "../../../../models/interfaces";
 import { Card } from "../../../../components/card";
-import { OpenTiket } from "../../services/open_tikek";
 import { idFeriaService } from "../../rxjs/sharing.id_feria";
-import { useSelector } from "react-redux";
-import  { AppStore } from "../../../../../redux/store";
-
+import { useEffect, useState } from "react";
+import { Feria } from "../../../../models/interfaces";
+import { feriasService } from "../../rxjs/sharingFeriasEn";
 
 // Define las props del componente, en este caso un array de objetos Feria
-export const Card_feria_encargado = ({ ferias }: FeriasProps) => {
+export const Card_feria_encargado = () => {
+    const [ferias, setFerias] = useState<Feria[]>([]);
 
-  const mail = useSelector(( store : AppStore )=> store.user.email)
-
+useEffect(() => {
+    const subscribe = feriasService.ferias$.subscribe((feriasEn) => {
+        setFerias(feriasEn)
+    } )
+    return () => subscribe.unsubscribe()
+})
 
     return (
-        <Card
-            items={ferias}
-            renderFields={(feria) => [
-                { label: "Nombre", value: feria.nombre_feria },
-                { label: "Región", value: feria.region },
-                { label: "Comuna", value: feria.comuna },
-                {
-                    label: "Horarios",
-                    value: (
+        <div>
+            {ferias.length === 0 ? ( // Verifica que feriasEn sea un array y esté vacío
+                <p>Aún no has creado tu primera feria.</p>
+            ) : (
+                <Card
+                    items={ferias}
+                    renderFields={(feria) => [
+                        { label: "Nombre", value: feria.nombre_feria },
+                        { label: "Región", value: feria.region },
+                        { label: "Comuna", value: feria.comuna },
+                        {
+                            label: "Horarios",
+                            value: (
+                                <ul>
+                                    {feria.horarios.filter((horario) => horario.activo === true).map((horario) => (
+                                        <li key={horario.id_feria}>
+                                            <strong>Día:</strong> {horario.dia}<br />
+                                            <strong>Día Armado:</strong> {horario.id_dia_armado}<br />
+                                        </li>
+                                    ))}
+                                </ul>
+                            )
+                        },
+                    ]}
+                    actions={(feria) => (
                         <ul>
-                            {feria.horarios.filter((horario) =>  horario.activo=== true).map((horario) => (
-                             
-                                    <li key={horario.id_feria}>
-                                    <strong>Día:</strong> {horario.dia}<br />
-                                    <strong>Día Armado:</strong> {horario.id_dia_armado}<br />
-
-                                </li>
-                       
-                            ))}
+                            <li><Link to={`/feria/${feria.id_feria}`}>Ver Puestos Feria</Link></li>
+                            <li><Link to={`administracion/${feria.id_feria}/${feria.nombre_feria}`}>Administrar feria</Link></li>
+                            <li><Link to={`/Plano/${feria.id_feria}`} onClick={() => idFeriaService.setId(feria.id_feria)}>Administrar plano</Link></li>
                         </ul>
-                    )
-                },
-            ]}
-            actions={(feria) => (
-              <ul>
-                <li><Link to={`/feria/${feria.id_feria}`}>Ver Puestos Feria</Link> </li>
-                <li> <Link to={`administracion/${feria.id_feria}/${feria.nombre_feria}`} >Administrar feria</Link></li>
-                <button onClick={() => OpenTiket(feria.id_feria, mail)}>Solicitar apertura de feria</button>
-                <li><Link to={`/Plano/${feria.id_feria}`} onClick={() => idFeriaService.setId(feria.id_feria)} >Administrar plano</Link></li>
-                </ul>
-
-
-
+                    )}
+                />
             )}
-        />
+        </div>
     );
 };
-
-
-
-
-
-

@@ -17,8 +17,9 @@ const {
   obtenerRedesSociales,
   agregarRedSocial,
   eliminarRedSocial,
-  getVacantesVacias,
-  insertPostulacion
+  getVacantesVacias,//modulo postulaciones
+  insertPostulacion,
+  misPostulaciones
 } = require('../controllers/FerianteController');
 
 // Ruta para obtener el estado del perfil
@@ -126,6 +127,13 @@ router.post('/insertPostulacion', (req, res) => {
   const {id_user_fte , user_mail, id_vacante} = req.body.postulacion
   insertPostulacion(res, pool,id_user_fte , user_mail, id_vacante );
 });
+
+router.post('/getMisPostulaciones', (req, res) => {
+  const pool = req.pool;
+  const {id_user_fte} = req.body
+  misPostulaciones(res, pool,id_user_fte);
+});
+
 
 
 module.exports = router;

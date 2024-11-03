@@ -71,6 +71,8 @@ VALUES ('2@2.com', 2, 'feriante' ,'te', 123222, 1,'biografia vacia',123433,null,
 INSERT INTO administrador_municipal (user_mail, id_tipo_usuario , nombre, apellido,rut,rut_div,telefono, contrasena,url_foto_perfil)
 VALUES ('3@3.com', 3, 'municipal' ,'te', 123222, 1,123433,'$2b$10$PwTkJCXeUmpAb2E2iLhfHOKy.uYbQtRwAZHojsSrNNSWXMNnmXRwm',null);
 
+INSERT INTO administrador_municipal (user_mail, id_tipo_usuario , nombre, apellido,rut,rut_div,telefono, contrasena,url_foto_perfil)
+VALUES ('3@31.com', 3, 'municipal' ,'te', 123222, 1,123433,'$2b$10$PwTkJCXeUmpAb2E2iLhfHOKy.uYbQtRwAZHojsSrNNSWXMNnmXRwm',null);
 
 
 -- regiones
@@ -144,6 +146,14 @@ insert into estado_postulacion VALUES
 (3,'Rechazada'),
 (4,'Cancelada');
 
+
+insert into estado_solicitud VALUES
+(1,'En espera'),
+(2,'Aceptada'),
+(3,'Rechazada'),
+(4,'Cancelada');
+
+
 -- FERIAS DE LOS ENCARGADOS 
 
 INSERT INTO feria (nombre,id_comuna,id_user_enf,id_estado)
@@ -160,3 +170,18 @@ INSERT INTO tipo_red (id_tipo_red, red_social, url_foto_red) VALUES
 (3, 'Twitter', 'https://upload.wikimedia.org/wikipedia/en/6/60/Twitter_Logo_as_of_2021.svg'),
 (4, 'LinkedIn', 'https://upload.wikimedia.org/wikipedia/commons/8/81/LinkedIn_icon.svg'),
 (5, 'TikTok', 'https://upload.wikimedia.org/wikipedia/en/6/69/TikTok_logo.svg');
+
+
+
+
+insert into solicitudes_apertura (id_user_adm, id_feria,id_estado)
+VALUES 
+(1,1,1),
+(2,1,1),
+(1,1,1),
+(2,1,1),
+(1,2,1),
+(2,2,1),
+(2,2,1),
+(1,1,1);
+

@@ -12,7 +12,7 @@ DROP FUNCTION IF EXISTS obtener_horarios_ferias_feedFerias( integer[]);
 -- OBTIENE LAS FERIAS DE UN ENCARGADO
 CREATE OR REPLACE FUNCTION obtener_ferias_encargado(id_user INTEGER)
 RETURNS TABLE (
-    id_feria INT,
+    id_feria INTEGER,
     nombre_feria character varying(80),
     comuna character varying(80),
     region character varying(80),
@@ -35,7 +35,8 @@ BEGIN
     JOIN comuna c ON f.id_comuna = c.id_comuna
     JOIN region g ON c.id_region = g.id_region
     JOIN estado_feria es ON f.id_estado = es.id_estado
-    WHERE ef.id_user_enf = id_user;  -- uso del parametro
+    WHERE ef.id_user_enf = id_user -- uso del parametro
+    ORDER BY id_feria ASC;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -73,14 +74,12 @@ $$ LANGUAGE plpgsql;
 
 -- INSERTA LOS TIKET
 CREATE OR REPLACE FUNCTION insertar_solicitud_apertura(
-    encargado_mail CHARACTER VARYING,
-    admin_muni_mail CHARACTER VARYING,
-    id_feria INTEGER,
-    estado CHARACTER VARYING(30)
+    id_user_adm INTEGER,
+    id_feria INTEGER
 ) RETURNS VOID AS $$
 BEGIN
-    INSERT INTO solicitudes_apertura (encargado_mail, admin_muni_mail, id_feria)
-    VALUES (encargado_mail, admin_muni_mail, id_feria);
+    INSERT INTO solicitudes_apertura ( id_user_adm, id_feria)
+    VALUES (id_user_adm, id_feria);
 END;
 $$ LANGUAGE plpgsql;
 
