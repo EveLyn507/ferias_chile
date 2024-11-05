@@ -38,13 +38,6 @@ useEffect(() => {
   setStatus(estado);
 
 
-  if(status === 'No enviada'){
-    setStateButton(false)
- 
-}   else{
-    setStateButton(true)
-}
-
 
 }, []);
 
@@ -53,7 +46,7 @@ useEffect(() => {
   return (
     <>
    <li>status de la feria : {status}</li>
-   <button  disabled={stateButton} onClick={() =>opTiket() }>Solicitar apertura de feria</button> 
+   <button  onClick={() =>opTiket() }>Solicitar apertura de feria</button> 
    </>
   )
 }

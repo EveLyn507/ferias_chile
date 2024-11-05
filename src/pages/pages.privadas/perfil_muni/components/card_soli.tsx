@@ -1,8 +1,21 @@
-import { soliProps } from "../../../models/interfaces";
+import { useEffect, useState } from "react";
+import { solicitud } from "../../../models/interfaces";
+import { solisaperService } from "../rxjs/soliaper";
 
 
 
-export const Card_soli_muni = ({solicitudes} : soliProps) => {
+export const Card_soli_muni = () => {
+
+    const [solicitudes , setSolicitudes ] =useState<solicitud[]>([])
+console.log(solicitudes);
+
+
+
+useEffect(() => {
+    const subscribe = solisaperService.sa$.subscribe((solicitudes) =>  setSolicitudes(solicitudes))
+
+    return () => subscribe.unsubscribe()
+})
 
 
   return (

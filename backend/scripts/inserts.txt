@@ -97,20 +97,6 @@ INSERT INTO region (id_region, region) VALUES (16, 'Magallanes');
 
 -- comunas
 
-INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (1, 'Arica', 1);
-INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (2, 'Camarones', 1);
-INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (3, 'Putre', 1);
-INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (4, 'Parinacota', 1);
-
-
-INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (5, 'Huara', 2);
-INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (6, 'Camiña', 2);
-INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (7, 'Colchane', 2);
-INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (8, 'Pica', 2);
-INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (9, 'Pozo', 2);
-INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (10, 'Almonte', 2);
-INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (11, 'Alto Hospicio', 2);
-INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (12, 'Iquique', 2);
 
 -- Primera Región (Arica y Parinacota)
 INSERT INTO comuna (id_comuna, comuna, id_region) VALUES (1, 'Arica', 1);

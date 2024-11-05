@@ -99,7 +99,9 @@ CREATE TABLE contrato_puesto (
     id_puesto       INTEGER NOT NULL,
     id_tipo_pago    INTEGER NOT NULL,
     estado_contrato INTEGER NOT NULL,
-    precio          INTEGER NOT NULL
+    precio          INTEGER NOT NULL,
+    buy_order       CHARACTER VARYING(100) NOT NULL, 
+    session_id      CHARACTER VARYING(100) NOT NULL
 );
 
 ALTER TABLE contrato_puesto ADD CONSTRAINT contrato_diario_pk PRIMARY KEY ( id_contrato );
