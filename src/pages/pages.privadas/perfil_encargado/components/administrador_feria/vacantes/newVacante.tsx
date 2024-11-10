@@ -45,7 +45,7 @@ export const CrearVacante = () => {
     // Esto es el objeto que se enviara al backend
     const vacante: vacante = {
       id_vacante: 0,
-      feriante_mail: null,
+      id_user_fte: null,
       id_feria: idFeria,
       id_rol: parseInt(rol), // Asegurarse de que el rol sea un número
       ingreso: todayISO,

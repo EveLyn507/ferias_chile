@@ -38,6 +38,7 @@ DROP TABLE IF EXISTS detalle_team_vacante CASCADE;
 DROP TABLE IF EXISTS estado_horario_feria CASCADE;
 DROP TABLE IF EXISTS log_empleado CASCADE;
 DROP TABLE IF EXISTS postulaciones CASCADE;
+DROP TABLE IF EXISTS estado_postulacion CASCADE;
 DROP TABLE IF EXISTS actividad_feria CASCADE;
 DROP TABLE IF EXISTS dia_armado CASCADE;
 DROP TABLE IF EXISTS log_actividad_feria CASCADE;
@@ -58,7 +59,7 @@ CREATE TABLE actividad_feria (
 ALTER TABLE actividad_feria ADD CONSTRAINT actividad_feria_pk PRIMARY KEY ( id_actividad_feria );
 
 CREATE TABLE administrador_municipal (
-    id_use_adm      SERIAL NOT NULL,
+    id_user_adm      SERIAL NOT NULL,
     user_mail       CHARACTER VARYING(80) NOT NULL,
     id_tipo_usuario INTEGER NOT NULL,
     nombre          CHARACTER VARYING(40) NOT NULL,
@@ -70,7 +71,7 @@ CREATE TABLE administrador_municipal (
     url_foto_perfil CHARACTER VARYING(200)
 );
 
-ALTER TABLE administrador_municipal ADD CONSTRAINT administrador_pk PRIMARY KEY ( id_use_adm );
+ALTER TABLE administrador_municipal ADD CONSTRAINT administrador_pk PRIMARY KEY ( id_user_adm );
 
 ALTER TABLE administrador_municipal ADD CONSTRAINT adm_mail__un UNIQUE ( user_mail );
 
@@ -98,7 +99,9 @@ CREATE TABLE contrato_puesto (
     id_puesto       INTEGER NOT NULL,
     id_tipo_pago    INTEGER NOT NULL,
     estado_contrato INTEGER NOT NULL,
-    precio          INTEGER NOT NULL
+    precio          INTEGER NOT NULL,
+    buy_order       CHARACTER VARYING(100) NOT NULL, 
+    session_id      CHARACTER VARYING(100) NOT NULL
 );
 
 ALTER TABLE contrato_puesto ADD CONSTRAINT contrato_diario_pk PRIMARY KEY ( id_contrato );
@@ -450,7 +453,7 @@ ALTER TABLE horario_puesto
 
 ALTER TABLE solicitudes_apertura
     ADD CONSTRAINT id_admin_soli_fk FOREIGN KEY ( id_user_adm )
-        REFERENCES administrador_municipal ( id_use_adm );
+        REFERENCES administrador_municipal ( id_user_adm );
 
 ALTER TABLE detalle_solicitud
     ADD CONSTRAINT id_apertura_fk FOREIGN KEY ( solicitud_apertura_id )
@@ -569,4 +572,8 @@ ALTER TABLE encargado_feria
 
 
 ALTER TABLE postulaciones
+ALTER COLUMN id_estado SET DEFAULT 1;
+
+
+ALTER TABLE solicitudes_apertura
 ALTER COLUMN id_estado SET DEFAULT 1;

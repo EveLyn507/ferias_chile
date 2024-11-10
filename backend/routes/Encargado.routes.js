@@ -23,7 +23,8 @@ router.post('/private/1', (req , res) => {
 //genera la solicitud de apertura de feria
 router.post('/tiket', (req , res) => {
     const pool = req.pool; 
-        abrirTiketFeria(req,res,pool);
+    const {id_feria } = req.body;
+      abrirTiketFeria(res,pool,id_feria);
   })
 
 

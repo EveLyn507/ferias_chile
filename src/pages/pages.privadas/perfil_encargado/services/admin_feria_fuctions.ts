@@ -205,18 +205,6 @@ export const  updateVacanteFeria = async (vacante : vacante , id_feria : number)
 
 
 
-  export const  getPostulacionesFeria = async (id_feria :number)  =>  {
-
-    try{
-       await axios.post(`http://localhost:5000/getPostulaciones` ,{id_feria})
-       //elemina la vacante de rxjs vacantes
-  }
-  catch (error) {
-      console.error('Error al cargar las postulaciones : ', error);
-  
-    }
-  } 
-
 
   export const  getPostulacionesEnf = async (id_user_enf :number)  =>  {
 
@@ -242,8 +230,10 @@ export const  updateVacanteFeria = async (vacante : vacante , id_feria : number)
 
        if (enfpost.status === 200){
         postulacionService.aceptarPostulacion(id_vacante)
+        console.log(enfpost);
        }else {
-        console.log('no paso')
+        console.log(enfpost);
+        
        }
 
   }

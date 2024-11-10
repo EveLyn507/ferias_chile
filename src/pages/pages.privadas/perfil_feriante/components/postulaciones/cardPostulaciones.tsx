@@ -45,7 +45,7 @@ console.log(VacantesUp);
 
     return (
         <div className="ferias">
-            {VacantesUp.map((vacante, index) => (
+            {VacantesUp.map((vacante) => (
                 <div className="card" key={vacante.id_vacante}>
 
                     <ul>
@@ -56,7 +56,7 @@ console.log(VacantesUp);
                     </ul> 
                     <h3>HORARIOS</h3>
                     <div>
-                     {vacante.horarios.map((horario,horarioIndex) => (
+                     {vacante.horarios.map((horario) => (
                         <div key={horario.id_detalle_horario}>
                          
                         <ul>

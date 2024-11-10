@@ -350,6 +350,8 @@ const getHorariosVacante = async (idsvacante, pool) =>{
     }
   };
 
+
+
   const insertPostulacion = async ( res, pool, id_user_fte , user_mail, id_vacante) => {
     try {
       // Consulta combinada para verificar usuario y postulación existente
@@ -387,6 +389,35 @@ const getHorariosVacante = async (idsvacante, pool) =>{
   };
   
   
+const misPostulaciones = async(res , pool, id_user_fte) => {
+
+  try {
+    const resutl = await pool.query(`
+      SELECT 
+      p.id_postulacion,
+      ep.estado,
+      f.nombre as nombre_feria,
+      re.rol,
+      dtv.ingreso as fecha_ingreso,
+      dtv.termino as fecha_termino
+  
+      FROM postulaciones p 
+      JOIN estado_postulacion ep ON  ep.id_estado = p.id_estado
+      LEFT JOIN detalle_team_vacante dtv ON p.id_vacante = dtv.id_vacante
+      JOIN feria f ON dtv.id_feria = f.id_feria
+      JOIN rol_empleado re ON re.id_rol = dtv.id_rol
+      WHERE p.id_user_fte = $1
+      ` , [id_user_fte])  
+  
+      res.json(resutl.rows)
+    
+  } catch (error) {
+    res.status(500).json({msj : 'error interno al obtener las vacantes del usuario'} )
+  }
+} 
+
+
+
 module.exports = {
   getEstadoPerfil,
   togglePerfilPrivado,
@@ -405,5 +436,6 @@ module.exports = {
   agregarRedSocial,
   eliminarRedSocial,
   getVacantesVacias,   //inicio modulo postulaciones
-  insertPostulacion
+  insertPostulacion,
+  misPostulaciones
 };

@@ -13,6 +13,7 @@ import { EmpleadosFeria } from "./components/administrador_feria/vacantes/cardLi
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs"
 import { PostulantesFeria } from "./components/administrador_feria/postulantesFeria"
 import { postulacionService } from "./rxjs/sharingPostulaciones"
+import { StatusFeria } from "./components/status/statusFeria"
 
 
 export const Admin_de_feria = () => {
@@ -36,8 +37,11 @@ useEffect(()=> {
 
     <> 
 
-
+<div>
 <h1> Administracion de {nombre}</h1>
+ <StatusFeria/>
+</div>
+<br />
 
 
 <Tabs>

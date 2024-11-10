@@ -13,13 +13,13 @@ const PaymentButton: React.FC = () => {
   const location = useLocation();
   
   const puesto = location.state.puesto || {}; // Extraemos 'puesto' del estado
+  const id_user_fte = useSelector((store : AppStore) =>  store.user.id_user)
   const mail = useSelector((store : AppStore) =>  store.user.email)
 
-  const handlePayment = async (puesto : puesto, mail : string) => {
-    
+  const handlePayment = async (puesto : puesto, id_user_fte : number , mail : string) => {
      await id_datos_puesto.setSubject(puesto.id_puesto); 
     try {
-      const { url, token } = await createTransaction(puesto, mail);
+      const { url, token } = await createTransaction(puesto, id_user_fte, mail);
       // Redirigir al usuario a la página de pago
       window.location.href = `${url}?token_ws=${token}`;
     } catch (error) {
@@ -40,7 +40,7 @@ const PaymentButton: React.FC = () => {
 </div>
 
 
-<button onClick={() => handlePayment(puesto , mail)}>Pagar con Webpay</button>
+<button onClick={() => handlePayment(puesto , id_user_fte , mail)}>Pagar con Webpay</button>
 
 </>
 );

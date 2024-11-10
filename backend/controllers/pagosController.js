@@ -122,12 +122,12 @@ const startTransactionCheck = async (buy_order, token_ws, pool) => {
 
 
 
-const saveTransactionToDatabase = async ( pool, id_puesto,mail_feriante,id_tipo_pago, estado_contrato, precio, buyOrder, sessionId) => {
+const saveTransactionToDatabase = async ( pool, id_puesto,id_user_fte,id_tipo_pago, estado_contrato, precio, buyOrder, sessionId) => {
   const timestampUTC = new Date().toISOString(); 
   await pool.query(`
-    INSERT INTO contrato_puesto (fecha , id_puesto,mail_feriante,id_tipo_pago, estado_contrato, precio, buy_order, session_id)
+    INSERT INTO contrato_puesto (fecha , id_puesto,id_user_fte,id_tipo_pago, estado_contrato, precio, buy_order, session_id)
     VALUES ($1, $2, $3, $4,$5,$6,$7,$8)`,
-    [ timestampUTC,id_puesto,mail_feriante,id_tipo_pago, estado_contrato, precio, buyOrder, sessionId]);
+    [ timestampUTC,id_puesto,id_user_fte,id_tipo_pago, estado_contrato, precio, buyOrder, sessionId]);
 };
 
 
@@ -138,7 +138,7 @@ const saveTransactionToDatabase = async ( pool, id_puesto,mail_feriante,id_tipo_
 
 // Función para crear la transacción
 const createTransaction = async (req, res, pool) => {
-  const { puesto, mail } = req.body; // Obtener datos del POST
+  const { puesto, mail , id_user_fte} = req.body; // Obtener datos del POST
   const returnUrl = `http://localhost:5173/pagos/estado`; // URL de retorno
   const emailFragment = mail.split('@')[0];
   const timestamp = new Date().getTime();  // Obtener el timestamp actual
@@ -155,7 +155,7 @@ const createTransaction = async (req, res, pool) => {
     const { token, url } = response;
 
     // Guardar la transacción en la base de datos como "pendiente"
-    await saveTransactionToDatabase( pool ,id_puesto,mail,1, 1, puesto.precio, buyOrder, sessionId);
+    await saveTransactionToDatabase( pool ,id_puesto,id_user_fte,1, 1, puesto.precio, buyOrder, sessionId);
     setTimeout(() => {
       startTransactionCheck(buyOrder , token , pool)
 

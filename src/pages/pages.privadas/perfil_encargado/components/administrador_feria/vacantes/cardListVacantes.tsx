@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { vancanteService } from "../../../rxjs/sharingVacantes";
 import { horarioVacante, vacante } from "../../../../../models/interfaces";
@@ -24,8 +23,6 @@ export const EmpleadosFeria = () => {
   const handleEdit = (index: number) => {
     setEditStates((prev) => prev.map((editState, i) => (i === index ? true : editState)));
   };
-
-
 
   const handleChange = (index: number, field: keyof vacante, value: string) => {
     setVacantes((prevDataList) =>
@@ -68,22 +65,22 @@ const handleHorarioChange = (index: number, horarioIndex: number, field: keyof h
 };
 
   const actualizarVacante = async (index: number , idFeria :number) => {
-  
       updateVacanteFeria(vacantes[index], idFeria)
- 
-     
   }
 
-  
   const borrarVacante = async (id_vacante: number) => {
     vancanteService.removeVacante(id_vacante);
   };
-
   return (
     <div className="ferias">
       {vacantes.map((formData, index) => (
         <div className="card" key={formData.id_vacante}>
           <ul>
+          <li>
+              <label>
+                <strong>EMPLEADO :  {formData.id_user_fte}</strong>
+              </label>
+            </li>
             <li>
               <label>
                 <strong>id_feria</strong>
@@ -127,8 +124,7 @@ const handleHorarioChange = (index: number, horarioIndex: number, field: keyof h
                 name="id_dia"  
                 value={horario.id_dia} 
                 onChange={(e) => changeDiaHorario(index, horarioIndex , 'id_dia', e.target.value)} 
-                required
-            >
+                required>
                 <option value="0" disabled>Seleccione el día</option>
                 <option value="1">Lunes</option>
                 <option value="2">Martes</option> 
@@ -138,10 +134,6 @@ const handleHorarioChange = (index: number, horarioIndex: number, field: keyof h
                 <option value="6">Sabado</option> 
                 <option value="7">Domingo</option>
             </select>
-                    
-
-
-
                     <label>
                       <strong>hora inicio</strong>
                       <input
@@ -151,8 +143,6 @@ const handleHorarioChange = (index: number, horarioIndex: number, field: keyof h
                         onChange={(e) => handleHorarioChange(index, horarioIndex ,"hora_entrada", e.target.value)}
                       />
                     </label>
-             
-               
                     <label>
                       <strong>hora termino</strong>
                       <input
