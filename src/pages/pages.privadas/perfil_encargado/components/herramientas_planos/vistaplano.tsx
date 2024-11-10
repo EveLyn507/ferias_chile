@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
 import Canvas from './Canvas';
 import Toolbar from './Toolbar';
@@ -8,6 +5,7 @@ import MenuDerecha from './MenuDerecha';
 import { setIdFeria } from '../../../../../redux/states/user';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 export interface Rectangle {
   id: number;
@@ -16,9 +14,10 @@ export interface Rectangle {
   width: number;
   height: number;
   fill: string;
-  descripcion?: string; 
-  tipoPuesto?: string;   
-  estadoPuesto?: string; 
+  descripcion?: string;
+  tipoPuesto?: string;
+  estadoPuesto?: string;
+  numero?: number;
 }
 
 interface Area {
@@ -34,20 +33,24 @@ interface Street {
   id: number;
   points: number[];
   width: number;
+  height: number;
+  x: number;
+  y: number;
 }
 
 interface FeriaData {
   puestos: Rectangle[];
   areas: Area[];
   calles: Street[];
-  planWidth: number; 
-  planHeight: number; 
+  planWidth: number;
+  planHeight: number;
 }
 
-const API_URL = 'http://localhost:5000'; // Cambia a la URL de tu servidor
+const API_URL = 'http://localhost:5000';
 
 const Vista = () => {
   const [rectangles, setRectangles] = useState<Rectangle[]>([]);
+  console.log(rectangles)
   const [planWidth, setPlanWidth] = useState<number>(600);
   const [planHeight, setPlanHeight] = useState<number>(400);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -57,7 +60,9 @@ const Vista = () => {
   const { id_feria } = useParams<{ id_feria: string }>();
   const [selectedRectangleId, setSelectedRectangleId] = useState<number | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
-  const [selectedPuesto, setSelectedPuesto] = useState<Rectangle | null>(null); 
+  const [selectedPuesto, setSelectedPuesto] = useState<Rectangle | null>(null);
+  const [totalPuestos, setTotalPuestos] = useState<number>(0);
+  const dispatch = useDispatch();
 
   const fetchFeriaData = async () => {
     setIsLoading(true);
@@ -68,7 +73,7 @@ const Vista = () => {
       setRectangles(data.puestos);
       setAreas(data.areas);
       setStreets(data.calles);
-      setPlanWidth(data.planWidth); // Establecer el ancho del plano
+      setPlanWidth(data.planWidth);
       setPlanHeight(data.planHeight);
     } catch (error) {
       console.error('Error al obtener los datos de la feria:', error);
@@ -80,9 +85,23 @@ const Vista = () => {
 
   useEffect(() => {
     fetchFeriaData();
+  }, [id_feria]);
+
+  useEffect(() => {
+    const fetchTotalPuestos = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/api/puestos/${id_feria}`);
+        setTotalPuestos(response.data);
+      } catch (error) {
+        console.error('Error al obtener el total de puestos:', error);
+      }
+    };
+
+    fetchTotalPuestos();
   }, []);
 
-  const handleAddRectangle = () => {
+  const handleAddRectangle = async(totalPuestos : number) => {
+    await setTotalPuestos(totalPuestos + 1)
     const newRectangle: Rectangle = {
       x: 60,
       y: 60,
@@ -90,30 +109,43 @@ const Vista = () => {
       height: 100,
       fill: 'green',
       id: Date.now(),
+      numero: totalPuestos + 1, 
     };
     setRectangles((prev) => [...prev, newRectangle]);
   };
 
   const handleRemoveRectangle = (id: number) => {
-    setRectangles((prev) => prev.filter(rect => rect.id !== id));
+    setRectangles((prev) => prev.filter((rect) => rect.id !== id));
     setIsMenuOpen(false);
   };
 
   const handleRectangleClick = (id: number) => {
     const clickedRectangle = rectangles.find((rect) => rect.id === id);
     setSelectedRectangleId(id);
-    setSelectedPuesto(clickedRectangle || null); 
+    setSelectedPuesto(clickedRectangle || null);
     setIsMenuOpen(true);
   };
 
   const handleSavePuesto = (updatedPuesto: Partial<Rectangle>) => {
     if (selectedPuesto) {
-        setRectangles(prev =>
-            prev.map(rect => (rect.id === selectedRectangleId ? { ...rect, ...updatedPuesto } : rect))
-        );
-        setIsMenuOpen(false);
+      setRectangles((prev) =>
+        prev.map((rect) => (rect.id === selectedRectangleId ? { ...rect, ...updatedPuesto } : rect))
+      );
+      setIsMenuOpen(false);
     }
-};
+  };
+
+  const handleAddStreet = () => {
+    const newStreet: Street = {
+      id: Date.now(),
+      x: 60,
+      y: 60,
+      points: [0, 0, 100, 100],
+      width: 50,
+      height: 100,
+    };
+    setStreets((streets) => [...streets, newStreet]);
+  };
 
   const handleAddArea = () => {
     const newArea: Area = {
@@ -127,29 +159,20 @@ const Vista = () => {
     setAreas([...areas, newArea]);
   };
 
-  const handleAddStreet = () => {
-    const newStreet: Street = {
-      id: Date.now(),
-      points: [300, 300, 500, 300],
-      width: 5,
-    };
-    setStreets([...streets, newStreet]);
-  };
-
   const handleRemoveArea = (id: number) => {
-    setAreas(areas.filter(area => area.id !== id));
+    setAreas(areas.filter((area) => area.id !== id));
   };
 
   const handleUpdateArea = (id: number, updatedProps: Partial<Area>) => {
-    setAreas(areas.map(area => (area.id === id ? { ...area, ...updatedProps } : area)));
+    setAreas(areas.map((area) => (area.id === id ? { ...area, ...updatedProps } : area)));
   };
 
   const handleUpdateStreet = (id: number, updatedProps: Partial<Street>) => {
-    setStreets(streets.map(street => (street.id === id ? { ...street, ...updatedProps } : street)));
+    setStreets(streets.map((street) => (street.id === id ? { ...street, ...updatedProps } : street)));
   };
 
   const handleRemoveStreet = (id: number) => {
-    setStreets(streets.filter(street => street.id !== id));
+    setStreets(streets.filter((street) => street.id !== id));
   };
 
   const handleSaveFeria = async () => {
@@ -158,8 +181,8 @@ const Vista = () => {
       areas: areas,
       calles: streets,
       id_feria: id_feria,
-      planWidth: planWidth, // Añade el ancho del plano
-      planHeight: planHeight // Añade el alto del plano
+      planWidth: planWidth,
+      planHeight: planHeight,
     };
 
     try {
@@ -180,7 +203,7 @@ const Vista = () => {
       const feriaId = result.id_feria;
       console.log('Feria guardada con ID:', feriaId);
 
-      dispatch(setIdFeria(feriaId)); // Usar la acción para establecer el id_feria en el estado de Redux
+      dispatch(setIdFeria(feriaId));
 
       alert('Feria guardada correctamente');
     } catch (error) {
@@ -198,7 +221,7 @@ const Vista = () => {
         <div style={{ flex: 1, padding: '10px' }}>
           {isLoading && <p>Cargando...</p>}
           {error && <p style={{ color: 'red' }}>{error}</p>}
-          <Toolbar onAddRectangle={handleAddRectangle} onAddArea={handleAddArea} onAddStreet={handleAddStreet} />
+          <Toolbar onAddRectangle={()=>handleAddRectangle(totalPuestos)} onAddArea={handleAddArea} onAddStreet={handleAddStreet} />
           <Canvas
             rectangles={rectangles}
             setRectangles={setRectangles}
@@ -214,24 +237,23 @@ const Vista = () => {
             onUpdateStreet={handleUpdateStreet}
             onRemoveStreet={handleRemoveStreet}
           />
-          <button onClick={handleSaveFeria} disabled={isLoading}>
-            {isLoading ? 'Guardando...' : 'Guardar Feria JSON'}
-          </button>
         </div>
-        {isMenuOpen && (
-          <MenuDerecha
-            selectedPuesto={selectedPuesto} 
-            onSavePuesto={handleSavePuesto} 
-            onRemoveRectangle={handleRemoveRectangle}
-            onClose={() => setIsMenuOpen(false)}
-          />
-        )}
+
+        <div style={{ width: '300px', padding: '10px', borderLeft: '1px solid #ddd' }}>
+          {isMenuOpen && selectedPuesto && (
+            <MenuDerecha
+              selectedPuesto={selectedPuesto}
+              onSavePuesto={handleSavePuesto}
+              onRemoveRectangle={handleRemoveRectangle}
+              onClose={() => setIsMenuOpen(false)}
+              onSaveFeria={handleSaveFeria}
+              isLoading={isLoading}
+            />
+          )}
+        </div>
       </div>
     </div>
   );
 };
 
 export default Vista;
-function dispatch(_arg0: { payload: any; type: "user/setIdFeria"; }) {
-  throw new Error('Function not implemented.');
-}

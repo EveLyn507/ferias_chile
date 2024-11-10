@@ -254,15 +254,15 @@ try{
 /////// FORMULARIO CREACION DE FERIA
 
 const createFeria = async (req, res) => {
-  const { id_user_enf, nombre, id_comuna, id_estado, mail_banco } = req.body;
+  const { id_user_enf, nombre, id_comuna, mail_banco } = req.body;
 
   try {
     const query = `
-      INSERT INTO feria (id_user_enf, nombre, id_comuna, id_estado, mail_banco)
-      VALUES ($1, $2, $3, $4, $5)
+      INSERT INTO feria (id_user_enf, nombre, id_comuna, mail_banco)
+      VALUES ($1, $2, $3, $4)
       RETURNING id_feria;
     `;
-    const values = [id_user_enf, nombre, id_comuna, id_estado, mail_banco];
+    const values = [id_user_enf, nombre, id_comuna, mail_banco];
 
     const result = await req.pool.query(query, values);
     const nuevoIdFeria = result.rows[0].id_feria;

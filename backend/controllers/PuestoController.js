@@ -3,9 +3,15 @@
 const getPuestos = async (req, res) => {
     const pool = req.pool;
     const id_feria = parseInt(req.params.id_feria, 10);
+    console.log('aaaa aqui va el id', id_feria)
     try {
-      const result = await pool.query('SELECT * FROM puesto WHERE id_feria = $1', [id_feria]);
-      res.json(result.rows);
+      const result = await pool.query('SELECT public.contar_puestos_actuales($1)', [id_feria]);
+      const totalpuestos = result.rows[0].contar_puestos_actuales
+      console.log('aqui esta el result',result)
+      console.log('aqui esta el result.rows',result.rows)
+      console.log('aqui esta el result rows contar',result.rows.contar_puestos_actuales)
+      console.log('aqui esta la wea completa',result.rows[0].contar_puestos_actuales)
+      res.json(totalpuestos)
     } catch (err) {
       console.error('Error al obtener los puestos:', err);
       res.status(500).send('Error al obtener los puestos');
