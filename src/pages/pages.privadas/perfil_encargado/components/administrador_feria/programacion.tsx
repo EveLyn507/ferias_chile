@@ -6,6 +6,7 @@ import { getProgramaFeria, GuardarProgramacionFeria } from '../../services/admin
 const BooleanDaysSelector = () => {
   const { id_feria } = useParams<{ id_feria: string }>();
   const idFeria = id_feria ?? ''; // O puedes usar un valor como '0' o 'default'
+  const semana = ['domingo', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
 
   const [actualPrograma, setActual] = useState<ProgramaFeria[]>([]); // Lista de programas actual
   const [UpdatedPrograma, setUpdatedPro] = useState<ProgramaFeria[]>([]);  // lista modificada que se enviara al backend al guardarla
@@ -66,7 +67,7 @@ const BooleanDaysSelector = () => {
       {UpdatedPrograma.map((programa, index) => (
         <div key={index} style={{ marginBottom: '20px', display: 'inline-block', marginTop: '5rem', marginLeft: '2rem' }}>
           <strong>
-            Día de la feria: {programa.dia}
+            Día de la feria: {semana[programa.id_dia]}
           </strong>
           <br />
           <ul>

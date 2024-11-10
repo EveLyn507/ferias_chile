@@ -8,7 +8,7 @@ export const PublicRoutes = {
     REGISTRO: 'registro',
     FORMFERIA: '/formulario-feria',
     DATOSENCARGADO : 'actualizar-datos',
-    DETALLEFERIA : "/feria/:id_feria",
+    DETALLEFERIA : "/feria/:id_feria/:nombre_feria/:fecha",
      PAGOS : 'pago',
      PAGOS2 : 'pagosss',
      PAGOOK : '/pagos/estado'

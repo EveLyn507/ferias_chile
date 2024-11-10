@@ -16,9 +16,6 @@ export const CardDatosBank = () => {
       setFormDataList(bancos);
       setEditStates(bancos.map(() => false)); // Inicializa los estados de edición
     });
-
-
-
     // Cleanup: cancelar la suscripción cuando el componente se desmonte
     return () => subscription.unsubscribe();
   }, []); // Ejecuta el efecto nuevamente si cambia el mail

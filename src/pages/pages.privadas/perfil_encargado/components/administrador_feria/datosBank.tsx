@@ -1,38 +1,80 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useSelector } from "react-redux";
-import { getDatosBank } from "../../services/admin_feria_fuctions";
 import { AppStore } from "../../../../../redux/store";
 import { useEffect, useState } from "react";
 import { DatosBank } from "../../../../models/interfaces";
+import { bancoService } from "../../rxjs/sharingbankslist";
+import { asociarBankFeria, getFeriaBank } from "../../services/admin_feria_fuctions";
+import { useParams } from "react-router-dom";
 
 
-export const DatosBanco = () => {
+export const BancoFeria = () => {
+  const id_user_enf = useSelector((store: AppStore) => store.user.id_user);
+  const [bancos, setBancos] = useState<DatosBank[]>([]);// lista de todos los bancos
+  const [feriaBanco, setFeriaBanco] = useState<string | null>(''); // el banco asociado a la feria
+ 
+  const {id_feria} = useParams<{id_feria :string}>() 
+  const idFeria = id_feria ? parseInt(id_feria, 10) : 0
+  
+  
+  const cargaBankF= async() => {
+    const b = await getFeriaBank(idFeria)
+    if (b === null) {
+      setFeriaBanco('seleccione un banco');
+    } else {
+      setFeriaBanco(b);
+    }
+        
+  }
+
+const asociar = async (mail_banco : string | null , id_feria : number) => {
+  await asociarBankFeria(mail_banco,id_feria)
+}
 
 
-  const id_user = useSelector((store: AppStore) => store.user.id_user);
+useEffect(() => {
+  bancoService.loadInitialBancos(id_user_enf);
 
-  const [encargadoBank, setEncargadoBank] = useState<DatosBank>({
-    mail_banco: '',
-    nombre_asociado: '',
-    numero_cuenta: '',
-    id_user_enf: null,
+  const subscription = bancoService.bancos$.subscribe((bancos) => {
+    setBancos(bancos);
   });
 
-  // Cargar los datos del banco en el useEffect
-  useEffect(() => {
-    getDatosBank(id_user)
-      .then((res: DatosBank) => {
-        setEncargadoBank(res);
-      })
-      .catch((error) => {
-        console.error("Error al cargar los datos de los bancos del encargado:", error);
-      });
-  }, []);
+  cargaBankF()
 
-  return (
-   <>
-     
+  return () => subscription.unsubscribe();
+},[])
 
-   </>
-  );
+return (
+  <>
+    <div>
+      {/* Otros elementos */}
+    </div>
+    {bancos.length > 0 ? (
+      <>
+      <select
+        name="feriaBanco"
+        id="feriaBanco"
+        value={feriaBanco || ''}
+        onChange={(e) => setFeriaBanco(e.target.value || null)}
+      >
+        <option value="">ninguna</option>
+        <option value={feriaBanco || ''}>{feriaBanco}</option>
+        {bancos.map((banco, index) => (
+          <option key={index} value={banco.mail_banco}>
+            {banco.mail_banco}
+          </option>
+        ))}
+      </select>
+
+      <button onClick={() => asociar(feriaBanco , idFeria)}> guardar banco</button>
+      </>
+    ) : (
+      <ul>
+        <li>No hay bancos disponibles</li>
+      </ul>
+    )}
+  </>
+);
+
+
 };

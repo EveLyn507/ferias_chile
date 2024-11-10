@@ -33,7 +33,7 @@ useEffect(() => {
                                 <ul>
                                     {feria.horarios.filter((horario) => horario.activo === true).map((horario) => (
                                         <li key={horario.id_feria}>
-                                            <strong>Día:</strong> {horario.dia}<br />
+                                            <strong>Día:</strong> {horario.id_dia}<br />
                                             <strong>Día Armado:</strong> {horario.id_dia_armado}<br />
                                         </li>
                                     ))}

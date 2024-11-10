@@ -1,0 +1,113 @@
+-- Función para insertar una actividad de feria y retornar el id generado
+DROP FUNCTION IF EXISTS insertar_arriendo_puesto(INTEGER , INTEGER, DATE);
+DROP FUNCTION IF EXISTS insertar_actividad_feria_dia(INTEGER ,DATE);
+DROP PROCEDURE IF EXISTS insertar_actividad_feria(INTEGER);
+
+CREATE OR REPLACE FUNCTION insertar_actividad_feria_dia(func_id_horario_feria INTEGER, func_fecha DATE)
+RETURNS INTEGER LANGUAGE plpgsql AS $$
+DECLARE
+    var_id_actividad_feria INTEGER;
+BEGIN
+    INSERT INTO actividad_feria (id_horario_feria, fecha)
+    VALUES (func_id_horario_feria, func_fecha)
+    RETURNING id_actividad_feria INTO var_id_actividad_feria;
+    -- Retornar el id de la actividad insertada
+    RETURN var_id_actividad_feria;
+END;
+$$;
+
+-- Función para insertar los puestos para una actividad de feria
+CREATE OR REPLACE FUNCTION insertar_arriendo_puesto(func_id_actividad_feria INTEGER, func_id_feria INTEGER)
+RETURNS VOID LANGUAGE plpgsql AS $$
+DECLARE
+    var_id_puesto INTEGER;
+BEGIN
+    -- Insertar puestos asociados con la feria
+    FOR var_id_puesto IN
+        SELECT id_puesto 
+        FROM puesto
+        WHERE id_feria = func_id_feria AND id_estado_puesto = 1
+    LOOP
+        INSERT INTO arriendo_puesto (id_actividad_feria, id_puesto)
+        VALUES (func_id_actividad_feria, var_id_puesto);
+    END LOOP;
+END;
+$$;
+
+
+
+-- Procedimiento principal
+CREATE OR REPLACE PROCEDURE insertar_actividad_feria(p_id_feria INTEGER)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    var_fecha_actual DATE := CURRENT_DATE;
+    var_fecha_inicio_semana DATE;
+    var_fecha_insertar DATE;
+    var_id_dia INTEGER;
+    var_id_horario_feria INTEGER;
+    var_id_actividad_feria INTEGER; -- Para almacenar el id generado en la función
+BEGIN
+    -- Obtenemos la fecha del inicio de la semana (lunes) para la fecha actual
+    var_fecha_inicio_semana := date_trunc('week', var_fecha_actual);
+
+    -- Recorremos los días activos de la feria
+    FOR var_id_dia ,var_id_horario_feria IN
+        SELECT dtv.id_dia, dtv.id_horario_feria
+        FROM detalle_programa_feria dtv
+        WHERE dtv.id_feria = p_id_feria AND dtv.activo = true
+    LOOP
+        -- Calculamos la fecha para el día de la semana
+        var_fecha_insertar := var_fecha_inicio_semana + (var_id_dia - 1);
+
+        -- Llamamos a la función para insertar la actividad de feria
+        var_id_actividad_feria := insertar_actividad_feria_dia(var_id_horario_feria, var_fecha_insertar);
+
+        -- Llamamos a la función para insertar los puestos para esa actividad
+        PERFORM insertar_arriendo_puesto(var_id_actividad_feria, p_id_feria);
+
+    END LOOP;
+END;
+$$;
+                         
+
+
+
+CREATE OR REPLACE PROCEDURE insertar_all_actividad_feria()
+LANGUAGE plpgsql
+AS $$                 
+DECLARE
+    var_fecha_actual DATE := CURRENT_DATE;
+    var_fecha_inicio_semana DATE;
+    var_fecha_insertar DATE;
+    var_id_dia INTEGER;
+    var_id_horario_feria INTEGER;
+    var_id_actividad_feria INTEGER; -- Para almacenar el id generado en la función
+    var_id_feria INTEGER; -- Para almacenar cada id_feria
+BEGIN
+    -- Obtenemos la fecha del inicio de la semana (lunes) para la fecha actual
+    var_fecha_inicio_semana := date_trunc('week', var_fecha_actual);
+
+    -- Recorremos todas las ferias activas
+    FOR var_id_feria IN
+        SELECT id_feria
+        FROM feria
+       
+    LOOP
+        -- Recorremos los días activos de la feria actual
+        FOR var_id_dia, var_id_horario_feria IN
+            SELECT dtv.id_dia, dtv.id_horario_feria
+            FROM detalle_programa_feria dtv
+            WHERE dtv.id_feria = var_id_feria AND dtv.activo = true
+        LOOP
+            -- Calculamos la fecha para el día de la semana
+            var_fecha_insertar := var_fecha_inicio_semana + (var_id_dia - 1);
+
+            -- Llamamos a la función para insertar la actividad de feria
+            var_id_actividad_feria := insertar_actividad_feria_dia(var_id_horario_feria, var_fecha_insertar);
+
+            -- Llamamos a la función para insertar los puestos para esa actividad
+            PERFORM insertar_arriendo_puesto(var_id_actividad_feria, var_id_feria);
+        END LOOP;
+    END LOOP;
+END;

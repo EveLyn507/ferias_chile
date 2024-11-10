@@ -1,10 +1,10 @@
 import axios from "axios";
 
 
-export const traerFerias = async () => {
+export const traerFerias = async (page: number , limit : number) => {
 
     try{
-        const response  = await axios.get('http://localhost:5000/Feed-ferias')
+        const response  = await axios.post('http://localhost:5000/Feed-ferias', {page , limit} )
         const feria = response.data
         return feria
 

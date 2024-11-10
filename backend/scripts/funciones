@@ -5,7 +5,7 @@ DROP FUNCTION IF EXISTS obtener_ferias_encargado(INTEGER);
 DROP FUNCTION IF EXISTS insertar_solicitud_apertura(CHARACTER VARYING, CHARACTER VARYING, INTEGER, CHARACTER VARYING);
 DROP FUNCTION IF EXISTS obtener_horarios_ferias_encargado( integer[]);
 DROP FUNCTION IF EXISTS obtener_horarios_ferias_feedFerias( integer[]);
-
+DROP FUNCTION IF EXISTS obtener_actividades_feria( integer[]);
 
 -- FUNCIONES PARA EL ENCARGADOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 
@@ -45,7 +45,7 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION obtener_horarios_ferias_encargado(ferias_id INTEGER[])
 RETURNS TABLE (
     id_feria INTEGER,
-    dia CHARACTER VARYING(10),
+    id_dia INTEGER,
     hora_inicio TIME WITHOUT TIME ZONE,
     hora_termino TIME WITHOUT TIME ZONE,
     dia_armado INTEGER,
@@ -57,7 +57,7 @@ BEGIN
     RETURN QUERY
     SELECT 
         h.id_feria,
-        h.dia,
+        h.id_dia,
         h.hora_inicio,
         h.hora_termino,
         h.id_dia_armado,
@@ -93,7 +93,8 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION obtener_horarios_ferias_feedFerias(ferias_id INTEGER[])
 RETURNS TABLE (
     id_feria INTEGER,
-    dia CHARACTER VARYING(10),
+    id_dia INTEGER,
+    id_horario_feria INTEGER,
     hora_inicio TIME WITHOUT TIME ZONE,
     hora_termino TIME WITHOUT TIME ZONE,
     id_dia_armado INTEGER,
@@ -104,7 +105,8 @@ BEGIN
     RETURN QUERY
     SELECT 
         h.id_feria,
-        h.dia,
+        h.id_dia,
+        h.id_horario_feria,
         h.hora_inicio,
         h.hora_termino,
         h.id_dia_armado,
@@ -162,6 +164,51 @@ RETURNS TABLE (
    $$ LANGUAGE plpgsql;
 
 
+
+
+
+
+CREATE OR REPLACE FUNCTION traer_semana_actividad_feria(func_id_feria INTEGER)
+RETURNS TABLE (
+    var_id_puesto INTEGER,
+    var_id_feria INTEGER,
+	var_estado_puesto CHARACTER VARYING(20),
+    var_nombre_feria CHARACTER VARYING(50),
+    var_num_puesto INTEGER,
+    var_num_horario INTEGER,
+    var_hora_inicio TIME WITHOUT TIME ZONE,
+    var_hora_termino TIME WITHOUT TIME ZONE,
+    var_precio INTEGER
+
+) AS $$
+    BEGIN
+        RETURN QUERY
+     
+ SELECT 
+        p.id_puesto ,
+        p.id_feria ,
+        ap.estado,
+        f.nombre,
+        p.numero,
+        hp.num_horario ,
+        hp.hora_inicio,
+        hp.hora_termino,
+        hp.precio
+
+        FROM 
+        public.feria  f 
+        JOIN 
+        public.puesto p ON f.id_feria = p.id_feria
+        RIGHT JOIN
+        public.horario_puesto  hp ON p.id_puesto = hp.id_puesto
+        JOIN estado_puesto ap ON p.id_estado_puesto = ap.id_estado_puesto
+        WHERE
+        f.id_feria = func_id_feria
+        ORDER BY p.numero,num_horario;
+    END;
+   $$ LANGUAGE plpgsql;
+
+
 CREATE OR REPLACE FUNCTION contar_puestos_actuales(id_feria_param INT)
 RETURNS INT AS $$
 DECLARE
@@ -186,6 +233,7 @@ RETURNS TABLE (
     nombre_feria CHARACTER VARYING(80),
     comuna CHARACTER VARYING(80),
     region CHARACTER VARYING(50)
+
 ) AS $$
 BEGIN
     RETURN QUERY
@@ -202,11 +250,93 @@ BEGIN
         REGION g ON c.id_region = g.id_region
     LIMIT p_limit
     OFFSET p_offset;
+
+
+
 END;
 $$ LANGUAGE plpgsql;
 
 
+
+CREATE OR REPLACE FUNCTION obtener_actividades_feria(
+   ids_horario INTEGER[]
+)
+RETURNS TABLE (
+    id_feria INTEGER,
+    id_actividad_feria INTEGER,
+    id_horario_feria INTEGER,
+    fecha DATE ,
+	armado_hecho boolean,
+	feria_hecha boolean
+    
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+	dpf.id_feria,
+	af.id_actividad_feria,
+	af.id_horario_feria,
+	af.fecha,
+	af.armado_hecho,
+	af.feria_hecha
+	FROM detalle_programa_feria dpf
+	JOIN actividad_feria af ON af.id_horario_feria = dpf.id_horario_feria
+	WHERE dpf.id_feria = ANY(ids_horario);
+  
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION obtener_puestos_actividad(func_nombre_f CHARACTER VARYING , func_fecha DATE )
+RETURNS TABLE (
+id_feria INTEGER,
+nombre_feria CHARACTER VARYING,
+id_actividad_feria INTEGER,
+id_dia INTEGER,
+fecha DATE,
+id_puesto INTEGER,
+id_arriendo_puesto INTEGER,
+id_estado_arriendo INTEGER,
+numero INTEGER,
+precio INTEGER,
+id_horario INTEGER,
+hora_inicio TIME WITHOUT TIME ZONE,
+hora_termino TIME WITHOUT TIME ZONE,
+num_horario INTEGER
+) AS $$
+
+BEGIN
+RETURN QUERY
+SELECT
+f.id_feria,
+f.nombre as nombre_feria,
+af.id_actividad_feria,
+dpf.id_dia,
+af.fecha,
+ap.id_puesto,
+ap.id_arriendo_puesto,
+ap.id_estado_arriendo,
+p.numero,
+hp.precio,
+hp.id_horario,
+hp.hora_inicio,
+hp.hora_termino,
+hp.num_horario
+from feria f
+JOIN detalle_programa_feria dpf ON f.id_feria = dpf.id_feria
+JOIN actividad_feria af ON af.id_horario_feria = dpf.id_horario_feria
+JOIN arriendo_puesto ap ON ap.id_actividad_feria = af.id_actividad_feria
+JOIN puesto p ON ap.id_puesto = p.id_puesto 
+JOIN horario_puesto hp ON hp.id_puesto = p.id_puesto 
+WHERE f.nombre = func_nombre_f and af.fecha = func_fecha
+order by ap.id_puesto;
+
+END;
+$$ LANGUAGE plpgsql; 
+
+
 --FIN FUNCIONES FEED DE FERIASSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
+
 
 
 

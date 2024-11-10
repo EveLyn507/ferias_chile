@@ -1,7 +1,7 @@
 
 
 import { useEffect} from "react"
-import { DatosBanco } from "./components/administrador_feria/datosBank"
+import { BancoFeria } from "./components/administrador_feria/datosBank"
 import BooleanDaysSelector from "./components/administrador_feria/programacion"
 import { useSelector } from "react-redux"
 import { AppStore } from "../../../redux/store"
@@ -29,6 +29,7 @@ useEffect(()=> {
   vancanteService.loadInitialVacante(mail, idFeria)
   bancoService.loadInitialBancos(id_user_enf)
   postulacionService.loadInitialVacante(id_user_enf)
+
 })
 
   return (
@@ -68,7 +69,7 @@ useEffect(()=> {
             </TabPanel>
 
             <TabPanel>
-            <DatosBanco/>
+            <BancoFeria/>
             </TabPanel>
 
         </Tabs>

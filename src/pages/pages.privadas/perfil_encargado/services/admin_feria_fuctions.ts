@@ -96,9 +96,6 @@ export const  GuardarProgramacionFeria = async (programacion : ProgramaFeria[] ,
     }
   } 
 
-
-
-
   export const  deleteBank = async (mail_banco : string)  =>  {
 
     try{
@@ -112,6 +109,42 @@ export const  GuardarProgramacionFeria = async (programacion : ProgramaFeria[] ,
   
     }
   } 
+
+
+  export const  getFeriaBank = async (id_feria : number)  =>  {
+
+    try{
+      const response  = await axios.post(`http://localhost:5000/getFeriaBank` ,{id_feria})
+      const {mail_banco} = response.data
+      
+      return mail_banco
+    
+
+  }
+  catch (error) {
+      console.error('Error al cargar los datos del banco : ', error);
+  
+    }
+  } 
+
+
+
+  
+  export const  asociarBankFeria = async (mail_banco : string | null , id_feria : number)  =>  {
+    try{
+        const response  = await axios.post(`http://localhost:5000/asociarBankFeria` ,{mail_banco,id_feria}) 
+      }
+  catch (error) {
+      console.error('Error al asociar  los datos del banco : ', error);
+  
+    }
+  } 
+
+
+
+
+
+
 
 //VACANTES MODULO
 
@@ -254,7 +287,7 @@ export const  updateVacanteFeria = async (vacante : vacante , id_feria : number)
         postulacionService.rechazarPostulacion(id_postulacion)
         return enfpost
        }else {
-        console.log('no paso')
+        console.log(enfpost.status)
        }
 
   }
@@ -263,5 +296,24 @@ export const  updateVacanteFeria = async (vacante : vacante , id_feria : number)
   
     }
   } 
+
+
+
+  
+  export const  recargaStatus = async (id_feria : number)  =>  {
+
+    try{
+       const stado = await axios.post(`http://localhost:5000/recargaStatus` ,{id_feria})
+       //elemina la vacante de rxjs vacantes
+       const {estado} = stado.data
+        return estado
+
+  }
+  catch (error) {
+      console.error('Error al recargar la postulacion : ', error);
+  
+    }
+  } 
+
 
 

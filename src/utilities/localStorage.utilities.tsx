@@ -9,3 +9,8 @@ export const persistLocalStorage = <T,>(_key : string , value : T ) => {
 export const clearLocalStorage = (key : string) => {
     localStorage.removeItem(key)
 }
+
+
+export const formatFecha = async () =>{
+    
+}
