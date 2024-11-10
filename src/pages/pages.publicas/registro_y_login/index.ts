@@ -6,3 +6,4 @@ export { default as LoginMunicipal } from './components/login_municipal';
 export * from './recuperacion';
 export * from './registro';
 export * from './login_home';
+export * from './ResetPassword';

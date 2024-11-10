@@ -5,7 +5,7 @@ import {AuthGuard} from './guard/auth.guard';
 import store from './redux/store';
 import { Nav_bar } from './components';
 import { NotFound,PrivateRoutes, PublicRoutes } from './models/index'; // rutas url 
-import {  LoginHome, Registro } from './pages/pages.publicas/registro_y_login/index';
+import {  LoginHome, Registro, ResetPassword } from './pages/pages.publicas/registro_y_login/index';
 import Vistaplano from './pages/pages.privadas/perfil_encargado/components/herramientas_planos/vistaplano';
 import PerfilFeriantes from './pages/pages.privadas/perfil_feriante/perfil_feriante';
 import View_detalle_feria from './pages/pages.publicas/feed_ferias/vista_detalle_feria';
@@ -32,6 +32,7 @@ function App() {
               <Route path={`${PublicRoutes.FORMFERIA}`}element = {<FeriaForm/>} />
               <Route path={PublicRoutes.LOGIN} element = {<LoginHome/>} />
               <Route path={PublicRoutes.REGISTRO} element = {<Registro/>} />
+              <Route path={PublicRoutes.RESETPASSWORD} element = {<ResetPassword/>} />
               <Route path={PublicRoutes.PAGOS2} element = {<PaymentButton/>} />
               <Route path={PublicRoutes.DATOSENCARGADO} element={<PerfilFeriantes />} />        
               <Route path={`${PublicRoutes.DETALLEFERIA}`} element={<View_detalle_feria />} />

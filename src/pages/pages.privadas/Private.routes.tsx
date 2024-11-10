@@ -29,7 +29,7 @@ function Privado(){
 
     <Route element={<RoleGuard rol={Roles.FERIANTE} />}>
       <Route path={PrivateRoutes.PERFILFERIANTE} element={<Perfil_feriante />} />
-      <Route path={PrivateRoutes.SUPERVISOR} element={< HomeSupervisor/>} />
+      <Route path={PrivateRoutes.SUPERVISOR} element={<HomeSupervisor />} />
       <Route path={PrivateRoutes.POSTULACIONES} element={< HomePostulaciones/>} />
     </Route>
 
