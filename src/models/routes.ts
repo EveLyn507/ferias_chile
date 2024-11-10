@@ -6,6 +6,7 @@ export const PublicRoutes = {
     LOGINMUNI : 'login3',
     HERRAMIENTA : '/Plano/:id_feria',
     REGISTRO: 'registro',
+    RESETPASSWORD: 'reset-password',
     FORMFERIA: '/formulario-feria',
     DATOSENCARGADO : 'actualizar-datos',
     DETALLEFERIA : "/feria/:id_feria/:nombre_feria/:fecha",
@@ -24,7 +25,7 @@ export const PrivateRoutes = {
     
     PERFILFERIANTE : '2',
     POSTULACIONES : '2/postulaciones',
-    SUPERVISOR: '2/supervisor',
+    SUPERVISOR: '2/postulaciones/supervisor/:id_feria',
 
     PERFILADMIN : '3',
 

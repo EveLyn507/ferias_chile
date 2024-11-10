@@ -4,30 +4,20 @@ import { CardFerias } from './card_feria';
 import { Feria } from '../../../../models/interfaces';
 import { traerFerias } from '../../services/traer_ferias';
 
+interface paginaiconProps {
+    ferias : Feria[]
+    carga : ( page : number , limit :number, ) => void
+}
 
 
-
-const Paginacion = () => {
+const Paginacion = ({carga , ferias} : paginaiconProps) => {
     // Estado para las ferias y la página actual
-    const [ferias, setFerias] = useState<Feria[]>([]);
     const limit = 5
     const [page, setPage] = useState(1);   // Página actual
-console.log(ferias);
-
-
-        const carga =  async () => {
-               // Llamada a la función traerFerias con paginado
-        await traerFerias(page, limit).then((res: Feria[]) => {
-            setFerias(res);
-        })
-        .catch((error) => {
-            console.error("Error al cargar ferias:", error);
-        });
-
-        }
-        useEffect(() =>  {
-            carga()
-        },[page])
+   
+    useEffect(() =>  {
+        carga(page , limit)
+    },[page])
 
     // Función para manejar el cambio de página
     const nextPage = async () => {

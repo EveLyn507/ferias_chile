@@ -15,13 +15,37 @@ export const Registro = () => {
   const [role, setRole] = useState('');
 
   const validarNombre = (nombre: string) => /^[a-zA-ZÀ-ÿ\s]{1,40}$/.test(nombre);
-  const validarRut = (rut: string) => /^[0-9]{7,8}$/.test(rut); 
-  const validarRut_div = (rut_div: string) => /^[0-9kK]$/.test(rut_div);  
   const validarMail = (user_mail: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(user_mail);
   const validarTelefono = (telefono: string) => /^[0-9]{7,15}$/.test(telefono);
   const validarContrasena = (contrasena: string) => /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/.test(contrasena);
   const validarContrasenasCoinciden = (contrasena: string, contrasena2: string) => contrasena === contrasena2;
 
+  const validarRutCompleto = (rut: string, rut_div: string) => {
+    // Eliminar puntos, guiones y convertir a mayúscula el dígito verificador
+    rut = rut.replace(/\./g, '').replace('-', '');
+    rut_div = rut_div.toUpperCase();
+  
+    // Verificar que el RUT tenga entre 7 y 8 dígitos y que el DV sea válido
+    if (!/^[0-9]{7,8}$/.test(rut) || !/^[0-9K]$/.test(rut_div)) {
+      return false;
+    }
+  
+    // Calcular el dígito verificador
+    let suma = 0;
+    let multiplo = 2;
+  
+    // Recorre el RUT de derecha a izquierda
+    for (let i = rut.length - 1; i >= 0; i--) {
+      suma += parseInt(rut.charAt(i), 10) * multiplo;
+      multiplo = (multiplo < 7) ? multiplo + 1 : 2;
+    }
+  
+    const dvCalculado = 11 - (suma % 11);
+    const dv = dvCalculado === 11 ? '0' : dvCalculado === 10 ? 'K' : dvCalculado.toString();
+  
+    // Retorna verdadero si el DV calculado coincide con el DV ingresado
+    return dv === rut_div;
+  };
 
   const clicRegistro =async  (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,13 +60,8 @@ export const Registro = () => {
       return;
     }
 
-    if (!validarRut(rut)) {
-      setError2('El RUT debe tener solo números (sin puntos ni guiones) y un máximo de 8 dígitos.');
-      return;
-    }
-
-    if (!validarRut_div(rut_div)) {
-      setError2('El dígito verificador debe ser un número o la letra k.');
+    if (!validarRutCompleto(rut, rut_div)) {
+      setError2('El RUT ingresado no es válido.');
       return;
     }
 

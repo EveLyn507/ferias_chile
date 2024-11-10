@@ -87,6 +87,7 @@ export const Mapa = () => {
             planHeight={planHeight}
             areas={areas}
             streets={streets}
+            isStatic={true}
             setRectangles={() => {}}
             setPlanWidth={() => {}}
             setPlanHeight={() => {}}
@@ -96,6 +97,7 @@ export const Mapa = () => {
             onUpdateStreet={() => {}}
             onRemoveStreet={() => {}}
           />
+          
         </div>
       </div>
     </div>

@@ -1,18 +1,57 @@
 const express = require('express');
 const router = express.Router();
 const {
-  obtenerEstadoFeria,
-  obtenerMapaFeria,
-  obtenerAlertas,
-  obtenerPuestos,
-  agregarComentarioPuesto
+    obtenerEstadoFeria,
+    getPuestos,
+    togglePuestoEstado,
+    obtenerMapaFeria,
+    obtenerFeriantesActivos,
+    getFeriantesPendientes,
+    registrarPago,
 } = require('../controllers/SupervisorController');
 
-// Rutas para supervisores
-router.get('/estado-feria', obtenerEstadoFeria);
-router.get('/mapa-feria', obtenerMapaFeria);
-router.get('/alertas', obtenerAlertas);
-router.get('/puestos', obtenerPuestos);
-router.post('/puestos/:idPuesto/comentario', agregarComentarioPuesto);
+// Obtener el estado de las ferias
+router.get('/estado-feria', (req, res) => {
+    const pool = req.pool;
+    obtenerEstadoFeria(req, res, pool);
+});
+
+// Obtener el listado de puestos para gestionar el estado
+router.get('/feria/puestos', (req, res) => {
+    const pool = req.pool;
+    getPuestos(req, res, pool);
+});
+
+// Actualizar el estado de un puesto específico
+router.put('/puestos/:id_puesto/estado', (req, res) => {
+    const pool = req.pool;
+    togglePuestoEstado(req, res, pool);
+});
+
+// Obtener el mapa de una feria específica
+router.get('/feria/mapa', (req, res) => {
+    const pool = req.pool;
+    obtenerMapaFeria(req, res, pool);
+});
+
+// Obtener la lista de feriantes activos en las ferias
+router.get('/feriantes-activos', (req, res) => {
+    const pool = req.pool;
+    obtenerFeriantesActivos(req, res, pool);
+});
+
+// Obtener la lista de feriantes pendientes de pago
+router.get('/feriantes-pendientes', (req, res) => {
+  const pool = req.pool;
+  getFeriantesPendientes(req, res, pool);
+});
+
+// Registrar el pago físico de un feriante
+router.put('/feriantes/:id_user_fte/pago', (req, res) => {
+    const pool = req.pool;
+    registrarPago(req, res, pool);
+});
+
+
 
 module.exports = router;

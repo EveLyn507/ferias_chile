@@ -24,11 +24,11 @@ const getEstadoPerfil = async (req, res) => {
 };
 
 // Función para alternar el estado de perfil (público/privado)
-const togglePerfilPrivado = async (req, res) => {
+const togglePerfilPrivado = async (req, res, pool) => {
   const { userMail } = req.body;
 
   try {
-    const result = await req.pool.query(
+    const result = await pool.query(
       'SELECT perfil_privado FROM feriante WHERE user_mail = $1',
       [userMail]
     );
@@ -40,7 +40,7 @@ const togglePerfilPrivado = async (req, res) => {
     const currentStatus = result.rows[0].perfil_privado;
     const newStatus = !currentStatus;
 
-    await req.pool.query(
+    await pool.query(
       'UPDATE feriante SET perfil_privado = $1 WHERE user_mail = $2',
       [newStatus, userMail]
     );
@@ -198,24 +198,26 @@ const cargarIntereses = async (res, pool, id_user) => {
 };
 
 // Función para actualizar correo
-const actualizarCorreo = async (req, res) => { 
+const actualizarCorreo = async (req, res, pool) => { 
   const { nuevoCorreo, user_mail } = req.body;
 
   try {
-    await req.pool.query('BEGIN');
+    await pool.query('BEGIN');
     const updateQueries = [
       'UPDATE feriante SET user_mail = $1 WHERE user_mail = $2;',
-      'UPDATE intereses SET id_user_fte = (SELECT id_user_fte FROM feriante WHERE user_mail = $1) WHERE id_user_fte = (SELECT id_user_fte FROM feriante WHERE user_mail = $2);'
+      'UPDATE intereses SET id_user_fte = (SELECT id_user_fte FROM feriante WHERE user_mail = $1) WHERE id_user_fte = (SELECT id_user_fte FROM feriante WHERE user_mail = $2);',
+      'UPDATE feriante SET perfil_privado = $1 WHERE user_mail = $2',
+      'UPDATE feriante SET contrasena = $1 WHERE id_user_fte = $2;'
     ];
 
     for (const query of updateQueries) {
-      await req.pool.query(query, [nuevoCorreo, user_mail]);
+      await pool.query(query, [nuevoCorreo, user_mail]); // Asegúrate de que los parámetros estén en el orden correcto
     }
 
-    await req.pool.query('COMMIT');
+    await pool.query('COMMIT');
     res.status(200).json({ message: 'Correo actualizado correctamente' });
   } catch (error) {
-    await req.pool.query('ROLLBACK');
+    await pool.query('ROLLBACK');
     console.error('Error al actualizar el correo:', error);
     res.status(500).json({ message: 'Error interno del servidor' });
   }

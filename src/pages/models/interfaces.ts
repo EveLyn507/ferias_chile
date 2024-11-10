@@ -55,6 +55,7 @@ export interface postulacion {
 
 
 export interface Mispostulacion {
+    id_feria: any;
     id_postulacion : number,
     estado : string,
     nombre_feria : string,
