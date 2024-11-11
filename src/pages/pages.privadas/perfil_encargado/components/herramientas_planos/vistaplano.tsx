@@ -6,45 +6,9 @@ import { setIdFeria } from '../../../../../redux/states/user';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { CreatePuesto, UpdateJsonFeria } from './services/funcionesHP';
+import { FeriaData, Rectangle, Street } from './models/vistaplanoModels';
 
-export interface Rectangle {
-  id: number;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  fill: string;
-  descripcion?: string;
-  tipoPuesto?: string;
-  estadoPuesto?: string;
-  numero?: number;
-}
-
-interface Area {
-  id: number;
-  name: string;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-}
-
-interface Street {
-  id: number;
-  points: number[];
-  width: number;
-  height: number;
-  x: number;
-  y: number;
-}
-
-interface FeriaData {
-  puestos: Rectangle[];
-  areas: Area[];
-  calles: Street[];
-  planWidth: number;
-  planHeight: number;
-}
 
   const API_URL = 'http://localhost:5000';
 

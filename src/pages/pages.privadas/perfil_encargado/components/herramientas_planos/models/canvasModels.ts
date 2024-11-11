@@ -14,6 +14,7 @@ export interface CanvasProps {
     onUpdateStreet: (id: number, updatedProps: any) => void;
     onRemoveStreet: (id: number) => void;
     onRectangleClick: (id: number) => void;
+    onPuestoClick: (id: number) => void;
     isStatic?: boolean;
     onStreetClick?: (id: number) => void;
   }
