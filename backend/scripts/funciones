@@ -223,17 +223,17 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-
 CREATE OR REPLACE FUNCTION obtener_ferias_paginado(
     p_limit INTEGER,
-    p_offset INTEGER
+    p_offset INTEGER,
+    p_region INTEGER DEFAULT NULL,
+    p_comuna INTEGER DEFAULT NULL
 )
 RETURNS TABLE (
     id_feria INTEGER,
     nombre_feria CHARACTER VARYING(80),
     comuna CHARACTER VARYING(80),
     region CHARACTER VARYING(50)
-
 ) AS $$
 BEGIN
     RETURN QUERY
@@ -248,13 +248,18 @@ BEGIN
         COMUNA c ON f.id_comuna = c.id_comuna 
     JOIN 
         REGION g ON c.id_region = g.id_region
+    WHERE
+        -- Si p_region no es NULL, filtrar por región
+        (p_region IS NULL OR g.id_region = p_region)
+        -- Si p_comuna no es NULL, filtrar por comuna
+        AND (p_comuna IS NULL OR c.id_comuna = p_comuna)
     LIMIT p_limit
     OFFSET p_offset;
 
-
-
 END;
 $$ LANGUAGE plpgsql;
+
+
 
 
 

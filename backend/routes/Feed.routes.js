@@ -5,7 +5,10 @@ const { get_feria,get_puestos_feria, get_puestos_actividad  } = require('../cont
 // RUTAS PARA EL FEED DE FERIAS
 router.post('/Feed-ferias', (req , res) => {
     const pool = req.pool; // Recuperar el pool del objeto req
-    get_feria(req,res,pool);
+    const { page = 1, limit = 10 , idComuna , idRegion} = req.body; // Paginación: página y límite
+    const offset = (page - 1) * limit;
+  
+    get_feria(res, pool, limit, offset, idComuna, idRegion );
   })
 
   router.get('/ferias/:id_feria', (req , res) => {

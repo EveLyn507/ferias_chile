@@ -4,12 +4,13 @@ import { Filtros_base } from './components/listado_ferias/filtros';
 import '../../../css/base.css';
 
 const View_feed = () => {
-  const [selectedComuna, setSelectedComuna] = useState('');
+  const [selectedComuna, setSelectedComuna] = useState<number | null>(null);
+  const [selectedRegion, setSelectedRegion] = useState<number | null>(null);
 
   return (
     <div className="container">
-      <Filtros_base onFilter={(comuna) => setSelectedComuna(comuna)} />
-      <Feed_d_ferias selectedComuna={selectedComuna} />
+      <Filtros_base onFilterC={(comuna) => setSelectedComuna(comuna)} onFilterR={(region) => setSelectedRegion(region)} />
+      <Feed_d_ferias comuna={selectedComuna}  region={selectedRegion} />
     </div>
   );
 };

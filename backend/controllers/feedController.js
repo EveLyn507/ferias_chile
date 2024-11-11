@@ -3,8 +3,8 @@
 
 
 // Función para obtener ferias con paginación
-const getFeriasPaginado = async (limit, offset,pool) => {
-  const result = await pool.query('SELECT * FROM obtener_ferias_paginado($1, $2)', [limit, offset]);
+const getFeriasPaginado = async (pool,limit, offset,idComuna,idRegion) => {
+  const result = await pool.query('SELECT * FROM obtener_ferias_paginado($1, $2, $3, $4)', [limit, offset,idComuna,idRegion]);
   return result.rows;
 };
 
@@ -19,13 +19,11 @@ const getActividadesFeria = async (horariosIds,pool) => {
   return result.rows;
 };
 
-const get_feria = async (req , res , pool) => {
-  const { page = 1, limit = 10 } = req.body; // Paginación: página y límite
-  const offset = (page - 1) * limit;
+const get_feria = async (res , pool, limit , offset , idComuna, idRegion) => {
 
   try {
     // 1. Obtiene las ferias paginadas
-    const ferias = await getFeriasPaginado(limit, offset,pool);
+    const ferias = await getFeriasPaginado(pool,limit, offset,idComuna,idRegion);
     
     // 2. Obtiene los IDs de las ferias para la página actual y llama los horarios para esos ids
     const feriasIds = ferias.map(feria => feria.id_feria);

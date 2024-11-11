@@ -1,20 +1,28 @@
-import { useEffect, useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import {  useEffect, useState } from 'react';
 import { Feria } from '../../../../models/interfaces';
 import { traerFerias } from '../../services/traer_ferias';
 import Paginacion from './paginacion';
+import { CardFerias } from './card_feria';
+import { paginacionService } from './sharingPaginacion';
 
 // Define la interfaz para los objetos de feria
+interface feedProps {
+  comuna : number| null 
+  region : number| null
+}
 
-const Feed_d_ferias = ({ selectedComuna }: { selectedComuna: string }) => {
+
+const Feed_d_ferias = ({comuna , region } : feedProps) => {
   const [ferias, setFerias] = useState<Feria[]>([]);
-  const [filteredFerias, setFilteredFerias] = useState<Feria[]>([]);
+  const [page , setPage] = useState(1)
+  const limit = 10
 
 
-
-const carga =  async (page : number , limit : number) => {
+const carga =  async (page : number , limit : number ) => {
     // Llamada a la función traerFerias con paginado
 
-  await traerFerias(page, limit).then((res: Feria[]) => {
+  await traerFerias(page, limit , comuna, region ).then((res: Feria[]) => {
   setFerias(res);
   })
   .catch((error) => {
@@ -22,23 +30,20 @@ const carga =  async (page : number , limit : number) => {
   });
 
 }
+console.log('hola');
 
 
-
-  useEffect(() => {
-    if (selectedComuna) {
-      setFilteredFerias(ferias.filter((feria) => feria.comuna === selectedComuna));
-    } else {
-      setFilteredFerias(ferias);
-    }
-  }, [selectedComuna, ferias]);
-   
+useEffect(() => {
+  carga(page, limit)
+}, [page , comuna , region])
 
     return (
         <>
    <div>
    <br />
-   <Paginacion carga={carga} ferias={filteredFerias} />
+   <Paginacion  page={page} setPage={setPage}/>
+   <CardFerias ferias={ferias} />
+   <Paginacion  page={page} setPage={setPage}/>
    </div>
         </>
     )
