@@ -2,6 +2,7 @@
 
 DROP TABLE IF EXISTS dia_semana CASCADE;
 DROP TABLE IF EXISTS puesto_archivado CASCADE;
+DROP TABLE IF EXISTS arriendo_puesto CASCADE;
 DROP TABLE IF EXISTS puesto CASCADE;
 DROP TABLE IF EXISTS json_feria CASCADE;
 DROP TABLE IF EXISTS intereses CASCADE;
@@ -53,7 +54,8 @@ CREATE TABLE actividad_feria (
     id_horario_feria   INTEGER NOT NULL,
     fecha              DATE NOT NULL,
     armado_hecho       BOOLEAN NOT NULL,
-    feria_hecha        BOOLEAN NOT NULL
+    feria_hecha        BOOLEAN NOT NULL,
+    activo BOOLEAN
 );
 
 ALTER TABLE actividad_feria ADD CONSTRAINT actividad_feria_pk PRIMARY KEY ( id_actividad_feria );
@@ -72,6 +74,15 @@ CREATE TABLE administrador_municipal (
 );
 
 ALTER TABLE administrador_municipal ADD CONSTRAINT administrador_pk PRIMARY KEY ( id_user_adm );
+
+CREATE TABLE dia_semana (
+    id_dia INTEGER NOT NULL,
+    dia    CHARACTER VARYING(20) NOT NULL
+);
+
+ALTER TABLE dia_semana ADD CONSTRAINT dia_semana_pk PRIMARY KEY ( id_dia );
+
+
 
 ALTER TABLE administrador_municipal ADD CONSTRAINT adm_mail__un UNIQUE ( user_mail );
 
@@ -96,9 +107,9 @@ CREATE TABLE contrato_puesto (
     id_contrato     SERIAL NOT NULL,
     id_user_fte     INTEGER NOT NULL,
     fecha           DATE NOT NULL,
-    id_puesto       INTEGER NOT NULL,
+    id_arriendo_puesto       INTEGER NOT NULL,
     id_tipo_pago    INTEGER NOT NULL,
-    estado_contrato INTEGER NOT NULL,
+    id_estado_contrato INTEGER NOT NULL,
     precio          INTEGER NOT NULL,
     buy_order       CHARACTER VARYING(100) NOT NULL, 
     session_id      CHARACTER VARYING(100) NOT NULL
@@ -119,7 +130,7 @@ ALTER TABLE detalle_horario_empleado ADD CONSTRAINT detalle_horario_empleado_pk 
 CREATE TABLE detalle_programa_feria (
     id_horario_feria    SERIAL NOT NULL,
     id_feria            INTEGER NOT NULL,
-    dia                 CHARACTER VARYING(20) NOT NULL,
+    id_dia                 INTEGER NOT NULL,
     hora_inicio         TIME WITHOUT TIME ZONE NOT NULL,
     hora_termino        TIME WITHOUT TIME ZONE NOT NULL,
     id_dia_armado       INTEGER NOT NULL,
@@ -129,6 +140,11 @@ CREATE TABLE detalle_programa_feria (
 );
 
 ALTER TABLE detalle_programa_feria ADD CONSTRAINT detalle_programa_pk PRIMARY KEY ( id_horario_feria );
+
+ALTER TABLE detalle_programa_feria 
+    ADD CONSTRAINT id_dia_to_programa_FK FOREIGN KEY (id_dia)
+        REFERENCES dia_semana (id_dia);
+
 
 CREATE TABLE detalle_solicitud (
     id_archivo            SERIAL NOT NULL,
@@ -158,12 +174,6 @@ CREATE TABLE dia_armado (
 
 ALTER TABLE dia_armado ADD CONSTRAINT dia_armado_pk PRIMARY KEY ( id_dia_armado );
 
-CREATE TABLE dia_semana (
-    id_dia INTEGER NOT NULL,
-    dia    CHARACTER VARYING(20) NOT NULL
-);
-
-ALTER TABLE dia_semana ADD CONSTRAINT dia_semana_pk PRIMARY KEY ( id_dia );
 
 CREATE TABLE encargado_feria (
     id_user_enf     SERIAL NOT NULL,
@@ -328,14 +338,43 @@ ALTER TABLE postulaciones
 
 CREATE TABLE puesto (
     id_puesto        SERIAL NOT NULL,
-    id_tipo_puesto   INTEGER NOT NULL,
+    id_tipo_puesto   INTEGER ,
     numero           INTEGER NOT NULL,
-    descripcion      TEXT NOT NULL,
+    descripcion      TEXT ,
     id_feria         INTEGER NOT NULL,
     id_estado_puesto INTEGER NOT NULL
 );
 
 ALTER TABLE puesto ADD CONSTRAINT puesto_pk PRIMARY KEY ( id_puesto );
+
+CREATE TABLE estado_arriendo (
+    id_estado_arriendo INTEGER,
+    estado CHARACTER VARYING, 
+    PRIMARY KEY(id_estado_arriendo)
+)
+
+
+
+CREATE TABLE arriendo_puesto (
+    id_arriendo_puesto SERIAL NOT NULL,
+    id_actividad_feria INTEGER NOT NULL,
+    id_puesto INTEGER NOT NULL , 
+    id_estado_arriendo INTEGER NOT NULL,
+    activo BOOLEAN,
+    PRIMARY KEY (id_arriendo_puesto)
+);
+
+ALTER TABLE ARRIENDO_PUESTO 
+    ADD CONSTRAINT id_puesto_to_arriendo_FK FOREIGN KEY (id_puesto)
+        REFERENCES puesto (id_puesto);
+
+ALTER TABLE ARRIENDO_PUESTO 
+    ADD CONSTRAINT id_actividad_to_arriendo_FK FOREIGN KEY (id_actividad_feria)
+        REFERENCES actividad_feria (id_actividad_feria);
+
+ALTER TABLE ARRIENDO_PUESTO 
+    ADD CONSTRAINT id_estado_to_arriendo_fk FOREIGN KEY (id_estado_arriendo)
+        REFERENCES estado_arriendo (id_estado_arriendo);
 
 CREATE TABLE puesto_archivado (
     id_archivado SERIAL NOT NULL,
@@ -379,12 +418,12 @@ CREATE TABLE solicitudes_apertura (
 
 ALTER TABLE solicitudes_apertura ADD CONSTRAINT solicitudes_apertura_pk PRIMARY KEY ( id_solicitud );
 
-CREATE TABLE tipo_estado_contrato (
-    id_status_contrato INTEGER NOT NULL,
+CREATE TABLE estado_contrato (
+    id_estado_contrato INTEGER NOT NULL,
     detalle            CHARACTER VARYING(50) NOT NULL
 );
 
-ALTER TABLE tipo_estado_contrato ADD CONSTRAINT tipo_estado_contrato_pk PRIMARY KEY ( id_status_contrato );
+ALTER TABLE estado_contrato ADD CONSTRAINT id_estado_contrato_pk PRIMARY KEY ( id_estado_contrato );
 
 CREATE TABLE tipo_pago (
     id_tipo_pago INTEGER NOT NULL,
@@ -420,8 +459,8 @@ ALTER TABLE comuna
         REFERENCES region ( id_region );
 
 ALTER TABLE contrato_puesto
-    ADD CONSTRAINT contrato_diario_puesto_fk FOREIGN KEY ( id_puesto )
-        REFERENCES puesto ( id_puesto );
+    ADD CONSTRAINT id_arriendo_to_contrato_FK FOREIGN KEY ( id_arriendo_puesto )
+        REFERENCES arriendo_puesto ( id_arriendo_puesto );
 
 ALTER TABLE contrato_puesto
     ADD CONSTRAINT contrato_diario_tipo_pago_fk FOREIGN KEY ( id_tipo_pago )
@@ -436,8 +475,8 @@ ALTER TABLE banco_encargado
         REFERENCES encargado_feria ( id_user_enf );
 
 ALTER TABLE contrato_puesto
-    ADD CONSTRAINT estado_puesto_contrato_fk FOREIGN KEY ( estado_contrato )
-        REFERENCES tipo_estado_contrato ( id_status_contrato );
+    ADD CONSTRAINT estado_puesto_contrato_fk FOREIGN KEY ( id_estado_contrato )
+        REFERENCES estado_contrato ( id_estado_contrato );
 
 ALTER TABLE feria
     ADD CONSTRAINT feria_banco_encargado_fk FOREIGN KEY ( mail_banco )
@@ -577,3 +616,27 @@ ALTER COLUMN id_estado SET DEFAULT 1;
 
 ALTER TABLE solicitudes_apertura
 ALTER COLUMN id_estado SET DEFAULT 1;
+
+
+ALTER TABLE feria
+ALTER COLUMN id_estado SET DEFAULT 1;
+
+
+ALTER TABLE actividad_feria
+ALTER COLUMN armado_hecho SET DEFAULT false;
+
+ALTER TABLE actividad_feria
+ALTER COLUMN feria_hecha SET DEFAULT false;
+
+
+ALTER TABLE actividad_feria
+ALTER COLUMN activo SET DEFAULT true;
+
+
+ALTER TABLE arriendo_puesto
+ALTER COLUMN id_estado_arriendo SET DEFAULT 1;
+
+
+ALTER TABLE arriendo_puesto
+ALTER COLUMN activo SET DEFAULT true;
+

@@ -3,12 +3,12 @@ const router = express.Router();
 const puestoRoutes = require('./Puesto.routes');
 const { 
   saveFeria, 
-  getFeria ,get_feria_Encargado 
-  ,abrirTiketFeria, UpdateProgramaFeria 
-  ,getPrograma ,insertDatosBank,getDatosBank, 
+  getFeria ,get_feria_Encargado ,getFeriaBank,
+  abrirTiketFeria, UpdateProgramaFeria ,
+  getPrograma ,insertDatosBank,getDatosBank, 
   deleteBank,getVacantesFeria,insertVacantesFeria, 
   deleteVacante,updateVacanteFeria,updateHorarioVacante,
-  getPostulacionesEnf,rechazarPostulacion,aceptarPostulacion,updateDatosBank,createFeria} = require('../controllers/EncargadoController');
+  getPostulacionesEnf,rechazarPostulacion,aceptarPostulacion,updateDatosBank,createFeria,recargaStatus,asociarBankFeria} = require('../controllers/EncargadoController');
 
 
 //PERFIL ENCARGADO 
@@ -127,13 +127,33 @@ router.post('/aceptarPostulacion', (req, res) => {
 
 router.post('/rechazarPostulacion', (req, res) => {
   const pool = req.pool
-  const  {id_postulacion,id_vacante,id_user_fte} = req.body
+  const  {id_postulacion,id_vacante,id_user_fte} = req.body  
   rechazarPostulacion(res,pool,id_postulacion,id_vacante,id_user_fte)
   }) 
 router.post('/aceptarPostulacion', (req, res) => {
   const pool = req.pool
   aceptarPostulacion(res,pool)
   }) 
+
+router.post('/recargaStatus', (req, res) => {
+  const pool = req.pool
+  const {id_feria} = req.body
+  recargaStatus(res,pool,id_feria)
+  }) 
+
+router.post('/getFeriaBank', (req, res) => {
+  const pool = req.pool
+  const {id_feria} = req.body
+  getFeriaBank(res,pool,id_feria)
+  }) 
+
+
+router.post('/asociarBankFeria', (req, res) => {
+  const pool = req.pool
+  const {mail_banco , id_feria} = req.body
+  asociarBankFeria(res,pool,mail_banco,id_feria)
+  }) 
+  
 
 
 

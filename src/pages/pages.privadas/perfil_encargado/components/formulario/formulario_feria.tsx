@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { AppStore } from '../../../../../redux/store';
-import regionesData from './regiones.json';
-import comunasData from './comunas.json';
+import regionesData from '../../../../../assets/regiones.json';
+import comunasData from '../../../../../assets/comunas.json';
 import { bancoService } from '../../rxjs/sharingbankslist';
 import { DatosBank } from '../../../../models/interfaces';
 

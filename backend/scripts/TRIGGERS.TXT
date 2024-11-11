@@ -8,17 +8,17 @@ RETURNS TRIGGER AS $$
 BEGIN
     -- Insertar los detalles del programa para cada día de la semana con id_dia_armado = 1
     INSERT INTO detalle_programa_feria (
-        id_feria, dia, hora_inicio, hora_termino, 
+        id_feria, id_dia, hora_inicio, hora_termino, 
         id_dia_armado, hora_inicio_armado, hora_termino_armado, activo
     )
     VALUES 
-        (NEW.id_feria, 'Lunes', '00:00', '00:00', 1, '00:00', '00:00', false),
-        (NEW.id_feria, 'Martes', '00:00', '00:00', 1, '00:00', '00:00', false),
-        (NEW.id_feria, 'Miércoles', '00:00', '00:00', 1, '00:00', '00:00', false),
-        (NEW.id_feria, 'Jueves', '00:00', '00:00', 1, '00:00', '00:00', false),
-        (NEW.id_feria, 'Viernes', '00:00', '00:00', 1, '00:00', '00:00', false),
-        (NEW.id_feria, 'Sábado', '00:00', '00:00', 1, '00:00', '00:00', false),
-        (NEW.id_feria, 'Domingo', '00:00', '00:00', 1, '00:00', '00:00', false);
+        (NEW.id_feria, 1, '00:00', '00:00', 1, '00:00', '00:00', false),
+        (NEW.id_feria, 2, '00:00', '00:00', 1, '00:00', '00:00', false),
+        (NEW.id_feria, 3, '00:00', '00:00', 1, '00:00', '00:00', false),
+        (NEW.id_feria, 4, '00:00', '00:00', 1, '00:00', '00:00', false),
+        (NEW.id_feria, 5, '00:00', '00:00', 1, '00:00', '00:00', false),
+        (NEW.id_feria, 6, '00:00', '00:00', 1, '00:00', '00:00', false),
+        (NEW.id_feria, 7, '00:00', '00:00', 1, '00:00', '00:00', false);
 
     RETURN NEW;
 END;

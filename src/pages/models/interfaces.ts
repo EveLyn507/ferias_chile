@@ -5,7 +5,7 @@
 
   export interface ProgramaFeria {
     id_feria: number;
-    dia: string;
+    id_dia: number;
     hora_inicio: string; // Cambiado a string para representar el tiempo
     hora_termino: string; // Cambiado a string para representar el tiempo
     id_dia_armado: number;
@@ -55,6 +55,7 @@ export interface postulacion {
 
 
 export interface Mispostulacion {
+    id_feria: any;
     id_postulacion : number,
     estado : string,
     nombre_feria : string,
@@ -64,6 +65,14 @@ export interface Mispostulacion {
 }
 
 
+export interface actividadFeria {
+    id_feria :number,
+    id_actividad_feria :number,
+    id_horario_feria :number,
+    fecha :string ,
+	armado_hecho: boolean,
+	feria_hecha :boolean
+}
 
 
 export interface Feria {
@@ -73,6 +82,7 @@ export interface Feria {
     region: string;
     estado : string
     horarios : ProgramaFeria[];
+    actividades : actividadFeria[];
     
 }
 
@@ -99,18 +109,50 @@ export interface puesto {
     precio :number
 }
 
+
+export interface ActividadPuesto {
+    id_feria : number,
+    nombre_feria :string,
+    id_actividad_feria :number,
+    id_dia : number,
+    fecha : string,
+    id_puesto: number,
+    id_arriendo_puesto: number,
+    disponible: boolean,
+    numero: number,
+    precio: number,
+    id_horario: number,
+    hora_inicio: string,
+    hora_termino:string,
+    num_horario: number
+}
+
+
+export interface acPuestoProps{
+    puestos : ActividadPuesto[]
+}
+
+
 // USADO EN 
 export interface PuestosProp {
     puestos: puesto[];
 }
 
 
+
+
+
+
 export interface solicitud {
-idSolicitud : number,
-encargadoMail : string,
-muniMail : string,
-idFeria: number,
-estado : string,
+    id_solicitud : number,
+    id_estado : number,
+    estado : string,
+    id_feria : number,
+    nombre_feria: string,
+    id_user_adm : number,
+    nombre_solicitante : string,
+    enf_mail : string,
+    enf_fono : number
 }
 
 

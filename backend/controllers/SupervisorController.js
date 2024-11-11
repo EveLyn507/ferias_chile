@@ -1,74 +1,140 @@
-
-
-// Obtener el estado de las ferias activas
-const obtenerEstadoFeria = async (req, res) => {
+// Obtener el estado de la feria
+const obtenerEstadoFeria = async (req, res, pool) => {
   try {
-    const result = await pool.query(`
-      SELECT nombre, COUNT(id_puesto) AS total_puestos, 
-      COUNT(id_puesto) FILTER (WHERE estado = 'Ocupado') AS ocupacion
-      FROM feria
-      JOIN puesto ON feria.id_feria = puesto.id_feria
-      WHERE feria.estado = 'Activa'
-      GROUP BY nombre
-    `);
+    const query = `
+      SELECT f.id_feria, ef.estado AS estado_feria
+      FROM feria f
+      JOIN estado_feria ef ON f.id_estado = ef.id_estado;
+    `;
+    const result = await pool.query(query);
     res.status(200).json(result.rows);
   } catch (error) {
-    res.status(500).json({ error: 'Error al obtener el estado de las ferias activas' });
+    console.error('Error al obtener el estado de la feria:', error);
+    res.status(500).json({ message: 'Error al obtener el estado de la feria' });
+  }
+};
+
+// Obtener el listado de puestos para gestionar el estado (habilitar/bloquear)
+const getPuestos = async (req, res, pool) => {
+  try {
+    const puestos = await pool.query(`
+      SELECT p.id_puesto, p.numero, ep.estado
+      FROM puesto p
+      JOIN estado_puesto ep ON p.id_estado_puesto = ep.id_estado_puesto
+    `);
+    res.status(200).json(puestos.rows);
+  } catch (error) {
+    console.error('Error al obtener puestos:', error);
+    res.status(500).json({ message: 'Error al obtener puestos' });
+  }
+};
+
+// Actualizar el estado de un puesto
+const togglePuestoEstado = async (req, res, pool) => {
+  const { id_puesto } = req.params;
+  const { estado } = req.body;
+
+  if (!id_puesto || !estado) {
+    return res.status(400).json({ message: 'Parámetros inválidos' });
+  }
+
+  try {
+    const nuevoEstado = estado === 'Disponible' ? 1 : 2; // Supón que 1 es Disponible y 2 es Bloqueado
+    await pool.query('UPDATE puesto SET id_estado_puesto = $1 WHERE id_puesto = $2', [nuevoEstado, id_puesto]);
+    res.status(200).json({ message: 'Estado del puesto actualizado' });
+  } catch (error) {
+    console.error('Error al actualizar el estado del puesto:', error);
+    res.status(500).json({ message: 'Error al actualizar el estado del puesto' });
   }
 };
 
 // Obtener el mapa de la feria
-const obtenerMapaFeria = async (req, res) => {
+const obtenerMapaFeria = async (req, res, pool) => {
   try {
-    const result = await pool.query(`SELECT url_mapa FROM feria WHERE id_feria = $1`, [req.params.idFeria]);
-    if (result.rows.length === 0) {
-      return res.status(404).json({ message: 'Mapa no encontrado' });
-    }
-    res.status(200).json(result.rows[0]);
-  } catch (error) {
-    res.status(500).json({ error: 'Error al obtener el mapa de la feria' });
-  }
-};
-
-// Obtener alertas e incidentes
-const obtenerAlertas = async (req, res) => {
-  try {
-    const result = await pool.query(`SELECT * FROM alertas WHERE estado = 'Activa'`);
+    const query = 'SELECT * FROM feria WHERE id_feria = $1';
+    const result = await pool.query(query, [req.query.id_feria]);
     res.status(200).json(result.rows);
   } catch (error) {
-    res.status(500).json({ error: 'Error al obtener alertas' });
+    console.error('Error al obtener el mapa de la feria:', error);
+    res.status(500).json({ message: 'Error al obtener el mapa de la feria' });
   }
 };
 
-// Obtener lista de puestos y sus comentarios
-const obtenerPuestos = async (req, res) => {
+// Obtener feriantes activos en cada feria
+const obtenerFeriantesActivos = async (req, res, pool) => {
   try {
-    const result = await pool.query(`SELECT * FROM puesto`);
-    res.status(200).json(result.rows);
+    const feriantes = await pool.query(`
+      SELECT f.id_user_fte, f.nombre, f.apellido, ec.detalle AS estado_pago
+      FROM feriante f
+      JOIN contrato_puesto cp ON f.id_user_fte = cp.id_user_fte
+      JOIN tipo_estado_contrato ec ON cp.estado_contrato = ec.id_status_contrato
+      WHERE ec.detalle != 'finalizado' AND ec.detalle != 'cancelado'
+    `);
+    res.status(200).json(feriantes.rows);
   } catch (error) {
-    res.status(500).json({ error: 'Error al obtener los puestos' });
+    console.error('Error al obtener lista de pagos pendientes:', error);
+    res.status(500).json({ message: 'Error al obtener lista de pagos pendientes' });
   }
 };
 
-// Agregar comentario a un puesto
-const agregarComentarioPuesto = async (req, res) => {
-  const { idPuesto } = req.params;
-  const { comentario } = req.body;
+// Obtener feriantes pendientes de pago
+const getFeriantesPendientes = async (req, res, pool) => {
   try {
-    await pool.query(
-      `INSERT INTO comentarios (id_puesto, comentario) VALUES ($1, $2)`,
-      [idPuesto, comentario]
-    );
-    res.status(201).json({ message: 'Comentario agregado correctamente' });
+    const feriantes = await pool.query(`
+      SELECT f.id_user_fte, f.nombre, f.apellido, tec.detalle AS estado_pago
+      FROM feriante f
+      JOIN contrato_puesto cp ON f.id_user_fte = cp.id_user_fte
+      JOIN tipo_estado_contrato tec ON cp.estado_contrato = tec.id_status_contrato
+      WHERE tec.detalle != 'finalizado' AND tec.detalle != 'cancelado';
+    `);
+    res.status(200).json(feriantes.rows);
   } catch (error) {
-    res.status(500).json({ error: 'Error al agregar comentario' });
+    console.error('Error al obtener lista de pagos pendientes:', error);
+    res.status(500).json({ message: 'Error al obtener lista de pagos pendientes' });
   }
 };
+
+// Registrar el pago físico de un feriante
+const registrarPago = async (req, res, pool) => {
+  const { id_user_fte } = req.params;
+  try {
+    await pool.query('UPDATE feriante SET pagado = TRUE WHERE id_user_fte = $1', [id_user_fte]);
+    res.status(200).json({ message: 'Pago registrado exitosamente' });
+  } catch (error) {
+    console.error('Error al registrar pago físico:', error);
+    res.status(500).json({ message: 'Error al registrar pago físico' });
+  }
+};
+
+
+const aceptarPostulacion = async (req, res) => {
+  const { id_postulacion, id_feria } = req.body;
+
+  try {
+      // Actualizar el estado de la postulación a "aceptado"
+      await pool.query('UPDATE postulaciones SET estado = $1 WHERE id_postulacion = $2', ['aceptado', id_postulacion]);
+
+      // Obtener información de la feria vinculada a la postulación
+      const feriaDetalles = await pool.query(
+          'SELECT * FROM feria WHERE id_feria = $1',
+          [id_feria]
+      );
+
+      res.status(200).json({ feriaDetalles: feriaDetalles.rows[0] });
+  } catch (error) {
+      console.error('Error al aceptar la postulación:', error);
+      res.status(500).json({ message: 'Error al aceptar la postulación' });
+  }
+};
+
 
 module.exports = {
   obtenerEstadoFeria,
+  obtenerFeriantesActivos,
   obtenerMapaFeria,
-  obtenerAlertas,
-  obtenerPuestos,
-  agregarComentarioPuesto
+  getPuestos,
+  togglePuestoEstado,
+  getFeriantesPendientes,
+  registrarPago,
+  aceptarPostulacion
 };

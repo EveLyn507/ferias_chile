@@ -48,32 +48,30 @@ const get_feria_Encargado = async (req, res, pool) => {
   }
 };
 
-
-
 const abrirTiketFeria = async (res, pool, id_feria) => {
   try {
       // Consulta para obtener administradores con la menor carga
       const resultado = await pool.query(`
           WITH carga_solicitudes AS (
-              SELECT adm.id_use_adm, COUNT(sa.id_user_adm) AS total_solicitudes
+              SELECT adm.id_user_adm, COUNT(sa.id_user_adm) AS total_solicitudes
               FROM administrador_municipal adm
-              LEFT JOIN solicitudes_apertura sa ON adm.id_use_adm = sa.id_user_adm
-              GROUP BY adm.id_use_adm
+              LEFT JOIN solicitudes_apertura sa ON adm.id_user_adm = sa.id_user_adm
+              GROUP BY adm.id_user_adm
           ),
           menor_carga AS (
-              SELECT id_use_adm
+              SELECT id_user_adm
               FROM carga_solicitudes
               WHERE total_solicitudes = (
                   SELECT MIN(total_solicitudes) FROM carga_solicitudes
               )
           )
-          SELECT id_use_adm FROM menor_carga;
+          SELECT id_user_adm FROM menor_carga;
       `);
 
       if (resultado.rows.length > 0) {
           // Elegir un administrador aleatorio de la lista
           const randomIndex = Math.floor(Math.random() * resultado.rows.length);
-          const id_user_adm = resultado.rows[randomIndex].id_use_adm;
+          const id_user_adm = resultado.rows[randomIndex].id_user_adm;
 
           // Insertar la solicitud
           await pool.query('SELECT insertar_solicitud_apertura($1, $2);', [id_user_adm, id_feria]);
@@ -84,9 +82,9 @@ const abrirTiketFeria = async (res, pool, id_feria) => {
           res.status(200).json({ msj: 'Apertura exitosa' });
       } else {
           // Asignar a cualquiera si no hay administradores
-          const cualquierAdministrador = await pool.query('SELECT id_use_adm FROM administrador_municipal LIMIT 1;');
+          const cualquierAdministrador = await pool.query('SELECT id_user_adm FROM administrador_municipal LIMIT 1;');
           if (cualquierAdministrador.rows.length > 0) {
-              const id_user_adm = cualquierAdministrador.rows[0].id_use_adm;
+              const id_user_adm = cualquierAdministrador.rows[0].id_user_adm;
               await pool.query('SELECT insertar_solicitud_apertura($1, $2);', [id_user_adm, id_feria]);
               res.status(200).json({ msj: 'Apertura exitosa (asignado a cualquiera)' });
           } else {
@@ -186,7 +184,7 @@ const UpdateProgramaFeria = async (req, res, pool) => {
   try {
     // Recorre cada elemento de la programación (debe ser un array)
     for (const programa of programacion) {
-      const { dia, hora_inicio, hora_termino, id_dia_armado, hora_inicio_armado, hora_termino_armado, activo } = programa;
+      const { id_dia, hora_inicio, hora_termino, id_dia_armado, hora_inicio_armado, hora_termino_armado, activo } = programa;
       
 
       // Si los datos existen, hacer el UPDATE
@@ -198,8 +196,8 @@ const UpdateProgramaFeria = async (req, res, pool) => {
              hora_inicio_armado = $6,
              hora_termino_armado = $7,
              activo = $8
-         WHERE id_feria = $1 AND dia = $2;`,
-        [id_feria, dia, hora_inicio, hora_termino, id_dia_armado, hora_inicio_armado, hora_termino_armado, activo]
+         WHERE id_feria = $1 AND id_dia = $2;`,
+        [id_feria, id_dia, hora_inicio, hora_termino, id_dia_armado, hora_inicio_armado, hora_termino_armado, activo]
       );
     }
 
@@ -486,75 +484,138 @@ const getPostulacionesEnf = async ( res , pool , id_user_enf) => {
     throw error;  // Lanza el error para que sea capturado por la función que llama
   }
 };
-
-const aceptarPostulacion = async (res, pool,id_postulacion, id_vacante, id_user_fte, ) => {
+const rechazarRestoPostulacion = async (pool, id_vacante) => {
   try {
-    // Comprobamos si existe la postulacion
-    const chek = await pool.query(`
-      SELECT EXISTS (SELECT 1 FROM postulaciones WHERE id_postulacion = $1 AND id_user_fte = $2 AND id_vacante = $3 AND id_estado = 1) AS existe`,
-      [id_postulacion,id_user_fte, id_vacante]
-    );
+    await pool.query(`
+      UPDATE postulaciones
+      SET id_estado = 3
+      WHERE id_vacante = $1 
+    `, [id_vacante]);
+  } catch (error) {
+    console.error("Error al rechazar el resto de postulaciones:", error);
+  }
+}
 
-    // Accede al valor booleano de la consulta
-    if (chek.rows[0].existe) {
-      // Actualiza el estado de la vacante
-      await pool.query(`
-        UPDATE detalle_team_vacante 
-        SET id_user_fte = $1 ,id_estado_vacante = 2 
-        WHERE id_vacante = $2;`, 
-        [ id_user_fte, id_vacante, ]
-      );
 
-      await pool.query(`
-        UPDATE postulaciones 
-        SET id_estado = 2
-        WHERE id_postulacion = $1 AND id_vacante = $2 AND id_user_fte = $3`,[id_postulacion, id_vacante,id_user_fte])
 
+const aceptarPostulacion = async (res, pool, id_postulacion, id_vacante, id_user_fte) => {
+  try {
+    // Intenta actualizar la vacante y la postulación en una sola consulta si cumple las condiciones
+    const result = await pool.query(`
+      WITH actualizacion_vacante AS (
+        UPDATE detalle_team_vacante
+        SET id_user_fte = $1, id_estado_vacante = 2
+        WHERE id_vacante = $2 AND id_user_fte IS NULL
+        RETURNING id_vacante
+      )
+      UPDATE postulaciones
+      SET id_estado = 2
+      WHERE id_postulacion = $3
+        AND id_user_fte = $1
+        AND id_vacante = $2
+        AND id_estado = 1
+        AND EXISTS (SELECT 1 FROM actualizacion_vacante)
+      RETURNING EXISTS (SELECT 1 FROM actualizacion_vacante) AS actualizado;
+    `, [id_user_fte, id_vacante, id_postulacion]);
+    
+    // Verifica si alguna fila fue actualizada (es decir, la postulación existía y se aceptó)
+    if (result.rows[0] && result.rows[0].actualizado) {
+      // Llama a la función para rechazar el resto de las postulaciones
+      await rechazarRestoPostulacion(pool, id_vacante);
       res.status(200).json({ message: 'Vacante aceptada correctamente' });
     } else {
       res.status(404).json({ msj: 'Solicitud de vacante no encontrada' });
     }
   } catch (err) {
-    console.log('Error al aceptar el postulante:', err);
+    console.error('Error al aceptar el postulante:', err);
     res.status(500).json({ msj: 'Error interno del servidor' });
   }
 };
 
- //borra el horario primero y luego la vacante
- const rechazarPostulacion = async (res, pool,id_vacante, id_user_fte) => {
 
-  try{
- 
-   const chek = await pool.query(`
-     
-      SELECT 
-           EXISTS (SELECT 1 FROM postulaciones WHERE id_user_fte = $1 AND id_vacante = $2) AS postulacion_invalida`,
-            [id_user_fte,id_vacante])
- 
-       if(chek.rows > 0) {
-         await pool.query(`
-           UPDATE detalle_team_vacante 
-           SET id_estado_vacante = 2 
-           WHERE id_user_fte = 1$ AND id_vacante = $2 AND id_feria = $3` , [id_user_fte,id_vacante,id_feria])
-          res.status(200).json({message : 'solicitud rechazada correctamente'})
- 
- 
-       }else { 
-         res.status(404).json({msj : 'solicitud de vacante no encontrada'})
-       }
- 
-    
-  }catch (err){
-    console.log('error al rechazar al postulante ' ,err)
+const rechazarPostulacion = async (res, pool, id_postulacion, id_vacante, id_user_fte) => {
+  try {
+    // Intentamos actualizar el estado de la postulación en una sola consulta
+    const result = await pool.query(`
+      UPDATE postulaciones
+      SET id_estado = 3
+      WHERE id_postulacion = $1 AND id_vacante = $2 AND id_user_fte = $3 AND id_estado = 1
+      RETURNING id_postulacion;
+    `, [id_postulacion, id_vacante, id_user_fte]);
+
+    // Si se actualizó alguna fila, significa que la postulación existía y fue rechazada
+    if (result.rows.length > 0) {
+      res.status(200).json({ message: 'Postulación rechazada correctamente' });
+    } else {
+      res.status(404).json({ msj: 'Solicitud de vacante no encontrada' });
     }
+  } catch (err) {
+    console.error('Error al rechazar la postulación:', err);
+    res.status(500).json({ msj: 'Error interno del servidor' });
   }
+};
+
+const recargaStatus = async (res,pool, id_feria) => {
+
+try {
+  const resutl = await pool.query( `
+    SELECT estado FROM feria f 
+    JOIN estado_feria ef ON f.id_estado = ef.id_estado
+    WHERE id_feria = $1`, [id_feria])
+
+    res.json(resutl.rows[0])
+  
+} catch (error) {
+  res.status(500).send('error al cargar el estado')
+
+}
+
+}
+
+
+
+
+const getFeriaBank = async (res,pool, id_feria) => {
+
+  try {
+    const resutl = await pool.query( `
+      SELECT mail_banco FROM FERIA WHERE id_feria = $1`, [id_feria])
+  
+      res.json(resutl.rows[0])
+    
+  } catch (error) {
+    res.status(500).send('error al cargar el estado')
+  
+  }
+  
+  }
+
+
+
+const asociarBankFeria = async (res,pool,mail_banco, id_feria) => {
+  try {
+     await pool.query( `
+     UPDATE feria 
+     set mail_banco = $1
+     WHERE id_feria = $2`, [mail_banco,id_feria])
+
+      res.status(200).json({msj :"feria asociada correctamente al banco"})
+    
+  } catch (error) {
+    res.status(500).send('error al asociar feira ')
+  
+  }
+  
+  }
+
+
 //CAMBIO 
 module.exports = {
   saveFeria,getFeria,get_feria_Encargado,//HOME 
   //ADMINISTRACION DE LA FERIA
-  abrirTiketFeria, 
+  abrirTiketFeria,recargaStatus,
   UpdateProgramaFeria,getPrograma, // MODULO PROGRAMACION DE LA FERIA
-  insertDatosBank,getDatosBank,updateDatosBank,deleteBank,//MODULO BANCOS
+  insertDatosBank,getDatosBank,updateDatosBank,deleteBank ,getFeriaBank,asociarBankFeria,//MODULO BANCOS
   getVacantesFeria,insertVacantesFeria,updateVacanteFeria,deleteVacante,updateHorarioVacante, // MODULO VACANTES
   getPostulacionesEnf,aceptarPostulacion,rechazarPostulacion, //MODULO POSTULACIONES
   createFeria,//FORMULARIO DE FERIA

@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-
 import { Link } from "react-router-dom"
 import { PrivateRoutes } from "../../../models"
 import { Card_feria_encargado } from "./components/ferias_d_encargado/card_feria_encargado"

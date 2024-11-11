@@ -13,19 +13,21 @@ interface Comuna {
 }
 
 interface FiltrosBaseProps {
-  onFilter: (comuna: string) => void;
+  onFilterC: (comuna: number | null) => void;
+  onFilterR: (region: number | null) => void;
 }
 
-export const Filtros_base = ({ onFilter }: FiltrosBaseProps) => {
+export const Filtros_base = ({ onFilterC, onFilterR }: FiltrosBaseProps) => {
   const [regiones, setRegiones] = useState<Region[]>([]);
   const [comunas, setComunas] = useState<Comuna[]>([]);
   const [selectedRegion, setSelectedRegion] = useState<number | null>(null);
-  const [selectedComuna, setSelectedComuna] = useState('');
+  const [selectedComuna, setSelectedComuna] = useState<number | null>(null);
+  const [searchTerm, setSearchTerm] = useState(''); // Estado para el término de búsqueda
 
   useEffect(() => {
     // Carga ambos JSON dinámicamente y transforma los datos
     Promise.all([
-      import('../../../../pages.privadas/perfil_encargado/components/formulario/regiones.json')
+      import('../../../../../assets/regiones.json')
         .then((data) =>
           setRegiones(
             data.default.map((region: { id_region: number; region: string }) => ({
@@ -34,7 +36,7 @@ export const Filtros_base = ({ onFilter }: FiltrosBaseProps) => {
             }))
           )
         ),
-      import('../../../../pages.privadas/perfil_encargado/components/formulario/comunas.json')
+      import('../../../../../assets/comunas.json')
         .then((data) =>
           setComunas(
             data.default.map((comuna: { id_comuna: number; id_region: number; comuna: string }) => ({
@@ -47,16 +49,19 @@ export const Filtros_base = ({ onFilter }: FiltrosBaseProps) => {
     ]).catch((error) => console.error('Error al cargar los JSON:', error));
   }, []);
 
-  const handleRegionClick = (regionId: number) => {
+  const handleRegionClick = (regionId: number , ) => {
     setSelectedRegion(regionId);
-    setSelectedComuna(''); // Reseteamos la comuna al seleccionar una nueva región
-    onFilter(''); // Reseteamos el filtro al cambiar de región
+    onFilterR(regionId)
+    setSelectedComuna(null);
+    setSearchTerm(''); // Reseteamos el término de búsqueda al cambiar de región
+    onFilterC(null);
   };
 
-  const handleComunaChange = (comuna: string) => {
-    setSelectedComuna(comuna);
-    onFilter(comuna);
+  const handleComunaClick = (comunaId: number | null) => {
+    setSelectedComuna(comunaId);
+    onFilterC(comunaId);
   };
+
 
   return (
     <div style={{ margin: '20px 0', display: 'flex', flexDirection: 'column' }}>
@@ -117,29 +122,91 @@ export const Filtros_base = ({ onFilter }: FiltrosBaseProps) => {
           >
             Selecciona una Comuna:
           </label>
-          <select
-            value={selectedComuna}
-            onChange={(e) => handleComunaChange(e.target.value)}
+
+          <input
+            type="text"
+            placeholder="Buscar comuna..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
             style={{
-              width: '100%',
               padding: '10px',
               borderRadius: '6px',
               border: '2px solid #007bff',
               fontSize: '16px',
               color: '#333',
-              fontWeight: 'bold',
-              transition: 'border-color 0.3s ease',
+              marginBottom: '10px',
+            }}
+          />
+     
+
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '8px',
+              maxHeight: '300px',
+              overflowY: 'auto',
             }}
           >
-            <option value="">Todas las Comunas</option>
+            <button
+              onClick={() => handleComunaClick(null)}
+              style={{
+                padding: '10px 15px',
+                borderRadius: '6px',
+                border: '2px solid #007bff',
+                backgroundColor: selectedComuna === null ? '#007bff' : '#f8f9fa',
+                color: selectedComuna === null ? '#fff' : '#007bff',
+                cursor: 'pointer',
+                fontSize: '16px',
+                fontWeight: 'bold',
+                textAlign: 'left',
+                transition: 'background-color 0.3s ease',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
+              Todas las Comunas
+            </button>
             {comunas
-              .filter((comuna) => comuna.regionId === selectedRegion) // Filtra las comunas por la región seleccionada
+              .filter((comuna) =>
+                comuna.regionId === selectedRegion &&
+                comuna.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+              )
               .map((comuna) => (
-                <option key={comuna.id} value={comuna.nombre}>
+                <button
+                  key={comuna.id}
+                  onClick={() => handleComunaClick(comuna.id)}
+                  style={{
+                    padding: '10px 15px',
+                    borderRadius: '6px',
+                    border: '2px solid #007bff',
+                    backgroundColor: selectedComuna === comuna.id ? '#007bff' : '#f8f9fa',
+                    color: selectedComuna === comuna.id ? '#fff' : '#007bff',
+                    cursor: 'pointer',
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    textAlign: 'left',
+                    transition: 'background-color 0.3s ease',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}
+                >
                   {comuna.nombre}
-                </option>
+                  {selectedComuna === comuna.id && (
+                    <span
+                      style={{
+                        fontSize: '18px',
+                        color: '#fff',
+                      }}
+                    >
+                      &#x2714;
+                    </span>
+                  )}
+                </button>
               ))}
-          </select>
+          </div>
         </div>
       )}
     </div>

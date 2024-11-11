@@ -4,6 +4,7 @@ import 'react-tabs/style/react-tabs.css';
 import LoginEncargado from './components/login_encargado';
 import LoginFeriante from './components/login_feriante';
 import LoginMunicipal from './components/login_municipal';
+import {Recuperacion } from './recuperacion';
 import { useEffect } from 'react';
 import { clearLocalStorage } from '../../../utilities/localStorage.utilities';
 import { resetUser, UserKey } from '../../../redux/states/user';
@@ -27,6 +28,7 @@ export const LoginHome = () => {
                 <Tab>Encargado</Tab>
                 <Tab>Feriante</Tab>
                 <Tab>Municipal</Tab>
+                <Tab>Recuperar Contraseña</Tab>
             </TabList>
 
             <TabPanel>
@@ -37,6 +39,9 @@ export const LoginHome = () => {
             </TabPanel>
             <TabPanel>
                 <LoginMunicipal />
+            </TabPanel>
+            <TabPanel>
+                <Recuperacion  /> 
             </TabPanel>
         </Tabs>
     );

@@ -12,15 +12,15 @@ router.post('/getSoliAper', (req , res) => {
 
   router.post('/confirmSoli', (req , res) => {
     const pool = req.pool;
-    const {id_user_adm} = req.body;
-    confirmSoli(res,pool,id_user_adm);
+    const {id_feria , id_solicitud} = req.body;
+    confirmSoli(res,pool,id_feria , id_solicitud);
   })
 
 
   router.post('/declineSoli', (req , res) => {
     const pool = req.pool;
-    const {id_user_adm} = req.body;
-    declineSoli(res,pool,id_user_adm);
+    const {id_feria , id_solicitud} = req.body;
+    declineSoli(res,pool,id_feria , id_solicitud);
   })
 
 

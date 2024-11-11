@@ -1,11 +1,10 @@
-import { Link } from "react-router-dom"
+// HomeSupervisor.tsx
+import { useParams } from "react-router-dom";
+import GestionSupervisor from "./GestionSupervisor";
 
 export const HomeSupervisor = () => {
-  return (
-    <div>
-      <h1>Supervisor - Home</h1>
-      <Link to="/GestionSupervisor">Gestionar Feria</Link>
-      <Link to="/postulaciones">Postulaciones</Link>
-    </div>
-  )
-}
+  const { id_feria } = useParams<{ id_feria: string }>(); 
+  return id_feria ? <GestionSupervisor id_feria={parseInt(id_feria, 10)} /> : null; 
+};
+
+export default HomeSupervisor;

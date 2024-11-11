@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { solicitud } from "../../../models/interfaces";
 import { solisaperService } from "../rxjs/soliaper";
+import { confirmSoli, declineSoli } from "../services/traer_soli_municipal";
 
 
 
@@ -22,15 +23,17 @@ useEffect(() => {
     <>
         <div className="ferias">
             {solicitudes.map((solicitud,index) => (
-                <div className="card" key={index}>
+                <div className="card" key={solicitud.id_solicitud}>
                     <ul>
-                        <li> feria :  {solicitud.idFeria} </li>
-                        <li> encargado mail  : {solicitud.encargadoMail} </li>
-                        <li> estado solicitud : {solicitud.estado} </li>
-             
-                        <button>aceptar</button>
-                        <button>rechazar</button>
-       
+                    <li> solicitante  : {solicitud.nombre_solicitante} </li>
+                    <li> correo del solicitante : {solicitud.enf_mail} </li>
+                    <li> telefono del solicitante  : {solicitud.enf_fono} </li>
+                    <li> feria solicitada :  {solicitud.nombre_feria} </li>
+                    <li> estado solicitud : {solicitud.estado} </li>
+        
+                <button onClick={() => confirmSoli(index ,solicitud.id_solicitud,solicitud.id_feria)}>aceptar</button>
+                <button onClick={() => declineSoli(index,solicitud.id_solicitud,solicitud.id_feria)}>rechazar</button>
+ 
                                 
                     </ul>
                 </div>
@@ -39,7 +42,5 @@ useEffect(() => {
     </>
 );
 
-
-  
   
 }

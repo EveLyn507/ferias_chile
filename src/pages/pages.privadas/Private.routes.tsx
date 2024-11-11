@@ -1,7 +1,7 @@
 import { PrivateRoutes } from '../../models/index.ts';
 
 import  {NotFound}  from '../../models/index.ts';
-import {  Route } from 'react-router-dom';
+import {   Route } from 'react-router-dom';
 import { Logout } from '../../components/index';
 import RoleGuard from '../../guard/rol.guard.tsx';
 import { Roles } from '../../models/rol.ts';
@@ -14,12 +14,14 @@ import { HomeSupervisor } from './perfil_feriante/components/supervisor/homeSupe
 import { HomeTeam } from './perfil_encargado/components/team/homeTeam.tsx';
 import { HomePostulaciones } from './perfil_feriante/components/postulaciones/homePostulaciones.tsx';
 
-function Privado(){
+
+
+function Privado() {
+
   return (
     <>
      <Logout/>
-    <NotFound>
-
+    <NotFound> 
     <Route element={<RoleGuard rol={Roles.ENCARGADO} />}>
       <Route path={PrivateRoutes.PERFILENCARGADO} element={<PerfilEn />} />
       <Route path={`${PrivateRoutes.ADMINFERIA}`} element={<Admin_de_feria />} />
@@ -29,7 +31,7 @@ function Privado(){
 
     <Route element={<RoleGuard rol={Roles.FERIANTE} />}>
       <Route path={PrivateRoutes.PERFILFERIANTE} element={<Perfil_feriante />} />
-      <Route path={PrivateRoutes.SUPERVISOR} element={< HomeSupervisor/>} />
+      <Route path={PrivateRoutes.SUPERVISOR} element={<HomeSupervisor />} />
       <Route path={PrivateRoutes.POSTULACIONES} element={< HomePostulaciones/>} />
     </Route>
 
