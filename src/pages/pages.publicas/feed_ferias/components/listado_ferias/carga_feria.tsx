@@ -4,7 +4,6 @@ import { Feria } from '../../../../models/interfaces';
 import { traerFerias } from '../../services/traer_ferias';
 import Paginacion from './paginacion';
 import { CardFerias } from './card_feria';
-import { paginacionService } from './sharingPaginacion';
 import '../../../../../css/base.css'
 
 // Define la interfaz para los objetos de feria

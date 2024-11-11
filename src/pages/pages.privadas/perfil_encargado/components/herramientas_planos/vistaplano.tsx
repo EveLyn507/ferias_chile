@@ -6,7 +6,6 @@ import { setIdFeria } from '../../../../../redux/states/user';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import './plano.css';
 
 export interface Rectangle {
   id: number;
@@ -47,94 +46,145 @@ interface FeriaData {
   planHeight: number;
 }
 
-const API_URL = 'http://localhost:5000';
+  const API_URL = 'http://localhost:5000';
 
-const Vista = () => {
-  const [rectangles, setRectangles] = useState<Rectangle[]>([]);
-  console.log(rectangles);
-  const [planWidth, setPlanWidth] = useState<number>(600);
-  const [planHeight, setPlanHeight] = useState<number>(400);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const [areas, setAreas] = useState<Area[]>([]);
-  const [streets, setStreets] = useState<Street[]>([]);
-  const { id_feria } = useParams<{ id_feria: string }>();
-  const [selectedRectangleId, setSelectedRectangleId] = useState<number | null>(null);
-  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
-  const [selectedPuesto, setSelectedPuesto] = useState<Rectangle | null>(null);
-  const [totalPuestos, setTotalPuestos] = useState<number>(0);
-  const dispatch = useDispatch();
+  const Vista = () => {
+    const [puestos, setPuestos] = useState<Rectangle[]>([]); //lista de los puestos
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
+    const [calles, setCalles] = useState<Street[]>([]);
+    const { id_feria } = useParams<{ id_feria: string }>();
+    const idFeria = id_feria ? parseInt(id_feria) : 0
+    const [selectedRectangleId, setSelectedRectangleId] = useState<number | null>(null);
+    const [togleMenuD, setTogleMenuD] = useState<boolean>(false); // controla si menu derecha esta abierto o cerrado
+    const [selectedPuesto, setSelectedPuesto] = useState<Rectangle | null>(null); // detecta el puesto clikeado
+    const [totalPuestos, setTotalPuestos] = useState<number>(0);
+  // tamaño del canvas
+    const [planWidth, setPlanWidth] = useState<number>(600); 
+    const [planHeight, setPlanHeight] = useState<number>(400);
 
-  const fetchFeriaData = async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const response = await axios.get(`${API_URL}/api/feria/${id_feria}`);
-      const data: FeriaData = response.data;
-      setRectangles(data.puestos);
-      setAreas(data.areas);
-      setStreets(data.calles);
-      setPlanWidth(data.planWidth);
-      setPlanHeight(data.planHeight);
-    } catch (error) {
-      console.error('Error al obtener los datos de la feria:', error);
-      setError('Error al obtener los datos de la feria');
-    } finally {
-      setIsLoading(false);
+    //carga de los puestos de la feria y su json
+    
+
+    useEffect(() => {
+      const fetchFeriaData = async () => {
+        setIsLoading(true);
+        setError(null);
+        try {
+          const response = await axios.get(`${API_URL}/api/feria/${id_feria}`);
+          const data: FeriaData = response.data;
+          await setPuestos(data.puestos);
+          await setCalles(data.calles);
+          await setPlanWidth(data.planWidth);
+          await setPlanHeight(data.planHeight);
+        } catch (error) {
+          console.error('Error al obtener los datos de la feria:', error);
+          setError('Error al obtener los datos de la feria');
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      fetchFeriaData()
+    
+    }, []);
+
+    useEffect(() => {
+      const fetchTotalPuestos = async () => {
+        try {
+          const response = await axios.get(`${API_URL}/api/puestos/${id_feria}`);
+          setTotalPuestos(response.data);
+        } catch (error) {
+          console.error('Error al obtener el total de puestos:', error);
+        }
+      };
+
+      fetchTotalPuestos();
+    }, []);
+    
+
+
+  //ACTUALIZA EL JSON
+
+
+  const updateFeriajson = async (
+    updatedPuestos?: Rectangle[],
+    updatedCalles?: Street[],  // Ajusta el tipo según el tipo de 'calles'
+    updatedIdFeria?: number,
+    updatedPlanWidth?: number,
+    updatedPlanHeight?: number
+  ) => {
+    // Usamos los valores pasados como parámetros o los valores por defecto
+    const feriaData: FeriaData = {
+      puestos: updatedPuestos || puestos,  // Usa 'updatedPuestos' si se pasa, o 'puestos' como predeterminado
+      calles: updatedCalles || calles,  // Usa 'updatedCalles' si se pasa, o 'calles' como predeterminado
+      id_feria: updatedIdFeria || idFeria,  // Usa 'updatedIdFeria' si se pasa, o 'id_feria' como predeterminado
+      planWidth: updatedPlanWidth || planWidth,  // Usa 'updatedPlanWidth' si se pasa, o 'planWidth' como predeterminado
+      planHeight: updatedPlanHeight || planHeight,  // Usa 'updatedPlanHeight' si se pasa, o 'planHeight' como predeterminado
+    };
+  
+    await UpdateJsonFeria(feriaData);
+    console.log(feriaData);
+  };
+  
+
+    const AddPuesto = async (totalPuestos: number) => {
+      const newPuestoJson: Rectangle = {
+        x: 60,
+        y: 60,
+        width: 100,
+        height: 100,
+        fill: 'green',
+        id: Date.now(),
+        numero: totalPuestos + 1,
+      };
+    
+      // Actualizamos la referencia de puestos
+      const updatedPuestos = [...puestos, newPuestoJson];
+    
+      // Actualizamos el estado de puestos, pero ahora estamos usando la ref para asegurar que siempre tengamos el valor más reciente
+      setPuestos(updatedPuestos);
+      CreatePuesto(idFeria)
+      // Actualizamos el total de puestos
+      setTotalPuestos(totalPuestos + 1);
+    
+      // Llamamos a updateFeriajson después de que todo haya cambiado
+      updateFeriajson(updatedPuestos);
+    };
+    
+
+    const handleSaveJson = async() => {
+      updateFeriajson()
     }
-  };
 
-  useEffect(() => {
-    fetchFeriaData();
-  }, [id_feria]);
-
-  useEffect(() => {
-    const fetchTotalPuestos = async () => {
-      try {
-        const response = await axios.get(`${API_URL}/api/puestos/${id_feria}`);
-        setTotalPuestos(response.data);
-      } catch (error) {
-        console.error('Error al obtener el total de puestos:', error);
-      }
-    };
-
-    fetchTotalPuestos();
-  }, []);
-
-  const handleAddRectangle = async (totalPuestos: number) => {
-    await setTotalPuestos(totalPuestos + 1);
-    const newRectangle: Rectangle = {
-      x: 60,
-      y: 60,
-      width: 100,
-      height: 100,
-      fill: 'green',
-      id: Date.now(),
-      numero: totalPuestos + 1,
-    };
-    setRectangles((prev) => [...prev, newRectangle]);
-  };
-
-  const handleRemoveRectangle = (id: number) => {
-    setRectangles((prev) => prev.filter((rect) => rect.id !== id));
-    setIsMenuOpen(false);
-  };
-
-  const handleRectangleClick = (id: number) => {
-    const clickedRectangle = rectangles.find((rect) => rect.id === id);
-    setSelectedRectangleId(id);
-    setSelectedPuesto(clickedRectangle || null);
-    setIsMenuOpen(true);
-  };
-
-  const handleSavePuesto = (updatedPuesto: Partial<Rectangle>) => {
+  //agrega el puesto a la lista local
+  const updatePuesto = (updatedPuesto: Partial<Rectangle>) => {
     if (selectedPuesto) {
-      setRectangles((prev) =>
-        prev.map((rect) => (rect.id === selectedRectangleId ? { ...rect, ...updatedPuesto } : rect))
+      setPuestos((prevPuestos) =>
+        prevPuestos.map((puesto) => (puesto.id === selectedRectangleId ? { ...puesto, ...updatedPuesto } : puesto))
       );
-      setIsMenuOpen(false);
+      setTogleMenuD(false);
     }
   };
+
+
+
+
+
+  const RemovePuesto = (id: number) => {
+    setPuestos((prevPuestos) => prevPuestos.filter((puesto) => puesto.id !== id));
+    setTogleMenuD(false);
+  };
+
+
+  const toggleMenuDerecha = (id: number) => {
+    const PuestoCliked = puestos.find((puesto) => puesto.id === id);
+    setSelectedRectangleId(id);
+    setSelectedPuesto(PuestoCliked || null);
+    setTogleMenuD(true);
+  };
+
+
 
   const handleAddStreet = () => {
     const newStreet: Street = {
@@ -145,120 +195,74 @@ const Vista = () => {
       width: 50,
       height: 100,
     };
-    setStreets((streets) => [...streets, newStreet]);
-  };
+      // Actualizamos la referencia de calles
+      const updatedcalles = [...calles, newStreet];
+    
+      // Actualizamos el estado de calles, pero ahora estamos usando la ref para asegurar que siempre tengamos el valor más reciente
+      setCalles(updatedcalles);
+      // Llamamos a updateFeriajson después de que todo haya cambiado
+      updateFeriajson(undefined,updatedcalles);
 
-  const handleAddArea = () => {
-    const newArea: Area = {
-      id: Date.now(),
-      name: `Área ${areas.length + 1}`,
-      x: 200,
-      y: 200,
-      width: 150,
-      height: 150,
-    };
-    setAreas([...areas, newArea]);
-  };
-
-  const handleRemoveArea = (id: number) => {
-    setAreas(areas.filter((area) => area.id !== id));
-  };
-
-  const handleUpdateArea = (id: number, updatedProps: Partial<Area>) => {
-    setAreas(areas.map((area) => (area.id === id ? { ...area, ...updatedProps } : area)));
   };
 
   const handleUpdateStreet = (id: number, updatedProps: Partial<Street>) => {
-    setStreets(streets.map((street) => (street.id === id ? { ...street, ...updatedProps } : street)));
+    setCalles(calles.map((street) => (street.id === id ? { ...street, ...updatedProps } : street)));
   };
 
   const handleRemoveStreet = (id: number) => {
-    setStreets(streets.filter((street) => street.id !== id));
+    setCalles(calles.filter((street) => street.id !== id));
   };
 
-  const handleSaveFeria = async () => {
-    const feriaData = {
-      puestos: rectangles,
-      areas: areas,
-      calles: streets,
-      id_feria: id_feria,
-      planWidth: planWidth,
-      planHeight: planHeight,
-    };
 
-    try {
-      const response = await fetch(`${API_URL}/api/feria`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(feriaData),
-      });
+    return (
+      <div className="app">
 
-      const result = await response.json();
+        <header className="header">
+          <h1>Ferias Chile</h1>
+        </header>
 
-      if (!response.ok) {
-        throw new Error('Error al guardar la feria: ' + result.error);
-      }
+        <div className="main-content" style={{ display: 'flex', flexDirection: 'row', height: '100vh' }}>
+          <div style={{ flex: 1, padding: '10px' }}>
+            {isLoading && <p>Cargando...</p>}
+            {error && <p style={{ color: 'red' }}>{error}</p>}
 
-      const feriaId = result.id_feria;
-      console.log('Feria guardada con ID:', feriaId);
-
-      dispatch(setIdFeria(feriaId));
-
-      alert('Feria guardada correctamente');
-    } catch (error) {
-      console.error('Error al guardar la feria:', error);
-    }
-  };
-
-  return (
-    <div className="app">
-      <header className="header">
-        <h1>Ferias Chile</h1>
-      </header>
-
-      <div className="main-content">
-        <div className="canvas-container">
-          {isLoading && <p>Cargando...</p>}
-          <Toolbar
-            onAddRectangle={() => handleAddRectangle(totalPuestos)}
-            onAddArea={handleAddArea}
-            onAddStreet={handleAddStreet}
-          />
-          {error && <p className="error">{error}</p>}
-          <Canvas
-            rectangles={rectangles}
-            setRectangles={setRectangles}
-            onRectangleClick={handleRectangleClick}
-            planWidth={planWidth}
-            planHeight={planHeight}
-            setPlanWidth={setPlanWidth}
-            setPlanHeight={setPlanHeight}
-            areas={areas}
-            onRemoveArea={handleRemoveArea}
-            streets={streets}
-            onUpdateArea={handleUpdateArea}
-            onUpdateStreet={handleUpdateStreet}
-            onRemoveStreet={handleRemoveStreet}
-          />
-        </div>
-
-        <div className="menu-derecha">
-          {isMenuOpen && selectedPuesto && (
-            <MenuDerecha
-              selectedPuesto={selectedPuesto}
-              onSavePuesto={handleSavePuesto}
-              onRemoveRectangle={handleRemoveRectangle}
-              onClose={() => setIsMenuOpen(false)}
-              onSaveFeria={handleSaveFeria}
-              isLoading={isLoading}
+            <Toolbar 
+            onAddPuesto={()=>AddPuesto(totalPuestos)} 
+            handleSaveJson={handleSaveJson}
+            onAddStreet={handleAddStreet} 
             />
-          )}
+
+
+            <Canvas
+              puestos={puestos}
+              setPuestos={setPuestos}
+              onPuestoClick={toggleMenuDerecha}
+              planWidth={planWidth}
+              planHeight={planHeight}
+              setPlanWidth={setPlanWidth}
+              setPlanHeight={setPlanHeight}
+              calles={calles}
+              onUpdateStreet={handleUpdateStreet}
+              onRemoveStreet={handleRemoveStreet}
+            />
+          </div>
+
+
+          <div >
+            {togleMenuD && selectedPuesto && (
+              <MenuDerecha
+                selectedPuesto={selectedPuesto}
+                onUpdatePuesto={updatePuesto}
+                onRemoveRectangle={RemovePuesto}
+                onClose={() => setTogleMenuD(false)}
+                isLoading={isLoading}
+              />
+            )}
+          </div>
+
         </div>
       </div>
-    </div>
-  );
-};
+    );
+  };
 
-export default Vista;
+  export default Vista;

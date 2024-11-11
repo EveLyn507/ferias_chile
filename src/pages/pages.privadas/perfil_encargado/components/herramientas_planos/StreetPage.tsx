@@ -1,28 +1,16 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from 'react';
 import { Rect, Circle } from 'react-konva';
+import { StreetPageProps } from './models/streetModels';
 
-interface Street {
-  id: number;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  isStatic: boolean;  // Propiedad isStatic para controlar si es estático
-}
 
-interface StreetPageProps {
-  streets: Street[];
-  onRemoveStreet: (id: number) => void;
-  onUpdateStreet: (id: number, updatedProps: Partial<Street>) => void;
-  isStatic?: boolean;  // Propiedad isStatic adicional para controlar la edición
-}
 
-const StreetPage: React.FC<StreetPageProps> = ({ streets, onRemoveStreet, onUpdateStreet, isStatic = false }) => {
+const StreetPage: React.FC<StreetPageProps> = ({ calles, onRemoveStreet, onUpdateStreet, isStatic = false }) => {
   const [selectedStreetId, setSelectedStreetId] = useState<number | null>(null);
 
   // Función para manejar el arrastre de las calles
   const handleDragStreet = (e: any, streetId: number) => {
-    const street = streets.find((street) => street.id === streetId);
+    const street = calles.find((street) => street.id === streetId);
     if (!street || street.isStatic || isStatic) return; // No mover si es estático
 
     const newX = e.target.x();
@@ -32,7 +20,7 @@ const StreetPage: React.FC<StreetPageProps> = ({ streets, onRemoveStreet, onUpda
 
   // Función para manejar el redimensionamiento de las calles
   const handleResizeStreet = (e: any, streetId: number, side: 'right' | 'bottom') => {
-    const street = streets.find((street) => street.id === streetId);
+    const street = calles.find((street) => street.id === streetId);
     if (!street || street.isStatic || isStatic) return; // No redimensionar si es estático
 
     const newWidth = side === 'right' ? e.target.x() - street.x : street.width;
@@ -44,7 +32,7 @@ const StreetPage: React.FC<StreetPageProps> = ({ streets, onRemoveStreet, onUpda
 
   return (
     <>
-      {streets.map((street) => {
+      {calles.map((street) => {
         // Tamaño por defecto para las calles si no se ha definido
         const defaultWidth = 50000;  // Nuevo tamaño mayor por defecto
         const defaultHeight = 50000;  // Nuevo tamaño mayor por defecto

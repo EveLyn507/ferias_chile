@@ -1,116 +1,60 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { AppStore } from "../../../../../redux/store";
+
+import {  useState } from "react";
 import { useParams } from "react-router-dom";
+import { datosPuesto,  Rectangle } from "./models/vistaplanoModels";
+import './css/menuD.css'; // Importa el archivo CSS
+import { UpdatePuesto } from "./services/funcionesHP";
 
-interface Horario {
-  hora_inicio: string;
-  hora_termino: string;
-  precio: number;
-  num_horario: number;
-  id_puesto: number;
-}
-
-interface Rectangle {
-  id: number;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  fill: string;
-  descripcion?: string;
-  tipoPuesto?: string;
-  estadoPuesto?: string;
-  id_feria?: number;
-  horario?: Horario;
-  numero?: number;
-}
-
-const API_URL = "http://localhost:5000";
 
 interface MenuDerechaProps {
-  selectedPuesto: Rectangle | null;
-  onSavePuesto: (updatedPuesto: Partial<Rectangle>) => void;
+  selectedPuesto: Rectangle ;
+  onUpdatePuesto: (updatedPuesto: Partial<Rectangle>) => void;
   onRemoveRectangle: (id: number) => void;
   onClose: () => void;
-  onSaveFeria: () => void;
   isLoading: boolean;
 }
 
+
+
 const MenuDerecha: React.FC<MenuDerechaProps> = ({
   selectedPuesto,
-  onSavePuesto,
+  onUpdatePuesto,
   onRemoveRectangle,
   onClose,
-  onSaveFeria,
-  isLoading,
-}) => {
-  const idPuesto = useSelector((store: AppStore) => store.user.id_puesto);
-  const { id_feria } = useParams<{ id_feria: string }>();
-
-  const [descripcion, setDescripcion] = useState(selectedPuesto?.descripcion || "");
-  const [tipoPuesto, setTipoPuesto] = useState(selectedPuesto?.tipoPuesto || "");
-  const [estadoPuesto, setEstadoPuesto] = useState(selectedPuesto?.estadoPuesto || "");
-  const [horaInicio, setHoraInicio] = useState("");
-  const [horaTermino, setHoraTermino] = useState("");
-  const [precio, setPrecio] = useState(0);
-  const [numHorario, setNumHorario] = useState(0);
-  
-
-  useEffect(() => {
-    if (selectedPuesto) {
-      setDescripcion(selectedPuesto.descripcion || "");
-      setTipoPuesto(selectedPuesto.tipoPuesto || "");
-      setEstadoPuesto(selectedPuesto.estadoPuesto || "");
-    }
-  }, [selectedPuesto]);
-
-  const handleSave = async () => {
-    if (!selectedPuesto) {
-      console.error("No hay puesto seleccionado.");
-      return;
-    }
+  isLoading,}) => {
     
 
-    // Validación básica de datos
-    if (!horaInicio || !horaTermino || !precio || !numHorario) {
-      console.error("Todos los campos deben ser completados.");
+  
+  const { id_feria } = useParams<{ id_feria: string }>();
+  const [descripcion, setDescripcion] = useState(selectedPuesto.descripcion);
+  const [tipoPuesto, setTipoPuesto] = useState(selectedPuesto.tipoPuesto);
+  const [estadoPuesto, setEstadoPuesto] = useState(selectedPuesto.estadoPuesto);
+  const [precio, setPrecio] = useState(0);
+
+
+
+  const ActualizarPuesto = async () => {
+    if (!selectedPuesto || selectedPuesto.numero === undefined) {
+      console.error("Error: `selectedPuesto` o `numero` no están definidos.");
       return;
     }
-
-    const horarioData = {
-      hora_inicio: horaInicio,
-      hora_termino: horaTermino,
-      precio,
-      num_horario: numHorario,
-      id_puesto: idPuesto,
-    };
-
-    const updatedPuesto = {
-      numero: selectedPuesto.numero,
+    const puestoUpdated: datosPuesto = {
       id_tipo_puesto: Number(tipoPuesto),
-      id_feria: selectedPuesto.id_feria || id_feria,
-      descripcion,
+      numero: selectedPuesto!.numero, 
+      descripcion: descripcion? descripcion :  '',
+      id_feria: Number(id_feria),
       id_estado_puesto: Number(estadoPuesto),
-      horarioData,
+
     };
 
-    try {
-      const response = await axios.post(`${API_URL}/api/puestos`, updatedPuesto);
-      console.log("Puesto creado:", response.data);  
-      onSavePuesto(response.data);
-    } catch (error) {
-      console.error("Error al crear puesto:", error);
+
+    //llamado a la funcion en services , luego udaptea en local 
+    const resutl = await UpdatePuesto(puestoUpdated)
+    if(resutl === true) {
+
+      onUpdatePuesto(puestoUpdated)
     }
 
-    if (onSaveFeria) {
-      onSaveFeria();
-    }
-  };
-
-  if (!selectedPuesto) {
-    return null;
   }
 
   return (
@@ -148,23 +92,8 @@ const MenuDerecha: React.FC<MenuDerechaProps> = ({
           <option value="3">Mantenimiento</option>
         </select>
       </div>
-      <div className="input-group">
-        <label>Hora de Inicio:</label>
-        <input
-          type="time"
-          value={horaInicio}
-          onChange={(e) => setHoraInicio(e.target.value)}
-        />
-      </div>
-      <div className="input-group">
-        <label>Hora de Término:</label>
-        <input
-          type="time"
-          value={horaTermino}
-          onChange={(e) => setHoraTermino(e.target.value)}
-        />
-      </div>
-      <div className="input-group">
+ 
+      <div>
         <label>Precio:</label>
         <input
           type="number"
@@ -172,16 +101,9 @@ const MenuDerecha: React.FC<MenuDerechaProps> = ({
           onChange={(e) => setPrecio(parseFloat(e.target.value))}
         />
       </div>
-      <div className="input-group">
-        <label>Número de Horario:</label>
-        <input
-          type="number"
-          value={numHorario}
-          onChange={(e) => setNumHorario(parseInt(e.target.value))}
-        />
-      </div>
+
       <button
-        onClick={handleSave}
+        onClick={ActualizarPuesto}
         disabled={isLoading}
         className="menu-button save-button"
       >
