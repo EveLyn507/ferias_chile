@@ -1,54 +1,23 @@
+
 import { Stage, Layer, Rect, Line, Image as KonvaImage, Text } from 'react-konva';
 import { useState, useEffect, useCallback } from 'react';
-import AreaPage from './Areapage';
 import StreetPage from './StreetPage';
 import React from 'react';
+import { CanvasProps } from './models/canvasModels';
+import { Rectangle } from './models/vistaplanoModels';
 
-export interface Rectangle {
-  id: number;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  fill: string;
-  descripcion?: string;
-  tipoPuesto?: string;
-  estadoPuesto?: string;
-  numero?: number;
-}
-
-interface CanvasProps {
-  rectangles: Rectangle[];
-  setRectangles: React.Dispatch<React.SetStateAction<Rectangle[]>>;
-  planWidth: number;
-  planHeight: number;
-  setPlanWidth: (width: number) => void;
-  setPlanHeight: (height: number) => void;
-  areas: any[];
-  onRemoveArea: (id: number) => void;
-  streets: any[];
-  onUpdateArea: (id: number, updatedProps: any) => void;
-  onUpdateStreet: (id: number, updatedProps: any) => void;
-  onRemoveStreet: (id: number) => void;
-  onRectangleClick: (id: number) => void;
-  isStatic?: boolean;
-  onStreetClick?: (id: number) => void;
-}
 
 const Canvas: React.FC<CanvasProps> = ({
-  rectangles,
-  setRectangles,
+  puestos,
+  setPuestos,
   planWidth,
   planHeight,
   setPlanWidth,
   setPlanHeight,
-  areas,
-  onRemoveArea,
-  streets,
-  onUpdateArea,
+  calles,
   onUpdateStreet,
   onRemoveStreet,
-  onRectangleClick,
+  onPuestoClick,
   isStatic = false,
 }) => {
   const planX = 50;
@@ -130,7 +99,7 @@ const Canvas: React.FC<CanvasProps> = ({
       </Layer>
 
       <Layer>
-        {rectangles.map((rect) => {
+        {puestos.map((rect) => {
           const { metersWidth, metersHeight } = calculateDimensionsInMeters(rect.width, rect.height);
 
           return (
@@ -142,13 +111,13 @@ const Canvas: React.FC<CanvasProps> = ({
                 width={rect.width}
                 height={rect.height}
                 draggable={!isStatic} // Condicional para habilitar o deshabilitar el arrastre
-                onClick={!isStatic ? () => onRectangleClick(rect.id) : undefined}
+                onClick={!isStatic ? () => onPuestoClick(rect.id) : undefined}
                 onDragEnd={(e) => {
                   if (!isStatic) {
-                    const updatedRectangles = rectangles.map((r) =>
+                    const updatedpuestos = puestos.map((r) =>
                       r.id === rect.id ? { ...r, x: e.target.x(), y: e.target.y() } : r
                     );
-                    setRectangles(updatedRectangles);
+                    setPuestos(updatedpuestos);
                   }
                 }}
               />
@@ -187,10 +156,10 @@ const Canvas: React.FC<CanvasProps> = ({
                     const newWidth = Math.max(controlSize, pos.x - rect.x);
                     const newHeight = Math.max(controlSize, pos.y - rect.y);
 
-                    const updatedRectangles = rectangles.map((r) =>
+                    const updatedpuestos = puestos.map((r) =>
                       r.id === rect.id ? { ...r, width: newWidth, height: newHeight } : r
                     );
-                    setRectangles(updatedRectangles);
+                    setPuestos(updatedpuestos);
 
                     return pos;
                   }}
@@ -199,8 +168,7 @@ const Canvas: React.FC<CanvasProps> = ({
             </React.Fragment>
           );
         })}
-        <AreaPage areas={areas} onRemoveArea={onRemoveArea} onUpdateArea={onUpdateArea} />
-        <StreetPage streets={streets} onRemoveStreet={onRemoveStreet} onUpdateStreet={onUpdateStreet} />
+        <StreetPage calles={calles} onRemoveStreet={onRemoveStreet} onUpdateStreet={onUpdateStreet} />
       </Layer>
     </Stage>
   );

@@ -102,7 +102,7 @@ const abrirTiketFeria = async (res, pool, id_feria) => {
 //HERRAMIENTA DE PLANOS
 // Controlador para guardar la feria
 const saveFeria = async (req, res) => {
-  const { puestos, areas, calles, planWidth, planHeight, id_feria } = req.body; // Incluye id_feria en la desestructuración
+  const { puestos, areas, calles, planWidth, planHeight, id_feria } = req.body.Updatedpuesto; // Incluye id_feria en la desestructuración
   const pool = req.pool;
 
   try {
@@ -155,6 +155,58 @@ const getFeria = async (req, res) => {
 };
 
 
+
+
+//crea el puesto y retorna su id , si ya existe lo actualiza
+const CreatePuesto = async (res, pool , id_feria ) => {
+try { 
+      const cantPuestos = await pool.query(`select contar_puestos_actuales($1)`, [id_feria])
+      const numPuesto = await cantPuestos.rows[0].contar_puestos_actuales + 1
+      console.log(numPuesto);
+      
+      const result = await pool.query(`
+        INSERT INTO puesto (id_tipo_puesto, numero,descripcion,id_feria)
+        VALUES ($1, $2, $3, $4)
+        RETURNING id_puesto , id_estado_puesto;
+        ` , [null ,numPuesto , null , id_feria])
+        res.status(200).json(result.rows[0])
+
+} catch (error) {
+  console.log('erro al ingresar puesto' , error);
+  res.status(500)
+  
+ }
+    
+}
+
+const UpdatePuesto = async (res , pool ,id_tipo_puesto , descripcion , id_estado_puesto , id_feria,numero ) => {
+  try {
+    console.log(numero);
+    
+    const check  = await pool.query(`
+      SELECT * FROM puesto where id_feria = $1 and numero = $2` [id_feria , numero ])
+  
+      if (check.rows.length === 0) {
+      await pool.query(`
+        UPDATE puesto 
+        set id_tipo_puesto = $1 , descripcion = $2, id_estado_puesto = $3
+        WHERE id_feria = $4 and numero = $5` 
+      , [id_tipo_puesto , descripcion , id_estado_puesto , id_feria, numero])
+      res.status(200).json({msjs : 'puesto actualizado'})
+    }else{
+      res.status(404).json({msjs : 'no existe el puesto '})
+    }
+  
+    
+  } catch (error) {
+    
+    console.log('error al actualizar puesto' , error);
+    res.status(500)
+    
+
+  }
+ 
+}
 
 // INICIO ADMINISTRACION DE LAS FERIASSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
 
@@ -619,4 +671,5 @@ module.exports = {
   getVacantesFeria,insertVacantesFeria,updateVacanteFeria,deleteVacante,updateHorarioVacante, // MODULO VACANTES
   getPostulacionesEnf,aceptarPostulacion,rechazarPostulacion, //MODULO POSTULACIONES
   createFeria,//FORMULARIO DE FERIA
+  CreatePuesto,UpdatePuesto
 };

@@ -254,16 +254,6 @@ ALTER TABLE feriante ADD CONSTRAINT feriante__un UNIQUE ( user_mail );
 ALTER TABLE feriante
 ALTER COLUMN perfil_privado SET DEFAULT false;
 
-CREATE TABLE horario_puesto (
-    id_horario   SERIAL NOT NULL,
-    id_puesto    INTEGER NOT NULL,
-    hora_inicio  TIME WITHOUT TIME ZONE NOT NULL,
-    hora_termino TIME WITHOUT TIME ZONE NOT NULL,
-    precio       INTEGER NOT NULL,
-    num_horario  INTEGER NOT NULL
-);
-
-ALTER TABLE horario_puesto ADD CONSTRAINT horario_puesto_pk PRIMARY KEY ( id_horario );
 
 CREATE TABLE intereses (
     id_interes  SERIAL NOT NULL,
@@ -342,7 +332,8 @@ CREATE TABLE puesto (
     numero           INTEGER NOT NULL,
     descripcion      TEXT ,
     id_feria         INTEGER NOT NULL,
-    id_estado_puesto INTEGER NOT NULL
+    id_estado_puesto INTEGER NOT NULL,
+    precio INTEGER NOT NULL
 );
 
 ALTER TABLE puesto ADD CONSTRAINT puesto_pk PRIMARY KEY ( id_puesto );
@@ -486,9 +477,6 @@ ALTER TABLE feria
     ADD CONSTRAINT feria_encargado_feria_fk FOREIGN KEY ( id_user_enf )
         REFERENCES encargado_feria ( id_user_enf );
 
-ALTER TABLE horario_puesto
-    ADD CONSTRAINT horario_puesto_puesto_fk FOREIGN KEY ( id_puesto )
-        REFERENCES puesto ( id_puesto );
 
 ALTER TABLE solicitudes_apertura
     ADD CONSTRAINT id_admin_soli_fk FOREIGN KEY ( id_user_adm )
@@ -613,6 +601,9 @@ ALTER TABLE encargado_feria
 ALTER TABLE postulaciones
 ALTER COLUMN id_estado SET DEFAULT 1;
 
+
+ALTER TABLE puesto 
+ALTER COLUMN id_estado_puesto SET DEFAULT 1;
 
 ALTER TABLE solicitudes_apertura
 ALTER COLUMN id_estado SET DEFAULT 1;

@@ -4,7 +4,7 @@ const puestoRoutes = require('./Puesto.routes');
 const { 
   saveFeria, 
   getFeria ,get_feria_Encargado ,getFeriaBank,
-  abrirTiketFeria, UpdateProgramaFeria ,
+  abrirTiketFeria,CreatePuesto,UpdatePuesto, UpdateProgramaFeria ,
   getPrograma ,insertDatosBank,getDatosBank, 
   deleteBank,getVacantesFeria,insertVacantesFeria, 
   deleteVacante,updateVacanteFeria,updateHorarioVacante,
@@ -40,7 +40,20 @@ router.post('/tiket', (req , res) => {
       abrirTiketFeria(req,res,pool);
 })
 
+router.post('/CreatePuesto', (req , res) => {
+  const pool = req.pool; 
+  const {id_feria} = req.body;
+    CreatePuesto(res,pool , id_feria);
+})
 
+
+router.post('/UpdatePuesto', (req , res) => {
+  const pool = req.pool; 
+  const {id_tipo_puesto , descripcion , id_estado_puesto , id_feria,numero} = req.body.updatedPuesto;
+  console.log(numero);
+  
+  UpdatePuesto(res,pool, id_tipo_puesto , descripcion , id_estado_puesto , id_feria,numero);
+})
 //ADMINISTRACION DE LA FERIA
 
 router.post('/administracion/:id_feria', (req, res) => {

@@ -1,0 +1,59 @@
+/* MenuDerecha.css */
+.menuDerecha {
+    width: 250px;
+    height: 100vh;
+    position: fixed;
+    right: 0;
+    top: 0;
+    background-color: #f0f0f0;
+    padding: 20px;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+  }
+  
+  .menuDerecha h3 {
+    margin-bottom: 20px;
+  }
+  
+  .menuDerecha div {
+    margin-bottom: 15px;
+  }
+  
+  .menuDerecha label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  .menuDerecha input,
+  .menuDerecha select {
+    width: 100%;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+  }
+  
+  .menuDerecha button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 10px;
+  }
+  
+  .menuDerecha button.saveButton {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+  .menuDerecha button.deleteButton {
+    background-color: #f44336;
+    color: white;
+  }
+  
+  .menuDerecha button.closeButton {
+    background-color: #9e9e9e;
+    color: white;
+  }
+  
