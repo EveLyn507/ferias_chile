@@ -4,7 +4,7 @@
 
 // Función para obtener ferias con paginación
 const getFeriasPaginado = async (pool,limit, offset,idComuna,idRegion) => {
-  const result = await pool.query('SELECT * FROM obtener_ferias_paginado($1, $2, $3, $4)', [limit, offset,idComuna,idRegion]);
+  const result = await pool.query('SELECT * FROM obtener_ferias_paginado($1, $2, $3, $4)', [limit, offset,idRegion,idComuna]);
   return result.rows;
 };
 

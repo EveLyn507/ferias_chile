@@ -6,7 +6,8 @@ import '../../../css/base.css';
 const View_feed = () => {
   const [selectedComuna, setSelectedComuna] = useState<number | null>(null);
   const [selectedRegion, setSelectedRegion] = useState<number | null>(null);
-
+    console.log('idcomuna',selectedComuna, 'idregion',selectedRegion );
+    
   return (
     <div className="container">
       <Filtros_base onFilterC={(comuna) => setSelectedComuna(comuna)} onFilterR={(region) => setSelectedRegion(region)} />
