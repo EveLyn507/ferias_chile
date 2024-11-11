@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import '../../../../../css/base.css'
 
 // Interfaces para tipar los datos
 interface Region {
@@ -22,10 +23,9 @@ export const Filtros_base = ({ onFilterC, onFilterR }: FiltrosBaseProps) => {
   const [comunas, setComunas] = useState<Comuna[]>([]);
   const [selectedRegion, setSelectedRegion] = useState<number | null>(null);
   const [selectedComuna, setSelectedComuna] = useState<number | null>(null);
-  const [searchTerm, setSearchTerm] = useState(''); // Estado para el término de búsqueda
+  const [searchTerm, setSearchTerm] = useState(''); 
 
   useEffect(() => {
-    // Carga ambos JSON dinámicamente y transforma los datos
     Promise.all([
       import('../../../../../assets/regiones.json')
         .then((data) =>
@@ -49,11 +49,11 @@ export const Filtros_base = ({ onFilterC, onFilterR }: FiltrosBaseProps) => {
     ]).catch((error) => console.error('Error al cargar los JSON:', error));
   }, []);
 
-  const handleRegionClick = (regionId: number , ) => {
+  const handleRegionClick = (regionId: number) => {
     setSelectedRegion(regionId);
-    onFilterR(regionId)
+    onFilterR(regionId);
     setSelectedComuna(null);
-    setSearchTerm(''); // Reseteamos el término de búsqueda al cambiar de región
+    setSearchTerm(''); 
     onFilterC(null);
   };
 
@@ -62,109 +62,37 @@ export const Filtros_base = ({ onFilterC, onFilterR }: FiltrosBaseProps) => {
     onFilterC(comunaId);
   };
 
-
   return (
-    <div style={{ margin: '20px 0', display: 'flex', flexDirection: 'column' }}>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '8px',
-          maxHeight: '400px',
-          overflowY: 'auto',
-        }}
-      >
+    <div className="filtros-base">
+      <div className="region-container">
         {regiones.map((region) => (
           <button
             key={region.id}
             onClick={() => handleRegionClick(region.id)}
-            style={{
-              padding: '10px 15px',
-              borderRadius: '6px',
-              border: '2px solid #007bff',
-              backgroundColor: selectedRegion === region.id ? '#007bff' : '#f8f9fa',
-              color: selectedRegion === region.id ? '#fff' : '#007bff',
-              cursor: 'pointer',
-              fontSize: '16px',
-              fontWeight: 'bold',
-              textAlign: 'left',
-              transition: 'background-color 0.3s ease',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}
+            className={`region-btn ${selectedRegion === region.id ? 'selected' : ''}`}
           >
             {region.nombre}
-            {selectedRegion === region.id && (
-              <span
-                style={{
-                  fontSize: '18px',
-                  color: '#fff',
-                }}
-              >
-                &#x2714;
-              </span>
-            )}
+            {selectedRegion === region.id && <span className="checkmark">✔</span>}
           </button>
         ))}
       </div>
 
       {selectedRegion && (
-        <div style={{ marginTop: '20px' }}>
-          <label
-            style={{
-              fontWeight: 'bold',
-              marginBottom: '10px',
-              display: 'block',
-              fontSize: '16px',
-              color: '#007bff',
-            }}
-          >
-            Selecciona una Comuna:
-          </label>
+        <div className="comuna-container">
+          <label className="comuna-label">Selecciona una Comuna:</label>
 
           <input
             type="text"
             placeholder="Buscar comuna..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            style={{
-              padding: '10px',
-              borderRadius: '6px',
-              border: '2px solid #007bff',
-              fontSize: '16px',
-              color: '#333',
-              marginBottom: '10px',
-            }}
+            className="search-input"
           />
-     
 
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '8px',
-              maxHeight: '300px',
-              overflowY: 'auto',
-            }}
-          >
+          <div className="comuna-buttons">
             <button
               onClick={() => handleComunaClick(null)}
-              style={{
-                padding: '10px 15px',
-                borderRadius: '6px',
-                border: '2px solid #007bff',
-                backgroundColor: selectedComuna === null ? '#007bff' : '#f8f9fa',
-                color: selectedComuna === null ? '#fff' : '#007bff',
-                cursor: 'pointer',
-                fontSize: '16px',
-                fontWeight: 'bold',
-                textAlign: 'left',
-                transition: 'background-color 0.3s ease',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}
+              className={`comuna-btn ${selectedComuna === null ? 'selected' : ''}`}
             >
               Todas las Comunas
             </button>
@@ -177,33 +105,10 @@ export const Filtros_base = ({ onFilterC, onFilterR }: FiltrosBaseProps) => {
                 <button
                   key={comuna.id}
                   onClick={() => handleComunaClick(comuna.id)}
-                  style={{
-                    padding: '10px 15px',
-                    borderRadius: '6px',
-                    border: '2px solid #007bff',
-                    backgroundColor: selectedComuna === comuna.id ? '#007bff' : '#f8f9fa',
-                    color: selectedComuna === comuna.id ? '#fff' : '#007bff',
-                    cursor: 'pointer',
-                    fontSize: '16px',
-                    fontWeight: 'bold',
-                    textAlign: 'left',
-                    transition: 'background-color 0.3s ease',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                  }}
+                  className={`comuna-btn ${selectedComuna === comuna.id ? 'selected' : ''}`}
                 >
                   {comuna.nombre}
-                  {selectedComuna === comuna.id && (
-                    <span
-                      style={{
-                        fontSize: '18px',
-                        color: '#fff',
-                      }}
-                    >
-                      &#x2714;
-                    </span>
-                  )}
+                  {selectedComuna === comuna.id && <span className="checkmark">✔</span>}
                 </button>
               ))}
           </div>

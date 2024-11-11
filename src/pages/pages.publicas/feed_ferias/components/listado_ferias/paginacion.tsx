@@ -1,4 +1,6 @@
 
+import './cards_feed.css'
+
 interface pageProps {
     page : number
     setPage : (page : number ) => void 
@@ -22,20 +24,20 @@ const Paginacion = ({page , setPage } : pageProps) => {
     };
 
     return (
-        <div>
-        
-            
-            <div>
-                <button onClick={prevPage} disabled={page === 1}>
-                    Anterior
-                </button>
-                <span>Página {page}</span>
-                <button onClick={ nextPage}>
-                    Siguiente
-                </button>
-            </div>
+        <div className="center-content">
+          <button
+            className="pagination-button"
+            onClick={prevPage}
+            disabled={page === 1}
+          >
+            Anterior
+          </button>
+          <span className="pagination-text">Página {page}</span>
+          <button className="pagination-button" onClick={nextPage}>
+            Siguiente
+          </button>
         </div>
-    );
-};
+      );
+    };
 
 export default Paginacion;

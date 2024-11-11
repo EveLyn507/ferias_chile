@@ -6,6 +6,7 @@ import { setIdFeria } from '../../../../../redux/states/user';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import './plano.css';
 
 export interface Rectangle {
   id: number;
@@ -50,7 +51,7 @@ const API_URL = 'http://localhost:5000';
 
 const Vista = () => {
   const [rectangles, setRectangles] = useState<Rectangle[]>([]);
-  console.log(rectangles)
+  console.log(rectangles);
   const [planWidth, setPlanWidth] = useState<number>(600);
   const [planHeight, setPlanHeight] = useState<number>(400);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -99,10 +100,9 @@ const Vista = () => {
 
     fetchTotalPuestos();
   }, []);
-  
 
-  const handleAddRectangle = async(totalPuestos : number) => {
-    await setTotalPuestos(totalPuestos + 1)
+  const handleAddRectangle = async (totalPuestos: number) => {
+    await setTotalPuestos(totalPuestos + 1);
     const newRectangle: Rectangle = {
       x: 60,
       y: 60,
@@ -110,7 +110,7 @@ const Vista = () => {
       height: 100,
       fill: 'green',
       id: Date.now(),
-      numero: totalPuestos + 1, 
+      numero: totalPuestos + 1,
     };
     setRectangles((prev) => [...prev, newRectangle]);
   };
@@ -213,20 +213,20 @@ const Vista = () => {
   };
 
   return (
-    <div className="App">
+    <div className="app">
       <header className="header">
         <h1>Ferias Chile</h1>
       </header>
 
-      <div className="main-content" style={{ display: 'flex', flexDirection: 'row', height: '100vh' }}>
-        <div style={{ flex: 1, padding: '10px' }}>
+      <div className="main-content">
+        <div className="canvas-container">
           {isLoading && <p>Cargando...</p>}
-          {error && <p style={{ color: 'red' }}>{error}</p>}
-          <Toolbar 
-          onAddRectangle={()=>handleAddRectangle(totalPuestos)} 
-          onAddArea={handleAddArea} 
-          onAddStreet={handleAddStreet} 
+          <Toolbar
+            onAddRectangle={() => handleAddRectangle(totalPuestos)}
+            onAddArea={handleAddArea}
+            onAddStreet={handleAddStreet}
           />
+          {error && <p className="error">{error}</p>}
           <Canvas
             rectangles={rectangles}
             setRectangles={setRectangles}
@@ -244,7 +244,7 @@ const Vista = () => {
           />
         </div>
 
-        <div style={{ width: '300px', padding: '10px', borderLeft: '1px solid #ddd' }}>
+        <div className="menu-derecha">
           {isMenuOpen && selectedPuesto && (
             <MenuDerecha
               selectedPuesto={selectedPuesto}

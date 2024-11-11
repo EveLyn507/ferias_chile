@@ -2,6 +2,7 @@
 import { Link } from "react-router-dom"
 import { Logeado } from "./perfil_loged"
 import { useSelector } from "react-redux";
+//import './comp.css';
 
 export const Nav_bar = () => {
   const role = useSelector((state: any) => state.user.role); // Verificamos si el usuario está logueado

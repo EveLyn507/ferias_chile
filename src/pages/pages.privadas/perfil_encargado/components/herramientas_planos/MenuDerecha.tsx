@@ -114,45 +114,21 @@ const MenuDerecha: React.FC<MenuDerechaProps> = ({
   }
 
   return (
-    <div style={{
-      width: '250px',
-      height: '100vh',
-      position: 'fixed',
-      right: 0,
-      top: 0,
-      backgroundColor: '#f0f0f0',
-      padding: '20px',
-      boxShadow: '-2px 0 5px rgba(0, 0, 0, 0.1)',
-      overflowY: 'auto',
-    }}>
-      <h3 style={{ marginBottom: '20px' }}>Editar Puesto {selectedPuesto.id}</h3>
-      <div style={{ marginBottom: '15px' }}>
-        <label style={{ display: 'block', marginBottom: '5px' }}>Descripción:</label>
+    <div className="menu-container">
+      <h3 className="menu-header">Editar Puesto {selectedPuesto.id}</h3>
+      <div className="input-group">
+        <label>Descripción:</label>
         <input
           type="text"
           value={descripcion}
           onChange={(e) => setDescripcion(e.target.value)}
-          style={{
-            width: '100%',
-            padding: '8px',
-            borderRadius: '4px',
-            border: '1px solid #ccc',
-            boxSizing: 'border-box',
-          }}
         />
       </div>
-      <div style={{ marginBottom: '15px' }}>
-        <label style={{ display: 'block', marginBottom: '5px' }}>Tipo de Puesto:</label>
+      <div className="input-group">
+        <label>Tipo de Puesto:</label>
         <select
           value={tipoPuesto}
           onChange={(e) => setTipoPuesto(e.target.value)}
-          style={{
-            width: '100%',
-            padding: '8px',
-            borderRadius: '4px',
-            border: '1px solid #ccc',
-            boxSizing: 'border-box',
-          }}
         >
           <option value="">Selecciona una opción</option>
           <option value="1">Día</option>
@@ -160,18 +136,11 @@ const MenuDerecha: React.FC<MenuDerechaProps> = ({
           <option value="3">Contacto</option>
         </select>
       </div>
-      <div style={{ marginBottom: '15px' }}>
-        <label style={{ display: 'block', marginBottom: '5px' }}>Estado del Puesto:</label>
+      <div className="input-group">
+        <label>Estado del Puesto:</label>
         <select
           value={estadoPuesto}
           onChange={(e) => setEstadoPuesto(e.target.value)}
-          style={{
-            width: '100%',
-            padding: '8px',
-            borderRadius: '4px',
-            border: '1px solid #ccc',
-            boxSizing: 'border-box',
-          }}
         >
           <option value="">Selecciona una opción</option>
           <option value="1">Disponible</option>
@@ -179,103 +148,52 @@ const MenuDerecha: React.FC<MenuDerechaProps> = ({
           <option value="3">Mantenimiento</option>
         </select>
       </div>
-      <div style={{ marginBottom: '15px' }}>
-        <label style={{ display: 'block', marginBottom: '5px' }}>Hora de Inicio:</label>
+      <div className="input-group">
+        <label>Hora de Inicio:</label>
         <input
           type="time"
           value={horaInicio}
           onChange={(e) => setHoraInicio(e.target.value)}
-          style={{
-            width: '100%',
-            padding: '8px',
-            borderRadius: '4px',
-            border: '1px solid #ccc',
-            boxSizing: 'border-box',
-          }}
         />
       </div>
-      <div style={{ marginBottom: '15px' }}>
-        <label style={{ display: 'block', marginBottom: '5px' }}>Hora de Término:</label>
+      <div className="input-group">
+        <label>Hora de Término:</label>
         <input
           type="time"
           value={horaTermino}
           onChange={(e) => setHoraTermino(e.target.value)}
-          style={{
-            width: '100%',
-            padding: '8px',
-            borderRadius: '4px',
-            border: '1px solid #ccc',
-            boxSizing: 'border-box',
-          }}
         />
       </div>
-      <div style={{ marginBottom: '15px' }}>
-        <label style={{ display: 'block', marginBottom: '5px' }}>Precio:</label>
+      <div className="input-group">
+        <label>Precio:</label>
         <input
           type="number"
           value={precio}
           onChange={(e) => setPrecio(parseFloat(e.target.value))}
-          style={{
-            width: '100%',
-            padding: '8px',
-            borderRadius: '4px',
-            border: '1px solid #ccc',
-            boxSizing: 'border-box',
-          }}
         />
       </div>
-      <div style={{ marginBottom: '15px' }}>
-        <label style={{ display: 'block', marginBottom: '5px' }}>Número de Horario:</label>
+      <div className="input-group">
+        <label>Número de Horario:</label>
         <input
           type="number"
           value={numHorario}
           onChange={(e) => setNumHorario(parseInt(e.target.value))}
-          style={{
-            width: '100%',
-            padding: '8px',
-            borderRadius: '4px',
-            border: '1px solid #ccc',
-            boxSizing: 'border-box',
-          }}
         />
       </div>
       <button
         onClick={handleSave}
         disabled={isLoading}
-        style={{
-          width: '100%',
-          padding: '10px',
-          backgroundColor: '#4CAF50',
-          color: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: 'pointer',
-          marginBottom: '10px',
-        }}
+        className="menu-button save-button"
       >
         {isLoading ? 'Guardando...' : 'Guardar'}
       </button>
-      <button onClick={() => onRemoveRectangle(selectedPuesto.id)} style={{
-        width: '100%',
-        padding: '10px',
-        backgroundColor: '#f44336',
-        color: 'white',
-        border: 'none',
-        borderRadius: '4px',
-        cursor: 'pointer',
-        marginBottom: '10px',
-      }}>
+      <button
+        onClick={() => onRemoveRectangle(selectedPuesto.id)}
+        className="menu-button delete-button"
+      >
         Eliminar Puesto
       </button>
-      <button onClick={onClose} style={{
-        width: '100%',
-        padding: '10px',
-        backgroundColor: '#9e9e9e',
-        color: 'white',
-        border: 'none',
-        borderRadius: '4px',
-        cursor: 'pointer',
-      }}>
+      <button onClick={onClose} className="menu-button close-button">
         Cerrar
       </button>
     </div>

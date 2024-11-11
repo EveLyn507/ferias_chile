@@ -1,0 +1,36 @@
+/* Estilo para centrar los cards y ajustar su ancho */
+.card-container {
+    display: flex;
+    justify-content: center; /* Centra los cards horizontalmente */
+    align-items: center; /* Opcional: centra los cards verticalmente si hay suficiente espacio */
+    flex-wrap: wrap; /* Permite que los cards se ajusten en varias filas si hay muchos */
+    gap: 20px; /* Espaciado entre cards */
+    min-height: 100vh;
+    width: 2500px;  /* Para centrar verticalmente si es necesario */
+  }
+  
+  .card {
+    width: 400px; /* Ajusta el ancho de los cards */
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: left; /* Alineación del contenido del card */
+    transition: transform 0.2s, box-shadow 0.2s; /* Efecto al pasar el cursor */
+  }
+  
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  }
+  
+
+  .center-content {
+    display: flex;
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center; /* Centra verticalmente si el contenedor tiene altura */
+    gap: 10px; /* Espaciado entre los elementos internos */
+    margin-top: 20px; /* Ajusta el espacio superior si es necesario */
+    width: 48%; /* Asegura que ocupe todo el ancho del contenedor padre */
+  }
+  
