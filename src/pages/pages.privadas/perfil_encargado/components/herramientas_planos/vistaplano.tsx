@@ -99,6 +99,7 @@ const Vista = () => {
 
     fetchTotalPuestos();
   }, []);
+  
 
   const handleAddRectangle = async(totalPuestos : number) => {
     await setTotalPuestos(totalPuestos + 1)
@@ -221,7 +222,11 @@ const Vista = () => {
         <div style={{ flex: 1, padding: '10px' }}>
           {isLoading && <p>Cargando...</p>}
           {error && <p style={{ color: 'red' }}>{error}</p>}
-          <Toolbar onAddRectangle={()=>handleAddRectangle(totalPuestos)} onAddArea={handleAddArea} onAddStreet={handleAddStreet} />
+          <Toolbar 
+          onAddRectangle={()=>handleAddRectangle(totalPuestos)} 
+          onAddArea={handleAddArea} 
+          onAddStreet={handleAddStreet} 
+          />
           <Canvas
             rectangles={rectangles}
             setRectangles={setRectangles}

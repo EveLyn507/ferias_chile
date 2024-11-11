@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { AppStore } from "../../../../../redux/store";
 import { useParams } from "react-router-dom";
 
-interface horario {
+interface Horario {
   hora_inicio: string;
   hora_termino: string;
   precio: number;
@@ -23,11 +23,11 @@ interface Rectangle {
   tipoPuesto?: string;
   estadoPuesto?: string;
   id_feria?: number;
-  horario?: horario;
-  numero?: number; 
+  horario?: Horario;
+  numero?: number;
 }
 
-const API_URL = 'http://localhost:5000';
+const API_URL = "http://localhost:5000";
 
 interface MenuDerechaProps {
   selectedPuesto: Rectangle | null;
@@ -49,26 +49,33 @@ const MenuDerecha: React.FC<MenuDerechaProps> = ({
   const idPuesto = useSelector((store: AppStore) => store.user.id_puesto);
   const { id_feria } = useParams<{ id_feria: string }>();
 
-  const [descripcion, setDescripcion] = useState(selectedPuesto?.descripcion || '');
-  const [tipoPuesto, setTipoPuesto] = useState(selectedPuesto?.tipoPuesto || '');
-  const [estadoPuesto, setEstadoPuesto] = useState(selectedPuesto?.estadoPuesto || '');
-  const [horaInicio, setHoraInicio] = useState('');
-  const [horaTermino, setHoraTermino] = useState('');
+  const [descripcion, setDescripcion] = useState(selectedPuesto?.descripcion || "");
+  const [tipoPuesto, setTipoPuesto] = useState(selectedPuesto?.tipoPuesto || "");
+  const [estadoPuesto, setEstadoPuesto] = useState(selectedPuesto?.estadoPuesto || "");
+  const [horaInicio, setHoraInicio] = useState("");
+  const [horaTermino, setHoraTermino] = useState("");
   const [precio, setPrecio] = useState(0);
-  const [num_horario, setNumHorario] = useState(0);
-
+  const [numHorario, setNumHorario] = useState(0);
+  
 
   useEffect(() => {
     if (selectedPuesto) {
-      setDescripcion(selectedPuesto.descripcion || '');
-      setTipoPuesto(selectedPuesto.tipoPuesto || '');
-      setEstadoPuesto(selectedPuesto.estadoPuesto || '');
+      setDescripcion(selectedPuesto.descripcion || "");
+      setTipoPuesto(selectedPuesto.tipoPuesto || "");
+      setEstadoPuesto(selectedPuesto.estadoPuesto || "");
     }
   }, [selectedPuesto]);
 
   const handleSave = async () => {
     if (!selectedPuesto) {
-      console.error('No hay puesto seleccionado.');
+      console.error("No hay puesto seleccionado.");
+      return;
+    }
+    
+
+    // Validación básica de datos
+    if (!horaInicio || !horaTermino || !precio || !numHorario) {
+      console.error("Todos los campos deben ser completados.");
       return;
     }
 
@@ -76,12 +83,12 @@ const MenuDerecha: React.FC<MenuDerechaProps> = ({
       hora_inicio: horaInicio,
       hora_termino: horaTermino,
       precio,
-      num_horario,
+      num_horario: numHorario,
       id_puesto: idPuesto,
     };
 
     const updatedPuesto = {
-      numero: selectedPuesto.numero, // Asignamos el nuevo número al puesto
+      numero: selectedPuesto.numero,
       id_tipo_puesto: Number(tipoPuesto),
       id_feria: selectedPuesto.id_feria || id_feria,
       descripcion,
@@ -91,11 +98,10 @@ const MenuDerecha: React.FC<MenuDerechaProps> = ({
 
     try {
       const response = await axios.post(`${API_URL}/api/puestos`, updatedPuesto);
-      console.log('Puesto creado:', response.data);
-
+      console.log("Puesto creado:", response.data);  
       onSavePuesto(response.data);
     } catch (error) {
-      console.error('Error al crear puesto:', error);
+      console.error("Error al crear puesto:", error);
     }
 
     if (onSaveFeria) {
@@ -222,7 +228,7 @@ const MenuDerecha: React.FC<MenuDerechaProps> = ({
         <label style={{ display: 'block', marginBottom: '5px' }}>Número de Horario:</label>
         <input
           type="number"
-          value={num_horario}
+          value={numHorario}
           onChange={(e) => setNumHorario(parseInt(e.target.value))}
           style={{
             width: '100%',
