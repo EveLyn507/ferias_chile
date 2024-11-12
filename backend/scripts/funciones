@@ -121,7 +121,7 @@ $$ LANGUAGE plpgsql;
 
 
 ------------------
--- TRAE LOS PUESTOS y SU HORARIO + feria a la que pertenece
+-- TRAE LOS PUESTOS  + feria a la que pertenece
 
 CREATE OR REPLACE FUNCTION traer_puestos_feria(id_de_feria INTEGER)
 RETURNS TABLE (
@@ -129,12 +129,7 @@ RETURNS TABLE (
     id_feria INTEGER,
 	estado_puesto CHARACTER VARYING(20),
     nombre_feria CHARACTER VARYING(50),
-    num_puesto INTEGER,
-    num_horario INTEGER,
-    hora_inicio TIME WITHOUT TIME ZONE,
-    hora_termino TIME WITHOUT TIME ZONE,
-    precio INTEGER
-
+    num_puesto INTEGER
 ) AS $$
     BEGIN
         RETURN QUERY
@@ -144,27 +139,18 @@ RETURNS TABLE (
         p.id_feria ,
         ap.estado,
         f.nombre,
-        p.numero,
-        hp.num_horario ,
-        hp.hora_inicio,
-        hp.hora_termino,
-        hp.precio
+        p.numero
 
         FROM 
         public.feria  f 
         JOIN 
         public.puesto p ON f.id_feria = p.id_feria
-        RIGHT JOIN
-        public.horario_puesto  hp ON p.id_puesto = hp.id_puesto
         JOIN estado_puesto ap ON p.id_estado_puesto = ap.id_estado_puesto
         WHERE
         f.id_feria = id_de_feria
-        ORDER BY p.numero,num_horario;
+        ORDER BY p.numero;
     END;
    $$ LANGUAGE plpgsql;
-
-
-
 
 
 
@@ -300,14 +286,12 @@ id_actividad_feria INTEGER,
 id_dia INTEGER,
 fecha DATE,
 id_puesto INTEGER,
-id_arriendo_puesto INTEGER,
-id_estado_arriendo INTEGER,
-numero INTEGER,
-precio INTEGER,
-id_horario INTEGER,
 hora_inicio TIME WITHOUT TIME ZONE,
 hora_termino TIME WITHOUT TIME ZONE,
-num_horario INTEGER
+id_arriendo_puesto INTEGER,
+id_estado_arriendo INTEGER,
+numero INTEGER
+
 ) AS $$
 
 BEGIN
@@ -319,20 +303,18 @@ af.id_actividad_feria,
 dpf.id_dia,
 af.fecha,
 ap.id_puesto,
+dpf.hora_inicio,
+dpf.hora_termino,
 ap.id_arriendo_puesto,
 ap.id_estado_arriendo,
-p.numero,
-hp.precio,
-hp.id_horario,
-hp.hora_inicio,
-hp.hora_termino,
-hp.num_horario
+p.numero
+
 from feria f
+
 JOIN detalle_programa_feria dpf ON f.id_feria = dpf.id_feria
 JOIN actividad_feria af ON af.id_horario_feria = dpf.id_horario_feria
 JOIN arriendo_puesto ap ON ap.id_actividad_feria = af.id_actividad_feria
 JOIN puesto p ON ap.id_puesto = p.id_puesto 
-JOIN horario_puesto hp ON hp.id_puesto = p.id_puesto 
 WHERE f.nombre = func_nombre_f and af.fecha = func_fecha
 order by ap.id_puesto;
 

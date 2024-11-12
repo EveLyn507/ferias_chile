@@ -17,11 +17,8 @@ export const Card_puestos = ({ puestos }: acPuestoProps) => {
           items={puestos}
           renderFields={(puesto) => [
             { label: "numero puesto", value: puesto.numero },
-            { label: "numero horario", value: puesto.num_horario },
-            { label: "hora inicio", value: puesto.hora_inicio },
-            { label: "hora termino", value: puesto.hora_termino },
-            { label: "precio", value: puesto.precio },
-            { label: "disponible", value: puesto.disponible },
+            { label: "hora_inicio", value: puesto.hora_inicio },
+            { label: "hora_termino", value: puesto.hora_termino },
           ]}
           actions={(puesto) => (
             <>
