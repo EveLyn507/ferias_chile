@@ -227,8 +227,10 @@ import MenuVacio from './menus/menuContainers';
               setPlanHeight={setPlanHeight}
               calles={calles}
               onUpdateStreet={handleUpdateStreet}
-              onRemoveStreet={handleRemoveStreet}
-            />
+              onRemoveStreet={handleRemoveStreet} 
+              onRectangleClick={function (id: number): void {
+                throw new Error('Function not implemented.');
+              } }            />
           </div>
 
 
