@@ -34,10 +34,31 @@ import MenuVacio from './menus/menuContainers';
 
     const [selectedItem, setSelectedItem] = useState<Street | Rectangle| null>(null);
     // Función para manejar el clic en un ítem de cualquier layer
-    const ItemClick = (item: Street | Rectangle) => {
+    const ItemClick = (item: Street | Rectangle ) => {
       console.log(selectedItem);
       setSelectedItem(item); // Guardar el item seleccionado
     };
+
+
+
+    useEffect(()=> {
+      const setItem = async () => {
+        if(selectedItem!.type === 'puesto') {
+          
+          setPuestos((prevPuestos) =>
+            prevPuestos.map((puesto) => (puesto.id === selectedItem!.id ? { ...puesto, ...selectedItem } : puesto))
+          );
+        }
+        else if (selectedItem!.type === 'calle'){
+          setCalles((prevCalles) =>
+            prevCalles.map((calles) => (calles.id === selectedItem!.id ? { ...calles, ...selectedItem } : calles))
+        );
+      }
+      }
+      setItem()
+
+    },[selectedItem])
+
     
  
     
@@ -132,15 +153,7 @@ import MenuVacio from './menus/menuContainers';
       updateFeriajson()
     }
 
-  //agrega el puesto a la lista local
-  const updatePuesto = (updatedPuesto: Partial<Rectangle>) => {
-    if (selectedItem) {
-      setPuestos((prevPuestos) =>
-        prevPuestos.map((puesto) => (puesto.id === updatedPuesto.id ? { ...puesto, ...updatedPuesto } : puesto))
-      );
 
-    }
-  };
 
 
   const RemovePuesto = (id: number) => {
@@ -177,6 +190,12 @@ import MenuVacio from './menus/menuContainers';
   const handleRemoveStreet = (id: number) => {
     setCalles(calles.filter((street) => street.id !== id));
   };
+
+
+
+  //funciones drag
+
+
 
 
     return (
@@ -217,15 +236,15 @@ import MenuVacio from './menus/menuContainers';
       {selectedItem?.type === 'calle' ? (
         <MenuCalle
           selectedCalle={selectedItem }
-          onSizeChange={handleUpdateStreet}
           onRemoveStreet={handleRemoveStreet}
+          setSelectedItem={setSelectedItem}
           isLoading={isLoading}
         />
       ) : selectedItem?.type === 'puesto' ? (
         <MenuPuesto
           selectedPuesto={selectedItem }
-          onUpdatePuesto={updatePuesto}
           onRemoveRectangle={RemovePuesto}
+          setSelectedItem= {setSelectedItem}
           isLoading={isLoading}
         />
       ) : (

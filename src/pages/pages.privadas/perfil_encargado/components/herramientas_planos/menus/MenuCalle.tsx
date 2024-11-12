@@ -1,46 +1,61 @@
 import '../css/menuD.css'; // Importa el archivo CSS
 import React, { useState, useEffect } from 'react';
+import { Street } from '../models/vistaplanoModels';
 
-interface Street {
-  id: number;
-  points: number[];
-  width: number;
-  height: number;
-}
+
 
 interface MenuCalleProps {
-  selectedCalle: Street ;
-  onSizeChange : (id: number, updatedProps: Partial<Street>) => void;
+  selectedCalle: Street |  null ;
   onRemoveStreet: (id: number) => void;
+  setSelectedItem:(item : Street ) => void;
   isLoading: boolean;
 }
 
-const MenuCalle: React.FC<MenuCalleProps> = ({ selectedCalle, onSizeChange }) => {
-  const [width, setWidth] = useState(selectedCalle.width);
-  const [height, setHeight] = useState(selectedCalle.height);
+const MenuCalle: React.FC<MenuCalleProps> = ({ selectedCalle ,setSelectedItem}) => {
 
-  useEffect(() => {
-    setWidth(selectedCalle.width);
-    setHeight(selectedCalle.height);
-  }, [selectedCalle]);
 
-  const handleSave = () => {
-    onSizeChange(selectedCalle.id, selectedCalle);  // Llamar a onSizeChange con los nuevos valores
-
+  const handleChange = (field: keyof Street, value: any) => {
+    if (!selectedCalle) return;
+    
+    // Crear un objeto actualizado para pasar a onUpdatePuesto
+    const updatedCalle = { ...selectedCalle, [field]: value };
+    setSelectedItem(updatedCalle);
   };
 
 
 
   return (
     <div className="menu-container">
-      <h3>Modificar Calle</h3>
+         <h3>Modificar Calle</h3>
+      <div>
+        <label>
+          X:
+          <input
+            type="number"
+            value={selectedCalle?.x}
+            onChange={(e) => handleChange("x", parseFloat(e.target.value))}
+          />
+        </label>
+      </div>
+
+      <div>
+        <label>
+          Y:
+          <input
+            type="number"
+            value={selectedCalle?.y}
+            onChange={(e) => handleChange("y", parseFloat(e.target.value))}
+          />
+        </label>
+      </div>
+
       <div>
         <label>
           Ancho:
           <input
             type="number"
-            value={width}
-            onChange={(e) => setWidth(Number(e.target.value))}
+            value={selectedCalle?.width}
+            onChange={(e) => handleChange("width", parseFloat(e.target.value))}
           />
         </label>
       </div>
@@ -49,12 +64,11 @@ const MenuCalle: React.FC<MenuCalleProps> = ({ selectedCalle, onSizeChange }) =>
           Alto:
           <input
             type="number"
-            value={height}
-            onChange={(e) => setHeight(Number(e.target.value))}
+            value={selectedCalle?.height}
+            onChange={(e) => handleChange("height", parseFloat(e.target.value))}
           />
         </label>
       </div>
-      <button onClick={handleSave}>Guardar</button>
     </div>
   );
 };

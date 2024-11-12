@@ -37,32 +37,33 @@ const PuestosLayer: React.FC<PuestosLayerProps> = ({
 
   return (
     <Layer ref={layerRef}>
-      {puestos.map((rect) => {
-        const { metersWidth, metersHeight } = calculateDimensionsInMeters(rect.width, rect.height);
+      {puestos.map((Puesto , index) => {
+        const { metersWidth, metersHeight } = calculateDimensionsInMeters(Puesto.width, Puesto.height);
 
         return (
-          <React.Fragment key={rect.id}>
+          <React.Fragment key={Puesto.id}>
             <KonvaImage
               image={image || undefined}
-              x={rect.x}
-              y={rect.y}
-              width={rect.width}
-              height={rect.height}
+              x={Puesto.x}
+              y={Puesto.y}
+              width={Puesto.width}
+              height={Puesto.height}
               draggable={!isStatic}
-              onClick={!isStatic ? () => onPuestoClick(rect) : undefined}
+              onClick={!isStatic ? () => onPuestoClick(Puesto) : undefined}
               onDragEnd={(e) => {
                 if (!isStatic) {
+                  const idx = index
                   const updatedpuestos = puestos.map((r) =>
-                    r.id === rect.id ? { ...r, x: e.target.x(), y: e.target.y() } : r
+                    r.id === Puesto.id ? { ...r, x: e.target.x(), y: e.target.y() } : r
                   );
-                  setPuestos(updatedpuestos);
+                  onPuestoClick(updatedpuestos[idx])
                 }
               }}
             />
             <Text
-              x={rect.x}
-              y={rect.y - 20}
-              text={`N${rect.numero} | ${metersWidth.toFixed(2)}m x ${metersHeight.toFixed(2)}m`}
+              x={Puesto.x}
+              y={Puesto.y - 20}
+              text={`N${Puesto.numero} | ${metersWidth.toFixed(2)}m x ${metersHeight.toFixed(2)}m`}
               fontSize={12}
               fill="black"
             />
@@ -70,13 +71,13 @@ const PuestosLayer: React.FC<PuestosLayerProps> = ({
             {/* Mostrar dimensiones al pasar el ratón sobre el puesto */}
             {!isStatic && (
               <Text
-                x={rect.x}
-                y={rect.y - 40}
+                x={Puesto.x}
+                y={Puesto.y - 40}
                 text={`Click para editar: ${metersWidth.toFixed(2)}m x ${metersHeight.toFixed(2)}m`}
                 fontSize={12}
                 fill="black"
-                visible={hoveredRect?.id === rect.id}
-                onMouseEnter={() => setHoveredRect(rect)}
+                visible={hoveredRect?.id === Puesto.id}
+                onMouseEnter={() => setHoveredRect(Puesto)}
                 onMouseLeave={() => setHoveredRect(null)}
               />
             )}
@@ -84,20 +85,22 @@ const PuestosLayer: React.FC<PuestosLayerProps> = ({
             {/* Control para redimensionar los puestos */}
             {!isStatic && (
               <Rect
-                x={rect.x + rect.width - 8 / 2}
-                y={rect.y + rect.height - 8 / 2}
+                x={Puesto.x + Puesto.width - 8 / 2}
+                y={Puesto.y + Puesto.height - 8 / 2}
                 width={8}
                 height={8}
                 fill="red"
                 draggable
-                dragBoundFunc={(pos) => {
-                  const newWidth = Math.max(8, pos.x - rect.x);
-                  const newHeight = Math.max(8, pos.y - rect.y);
+                dragBoundFunc={(pos ) => {
+                  const newWidth = Math.max(8, pos.x - Puesto.x);
+                  const newHeight = Math.max(8, pos.y - Puesto.y);
+                  const idx = index
 
                   const updatedpuestos = puestos.map((r) =>
-                    r.id === rect.id ? { ...r, width: newWidth, height: newHeight } : r
+                    r.id === Puesto.id ? { ...r, width: newWidth, height: newHeight } : r
                   );
                   setPuestos(updatedpuestos);
+                  onPuestoClick(updatedpuestos[idx])
 
                   return pos;
                 }}

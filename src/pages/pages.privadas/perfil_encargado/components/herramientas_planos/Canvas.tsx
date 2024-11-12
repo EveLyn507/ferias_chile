@@ -1,7 +1,6 @@
 
 import { Stage, Layer, Rect, Line, Image as KonvaImage, Text } from 'react-konva';
 import { useState, useEffect, useCallback } from 'react';
-import StreetPage from './StreetPage';
 import React from 'react';
 import { CanvasProps } from './models/canvasModels';
 import { Rectangle } from './models/vistaplanoModels';
