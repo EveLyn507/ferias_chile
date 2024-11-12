@@ -1,10 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect } from "react";
-import { useParams } from "react-router-dom";
 import { Rectangle } from "../models/vistaplanoModels";
 import '../css/menuD.css';
-import { UpdatePuesto } from "../services/funcionesHP";
 
 interface MenuDerechaProps {
   selectedPuesto: Rectangle | null;
@@ -19,7 +16,7 @@ const MenuDerecha: React.FC<MenuDerechaProps> = ({
   setSelectedItem,
   isLoading,
 }) => {
-  const { id_feria } = useParams<{ id_feria: string }>();
+
 
   const handleChange = (field: keyof Rectangle, value: any) => {
     if (!selectedPuesto) return;

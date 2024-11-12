@@ -14,8 +14,6 @@ interface PuestosLayerProps {
 }
 
 
-
-
 const PuestosLayer: React.FC<PuestosLayerProps> = ({
   puestos,
   setPuestos,

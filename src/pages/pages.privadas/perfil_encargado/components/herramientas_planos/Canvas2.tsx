@@ -45,10 +45,6 @@ import PuestosLayer from './layers/puestoLayer';
 
 
 
-
-
-
-
 return (
     <Stage width={window.innerWidth} height={window.innerHeight}>
     <Layer>

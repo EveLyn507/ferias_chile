@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import '../css/menuD.css'; // Importa el archivo CSS
-import React, { useState, useEffect } from 'react';
+import React, {  } from 'react';
 import { Street } from '../models/vistaplanoModels';
 
 

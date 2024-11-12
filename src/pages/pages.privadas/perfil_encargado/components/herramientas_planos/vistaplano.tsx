@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
 
@@ -227,10 +227,8 @@ import MenuVacio from './menus/menuContainers';
               setPlanHeight={setPlanHeight}
               calles={calles}
               onUpdateStreet={handleUpdateStreet}
-              onRemoveStreet={handleRemoveStreet} 
-              onRectangleClick={function (id: number): void {
-                throw new Error('Function not implemented.');
-              } }            />
+              onRemoveStreet={handleRemoveStreet}
+            />
           </div>
 
 
