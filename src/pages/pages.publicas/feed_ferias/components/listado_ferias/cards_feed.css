@@ -1,13 +1,12 @@
-/* Estilo para centrar los cards y ajustar su ancho */
 .card-container {
-    display: flex;
-    justify-content: center; /* Centra los cards horizontalmente */
-    align-items: center; /* Opcional: centra los cards verticalmente si hay suficiente espacio */
-    flex-wrap: wrap; /* Permite que los cards se ajusten en varias filas si hay muchos */
-    gap: 20px; /* Espaciado entre cards */
-    min-height: 100vh;
-    width: 2500px;  /* Para centrar verticalmente si es necesario */
-  }
+  display: flex;
+  justify-content: center;  /* Centra horizontalmente */
+  flex-wrap: wrap;          /* Permite que los cards se ajusten en varias filas */
+  gap: 20px;                /* Espaciado entre los cards */
+  width: 100%;
+  max-width: 2500px;
+  margin: 0 auto;           /* Centra el contenedor en su contenedor padre */
+}
   
   .card {
     width: 400px; /* Ajusta el ancho de los cards */
@@ -30,7 +29,107 @@
     justify-content: center; /* Centra horizontalmente */
     align-items: center; /* Centra verticalmente si el contenedor tiene altura */
     gap: 10px; /* Espaciado entre los elementos internos */
-    margin-top: 20px; /* Ajusta el espacio superior si es necesario */
-    width: 48%; /* Asegura que ocupe todo el ancho del contenedor padre */
+    margin-top: 70px; /* Ajusta el espacio superior si es necesario */
+    width: 120%; /* Asegura que ocupe todo el ancho del contenedor padre */
+  }
+
+  .filtros-base { 
+    margin: 110px 0;
+    display: flex;
+    flex-direction: column;
+    position: relative; /* Mantiene su posición relativa */
+    left: 30px; /* Mantiene un desplazamiento a la derecha */
+    padding: 20px; /* Espacio interno para agrandar visualmente */
+    border-radius: 10px; /* Redondea los bordes */
+    width: 500px ; /* Agranda la base del contenedor sin afectar los cards */
+    box-sizing: border-box; /* Asegura que el padding no sume al ancho total */
   }
   
+  .region-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px; /* Aumenta la separación entre elementos */
+    max-height: 500px; /* Aumenta la altura máxima para mostrar más contenido */
+    overflow-y: auto; /* Permite el desplazamiento si se excede el límite */
+    padding: 10px; /* Espacio interno adicional */
+    background-color: #ffffff; /* Fondo blanco para distinguirlo dentro del contenedor */
+    border-radius: 6px; /* Redondea los bordes */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Sombra ligera para destacar */
+  }
+  
+  
+  .region-btn {
+    padding: 10px 15px;
+    border-radius: 6px;
+    border: 2px solid  rgb(4, 28, 76);;
+    background-color: rgb(4, 28, 76); /* Color de fondo azul por defecto */
+    color: #fff; /* Color de texto blanco por defecto */
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: left;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .region-btn.selected {
+    background-color: #fff; /* Cambia a blanco cuando se selecciona */
+    color: #007bff; /* Cambia el texto a azul cuando se selecciona */
+  }
+  
+  .checkmark {
+    font-size: 18px;
+    color: #007bff; /* Color de la marca de verificación en azul */
+  }
+  
+  .comuna-container {
+    margin-top: 20px;
+  }
+  
+  .comuna-label {
+    font-weight: bold;
+    margin-bottom: 10px;
+    display: block;
+    font-size: 16px;
+    color: #007bff;
+  }
+  
+  .search-input {
+    padding: 10px;
+    border-radius: 6px;
+    border: 2px solid rgb(4, 28, 76);;
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .comuna-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+  
+  .comuna-btn {
+    padding: 10px 15px;
+    border-radius: 6px;
+    border: 2px solid  rgb(4, 28, 76);;
+    background-color: rgb(4, 28, 76); /* Color de fondo azul por defecto */
+    color: #fff; /* Color de texto blanco por defecto */
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: left;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .comuna-btn.selected {
+    background-color: #fff; /* Cambia a blanco cuando se selecciona */
+    color: #007bff; /* Cambia el texto a azul cuando se selecciona */
+  }
