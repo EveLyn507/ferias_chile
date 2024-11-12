@@ -230,6 +230,43 @@ CREATE TABLE feria (
 );
 
 ALTER TABLE feria ADD CONSTRAINT feria_pk PRIMARY KEY ( id_feria );
+CREATE TABLE plano (
+    id_plano SERIAL NOT NULL,
+    id_feria INTEGER NOT NULL,
+    width    INTEGER NOT NULL,
+    height   INTEGER NOT NULL,
+    PRIMARY KEY (id_plano)
+);
+
+ALTER TABLE plano 
+    ADD CONSTRAINT id_feria_to_plano_FK FOREIGN KEY (id_feria)
+        REFERENCES feria (id_feria);
+
+
+CREATE TABLE tipo_elemento (
+    id_tipo_elemento INTEGER NOT NULL,
+    elemento CHARACTER VARYING NOT NULL,
+    PRIMARY KEY (id_tipo_elemento)
+);
+
+
+CREATE TABLE elemento_plano (
+    id_elemento SERIAL NOT NULL, 
+    id_plano INTEGER NOT NULL ,
+    id_tipo_elemento INTEGER NOT NULL,
+    dimenciones JSONB ,
+    style JSONB,
+    PRIMARY KEY (id_elemento)
+);
+
+ALTER TABLE elemento_plano 
+    ADD CONSTRAINT id_plano_to_elemento_FK FOREIGN KEY (id_plano)
+        REFERENCES plano (id_plano);
+
+ALTER TABLE elemento_plano 
+    ADD CONSTRAINT id_tipo_ele_to_elemento_FK FOREIGN KEY (id_tipo_elemento)
+        REFERENCES tipo_elemento (id_tipo_elemento);
+
 
 CREATE TABLE feriante (
     id_user_fte     SERIAL NOT NULL,
@@ -263,15 +300,7 @@ CREATE TABLE intereses (
 
 ALTER TABLE intereses ADD CONSTRAINT intereses_pk PRIMARY KEY ( id_interes );
 
-CREATE TABLE json_feria (
-    id_json     SERIAL NOT NULL,
-    id_feria    INTEGER NOT NULL,
-    nombre_json JSONB NOT NULL
-);
 
-ALTER TABLE json_feria ADD CONSTRAINT json_feria_pk PRIMARY KEY ( id_json );
-
-ALTER TABLE json_feria ADD CONSTRAINT json_feria__un UNIQUE ( id_feria );
 
 CREATE TABLE log_actividad_feria (
     id_actividad     INTEGER NOT NULL,
@@ -518,9 +547,6 @@ ALTER TABLE detalle_team_vacante
     ADD CONSTRAINT id_feria_to_dtv_fk FOREIGN KEY ( id_feria )
         REFERENCES feria ( id_feria );
 
-ALTER TABLE json_feria
-    ADD CONSTRAINT id_feria_to_json_fk FOREIGN KEY ( id_feria )
-        REFERENCES feria ( id_feria );
 
 ALTER TABLE detalle_team_vacante
     ADD CONSTRAINT id_fte_to_dtv_fk FOREIGN KEY ( id_user_fte )
@@ -601,17 +627,14 @@ ALTER TABLE encargado_feria
 ALTER TABLE postulaciones
 ALTER COLUMN id_estado SET DEFAULT 1;
 
-
 ALTER TABLE puesto 
 ALTER COLUMN id_estado_puesto SET DEFAULT 1;
 
 ALTER TABLE solicitudes_apertura
 ALTER COLUMN id_estado SET DEFAULT 1;
 
-
 ALTER TABLE feria
 ALTER COLUMN id_estado SET DEFAULT 1;
-
 
 ALTER TABLE actividad_feria
 ALTER COLUMN armado_hecho SET DEFAULT false;
@@ -619,14 +642,11 @@ ALTER COLUMN armado_hecho SET DEFAULT false;
 ALTER TABLE actividad_feria
 ALTER COLUMN feria_hecha SET DEFAULT false;
 
-
 ALTER TABLE actividad_feria
 ALTER COLUMN activo SET DEFAULT true;
 
-
 ALTER TABLE arriendo_puesto
 ALTER COLUMN id_estado_arriendo SET DEFAULT 1;
-
 
 ALTER TABLE arriendo_puesto
 ALTER COLUMN activo SET DEFAULT true;

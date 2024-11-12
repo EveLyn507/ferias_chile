@@ -44,7 +44,6 @@ export const Mapa = () => {
   const [rectangles, setRectangles] = useState<Rectangle[]>([]);
   const [planWidth, setPlanWidth] = useState<number>(600);
   const [planHeight, setPlanHeight] = useState<number>(400);
-  const [areas, setAreas] = useState<Area[]>([]);
   const [streets, setStreets] = useState<Street[]>([]);
   const { id_feria } = useParams<{ id_feria: string }>();
 
@@ -53,7 +52,6 @@ export const Mapa = () => {
       const response = await axios.get(`${API_URL}/api/feria/${id_feria}`);
       const data: FeriaData = response.data;
       setRectangles(data.puestos);
-      setAreas(data.areas);
       setStreets(data.calles);
       setPlanWidth(data.planWidth);
       setPlanHeight(data.planHeight);
@@ -82,18 +80,15 @@ export const Mapa = () => {
           onClick={handleClick} 
         >
           <Canvas
-            rectangles={rectangles}
+            puestos={rectangles}
             planWidth={planWidth}
             planHeight={planHeight}
-            areas={areas}
-            streets={streets}
+            calles={streets}
             isStatic={true}
-            setRectangles={() => {}}
+            setPuestos={() => {}}
             setPlanWidth={() => {}}
             setPlanHeight={() => {}}
-            onRectangleClick={() => {}} 
-            onRemoveArea={() => {}}
-            onUpdateArea={() => {}}
+            onPuestoClick={() => {}} 
             onUpdateStreet={() => {}}
             onRemoveStreet={() => {}}
           />

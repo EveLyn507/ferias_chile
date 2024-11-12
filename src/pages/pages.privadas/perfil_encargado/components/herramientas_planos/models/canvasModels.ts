@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Rectangle } from "./vistaplanoModels";
+
+import { Rectangle, Street } from "./vistaplanoModels";
 
 
 
@@ -13,8 +14,7 @@ export interface CanvasProps {
     calles: any[];
     onUpdateStreet: (id: number, updatedProps: any) => void;
     onRemoveStreet: (id: number) => void;
-    onRectangleClick: (id: number) => void;
-    onPuestoClick: (id: number) => void;
+    onItemClick: (item:  Street | Rectangle) => void;
     isStatic?: boolean;
-    onStreetClick?: (id: number) => void;
+
   }

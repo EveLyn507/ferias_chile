@@ -1,35 +1,48 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
-import Canvas from './Canvas';
+
 import Toolbar from './Toolbar';
-import MenuDerecha from './MenuDerecha';
-import { setIdFeria } from '../../../../../redux/states/user';
+
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import { CreatePuesto, UpdateJsonFeria } from './services/funcionesHP';
 import { FeriaData, Rectangle, Street } from './models/vistaplanoModels';
+import Canvas from './Canvas2';
+import MenuPuesto from './menus/MenuPuesto';
+import MenuCalle from './menus/MenuCalle';
+import MenuVacio from './menus/menuContainers';
+
 
 
   const API_URL = 'http://localhost:5000';
 
   const Vista = () => {
-    const [puestos, setPuestos] = useState<Rectangle[]>([]); //lista de los puestos
+    const [totalPuestos, setTotalPuestos] = useState<number>(0);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
-    const [calles, setCalles] = useState<Street[]>([]);
     const { id_feria } = useParams<{ id_feria: string }>();
-    const idFeria = id_feria ? parseInt(id_feria) : 0
-    const [selectedRectangleId, setSelectedRectangleId] = useState<number | null>(null);
-    const [togleMenuD, setTogleMenuD] = useState<boolean>(false); // controla si menu derecha esta abierto o cerrado
-    const [selectedPuesto, setSelectedPuesto] = useState<Rectangle | null>(null); // detecta el puesto clikeado
-    const [totalPuestos, setTotalPuestos] = useState<number>(0);
+    const idFeria = id_feria ? parseInt(id_feria) : 0 //extrae el id feria
+
+    //variables de la herramienta
   // tamaño del canvas
     const [planWidth, setPlanWidth] = useState<number>(600); 
     const [planHeight, setPlanHeight] = useState<number>(400);
+    const [puestos, setPuestos] = useState<Rectangle[]>([]); //lista de los puestos
+    const [calles, setCalles] = useState<Street[]>([]);//lista de las calles
 
-    //carga de los puestos de la feria y su json
+
+    const [selectedItem, setSelectedItem] = useState<Street | Rectangle| null>(null);
+    // Función para manejar el clic en un ítem de cualquier layer
+    const ItemClick = (item: Street | Rectangle) => {
+      console.log(selectedItem);
+      setSelectedItem(item); // Guardar el item seleccionado
+    };
+    
+ 
     
 
+    //carga de los puestos de la feria y su json
     useEffect(() => {
       const fetchFeriaData = async () => {
         setIsLoading(true);
@@ -66,8 +79,6 @@ import { FeriaData, Rectangle, Street } from './models/vistaplanoModels';
       fetchTotalPuestos();
     }, []);
     
-
-
   //ACTUALIZA EL JSON
 
 
@@ -101,6 +112,7 @@ import { FeriaData, Rectangle, Street } from './models/vistaplanoModels';
         fill: 'green',
         id: Date.now(),
         numero: totalPuestos + 1,
+        type : 'puesto'
       };
     
       // Actualizamos la referencia de puestos
@@ -116,38 +128,25 @@ import { FeriaData, Rectangle, Street } from './models/vistaplanoModels';
       updateFeriajson(updatedPuestos);
     };
     
-
     const handleSaveJson = async() => {
       updateFeriajson()
     }
 
   //agrega el puesto a la lista local
   const updatePuesto = (updatedPuesto: Partial<Rectangle>) => {
-    if (selectedPuesto) {
+    if (selectedItem) {
       setPuestos((prevPuestos) =>
-        prevPuestos.map((puesto) => (puesto.id === selectedRectangleId ? { ...puesto, ...updatedPuesto } : puesto))
+        prevPuestos.map((puesto) => (puesto.id === updatedPuesto.id ? { ...puesto, ...updatedPuesto } : puesto))
       );
-      setTogleMenuD(false);
+
     }
   };
 
 
-
-
-
   const RemovePuesto = (id: number) => {
     setPuestos((prevPuestos) => prevPuestos.filter((puesto) => puesto.id !== id));
-    setTogleMenuD(false);
+
   };
-
-
-  const toggleMenuDerecha = (id: number) => {
-    const PuestoCliked = puestos.find((puesto) => puesto.id === id);
-    setSelectedRectangleId(id);
-    setSelectedPuesto(PuestoCliked || null);
-    setTogleMenuD(true);
-  };
-
 
 
   const handleAddStreet = () => {
@@ -158,6 +157,8 @@ import { FeriaData, Rectangle, Street } from './models/vistaplanoModels';
       points: [0, 0, 100, 100],
       width: 50,
       height: 100,
+      type: 'calle',
+      isStatic: false
     };
       // Actualizamos la referencia de calles
       const updatedcalles = [...calles, newStreet];
@@ -200,7 +201,7 @@ import { FeriaData, Rectangle, Street } from './models/vistaplanoModels';
             <Canvas
               puestos={puestos}
               setPuestos={setPuestos}
-              onPuestoClick={toggleMenuDerecha}
+              onItemClick={ItemClick}
               planWidth={planWidth}
               planHeight={planHeight}
               setPlanWidth={setPlanWidth}
@@ -214,17 +215,25 @@ import { FeriaData, Rectangle, Street } from './models/vistaplanoModels';
           </div>
 
 
-          <div >
-            {togleMenuD && selectedPuesto && (
-              <MenuDerecha
-                selectedPuesto={selectedPuesto}
-                onUpdatePuesto={updatePuesto}
-                onRemoveRectangle={RemovePuesto}
-                onClose={() => setTogleMenuD(false)}
-                isLoading={isLoading}
-              />
-            )}
-          </div>
+          <div>
+      {selectedItem?.type === 'calle' ? (
+        <MenuCalle
+          selectedCalle={selectedItem }
+          onSizeChange={handleUpdateStreet}
+          onRemoveStreet={handleRemoveStreet}
+          isLoading={isLoading}
+        />
+      ) : selectedItem?.type === 'puesto' ? (
+        <MenuPuesto
+          selectedPuesto={selectedItem }
+          onUpdatePuesto={updatePuesto}
+          onRemoveRectangle={RemovePuesto}
+          isLoading={isLoading}
+        />
+      ) : (
+        <MenuVacio />
+      )}
+    </div>
 
         </div>
       </div>

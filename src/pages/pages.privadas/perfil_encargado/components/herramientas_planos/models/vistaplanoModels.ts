@@ -19,21 +19,15 @@ export  interface Rectangle {
     y: number;
     width: number;
     height: number;
-    fill: string;
+    fill: string; 
     descripcion?: string;
     tipoPuesto?: string;
     estadoPuesto?: string;
     numero?: number;
+    precio? : number;
+    type: 'puesto'
   }
-  
-  export interface Area {
-    id: number;
-    name: string;
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  }
+
   
   export interface Street {
     id: number;
@@ -42,6 +36,8 @@ export  interface Rectangle {
     height: number;
     x: number;
     y: number;
+    type : 'calle'
+    isStatic: boolean; 
   }
   
   export interface FeriaData {

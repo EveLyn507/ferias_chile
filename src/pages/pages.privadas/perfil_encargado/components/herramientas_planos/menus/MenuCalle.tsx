@@ -1,3 +1,4 @@
+import '../css/menuD.css'; // Importa el archivo CSS
 import React, { useState, useEffect } from 'react';
 
 interface Street {
@@ -8,29 +9,30 @@ interface Street {
 }
 
 interface MenuCalleProps {
-  calle: Street;
-  onClose: () => void;
-  onSizeChange: (width: number, height: number) => void;
+  selectedCalle: Street ;
+  onSizeChange : (id: number, updatedProps: Partial<Street>) => void;
+  onRemoveStreet: (id: number) => void;
+  isLoading: boolean;
 }
 
-const MenuCalle: React.FC<MenuCalleProps> = ({ calle, onClose, onSizeChange }) => {
-  const [width, setWidth] = useState(calle.width);
-  const [height, setHeight] = useState(calle.height);
+const MenuCalle: React.FC<MenuCalleProps> = ({ selectedCalle, onSizeChange }) => {
+  const [width, setWidth] = useState(selectedCalle.width);
+  const [height, setHeight] = useState(selectedCalle.height);
 
   useEffect(() => {
-    setWidth(calle.width);
-    setHeight(calle.height);
-  }, [calle]);
+    setWidth(selectedCalle.width);
+    setHeight(selectedCalle.height);
+  }, [selectedCalle]);
 
   const handleSave = () => {
-    onSizeChange(width, height);  // Llamar a onSizeChange con los nuevos valores
-    onClose();  // Cerrar el menú
+    onSizeChange(selectedCalle.id, selectedCalle);  // Llamar a onSizeChange con los nuevos valores
+
   };
 
-  console.log("Renderizando MenuCalles");
+
 
   return (
-    <div className="menu-calle">
+    <div className="menu-container">
       <h3>Modificar Calle</h3>
       <div>
         <label>
@@ -53,7 +55,6 @@ const MenuCalle: React.FC<MenuCalleProps> = ({ calle, onClose, onSizeChange }) =
         </label>
       </div>
       <button onClick={handleSave}>Guardar</button>
-      <button onClick={onClose}>Cerrar</button>
     </div>
   );
 };

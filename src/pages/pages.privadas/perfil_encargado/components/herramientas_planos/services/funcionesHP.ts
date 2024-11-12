@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import axios from "axios";
-import { datosPuesto, FeriaData } from "../models/vistaplanoModels";
+import {  FeriaData, Rectangle } from "../models/vistaplanoModels";
 
 const API_URL = 'http://localhost:5000';
 
@@ -52,7 +53,7 @@ export const CreatePuesto = async (id_feria : number) => {
   
 
 
-export const UpdatePuesto = async (updatedPuesto : datosPuesto) => {
+export const UpdatePuesto = async (updatedPuesto : Rectangle) => {
 
     
     try {
@@ -67,3 +68,4 @@ export const UpdatePuesto = async (updatedPuesto : datosPuesto) => {
       }
 };
   
+

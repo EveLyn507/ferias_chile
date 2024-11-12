@@ -103,9 +103,6 @@ export interface puesto {
     estado_puesto : string,
     nombre_feria : string,
     num_puesto: number,
-    num_horario: number,
-    hora_inicio :string,
-    hora_termino :string,
     precio :number
 }
 
@@ -117,14 +114,11 @@ export interface ActividadPuesto {
     id_dia : number,
     fecha : string,
     id_puesto: number,
-    id_arriendo_puesto: number,
-    disponible: boolean,
-    numero: number,
-    precio: number,
-    id_horario: number,
     hora_inicio: string,
     hora_termino:string,
-    num_horario: number
+    id_arriendo_puesto: number,
+    id_estado_arriendo: number,
+    numero: number
 }
 
 

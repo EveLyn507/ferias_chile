@@ -131,7 +131,6 @@ router.post('/getPostulacionesEnf', (req, res) => {
   getPostulacionesEnf(res,pool,id_user_enf)
   }) 
 
-
 router.post('/aceptarPostulacion', (req, res) => {
   const pool = req.pool
   const  {id_postulacion,id_vacante,id_user_fte} = req.body
@@ -167,9 +166,6 @@ router.post('/asociarBankFeria', (req, res) => {
   asociarBankFeria(res,pool,mail_banco,id_feria)
   }) 
   
-
-
-
 //// FORMULARIO CREACION DE FERIA
   router.post('/createFeria', createFeria);
 
