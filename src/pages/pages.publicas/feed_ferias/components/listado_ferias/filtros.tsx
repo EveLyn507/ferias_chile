@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import '../../../../../css/base.css'
+import '../../../../../css/base.css';
+import './filtros.css';
 
-// Interfaces para tipar los datos
 interface Region {
   id: number;
   nombre: string;
@@ -23,7 +23,8 @@ export const Filtros_base = ({ onFilterC, onFilterR }: FiltrosBaseProps) => {
   const [comunas, setComunas] = useState<Comuna[]>([]);
   const [selectedRegion, setSelectedRegion] = useState<number | null>(null);
   const [selectedComuna, setSelectedComuna] = useState<number | null>(null);
-  const [searchTerm, setSearchTerm] = useState(''); 
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isMenuOpen, setIsMenuOpen] = useState(false); 
 
   useEffect(() => {
     Promise.all([
@@ -53,7 +54,7 @@ export const Filtros_base = ({ onFilterC, onFilterR }: FiltrosBaseProps) => {
     setSelectedRegion(regionId);
     onFilterR(regionId);
     setSelectedComuna(null);
-    setSearchTerm(''); 
+    setSearchTerm('');
     onFilterC(null);
   };
 
@@ -62,8 +63,16 @@ export const Filtros_base = ({ onFilterC, onFilterR }: FiltrosBaseProps) => {
     onFilterC(comunaId);
   };
 
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
   return (
-    <div className="filtros-base">
+    <div className={`filtros-base ${isMenuOpen ? 'open' : ''}`}>
+      <div className="hamburger-menu" onClick={toggleMenu}>
+        ☰
+      </div>
+
       <div className="region-container">
         {regiones.map((region) => (
           <button

@@ -1,53 +1,67 @@
-.Nav_bar { 
+.Nav_bar {
     top: 0;
     left: 0;
-    width: 100vw; /* Asegura que el ancho sea el de la ventana completa */
+    width: 100vw;
     max-height: 2.5rem;
     padding: 2.5rem;
     background-color: rgb(4, 28, 76);
     z-index: 1000;
     color: azure;
     box-sizing: border-box;
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     position: fixed;
-}
-
-
-.Nav_item{
+  }
+  
+  .Nav_toggle {
+    display: none; /* Oculto por defecto */
+    font-size: 2rem;
+    cursor: pointer;
+    color: azure;
+  }
+  
+  .Nav_item {
     list-style: none;
     display: flex;
-    justify-content: flex-end; /* Alinear los elementos a la derecha */
+    justify-content: flex-end;
     margin: 0;
     padding: 0;
-    width: 100%; /* Asegura que el ul ocupe todo el ancho */
-}
-
-.Nav_item li {
+    width: 100%;
+  }
+  
+  .Nav_item li {
     display: inline-block;
     margin-left: 1rem;
-   
-}
-
-/*ffiltrosssssssssssssssssssss */
-.box_filtro {
-    margin-top: 2.5rem;
-    width: 30%;
-    margin-left: 1rem;
-    margin-right: 1rem;
-    border: 3px solid;
-    border-color: black;
- 
- 
-}
-
-.Filtros_base {
-    list-style: none;
-    justify-content: center;
-    text-align: start;
-    
-    
+  }
+  
+  @media (max-width: 700px) {
+    .Nav_toggle {
+      display: block; /* Muestra el botón hamburguesa */
     }
-
+  
+    .Nav_item {
+      display: none; /* Oculta el menú por defecto */
+      flex-direction: column;
+      background-color: rgb(4, 28, 76);
+      position: absolute;
+      top: 3.5rem;
+      right: 0;
+      width: 100%;
+      padding: 1rem;
+      gap: 1rem;
+    }
+  
+    .Nav_item li {
+      margin: 0;
+      text-align: center; /* Centra los elementos en el menú desplegable */
+    }
+  
+    .Nav_item.active {
+      display: flex; /* Muestra el menú desplegable */
+    }
+  }
+  
 
     /* div de feriassssssssssss */
 .ferias {
@@ -71,13 +85,13 @@ display: flex;
 .card {
     list-style: none;
     width: 90%;
-    border: 1px solid #ccc; /* Borde de la tarjeta */
-    border-radius: 8px; /* Bordes redondeados */
-    padding: 16px; /* Espacio interno */
-    margin: 10px; /* Espacio externo entre tarjetas */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra */
-    background-color: #fff; /* Color de fondo */
-    text-align: center; /* Centrar texto */
+    border: 1px solid #ccc; 
+    border-radius: 8px; 
+    padding: 16px; 
+    margin: 10px; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+    background-color: #fff; 
+    text-align: center; 
     justify-content: center;
     margin-right: 2rem;
     color:black;

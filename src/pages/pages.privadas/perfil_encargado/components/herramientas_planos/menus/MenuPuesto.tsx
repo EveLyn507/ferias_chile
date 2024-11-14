@@ -135,7 +135,7 @@ const MenuDerecha: React.FC<MenuDerechaProps> = ({
           onChange={(e) => handleChangePdata("precio", parseFloat(e.target.value))}
         />
       </div>
-
+      <div className="botones-menu">
       <button
         onClick={ActualizarPuesto}
         disabled={isLoading}
@@ -150,6 +150,8 @@ const MenuDerecha: React.FC<MenuDerechaProps> = ({
       >
         Eliminar Puesto
       </button>
+      </div>
+      
     </div>
   );
 };
