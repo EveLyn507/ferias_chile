@@ -1,102 +1,120 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* StreetsLayer.tsx */
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { Rect, Circle, Layer } from 'react-konva';
-import { Street } from '../models/vistaplanoModels';
-
-
+import { PlanoItemElement } from '../models/vistaplanoModels';
 
 interface StreetPageProps {
-    calles: Street[]; // Arreglo de calles
-    onRemoveStreet: (id: number) => void; // Función para eliminar una calle
-    onUpdateStreet: (id: number, updates: { x?: number; y?: number; width?: number; height?: number }) => void; // Función para actualizar las propiedades de una calle
-    onStreetClick: (item : Street) => void; // para detectar item click
-    isStatic?: boolean; // Indica si las calles son estáticas o no (opcional, valor por defecto es false)
-  }
+  calles: PlanoItemElement[]; // Arreglo de calles
+  onRemoveStreet: (id: number) => void; // Función para eliminar una calle
+  onStreetClick: (item: PlanoItemElement) => void; // Para detectar item click
+  isStatic?: boolean; // Indica si las calles son estáticas o no (opcional, valor por defecto es false)
+}
 
-
-const StreetsLayer: React.FC<StreetPageProps> = ({ 
+const StreetsLayer: React.FC<StreetPageProps> = ({
   calles,
   onRemoveStreet,
-  onStreetClick, 
-  isStatic = false }) => {
-
+  onStreetClick,
+  isStatic = false,
+}) => {
   const layerRef = useRef(null);
+
+  // Estado para gestionar la calle con el foco
+  const [focusedStreet, setFocusedStreet] = useState<PlanoItemElement | null>(null);
+
+
+
+
+
   // Función para manejar el arrastre de las calles
-  const handleDragStreet = (e: any, selectedCalle: Street , idx : number) => {
-    if (!selectedCalle || selectedCalle.isStatic || isStatic) return; // No mover si es estático
+  const handleDragStreet = (e: any, selectedCalle: PlanoItemElement, idx: number) => {
+    if (!selectedCalle || selectedCalle.dimenciones.isStatic || isStatic) return; // No mover si es estático
 
     const updatedCalles = calles.map((r) =>
-      r.id === selectedCalle.id ? { ...r, x: e.target.x(), y: e.target.y() } : r
+      r.id_elemento === selectedCalle.id_elemento
+        ? { ...r, dimenciones: { ...r.dimenciones, x: e.target.x(), y: e.target.y() } }
+        : r
     );
 
-    onStreetClick(updatedCalles[idx])
+    onStreetClick(updatedCalles[idx]);
   };
 
   // Función para manejar el redimensionamiento de las calles
-  const handleResizeStreet = (e: any, selectedCalle: Street, side: 'right' | 'bottom' , idx : number) => {
-
-    if (!selectedCalle || selectedCalle.isStatic || isStatic) return; // No redimensionar si es estático
-
-    const newWidth = side === 'right' ? e.target.x() - selectedCalle.x : selectedCalle.width;
-    const newHeight = side === 'bottom' ? e.target.y() - selectedCalle.y : selectedCalle.height;
-
+  const handleResizeStreet = (e: any, selectedCalle: PlanoItemElement, side: 'right' | 'bottom', idx: number , ) => {
+    if (!selectedCalle || selectedCalle.dimenciones.isStatic || isStatic) return; // No redimensionar si es estático
+   
+    
+    const newWidth = side === 'right' ? e.target.x() - selectedCalle.dimenciones.x : selectedCalle.dimenciones.width;
+    const newHeight = side === 'bottom' ? e.target.y() - selectedCalle.dimenciones.y : selectedCalle.dimenciones.height;
+  console.log(newWidth);
+  
     const updatedCalles = calles.map((r) =>
-      r.id === selectedCalle.id ? { ...r, width: newWidth, height: newHeight } : r
+      r.id_elemento === selectedCalle.id_elemento
+        ? { ...r, dimenciones: { ...r.dimenciones, width: newWidth, height: newHeight } }
+        : r
     );
-
     // Actualizamos el tamaño de la calle
-    onStreetClick(updatedCalles[idx])
+    onStreetClick(updatedCalles[idx]);
   };
 
   return (
     <Layer ref={layerRef}>
-      {calles.map((street , index) => {
-        // Tamaño por defecto para las calles si no se ha definido
-        const defaultWidth = 50000;  // Nuevo tamaño mayor por defecto
-        const defaultHeight = 50000;  // Nuevo tamaño mayor por defecto
+      {calles.map((street, index) => {
+        const defaultWidth = 50000; // Nuevo tamaño mayor por defecto
+        const defaultHeight = 50000; // Nuevo tamaño mayor por defecto
 
-        const width = street.width || defaultWidth;
-        const height = street.height || defaultHeight;
+        const width = street.dimenciones.width || defaultWidth;
+        const height = street.dimenciones.height || defaultHeight;
 
+        // Calcular las posiciones de los puntos de redimensionamiento
+        const rightCornerX = street.dimenciones.x + width;
+        const rightCornerY = street.dimenciones.y + height;
+        const leftCornerX = street.dimenciones.x;
+        const leftCornerY = street.dimenciones.y + height;
+     
+        
         return (
-          <React.Fragment key={street.id}>
+          <React.Fragment key={street.id_elemento}>
             {/* Calle Rectangular */}
             <Rect
-              x={street.x}
-              y={street.y}
-              width={width}
-              height={height}
+              x={street.dimenciones.x}
+              y={street.dimenciones.y}
+              width={street.dimenciones.width}
+              height={street.dimenciones.height}
               fill="black"
-              draggable={!street.isStatic && !isStatic}  // Solo se puede mover si no es estático
-              onDragEnd={(e) => handleDragStreet(e, street , index)}
-              onDblClick={() => onRemoveStreet(street.id)}
-              onClick={!isStatic ? () => onStreetClick(street) : undefined}
+              draggable={!street.dimenciones.isStatic && !isStatic} // Solo se puede mover si no es estático
+              onDragEnd={(e) => handleDragStreet(e, street, index)}
+              onDblClick={() => onRemoveStreet(street.id_elemento!)}
+              onClick={() => {
+                if (!isStatic) {
+                  setFocusedStreet(street); // Establece el foco al hacer clic en la calle
+                  onStreetClick(street);
+                }
+              }}
             />
-            
 
             {/* Puntos de control para redimensionar */}
-            {!isStatic && (
+            {!isStatic && focusedStreet?.id_elemento === street.id_elemento && (
               <>
                 {/* Esquina inferior derecha */}
                 <Circle
-                  x={street.x + width}
-                  y={street.y + height}
+                  x={rightCornerX}
+                  y={rightCornerY}
                   radius={8}
                   fill="red"
-                  draggable={!isStatic}  // Deshabilitar el redimensionamiento si es estático
-                  onDragMove={(e) => handleResizeStreet(e, street, 'right' , index)}
+                  draggable={!isStatic} // Deshabilitar el redimensionamiento si es estático
+                  onDragMove={(e) => handleResizeStreet(e, street, 'right', index)}
                 />
-                
+
                 {/* Esquina inferior izquierda */}
                 <Circle
-                  x={street.x}
-                  y={street.y + height}
+                  x={leftCornerX}
+                  y={leftCornerY}
+                  
                   radius={8}
                   fill="blue"
-                  draggable={!isStatic}  // Deshabilitar el redimensionamiento si es estático
-                  onDragMove={(e) => handleResizeStreet(e, street, 'bottom' , index)}
+                  draggable={!isStatic} // Deshabilitar el redimensionamiento si es estático
+                  onDragMove={(e) => handleResizeStreet(e, street, 'bottom', index ) }
                 />
               </>
             )}

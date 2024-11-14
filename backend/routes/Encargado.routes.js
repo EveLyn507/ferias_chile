@@ -1,9 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const puestoRoutes = require('./Puesto.routes');
 const { 
   saveFeria, 
-  getFeria ,get_feria_Encargado ,getFeriaBank,
+  getPlanoElements ,get_feria_Encargado ,getFeriaBank,
   abrirTiketFeria,CreatePuesto,UpdatePuesto, UpdateProgramaFeria ,
   getPrograma ,insertDatosBank,getDatosBank, 
   deleteBank,getVacantesFeria,insertVacantesFeria, 
@@ -32,8 +31,12 @@ router.post('/tiket', (req , res) => {
 // Ruta para guardar una feria
 router.post('/api/feria', saveFeria); // Cambiado para incluir '/api'
 
-// Ruta para obtener una feria por ID
-router.get('/api/feria/:id_feria', getFeria);
+// carga los elementos de he planos
+router.get('/api/feria/:id_feria', (req, res )=> {
+  const pool = req.pool; 
+  const {id_feria} = req.params;
+  getPlanoElements(res,pool,id_feria);
+});
 
 router.post('/tiket', (req , res) => {
   const pool = req.pool; 
@@ -42,8 +45,8 @@ router.post('/tiket', (req , res) => {
 
 router.post('/CreatePuesto', (req , res) => {
   const pool = req.pool; 
-  const {id_feria} = req.body;
-    CreatePuesto(res,pool , id_feria);
+  const newPuesto = req.body.newPuesto;
+    CreatePuesto(res,pool , newPuesto);
 })
 
 

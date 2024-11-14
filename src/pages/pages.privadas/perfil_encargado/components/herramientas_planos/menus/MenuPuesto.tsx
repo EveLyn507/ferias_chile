@@ -1,14 +1,18 @@
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Rectangle } from "../models/vistaplanoModels";
+import { dataPuesto,  PlanoItemElement, Rectangle } from "../models/vistaplanoModels";
 import '../css/menuD.css';
 
 interface MenuDerechaProps {
-  selectedPuesto: Rectangle | null;
+  selectedPuesto: PlanoItemElement | null;
   onRemoveRectangle: (id: number) => void;
-  setSelectedItem: (item : Rectangle) => void
+  setSelectedItem: (item : PlanoItemElement) => void
   isLoading: boolean;
 }
+
+
+
+
 
 const MenuDerecha: React.FC<MenuDerechaProps> = ({
   selectedPuesto,
@@ -18,7 +22,8 @@ const MenuDerecha: React.FC<MenuDerechaProps> = ({
 }) => {
 
 
-  const handleChange = (field: keyof Rectangle, value: any) => {
+
+  const handleChangeDimencion = (field: keyof Rectangle, value: any) => {
     if (!selectedPuesto) return;
     
     // Crear un objeto actualizado para pasar a onUpdatePuesto
@@ -26,8 +31,18 @@ const MenuDerecha: React.FC<MenuDerechaProps> = ({
     setSelectedItem(updatedPuesto);
   };
 
+
+  const handleChangePdata = (field: keyof dataPuesto, value: any) => {
+    if (!selectedPuesto) return;
+    
+    // Crear un objeto actualizado para pasar a onUpdatePuesto
+    const updatedPuesto = { ...selectedPuesto, [field]: value };
+    setSelectedItem(updatedPuesto);
+  };
+
+
   const ActualizarPuesto = async () => {
-    if (!selectedPuesto || selectedPuesto.numero === undefined) {
+    if (!selectedPuesto || selectedPuesto.id_elemento === undefined) {
       console.error("Error: `selectedPuesto` o `numero` no están definidos.");
       return;
     }
@@ -37,23 +52,23 @@ const MenuDerecha: React.FC<MenuDerechaProps> = ({
 
   return (
     <div className="menu-container">
-      <h3 className="menu-header">Editar Puesto {selectedPuesto?.id}</h3>
+      <h3 className="menu-header">Editar Puesto {selectedPuesto?.id_elemento}</h3>
 
       <div className="xyinput-group">
         <div className="xy">
           <label>X</label>
           <input
             type="number"
-            value={selectedPuesto?.x || 0}
-            onChange={(e) => handleChange("x", parseFloat(e.target.value))}
+            value={selectedPuesto?.dimenciones.x }
+            onChange={(e) => handleChangeDimencion("x", parseFloat(e.target.value))}
           />
         </div>
         <div className="xy">
           <label>Y</label>
           <input
             type="number"
-            value={selectedPuesto?.y || 0}
-            onChange={(e) => handleChange("y", parseFloat(e.target.value))}
+            value={selectedPuesto?.dimenciones.y }
+            onChange={(e) => handleChangeDimencion("y", parseFloat(e.target.value))}
           />
         </div>
       </div>
@@ -63,16 +78,16 @@ const MenuDerecha: React.FC<MenuDerechaProps> = ({
           <label>Width</label>
           <input
             type="number"
-            value={selectedPuesto?.width || 0}
-            onChange={(e) => handleChange("width", parseFloat(e.target.value))}
+            value={selectedPuesto?.dimenciones.width }
+            onChange={(e) => handleChangeDimencion("width", parseFloat(e.target.value))}
           />
         </div>
         <div className="xy">
           <label>Height</label>
           <input
             type="number"
-            value={selectedPuesto?.height || 0}
-            onChange={(e) => handleChange("height", parseFloat(e.target.value))}
+            value={selectedPuesto?.dimenciones.height }
+            onChange={(e) => handleChangeDimencion("height", parseFloat(e.target.value))}
           />
         </div>
       </div>
@@ -81,16 +96,16 @@ const MenuDerecha: React.FC<MenuDerechaProps> = ({
         <label>Descripción:</label>
         <input
           type="text"
-          value={selectedPuesto?.descripcion || ""}
-          onChange={(e) => handleChange("descripcion", e.target.value)}
+          value={selectedPuesto?.dataPuesto!.descripcion || "vacio"}
+          onChange={(e) => handleChangePdata("descripcion", e.target.value)}
         />
       </div>
 
       <div className="input-group">
         <label>Tipo de Puesto:</label>
         <select
-          value={selectedPuesto?.tipoPuesto || ""}
-          onChange={(e) => handleChange("tipoPuesto", e.target.value)}
+          value={selectedPuesto?.dataPuesto?.id_tipo_puesto || ""}
+          onChange={(e) => handleChangePdata("id_tipo_puesto", e.target.value)}
         >
           <option value="">Selecciona una opción</option>
           <option value="1">Día</option>
@@ -102,8 +117,8 @@ const MenuDerecha: React.FC<MenuDerechaProps> = ({
       <div className="input-group">
         <label>Estado del Puesto:</label>
         <select
-          value={selectedPuesto?.estadoPuesto || ""}
-          onChange={(e) => handleChange("estadoPuesto", e.target.value)}
+          value={selectedPuesto?.dataPuesto!.id_estado_puesto || ""}
+          onChange={(e) => handleChangePdata("id_estado_puesto", e.target.value)}
         >
           <option value="">Selecciona una opción</option>
           <option value="1">Disponible</option>
@@ -116,8 +131,8 @@ const MenuDerecha: React.FC<MenuDerechaProps> = ({
         <label>Precio:</label>
         <input
           type="number"
-          value={selectedPuesto?.precio || 0}
-          onChange={(e) => handleChange("precio", parseFloat(e.target.value))}
+          value={selectedPuesto?.dataPuesto!.precio || 0}
+          onChange={(e) => handleChangePdata("precio", parseFloat(e.target.value))}
         />
       </div>
 
@@ -130,7 +145,7 @@ const MenuDerecha: React.FC<MenuDerechaProps> = ({
       </button>
 
       <button
-        onClick={() => onRemoveRectangle(selectedPuesto!.id)}
+        onClick={() => onRemoveRectangle(selectedPuesto!.id_elemento!)}
         className="menu-button delete-button"
       >
         Eliminar Puesto

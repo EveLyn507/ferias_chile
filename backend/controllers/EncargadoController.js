@@ -138,38 +138,70 @@ const saveFeria = async (req, res) => {
 
 
 // cargar el json  de la feria a la app
-const getFeria = async (req, res) => {
-  const pool = req.pool;
-  const id_feria = parseInt(req.params.id_feria, 10);
+const getPlanoElements = async (res, pool ,id_feria) => {
+
   try {
-    const result = await pool.query('SELECT nombre_json FROM json_feria WHERE id_feria = $1', [id_feria]);
-    if (result.rows.length > 0) {
-      res.json(result.rows[0].nombre_json);
-    } else {
-      res.status(404).json({ error: 'Feria no encontrada' });
+    const plano = await pool.query(`
+      SELECT * from plano where id_feria = $1`, [id_feria])
+
+    const id_plano = plano.rows[0].id_plano // extraer el id_plano 
+
+      
+    const planoElements = await pool.query('SELECT * FROM get_plano_elements($1)', [id_plano]);
+
+    const planoData = {
+      plano : plano.rows[0],
+      elements: planoElements.rows
     }
+    res.json(planoData)
+
   } catch (err) {
     console.error('Error al obtener la feria:', err);
-    res.status(500).json({ error: 'Error al obtener la feria' });
+    res.status(500).json({ error: 'Error al obtener los datos del plano' });
   }
 };
 
 
 
 
-//crea el puesto y retorna su id , si ya existe lo actualiza
-const CreatePuesto = async (res, pool , id_feria ) => {
+//recibe los datos default tanto para tabla puesto como para la tabla elementos_plano , primero guarda el puesto , luego activa la funcion con el retorno de los datos necesarios ; id_+puesto
+const CreatePuesto = async (res, pool , newPuesto ) => {
+const {id_plano , nombre_elemento, id_tipo_elemento } = newPuesto
+  const {  id_feria } = newPuesto.dataPuesto
+  const dimenciones = newPuesto.dimenciones
+  const style = newPuesto.style
+
+
 try { 
       const cantPuestos = await pool.query(`select contar_puestos_actuales($1)`, [id_feria])
       const numPuesto = await cantPuestos.rows[0].contar_puestos_actuales + 1
-      console.log(numPuesto);
       
-      const result = await pool.query(`
+      const puesto = await pool.query(`
         INSERT INTO puesto (id_tipo_puesto, numero,descripcion,id_feria)
         VALUES ($1, $2, $3, $4)
-        RETURNING id_puesto , id_estado_puesto;
-        ` , [null ,numPuesto , null , id_feria])
-        res.status(200).json(result.rows[0])
+        RETURNING *;
+        ` , [null ,numPuesto , 'Vacio' , id_feria])
+        const id_puesto = puesto.rows[0].id_puesto
+
+       const dim = await pool.query(`
+        INSERT INTO elemento_plano (id_plano , nombre_elemento ,id_tipo_elemento , dimenciones , style , id_puesto) 
+        VALUES ($1,$2,$3,$4,$5,$6) 
+        RETURNING *`,[id_plano,nombre_elemento,id_tipo_elemento , dimenciones, style, id_puesto])
+
+        const final = dim.rows[0]
+        const data = {
+          id_plano : final.id_plano,
+          id_elemento : final.id_elemento,
+          nombre_elemento : final.nombre_elemento,
+          id_tipo_elemento: final.id_tipo_elemento,
+          dimenciones : final.dimenciones,
+          stile : final.style,
+          id_puesto: final.id_puesto,
+          dataPuesto: puesto.rows[0]
+        }
+    
+          
+        res.status(200).json(data)
 
 } catch (error) {
   console.log('erro al ingresar puesto' , error);
@@ -181,7 +213,7 @@ try {
 
 const UpdatePuesto = async (res , pool ,id_tipo_puesto , descripcion , id_estado_puesto , id_feria,numero ) => {
   try {
-    console.log(numero);
+
     
     const check  = await pool.query(`
       SELECT * FROM puesto where id_feria = $1 and numero = $2` [id_feria , numero ])
@@ -663,7 +695,7 @@ const asociarBankFeria = async (res,pool,mail_banco, id_feria) => {
 
 //CAMBIO 
 module.exports = {
-  saveFeria,getFeria,get_feria_Encargado,//HOME 
+  saveFeria,getPlanoElements,get_feria_Encargado,//HOME 
   //ADMINISTRACION DE LA FERIA
   abrirTiketFeria,recargaStatus,
   UpdateProgramaFeria,getPrograma, // MODULO PROGRAMACION DE LA FERIA

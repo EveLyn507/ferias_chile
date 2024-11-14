@@ -16,7 +16,8 @@ export const View_detalle_feria = () => {
     const [puestos, setPuesto] = useState<ActividadPuesto[]>([]);
     const { nombre_feria } = useParams<{ nombre_feria: string }>() as { nombre_feria: string };
     const {fecha} = useParams<{fecha: string}>() as { fecha: string };
-
+  
+    
     const carga = async () => {
         await Traer_puestos_actividad(nombre_feria,fecha).then( (res: ActividadPuesto[]) => {setPuesto(res);}).
         catch((error ) => { console.error("Error al cargar ferias:", error)})

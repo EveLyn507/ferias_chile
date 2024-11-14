@@ -1,7 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
-import Canvas from '../../../../pages.privadas/perfil_encargado/components/herramientas_planos/Canvas';
+import Canvas from '../../../../pages.privadas/perfil_encargado/components/herramientas_planos/Canvas2';
 
 interface Rectangle {
   id: number;
@@ -62,7 +63,7 @@ export const Mapa = () => {
 
   useEffect(() => {
     fetchFeriaData();
-  }, [id_feria]);
+  }, []);
 
   const handleClick = (event: React.MouseEvent) => {
     event.stopPropagation(); 

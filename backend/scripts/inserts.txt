@@ -50,6 +50,11 @@ VALUES (3, 'Mantenimiento');
 INSERT INTO estado_puesto (id_estado_puesto,estado) 
 VALUES (4, 'ELIMINADO');
 
+--tipo elemento
+INSERT INTO tipo_elemento (id_tipo_elemento, elemento)
+VALUES 
+(1, 'puesto'),
+(2,'calle')
 
 --tipo puesto
 

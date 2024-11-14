@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const pool = require('../server');
 const { OAuth2Client } = require('google-auth-library');//npm install google-auth-library
 const nodemailer = require('nodemailer'); // npm install nodemailer
+const { use } = require('../routes/Encargado.routes');
 
 // Cargar variables de entorno
 dotenv.config();
@@ -16,16 +17,21 @@ const login_encargado = async (req, res, pool) => {
   try {
     const result = await pool.query('SELECT * FROM public.encargado_feria WHERE user_mail = $1', [mail]);
     const user = result.rows[0];
-
+    const role = user.id_tipo_usuario;
+    const email = user.user_mail;
+    const id_user = user.id_user_enf;
+    const nombre = id_user+user.nombre + user.apellido
     if (!user || !(await bcrypt.compare(contrasena, user.contrasena))) {
       return res.status(401).json({ message: 'Credenciales incorrectas' });
     }
 
-    const token = jwt.sign({ id: user.id }, 'xd', { expiresIn: '1h' });
-    const role = user.id_tipo_usuario;
-    const email = user.user_mail;
-    const id_user = user.id_user_enf;
+    
+    const token = jwt.sign({ id: nombre, email: email }, 'your-secret-key', {
+      expiresIn: '5h', // Duración del token
+    });    
+
     res.json({ token, role, email ,id_user});
+
   } catch (err) {
     console.error(err);
     res.status(500).send('Error al iniciar sesión');
@@ -38,16 +44,20 @@ const login_feriante = async (req, res, pool) => {
   try {
     const result = await pool.query('SELECT * FROM public.feriante WHERE user_mail = $1', [mail]);
     const user = result.rows[0];
+    const role = user.id_tipo_usuario;
+    const email = user.user_mail;
+    const id_user = user.id_user_fte;
+    const nombre = id_user+user.nombre + user.apellido
 
     if (!user || !(await bcrypt.compare(contrasena, user.contrasena))) {
       return res.status(401).json({ message: 'Credenciales incorrectas' });
     }
 
-    const token = jwt.sign({ id: user.id }, 'xd', { expiresIn: '1h' });
-    const role = user.id_tipo_usuario;
-    const email = user.user_mail;
-    const id_user = user.id_user_fte;
-    console.log(id_user)
+
+    const token = jwt.sign({ id: nombre, email: email }, 'your-secret-key', {
+      expiresIn: '5h', // Duración del token
+    });    
+
     res.json({ token, role, email ,id_user});
   } catch (err) {
     console.error(err);
@@ -61,15 +71,18 @@ const login_municipal = async (req, res, pool) => {
   try {
     const result = await pool.query('SELECT * FROM public.administrador_municipal WHERE user_mail = $1', [mail]);
     const user = result.rows[0];
+    const role = user.id_tipo_usuario;
+    const email = user.user_mail;
+    const id_user = user.id_user_adm;
+    const nombre = id_user+user.nombre + user.apellido
 
     if (!user || !(await bcrypt.compare(contrasena, user.contrasena))) {
       return res.status(401).json({ message: 'Credenciales incorrectas' });
     }
 
-    const token = jwt.sign({ id: user.id }, 'xd', { expiresIn: '1h' });
-    const role = user.id_tipo_usuario;
-    const email = user.user_mail;
-    const id_user = user.id_user_adm;
+    const token = jwt.sign({ id: nombre, email: email }, 'your-secret-key', {
+      expiresIn: '5h', // Duración del token
+    });  
     res.json({ token, role, email ,id_user});
   } catch (err) {
     console.error(err);

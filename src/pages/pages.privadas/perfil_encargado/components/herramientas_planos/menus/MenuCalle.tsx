@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import '../css/menuD.css'; // Importa el archivo CSS
 import React, {  } from 'react';
-import { Street } from '../models/vistaplanoModels';
+import { PlanoItemElement, Street } from '../models/vistaplanoModels';
 
 
 
 interface MenuCalleProps {
-  selectedCalle: Street |  null ;
+  selectedCalle: PlanoItemElement |  null ;
   onRemoveStreet: (id: number) => void;
-  setSelectedItem:(item : Street ) => void;
+  setSelectedItem:(item : PlanoItemElement ) => void;
   isLoading: boolean;
 }
 
@@ -33,7 +33,7 @@ const MenuCalle: React.FC<MenuCalleProps> = ({ selectedCalle ,setSelectedItem}) 
           X:
           <input
             type="number"
-            value={selectedCalle?.x}
+            value={selectedCalle?.dimenciones.x}
             onChange={(e) => handleChange("x", parseFloat(e.target.value))}
           />
         </label>
@@ -44,7 +44,7 @@ const MenuCalle: React.FC<MenuCalleProps> = ({ selectedCalle ,setSelectedItem}) 
           Y:
           <input
             type="number"
-            value={selectedCalle?.y}
+            value={selectedCalle?.dimenciones.y}
             onChange={(e) => handleChange("y", parseFloat(e.target.value))}
           />
         </label>
@@ -55,7 +55,7 @@ const MenuCalle: React.FC<MenuCalleProps> = ({ selectedCalle ,setSelectedItem}) 
           Ancho:
           <input
             type="number"
-            value={selectedCalle?.width}
+            value={selectedCalle?.dimenciones.width}
             onChange={(e) => handleChange("width", parseFloat(e.target.value))}
           />
         </label>
@@ -65,7 +65,7 @@ const MenuCalle: React.FC<MenuCalleProps> = ({ selectedCalle ,setSelectedItem}) 
           Alto:
           <input
             type="number"
-            value={selectedCalle?.height}
+            value={selectedCalle?.dimenciones.height}
             onChange={(e) => handleChange("height", parseFloat(e.target.value))}
           />
         </label>

@@ -6,7 +6,7 @@ import store from './redux/store';
 import { Nav_bar } from './components';
 import { NotFound,PrivateRoutes, PublicRoutes } from './models/index'; // rutas url 
 import {  LoginHome, Registro, ResetPassword } from './pages/pages.publicas/registro_y_login/index';
-import Vistaplano from './pages/pages.privadas/perfil_encargado/components/herramientas_planos/vistaplano';
+import Vistaplano from './pages/pages.privadas/perfil_encargado/components/herramientas_planos/cargavista';
 import PerfilFeriantes from './pages/pages.privadas/perfil_feriante/perfil_feriante';
 import View_detalle_feria from './pages/pages.publicas/feed_ferias/vista_detalle_feria';
 import ConfirmPayment from './pages/pages.privadas/perfil_feriante/components/pagos/voucher_pago';

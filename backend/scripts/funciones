@@ -84,6 +84,35 @@ END;
 $$ LANGUAGE plpgsql;
 
 
+CREATE OR REPLACE FUNCTION get_plano_elements(func_id_plano INTEGER) 
+RETURNS TABLE(
+    id_elemento INTEGER, 
+    nombre_elemento CHARACTER VARYING(50),
+    id_tipo_elemento INTEGER,
+    dimenciones JSONB,
+    style JSONB,
+    "dataPuesto" JSON
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        ep.id_elemento, 
+        ep.nombre_elemento,
+        ep.id_tipo_elemento,
+        ep.dimenciones,
+        ep.style,
+        COALESCE(
+            (SELECT row_to_json(p) FROM PUESTO p WHERE ep.id_puesto = p.id_puesto),
+            'null'::json
+        ) AS DataPuesto
+    FROM elemento_plano ep
+    WHERE ep.id_plano = func_id_plano;
+END; 
+$$ LANGUAGE plpgsql;
+
+
+
+
 
 -- FIN DE LAS FUNCIONES DEL ENCARGADOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 

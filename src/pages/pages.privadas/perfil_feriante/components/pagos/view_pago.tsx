@@ -15,7 +15,7 @@ const PaymentButton: React.FC = () => {
   const puesto = location.state.puesto || {}; // Extraemos 'puesto' del estado
   const id_user_fte = useSelector((store : AppStore) =>  store.user.id_user)
   const mail = useSelector((store : AppStore) =>  store.user.email)
-  console.log(puesto.id_arriendo_puesto);
+
   const handlePayment = async (puesto : ActividadPuesto, id_user_fte : number , mail : string) => {
    
     

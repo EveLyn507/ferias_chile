@@ -1,20 +1,18 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Rectangle, Street } from "./vistaplanoModels";
+import {  PlanoItemElement } from "./vistaplanoModels";
 
 
 
 export interface CanvasProps {
-    puestos: Rectangle[];
-    setPuestos: React.Dispatch<React.SetStateAction<Rectangle[]>>;
+    puestos: PlanoItemElement[];
+    setPuestos: React.Dispatch<React.SetStateAction<PlanoItemElement[]>>;
     planWidth: number;
     planHeight: number;
     setPlanWidth: (width: number) => void;
     setPlanHeight: (height: number) => void;
-    calles: any[];
-    onUpdateStreet: (id: number, updatedProps: any) => void;
+    calles: PlanoItemElement[];
     onRemoveStreet: (id: number) => void;
-    onItemClick: (item:  Street | Rectangle) => void;
+    onItemClick: (item:  PlanoItemElement) => void;
     isStatic?: boolean;
 
   }

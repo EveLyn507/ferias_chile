@@ -17,7 +17,8 @@ const mail = useSelector((store : AppStore) => store.user.email)
 const [postulacion, setPostulacion] = useState<postulacion>({
     id_user_fte : id_user_fte,
     user_mail : mail,
-    id_vacante : null
+    id_vacante : null,
+    
 })
 
 useEffect(() => {

@@ -5,9 +5,9 @@ import { useState, useEffect } from 'react';
 
 import React from 'react';
 import { CanvasProps } from './models/canvasModels';
-import { Rectangle } from './models/vistaplanoModels';
 import StreetsLayer from './layers/streelayer';
 import PuestosLayer from './layers/puestoLayer';
+import { PlanoItemElement } from './models/vistaplanoModels';
 
   const Canvas2: React.FC<CanvasProps> = ({
     puestos,
@@ -17,7 +17,6 @@ import PuestosLayer from './layers/puestoLayer';
     setPlanWidth,
     setPlanHeight,
     calles,
-    onUpdateStreet,
     onRemoveStreet,
     onItemClick,
     isStatic = false,
@@ -28,7 +27,7 @@ import PuestosLayer from './layers/puestoLayer';
     const gridSize = 50;
     const controlSize = 8;
   
-    const [hoveredRect, setHoveredRect] = useState<Rectangle | null>(null);
+    const [hoveredRect, setHoveredRect] = useState<PlanoItemElement | null>(null);
     const [image, setImage] = useState<HTMLImageElement | null>(null);
 
     // Cargar imagen de los puestos
@@ -115,8 +114,8 @@ return (
   <StreetsLayer 
         calles={calles}
         onRemoveStreet={onRemoveStreet}
-        onUpdateStreet={onUpdateStreet}
         onStreetClick={onItemClick}  // Función que se ejecuta cuando se hace clic en un puesto
+  
         isStatic={isStatic}
       />
 

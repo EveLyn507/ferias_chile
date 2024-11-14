@@ -253,9 +253,11 @@ CREATE TABLE tipo_elemento (
 CREATE TABLE elemento_plano (
     id_elemento SERIAL NOT NULL, 
     id_plano INTEGER NOT NULL ,
+	nombre_elemento CHARACTER VARYING NOT NULL ,
     id_tipo_elemento INTEGER NOT NULL,
     dimenciones JSONB ,
     style JSONB,
+    id_puesto INTEGER,
     PRIMARY KEY (id_elemento)
 );
 
@@ -267,6 +269,10 @@ ALTER TABLE elemento_plano
     ADD CONSTRAINT id_tipo_ele_to_elemento_FK FOREIGN KEY (id_tipo_elemento)
         REFERENCES tipo_elemento (id_tipo_elemento);
 
+
+ALTER TABLE elemento_plano 
+    ADD CONSTRAINT id_puesto_to_element_FK FOREIGN KEY (id_puesto)
+        REFERENCES puesto (id_puesto);
 
 CREATE TABLE feriante (
     id_user_fte     SERIAL NOT NULL,
