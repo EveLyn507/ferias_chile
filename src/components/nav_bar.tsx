@@ -1,25 +1,29 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Link } from "react-router-dom"
-import { Logeado } from "./perfil_loged"
+import { Link } from "react-router-dom";
+import { Logeado } from "./perfil_loged";
 import { useSelector } from "react-redux";
-//import './comp.css';
+import { useState } from "react";
 
 export const Nav_bar = () => {
-  const role = useSelector((state: any) => state.user.role); // Verificamos si el usuario está logueado
-  
+  const role = useSelector((state: any) => state.user.role); 
+  const [isOpen, setIsOpen] = useState(false); 
+  const handleCloseMenu = () => setIsOpen(false);
+
   return (
     <nav className='Nav_bar'>
-      <ul className="Nav_item">
-      <li>   <Link to={"/pagosss"}>  pago simulado</Link>   </li>  
-        <li><Link to="/registro">Registrate</Link></li>
-        <li>empresas</li>
-        <li><Link to="/Feed-ferias">Feed-ferias</Link></li>
-        <li> <Link to='private/1/bancos' >BANCOS</Link></li>
+      <div className="Nav_toggle" onClick={() => setIsOpen(!isOpen)}>
+        ☰ 
+      </div>
+      <ul className={`Nav_item ${isOpen ? "active" : ""}`}>
+        <li><Link to={"/pagosss"} onClick={handleCloseMenu}>Pago Simulado</Link></li>
+        <li><Link to="/registro" onClick={handleCloseMenu}>Regístrate</Link></li>
+        <li><Link to="/empresas" onClick={handleCloseMenu}>Empresas</Link></li>
+        <li><Link to="/Feed-ferias" onClick={handleCloseMenu}>Feed-Ferias</Link></li>
+        <li><Link to='private/1/bancos' onClick={handleCloseMenu}>Bancos</Link></li>
         <Logeado/>
-        {role == 1 && ( 
-          <li><Link to="/formulario-feria">Crear Feria</Link></li>
+        {role === 1 && ( 
+          <li><Link to="/formulario-feria" onClick={handleCloseMenu}>Crear Feria</Link></li>
         )}
       </ul>
     </nav>
-  )
-}
+  );
+};

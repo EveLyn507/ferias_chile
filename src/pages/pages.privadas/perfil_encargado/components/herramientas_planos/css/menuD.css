@@ -9,6 +9,7 @@
     padding: 20px;
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
     overflow-y: auto;
+    margin: 110px 0;
   }
   
   .menuDerecha h3 {
@@ -46,6 +47,11 @@
     background-color: #4caf50;
     color: white;
     fill: #4caf50;
+    margin-top: auto; /* Empuja el botón hacia abajo */
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
   }
   
   .menuDerecha button.deleteButton {
@@ -61,9 +67,10 @@
   
 
   .menu-container {
-    background-color: rgb(4, 28, 76);
-    border-left: rgb(0, 0, 0) solid ;
+    background-color: rgb(236, 234, 234);
+    border-left:  rgb(224, 221, 221) solid ;
     border-top-left-radius: 10%;
+    margin: 50px 0;
 
   }
   .xyinput-group {
@@ -88,3 +95,12 @@
 
   }
   
+  .botones-menu{
+    width: 100%;
+    padding: 0px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 10px; /* Espaciado entre botones */
+    margin: 130px 0;
+  }

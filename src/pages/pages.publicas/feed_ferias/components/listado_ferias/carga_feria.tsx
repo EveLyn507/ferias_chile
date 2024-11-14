@@ -5,6 +5,7 @@ import { traerFerias } from '../../services/traer_ferias';
 import Paginacion from './paginacion';
 import { CardFerias } from './card_feria';
 import '../../../../../css/base.css'
+import './cards_feed.css'
 
 // Define la interfaz para los objetos de feria
 interface feedProps {
@@ -41,7 +42,9 @@ useEffect(() => {
         <>
    <div>
    <br />
-   <Paginacion  page={page} setPage={setPage}/>
+   <div className='paginacion1'>
+    <Paginacion  page={page} setPage={setPage}/>
+   </div>
    <div className="cards-container">
       <CardFerias ferias={ferias} />
     </div>
