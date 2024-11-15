@@ -24,6 +24,7 @@ function LoginEncargado() {
             // Manejo de errores de login (puedes agregar lógica aquí)
         }
     };
+    
 
     return (
         <div>

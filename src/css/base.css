@@ -15,7 +15,7 @@
   }
   
   .Nav_toggle {
-    display: none; /* Oculto por defecto */
+    display: none; 
     font-size: 2rem;
     cursor: pointer;
     color: azure;
@@ -37,11 +37,11 @@
   
   @media (max-width: 700px) {
     .Nav_toggle {
-      display: block; /* Muestra el botón hamburguesa */
+      display: block; 
     }
   
     .Nav_item {
-      display: none; /* Oculta el menú por defecto */
+      display: none; 
       flex-direction: column;
       background-color: rgb(4, 28, 76);
       position: absolute;
@@ -54,11 +54,11 @@
   
     .Nav_item li {
       margin: 0;
-      text-align: center; /* Centra los elementos en el menú desplegable */
+      text-align: center; 
     }
   
     .Nav_item.active {
-      display: flex; /* Muestra el menú desplegable */
+      display: flex; 
     }
   }
   

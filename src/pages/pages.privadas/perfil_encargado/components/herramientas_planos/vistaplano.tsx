@@ -248,9 +248,13 @@ interface vistaProps {
 
   //funciones drag
 
-    return (
-      <div className="app">
+  return (
+    <>
+      <div className="mobile-warning">
+        Esta vista no es compatible con dispositivos móviles.
+      </div>
 
+      <div className="app">
         <header className="header">
           <h1>Ferias Chile</h1>
         </header>
@@ -266,7 +270,6 @@ interface vistaProps {
             onAddStreet={addCalle} 
             />
 
-
             <Canvas
               puestos={puestos}
               setPuestos={setPuestos}
@@ -277,7 +280,6 @@ interface vistaProps {
              
             />
           </div>
-
 
           <div>
       {selectedItem?.id_tipo_elemento === 2? (
@@ -301,7 +303,8 @@ interface vistaProps {
 
         </div>
       </div>
-    );
-  };
+    </>
+  );
+};
 
   export default Vista;

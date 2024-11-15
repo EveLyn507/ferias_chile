@@ -1,44 +1,52 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { Link } from "react-router-dom"
-import { PrivateRoutes } from "../../../models"
-import { Card_feria_encargado } from "./components/ferias_d_encargado/card_feria_encargado"
-import { useEffect } from "react"
-import { feriasService } from "./rxjs/sharingFeriasEn"
-import { useSelector } from "react-redux"
-import  { AppStore } from "../../../redux/store"
+import { Link } from "react-router-dom";
+import { PrivateRoutes } from "../../../models";
+import { Card_feria_encargado } from "./components/ferias_d_encargado/card_feria_encargado";
+import { useEffect } from "react";
+import { feriasService } from "./rxjs/sharingFeriasEn";
+import { useSelector } from "react-redux";
+import { AppStore } from "../../../redux/store";
+import './perfil_e.css'
 
+const PerfilEn = () => {
+  const id_user_enf = useSelector((store: AppStore) => store.user.id_user);
 
+  useEffect(() => {
+    feriasService.loadInitialData(id_user_enf);
+  }, [id_user_enf]);
 
- const PerfilEn = () => {
+  useEffect(() => {
+    // Aplica el estilo al body solo mientras el componente esté montado
+    const originalBodyStyle = document.body.style.cssText;
+    document.body.style.display = 'flex';
+    document.body.style.justifyContent = 'center';
+    document.body.style.alignItems = 'center';
+    document.body.style.minHeight = '100vh';
+    document.body.style.margin = '0';
 
-const id_user_enf = useSelector((store : AppStore) => store.user.id_user)
-
-useEffect(() => {
-  feriasService.loadInitialData(id_user_enf)
-
-},[])
+    return () => {
+        // Restaura el estilo original del body al desmontar el componente
+        document.body.style.cssText = originalBodyStyle;
+    };
+}, []);
 
   return (
-    
-    <>
+    <div className="perfil-container">
+      <h1>PERFIL ENCARGADO DE LAS FERIAS</h1>
 
-
-     <h1>PERFIL ENCARGADO DE LAS FERIAS</h1>
-       
-      <div>
-      <Card_feria_encargado />
-      
+      <div className="card-container">
+        <Card_feria_encargado />
       </div>
-      <li> <Link to={`${PrivateRoutes.BANCOS}`} >BANCOS</Link></li>
 
-      <li> <Link to="TEAM" >EMPLEADOS </Link></li>
+      <ul>
+        <li>
+          <Link to={`${PrivateRoutes.BANCOS}`}>BANCOS</Link>
+        </li>
+        <li>
+          <Link to="TEAM">EMPLEADOS</Link>
+        </li>
+      </ul>
+    </div>
+  );
+};
 
-    </>
-
-
-
-  )
-}
-
-
-export default  PerfilEn
+export default PerfilEn;
