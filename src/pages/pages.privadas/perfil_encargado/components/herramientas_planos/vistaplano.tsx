@@ -206,9 +206,13 @@ interface vistaProps {
 
   //funciones drag
 
-    return (
-      <div className="app">
+  return (
+    <>
+      <div className="mobile-warning">
+        Esta vista no es compatible con dispositivos móviles.
+      </div>
 
+      <div className="app">
         <header className="header">
           <h1>Ferias Chile</h1>
         </header>
@@ -219,11 +223,9 @@ interface vistaProps {
             {error && <p style={{ color: 'red' }}>{error}</p>}
 
             <Toolbar 
-            onAddPuesto={()=>AddPuesto(totalPuestos)} 
-
-            onAddStreet={handleAddStreet} 
+              onAddPuesto={() => AddPuesto(totalPuestos)} 
+              onAddStreet={handleAddStreet} 
             />
-
 
             <Canvas
               puestos={puestos}
@@ -235,34 +237,32 @@ interface vistaProps {
               setPlanHeight={setPlanHeight}
               calles={calles}
               onRemoveStreet={handleRemoveStreet}
-             
             />
           </div>
 
-
           <div>
-      {selectedItem?.id_tipo_elemento === 2? (
-        <MenuCalle
-          selectedCalle={selectedItem }
-          onRemoveStreet={handleRemoveStreet}
-          setSelectedItem={setSelectedItem}
-          isLoading={isLoading}
-        />
-      ) : selectedItem?.id_tipo_elemento === 1 ? (
-        <MenuPuesto
-          selectedPuesto={selectedItem }
-          onRemoveRectangle={RemovePuesto}
-          setSelectedItem= {setSelectedItem}
-          isLoading={isLoading}
-        />
-      ) : (
-        <MenuVacio />
-      )}
-    </div>
-
+            {selectedItem?.id_tipo_elemento === 2 ? (
+              <MenuCalle
+                selectedCalle={selectedItem}
+                onRemoveStreet={handleRemoveStreet}
+                setSelectedItem={setSelectedItem}
+                isLoading={isLoading}
+              />
+            ) : selectedItem?.id_tipo_elemento === 1 ? (
+              <MenuPuesto
+                selectedPuesto={selectedItem}
+                onRemoveRectangle={RemovePuesto}
+                setSelectedItem={setSelectedItem}
+                isLoading={isLoading}
+              />
+            ) : (
+              <MenuVacio />
+            )}
+          </div>
         </div>
       </div>
-    );
-  };
+    </>
+  );
+};
 
   export default Vista;

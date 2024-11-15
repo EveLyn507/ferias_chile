@@ -24,7 +24,7 @@ export const Filtros_base = ({ onFilterC, onFilterR }: FiltrosBaseProps) => {
   const [selectedRegion, setSelectedRegion] = useState<number | null>(null);
   const [selectedComuna, setSelectedComuna] = useState<number | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [isMenuOpen, setIsMenuOpen] = useState(false); 
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     Promise.all([
@@ -63,17 +63,15 @@ export const Filtros_base = ({ onFilterC, onFilterR }: FiltrosBaseProps) => {
     onFilterC(comunaId);
   };
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
+
 
   return (
-    <div className={`filtros-base ${isMenuOpen ? 'open' : ''}`}>
-      <div className="hamburger-menu" onClick={toggleMenu}>
+    <div className="filtros-base">
+      <div className="hamburger-menu" onClick={() => setIsMenuOpen(!isMenuOpen)}>
         ☰
       </div>
 
-      <div className="region-container">
+      <div className={`region-container ${isMenuOpen ? 'active' : ""}`}>
         {regiones.map((region) => (
           <button
             key={region.id}
@@ -87,7 +85,7 @@ export const Filtros_base = ({ onFilterC, onFilterR }: FiltrosBaseProps) => {
       </div>
 
       {selectedRegion && (
-        <div className="comuna-container">
+        <div className={`comuna-container ${isMenuOpen ? 'active' : ""}`}>
           <label className="comuna-label">Selecciona una Comuna:</label>
 
           <input
@@ -106,9 +104,10 @@ export const Filtros_base = ({ onFilterC, onFilterR }: FiltrosBaseProps) => {
               Todas las Comunas
             </button>
             {comunas
-              .filter((comuna) =>
-                comuna.regionId === selectedRegion &&
-                comuna.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+              .filter(
+                (comuna) =>
+                  comuna.regionId === selectedRegion &&
+                  comuna.nombre.toLowerCase().includes(searchTerm.toLowerCase())
               )
               .map((comuna) => (
                 <button

@@ -1,0 +1,54 @@
+/* Centrar el contenido de la página de login */
+.login-container {
+    display: flex;
+    justify-content: center; /* Centrado horizontal */
+    align-items: center; /* Centrado vertical */
+    height: 50vh; /* Ocupa toda la altura de la ventana */
+    background-color: #f5f5f5; /* Fondo de la página */
+  }
+  
+  /* Estilo para las pestañas */
+  .react-tabs__tab-list {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .react-tabs__tab {
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 18px;
+    border: 2px solid rgb(4, 28, 76);
+    border-radius: 5px;
+    background-color: #fff;
+    transition: background-color 0.3s ease;
+  }
+  
+  .react-tabs__tab--selected {
+    background-color:rgb(4, 28, 76);
+    color: #fff;
+  }
+  
+  .react-tabs__tab-panel {
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px; /* Limitar el ancho de las pestañas */
+    margin: 0px 47px;
+  }
+  
+  @media (max-width: 768px) {
+    .react-tabs__tab {
+      font-size: 10px;
+      padding: 8px 16px;
+    }
+  
+    .react-tabs__tab-panel {
+      padding: 15px;
+      max-width: 90%;
+      margin: 0px 0px;
+    }
+  }
+  
