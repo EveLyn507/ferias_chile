@@ -33,7 +33,7 @@ export const View_detalle_feria = () => {
 
         <>
             <div>
-                <Mapa/>
+             
             </div>
     
             <div>

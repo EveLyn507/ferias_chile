@@ -3,8 +3,10 @@
     display: flex;
     justify-content: center; /* Centrado horizontal */
     align-items: center; /* Centrado vertical */
-    height: 50vh; /* Ocupa toda la altura de la ventana */
+    width: 100vh;
+    height: 70vh; /* Ocupa toda la altura de la ventana */
     background-color: #f5f5f5; /* Fondo de la página */
+    border-radius: 3%;
   }
   
   /* Estilo para las pestañas */
