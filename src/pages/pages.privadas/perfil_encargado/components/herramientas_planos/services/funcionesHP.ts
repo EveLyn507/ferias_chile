@@ -38,7 +38,7 @@ export const UpdateJsonFeria =async  (Updatedpuesto : FeriaData) => {
 
 
 
-export const CreatePuesto = async (newPuesto : PlanoItemElement) => {
+export const CreatenewItemElement = async (newPuesto : PlanoItemElement) => {
     
     try {
         const response = await axios.post(`${API_URL}/CreatePuesto`, {newPuesto});

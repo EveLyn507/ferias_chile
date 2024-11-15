@@ -6,14 +6,12 @@ import { PlanoItemElement } from '../models/vistaplanoModels';
 
 interface StreetPageProps {
   calles: PlanoItemElement[]; // Arreglo de calles
-  onRemoveStreet: (id: number) => void; // Función para eliminar una calle
   onStreetClick: (item: PlanoItemElement) => void; // Para detectar item click
   isStatic?: boolean; // Indica si las calles son estáticas o no (opcional, valor por defecto es false)
 }
 
 const StreetsLayer: React.FC<StreetPageProps> = ({
   calles,
-  onRemoveStreet,
   onStreetClick,
   isStatic = false,
 }) => {
@@ -82,9 +80,9 @@ const StreetsLayer: React.FC<StreetPageProps> = ({
               width={street.dimenciones.width}
               height={street.dimenciones.height}
               fill="black"
-              draggable={!street.dimenciones.isStatic && !isStatic} // Solo se puede mover si no es estático
-              onDragEnd={(e) => handleDragStreet(e, street, index)}
-              onDblClick={() => onRemoveStreet(street.id_elemento!)}
+              draggable={!isStatic} // Solo se puede mover si no es estático
+              onDragMove={(e) => handleDragStreet(e, street, index)}
+              onDragStart={() =>   setFocusedStreet(street) }
               onClick={() => {
                 if (!isStatic) {
                   setFocusedStreet(street); // Establece el foco al hacer clic en la calle
@@ -102,7 +100,7 @@ const StreetsLayer: React.FC<StreetPageProps> = ({
                   y={rightCornerY}
                   radius={8}
                   fill="red"
-                  draggable={!isStatic} // Deshabilitar el redimensionamiento si es estático
+                  draggable={!street.dimenciones.isStatic && !isStatic} // Deshabilitar el redimensionamiento si es estático
                   onDragMove={(e) => handleResizeStreet(e, street, 'right', index)}
                 />
 
@@ -113,7 +111,7 @@ const StreetsLayer: React.FC<StreetPageProps> = ({
                   
                   radius={8}
                   fill="blue"
-                  draggable={!isStatic} // Deshabilitar el redimensionamiento si es estático
+                  draggable={!street.dimenciones.isStatic && !isStatic} // Deshabilitar el redimensionamiento si es estático
                   onDragMove={(e) => handleResizeStreet(e, street, 'bottom', index ) }
                 />
               </>

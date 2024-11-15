@@ -22,11 +22,10 @@ const PuestosLayer: React.FC<PuestosLayerProps> = ({
   setHoveredRect,
 }) => {
   const layerRef = useRef(null);
-
-  // Estado para el puesto que tiene el foco
   const [focusedPuesto, setFocusedPuesto] = useState<PlanoItemElement | null>(null);
 
-  // Función para calcular dimensiones en metros
+  // Actualizar el puesto anterior al cambiar `focusedPuesto`
+
   const calculateDimensionsInMeters = useCallback((width: number, height: number) => {
     const metersWidth = (width / 50) * 2; // Convertimos basado en tamaño base de 2 metros
     const metersHeight = (height / 50) * 2;
@@ -35,7 +34,7 @@ const PuestosLayer: React.FC<PuestosLayerProps> = ({
 
   return (
     <Layer ref={layerRef}>
-      {puestos.map((Puesto, index) => {
+      {puestos.map((Puesto) => {
         const { metersWidth, metersHeight } = calculateDimensionsInMeters(Puesto.dimenciones.width, Puesto.dimenciones.height);
 
         return (
@@ -47,16 +46,14 @@ const PuestosLayer: React.FC<PuestosLayerProps> = ({
               width={Puesto.dimenciones.width}
               height={Puesto.dimenciones.height}
               draggable={!isStatic}
-              
               onClick={() => {
                 if (!isStatic) {
-                  setFocusedPuesto(Puesto); // Establece el foco al puesto clickeado
+                  setFocusedPuesto(Puesto);
                   onPuestoClick(Puesto);
                 }
               }}
-              onDragStart={() => { setFocusedPuesto(Puesto);} }
+              onDragStart={() => setFocusedPuesto(Puesto)}
               onDragMove={(e) => {
-              
                 if (!isStatic && focusedPuesto?.id_elemento === Puesto.id_elemento) {
                   const updatedpuestos = puestos.map((r) =>
                     r.id_elemento === Puesto.id_elemento
@@ -64,7 +61,7 @@ const PuestosLayer: React.FC<PuestosLayerProps> = ({
                       : r
                   );
                   setPuestos(updatedpuestos);
-                  onPuestoClick(updatedpuestos[index]);
+                  onPuestoClick(updatedpuestos.find((p) => p.id_elemento === Puesto.id_elemento)!);
                 }
               }}
             />
@@ -75,8 +72,6 @@ const PuestosLayer: React.FC<PuestosLayerProps> = ({
               fontSize={12}
               fill="black"
             />
-
-            {/* Mostrar dimensiones al pasar el ratón sobre el puesto */}
             {!isStatic && (
               <Text
                 x={Puesto.dimenciones.x}
@@ -89,11 +84,9 @@ const PuestosLayer: React.FC<PuestosLayerProps> = ({
                 onMouseLeave={() => setHoveredRect(null)}
               />
             )}
-
-            {/* Control para redimensionar los puestos, solo si el puesto tiene foco */}
             {!isStatic && focusedPuesto?.id_elemento === Puesto.id_elemento && (
               <Rect
-                x={Puesto.dimenciones.x + Puesto.dimenciones.width - 4} // Mueve el botón junto al borde del puesto
+                x={Puesto.dimenciones.x + Puesto.dimenciones.width - 4}
                 y={Puesto.dimenciones.y + Puesto.dimenciones.height - 4}
                 width={8}
                 height={8}
@@ -109,7 +102,7 @@ const PuestosLayer: React.FC<PuestosLayerProps> = ({
                       : r
                   );
                   setPuestos(updatedpuestos);
-                  onPuestoClick(updatedpuestos[index]);
+                  onPuestoClick(updatedpuestos.find((p) => p.id_elemento === Puesto.id_elemento)!);
 
                   return pos;
                 }}

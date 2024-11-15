@@ -1,16 +1,6 @@
 
 
 
-export interface datosPuesto { 
-  id_tipo_puesto : number,
-  numero : number,
-  descripcion : string,
-  id_feria : number,
-  id_estado_puesto : number
-}
-
-
-
 
 
 export  interface Rectangle {
@@ -36,6 +26,7 @@ export  interface Rectangle {
     descripcion : string,
     numero : number | null,
     id_feria : number,
+    id_puesto: number | null,
     id_tipo_puesto : number
     id_estado_puesto : number
     precio : number
@@ -46,6 +37,7 @@ export  interface Rectangle {
   
 
   export interface PlanoItemElement{
+    id_feria : number| null
     id_elemento : number | null
     id_plano : number | null
     nombre_elemento : string
@@ -56,7 +48,14 @@ export  interface Rectangle {
     dataPuesto: dataPuesto | null
   }
   
-
+export interface DeletedItem { 
+  id_elemento : number;
+  id_tipo_elemento : number;
+  nombre_elemento : string;
+  id_plano : number;
+  id_puesto : number | null;
+  id_feria : number;
+}
 
   export interface FeriaData {
     puestos: Rectangle[];
@@ -64,5 +63,12 @@ export  interface Rectangle {
     id_feria: number
     planWidth: number;
     planHeight: number;
+  }
+
+  export interface plano { 
+    id_feria : number;
+    id_plano : number | null
+    width: number;
+    height : number;
   }
   

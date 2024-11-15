@@ -163,83 +163,6 @@ const getPlanoElements = async (res, pool ,id_feria) => {
 
 
 
-
-//recibe los datos default tanto para tabla puesto como para la tabla elementos_plano , primero guarda el puesto , luego activa la funcion con el retorno de los datos necesarios ; id_+puesto
-const CreatePuesto = async (res, pool , newPuesto ) => {
-const {id_plano , nombre_elemento, id_tipo_elemento } = newPuesto
-  const {  id_feria } = newPuesto.dataPuesto
-  const dimenciones = newPuesto.dimenciones
-  const style = newPuesto.style
-
-
-try { 
-      const cantPuestos = await pool.query(`select contar_puestos_actuales($1)`, [id_feria])
-      const numPuesto = await cantPuestos.rows[0].contar_puestos_actuales + 1
-      
-      const puesto = await pool.query(`
-        INSERT INTO puesto (id_tipo_puesto, numero,descripcion,id_feria)
-        VALUES ($1, $2, $3, $4)
-        RETURNING *;
-        ` , [null ,numPuesto , 'Vacio' , id_feria])
-        const id_puesto = puesto.rows[0].id_puesto
-
-       const dim = await pool.query(`
-        INSERT INTO elemento_plano (id_plano , nombre_elemento ,id_tipo_elemento , dimenciones , style , id_puesto) 
-        VALUES ($1,$2,$3,$4,$5,$6) 
-        RETURNING *`,[id_plano,nombre_elemento,id_tipo_elemento , dimenciones, style, id_puesto])
-
-        const final = dim.rows[0]
-        const data = {
-          id_plano : final.id_plano,
-          id_elemento : final.id_elemento,
-          nombre_elemento : final.nombre_elemento,
-          id_tipo_elemento: final.id_tipo_elemento,
-          dimenciones : final.dimenciones,
-          stile : final.style,
-          id_puesto: final.id_puesto,
-          dataPuesto: puesto.rows[0]
-        }
-    
-          
-        res.status(200).json(data)
-
-} catch (error) {
-  console.log('erro al ingresar puesto' , error);
-  res.status(500)
-  
- }
-    
-}
-
-const UpdatePuesto = async (res , pool ,id_tipo_puesto , descripcion , id_estado_puesto , id_feria,numero ) => {
-  try {
-
-    
-    const check  = await pool.query(`
-      SELECT * FROM puesto where id_feria = $1 and numero = $2` [id_feria , numero ])
-  
-      if (check.rows.length === 0) {
-      await pool.query(`
-        UPDATE puesto 
-        set id_tipo_puesto = $1 , descripcion = $2, id_estado_puesto = $3
-        WHERE id_feria = $4 and numero = $5` 
-      , [id_tipo_puesto , descripcion , id_estado_puesto , id_feria, numero])
-      res.status(200).json({msjs : 'puesto actualizado'})
-    }else{
-      res.status(404).json({msjs : 'no existe el puesto '})
-    }
-  
-    
-  } catch (error) {
-    
-    console.log('error al actualizar puesto' , error);
-    res.status(500)
-    
-
-  }
- 
-}
-
 // INICIO ADMINISTRACION DE LAS FERIASSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
 
 //ADMINISTRACION FERIAS MODULO --> PROGRAMA DE LA FERIA
@@ -702,6 +625,6 @@ module.exports = {
   insertDatosBank,getDatosBank,updateDatosBank,deleteBank ,getFeriaBank,asociarBankFeria,//MODULO BANCOS
   getVacantesFeria,insertVacantesFeria,updateVacanteFeria,deleteVacante,updateHorarioVacante, // MODULO VACANTES
   getPostulacionesEnf,aceptarPostulacion,rechazarPostulacion, //MODULO POSTULACIONES
-  createFeria,//FORMULARIO DE FERIA
-  CreatePuesto,UpdatePuesto
+  createFeria//FORMULARIO DE FERIA
+  
 };

@@ -12,13 +12,10 @@ import { PlanoItemElement } from './models/vistaplanoModels';
   const Canvas2: React.FC<CanvasProps> = ({
     puestos,
     setPuestos,
-    planWidth,
-    planHeight,
-    setPlanWidth,
-    setPlanHeight,
     calles,
-    onRemoveStreet,
     onItemClick,
+    plano,
+    onChangePlano,
     isStatic = false,
 
   }) => { 
@@ -51,26 +48,26 @@ return (
     <Rect
       x={planX}
       y={planY}
-      width={planWidth}
-      height={planHeight}
+      width={plano.width}
+      height={plano.height}
       fill="lightgray"
       stroke="black"
       strokeWidth={2}
     />
     {/*GRILLA DE LAS LINEAS DEL FONDO*/}
-    {Array.from({ length: planWidth / gridSize }, (_, i) => (
+    {Array.from({ length: plano.width / gridSize }, (_, i) => (
       <Line
         key={`v-${i}`}
-        points={[planX + i * gridSize, planY, planX + i * gridSize, planY + planHeight]}
+        points={[planX + i * gridSize, planY, planX + i * gridSize, planY + plano.height]}
         stroke="#ddd"
         strokeWidth={1}
       />
     ))}
 
-    {Array.from({ length: planHeight / gridSize }, (_, i) => (
+    {Array.from({ length: plano.height / gridSize }, (_, i) => (
       <Line
         key={`h-${i}`}
-        points={[planX, planY + i * gridSize, planX + planWidth, planY + i * gridSize]}
+        points={[planX, planY + i * gridSize, planX + plano.width, planY + i * gridSize]}
         stroke="#ddd"
         strokeWidth={1}
       />
@@ -80,17 +77,19 @@ return (
     {/* Controlador para redimensionar el plano */}
     {!isStatic && (
       <Rect
-        x={planX + planWidth - controlSize / 2}
-        y={planY + planHeight - controlSize / 2}
+        x={planX + plano.width - controlSize / 2}
+        y={planY + plano.height - controlSize / 2}
         width={controlSize}
         height={controlSize}
         fill="blue"
-        draggable
+        draggable={true}
         dragBoundFunc={(pos) => {
           const newWidth = Math.max(200, pos.x - planX); // Restricción mínima
           const newHeight = Math.max(200, pos.y - planY); // Restricción mínima
-          setPlanWidth(newWidth);
-          setPlanHeight(newHeight);
+
+          const newplano =  {...plano , width: newWidth , height : newHeight}
+          onChangePlano(newplano)
+          
           return pos;
         }}
       />
@@ -113,9 +112,7 @@ return (
   {/* Capa para las calles */}
   <StreetsLayer 
         calles={calles}
-        onRemoveStreet={onRemoveStreet}
         onStreetClick={onItemClick}  // Función que se ejecuta cuando se hace clic en un puesto
-  
         isStatic={isStatic}
       />
 

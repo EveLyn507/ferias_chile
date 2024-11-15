@@ -75,6 +75,14 @@ class WebSocketService {
     }
   }
 
+  RecibeData(event: string, callback: (data: any) => void) {
+    if (this.socket) {
+      this.socket.on(event, callback);
+    } else {
+      console.error("Socket no está conectado.");
+    }
+  }
+
   // Desconectar la conexión WebSocket
   disconnect() {
     if (this.socket) {

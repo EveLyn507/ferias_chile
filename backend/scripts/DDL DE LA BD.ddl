@@ -233,8 +233,8 @@ ALTER TABLE feria ADD CONSTRAINT feria_pk PRIMARY KEY ( id_feria );
 CREATE TABLE plano (
     id_plano SERIAL NOT NULL,
     id_feria INTEGER NOT NULL,
-    width    INTEGER NOT NULL,
-    height   INTEGER NOT NULL,
+    width    DOUBLE PRECISION  NOT NULL,
+    height   DOUBLE PRECISION NOT NULL,
     PRIMARY KEY (id_plano)
 );
 

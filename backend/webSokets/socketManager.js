@@ -1,6 +1,6 @@
 // socketManager.js
 const { verifyToken } = require('../auth/verifyToken');
-const { UpdatePuesto } = require('./controllers/wsEnfController');
+const { UpdatePuesto ,CreateNewItemElement  ,UpdatePlano ,DeleteItemPlano} = require('./controllers/wsEnfController');
 const pool = require('../auth/pool');
 
 const activeSockets = {};
@@ -27,6 +27,11 @@ function setupSocketServer(io) {
 
       // Configura el evento de solicitud de datos
       socket.on('UpdatePuesto', (PlanoItemElement) => UpdatePuesto(socket ,pool, PlanoItemElement));
+      socket.on('CreateNewItemElement', (newItem) => CreateNewItemElement(socket ,pool, newItem));
+      socket.on('UpdatePlano', (UpdatedPlano) => UpdatePlano(socket ,pool, UpdatedPlano));
+      socket.on('DeleteItem', (deletedItem) => DeleteItemPlano(socket ,pool, deletedItem));
+
+
       socket.emit('message', 'Conectado con el servidor');
 
       socket.on('disconnect', () => {

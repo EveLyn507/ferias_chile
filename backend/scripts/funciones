@@ -83,10 +83,11 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-
 CREATE OR REPLACE FUNCTION get_plano_elements(func_id_plano INTEGER) 
 RETURNS TABLE(
+	id_feria INTEGER,
     id_elemento INTEGER, 
+	id_plano INTEGER,
     nombre_elemento CHARACTER VARYING(50),
     id_tipo_elemento INTEGER,
     dimenciones JSONB,
@@ -96,7 +97,10 @@ RETURNS TABLE(
 BEGIN
     RETURN QUERY
     SELECT
+		(select f.id_feria from feria f 
+		JOIN plano p ON  p.id_plano = func_id_plano limit 1 ) AS id_feria,
         ep.id_elemento, 
+		ep.id_plano,
         ep.nombre_elemento,
         ep.id_tipo_elemento,
         ep.dimenciones,

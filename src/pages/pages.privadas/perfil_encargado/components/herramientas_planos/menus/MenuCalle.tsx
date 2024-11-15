@@ -7,19 +7,19 @@ import { PlanoItemElement, Street } from '../models/vistaplanoModels';
 
 interface MenuCalleProps {
   selectedCalle: PlanoItemElement |  null ;
-  onRemoveStreet: (id: number) => void;
   setSelectedItem:(item : PlanoItemElement ) => void;
+  deleteItem: (item : PlanoItemElement) => void;
   isLoading: boolean;
 }
 
-const MenuCalle: React.FC<MenuCalleProps> = ({ selectedCalle ,setSelectedItem}) => {
+const MenuCalle: React.FC<MenuCalleProps> = ({ selectedCalle ,setSelectedItem , deleteItem}) => {
 
 
   const handleChange = (field: keyof Street, value: any) => {
     if (!selectedCalle) return;
     
     // Crear un objeto actualizado para pasar a onUpdatePuesto
-    const updatedCalle = { ...selectedCalle, [field]: value };
+    const updatedCalle = { ...selectedCalle, dimenciones : { ...selectedCalle.dimenciones , [field]: value}  };
     setSelectedItem(updatedCalle);
   };
 
@@ -70,6 +70,7 @@ const MenuCalle: React.FC<MenuCalleProps> = ({ selectedCalle ,setSelectedItem}) 
           />
         </label>
       </div>
+      <button onClick={() => deleteItem(selectedCalle!)}>ELIMINAR</button>
     </div>
   );
 };

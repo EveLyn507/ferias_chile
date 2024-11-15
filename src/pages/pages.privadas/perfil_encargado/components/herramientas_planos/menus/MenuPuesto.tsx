@@ -5,7 +5,7 @@ import '../css/menuD.css';
 
 interface MenuDerechaProps {
   selectedPuesto: PlanoItemElement | null;
-  onRemoveRectangle: (id: number) => void;
+  deleteItem: (item: PlanoItemElement) => void;
   setSelectedItem: (item : PlanoItemElement) => void
   isLoading: boolean;
 }
@@ -16,7 +16,7 @@ interface MenuDerechaProps {
 
 const MenuDerecha: React.FC<MenuDerechaProps> = ({
   selectedPuesto,
-  onRemoveRectangle,
+  deleteItem,
   setSelectedItem,
   isLoading,
 }) => {
@@ -27,7 +27,7 @@ const MenuDerecha: React.FC<MenuDerechaProps> = ({
     if (!selectedPuesto) return;
     
     // Crear un objeto actualizado para pasar a onUpdatePuesto
-    const updatedPuesto = { ...selectedPuesto, [field]: value };
+    const updatedPuesto = { ...selectedPuesto, dimenciones : { ...selectedPuesto.dimenciones, [field]: value }  };
     setSelectedItem(updatedPuesto);
   };
 
@@ -36,7 +36,7 @@ const MenuDerecha: React.FC<MenuDerechaProps> = ({
     if (!selectedPuesto) return;
     
     // Crear un objeto actualizado para pasar a onUpdatePuesto
-    const updatedPuesto = { ...selectedPuesto, [field]: value };
+    const updatedPuesto = { ...selectedPuesto, dataPuesto : { ...selectedPuesto.dataPuesto!, [field]: value }  };
     setSelectedItem(updatedPuesto);
   };
 
@@ -145,7 +145,7 @@ const MenuDerecha: React.FC<MenuDerechaProps> = ({
       </button>
 
       <button
-        onClick={() => onRemoveRectangle(selectedPuesto!.id_elemento!)}
+        onClick={() => deleteItem(selectedPuesto!)}
         className="menu-button delete-button"
       >
         Eliminar Puesto

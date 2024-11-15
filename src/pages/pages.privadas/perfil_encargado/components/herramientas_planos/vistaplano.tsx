@@ -1,16 +1,15 @@
 
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 
 import Toolbar from './Toolbar';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
-import {  PlanoItemElement } from './models/vistaplanoModels';
+import {  DeletedItem, plano, PlanoItemElement } from './models/vistaplanoModels';
 import Canvas from './Canvas2';
 import MenuPuesto from './menus/MenuPuesto';
 import MenuCalle from './menus/MenuCalle';
 import MenuVacio from './menus/menuContainers';
-import { CreatePuesto } from './services/funcionesHP';
 import { debounce } from 'lodash';
 
 
@@ -19,10 +18,13 @@ import { debounce } from 'lodash';
 
 interface vistaProps {
   savePlanoItem : (selectedItem : PlanoItemElement) => void
+  CreateNewItemElement: (newItem: PlanoItemElement) => Promise<PlanoItemElement>
+  UpdatePlano : (newPlano : plano) => void
+  DeleteItemPlano: (DeletedItem : DeletedItem) => void
+
 }
 
-
-  const Vista = ({savePlanoItem} : vistaProps ) => {
+  const Vista = ({savePlanoItem , CreateNewItemElement,UpdatePlano ,DeleteItemPlano} : vistaProps ) => {
 
     const [totalPuestos, setTotalPuestos] = useState<number>(0);
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -31,17 +33,22 @@ interface vistaProps {
     const idFeria = id_feria ? parseInt(id_feria) : 0 //extrae el id feria
 
     //variables de la herramienta
-  // tamaño del canvas
-    const [planWidth, setPlanWidth] = useState<number>(600); 
-    const [planHeight, setPlanHeight] = useState<number>(400);
-    const [id_plano, setIdPLano] = useState<number | null>(null);
+  // tamaño del canvas por default
+  const[newDimplano, setNewDimPlano] = useState<plano | null>( null) // para tomar las nuevas dimenciones
+  const[plano, setPlano] = useState<plano>({
+    id_feria : idFeria,
+    id_plano : null,
+    width: 500,
+    height : 500
+
+  })
+
 //LA DIFERENCIA EN LA INTERFAZ RADICA EN EL PARAMETRO DE DIMENCIONES
     const [puestos, setPuestos] = useState<PlanoItemElement[]>([]); //lista de los puestos 
     const [calles, setCalles] = useState<PlanoItemElement[]>([]);//lista de las calles
 
 
 
-    const PrevSelectedItem = useRef<PlanoItemElement|null>(null);
     const [selectedItem, setSelectedItem] = useState<PlanoItemElement|null>(null);
     // Función para manejar el clic en un ítem de cualquier layer
     const ItemClick = (item: PlanoItemElement ) => {
@@ -49,17 +56,44 @@ interface vistaProps {
     };
 
 
-
+    //guardado del item del plano
     const debousnce=  () => {
        savePlanoItem(selectedItem!)
     }
+    const debouncedSave = debounce(debousnce, 150);
 
-    const debouncedSave = debounce(debousnce, 300);
 
-    
+
+    const deleteItem = async (delItem : PlanoItemElement) => {
+      const deleteItem:DeletedItem = {
+        id_elemento: delItem!.id_elemento!,
+        id_tipo_elemento : delItem!.id_tipo_elemento,
+        nombre_elemento : delItem!.nombre_elemento,
+        id_plano : delItem!.id_plano!,
+        id_puesto : delItem!.dataPuesto?.id_puesto || null,
+        id_feria : delItem!.id_feria!
+      }
+      console.log('esto se elimno' , delItem );
+      
+       await DeleteItemPlano(deleteItem)
+
+      if(delItem.id_tipo_elemento === 1) {
+
+        const updatedPuestos = puestos.filter((r) => r.id_elemento !== delItem.id_elemento);
+        setPuestos(updatedPuestos)
+
+      }else if (delItem.id_tipo_elemento=== 2) {
+
+        const updatedCalles = calles.filter((r) => r.id_elemento !== delItem.id_elemento);
+        setCalles(updatedCalles)
+      }
+
+
+    }
+
     // actualiza en local cada ves que el item cambia , tambien guarda en bd 
     useEffect(()=> {
-      if (selectedItem === null ){
+      if (selectedItem === null  ){
         return
       } 
       const setItem = async () => {
@@ -78,15 +112,12 @@ interface vistaProps {
         );
       }
       }
-      PrevSelectedItem.current = selectedItem
-      console.log('actual' , selectedItem.id_elemento,'prev',PrevSelectedItem.current.id_elemento);
+  
       
       setItem()
+
       debouncedSave()
-      if (selectedItem.id_elemento === PrevSelectedItem.current.id_elemento){
-        return () => debouncedSave.cancel()
-      }
-     
+        return () => debouncedSave.cancel() 
     },[selectedItem])
 
     
@@ -98,11 +129,8 @@ interface vistaProps {
         try {
           const response = await axios.get(`${API_URL}/api/feria/${id_feria}`);
          const data = response.data
-    
-         
-          await setPlanWidth(data.plano.width)
-          await setPlanHeight(data.plano.height)
-          await setIdPLano(data.plano.id_plano)
+          
+          await setPlano(data.plano)
           const elements = await data.elements
           const puestos = await elements.filter((puestos: { id_tipo_elemento: number; }) => puestos.id_tipo_elemento === 1)
           const calles = await elements.filter((calles: { id_tipo_elemento: number; }) => calles.id_tipo_elemento === 2)
@@ -121,18 +149,37 @@ interface vistaProps {
         } finally {
           setIsLoading(false);
         }
+
+        console.log('me activo fetch');
+        
       };
 
       fetchFeriaData()
     
     }, []);
-
+  
+        //actualiza las dimenciones del plano 
+        const OnChangePlano = async () => {
+          UpdatePlano(newDimplano!)
+          setPlano(newDimplano!)
+        }
+        const debouncedSavePlano = debounce(OnChangePlano, 300);
+    
+        useEffect(() => {
+          if (newDimplano === null) { 
+            return
+          }
+          debouncedSavePlano()
+          return () =>  debouncedSavePlano.cancel()
+        }, [newDimplano] )
+    
     
     //añade un nuevo puesto
     const AddPuesto = async (totalPuestos: number) => {
       const newPuesto: PlanoItemElement = {
+        id_feria : idFeria,
         id_elemento: null,
-        id_plano: id_plano,
+        id_plano: plano.id_plano,
         nombre_elemento : 'nuevo puesto' + totalPuestos + 1,
         id_tipo_elemento : 1,
         dimenciones : {
@@ -149,31 +196,29 @@ interface vistaProps {
           descripcion : '',
           numero : null,
           id_feria : idFeria,
+          id_puesto: null,
           id_tipo_puesto : 1,
           id_estado_puesto : 1,
           precio : 0
         }
      
       };
-      const responseNew = await CreatePuesto(newPuesto)
+      const responseNew =  await CreateNewItemElement(newPuesto)
       console.log('agrega',responseNew);
       
       // actualizo la lista de puestos 
       const updatedPuestos = [...puestos, responseNew];
-      setPuestos(updatedPuestos);
+      setPuestos(updatedPuestos); //setea local
       setTotalPuestos(totalPuestos + 1);
     };
     
 
-  const RemovePuesto = (id: number) => {
-    setPuestos((prevPuestos) => prevPuestos.filter((puesto) => puesto.id_elemento !== id));
 
-  };
-
-  const handleAddStreet = () => {
+  const addCalle = async () => {
     const newStreet: PlanoItemElement = {
+      id_feria : idFeria,
       id_elemento:  totalPuestos + 1,
-      id_plano: id_plano,
+      id_plano: plano.id_plano,
       nombre_elemento : 'nueva calle' + totalPuestos + 1,
       id_tipo_elemento : 2,
       dimenciones  : {
@@ -189,18 +234,15 @@ interface vistaProps {
       dataPuesto : null
 
     };
-      // Actualizamos la referencia de calles
-      const updatedcalles = [...calles, newStreet];
-    
-      // Actualizamos el estado de calles, pero ahora estamos usando la ref para asegurar que siempre tengamos el valor más reciente
-      setCalles(updatedcalles);
-      // Llamamos a updateFeriajson después de que todo haya cambiado
+     const responseNew = await CreateNewItemElement(newStreet) // guarda en bd
+  
+      // actualizo la lista de puestos 
+      const updatedcalles = [...calles, responseNew];
+      setCalles(updatedcalles); //setea local
+
   };
 
 
-  const handleRemoveStreet = (id: number) => {
-    setCalles(calles.filter((street) => street.id_elemento !== id));
-  };
 
 
 
@@ -221,7 +263,7 @@ interface vistaProps {
             <Toolbar 
             onAddPuesto={()=>AddPuesto(totalPuestos)} 
 
-            onAddStreet={handleAddStreet} 
+            onAddStreet={addCalle} 
             />
 
 
@@ -229,12 +271,9 @@ interface vistaProps {
               puestos={puestos}
               setPuestos={setPuestos}
               onItemClick={ItemClick}
-              planWidth={planWidth}
-              planHeight={planHeight}
-              setPlanWidth={setPlanWidth}
-              setPlanHeight={setPlanHeight}
+              plano={plano}
+              onChangePlano={setNewDimPlano}
               calles={calles}
-              onRemoveStreet={handleRemoveStreet}
              
             />
           </div>
@@ -244,14 +283,14 @@ interface vistaProps {
       {selectedItem?.id_tipo_elemento === 2? (
         <MenuCalle
           selectedCalle={selectedItem }
-          onRemoveStreet={handleRemoveStreet}
           setSelectedItem={setSelectedItem}
+          deleteItem={deleteItem}
           isLoading={isLoading}
         />
       ) : selectedItem?.id_tipo_elemento === 1 ? (
         <MenuPuesto
           selectedPuesto={selectedItem }
-          onRemoveRectangle={RemovePuesto}
+          deleteItem={deleteItem}
           setSelectedItem= {setSelectedItem}
           isLoading={isLoading}
         />
