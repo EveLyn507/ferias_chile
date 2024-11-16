@@ -115,22 +115,25 @@ const registerEncargado_feria = async (req, res, pool) => {
 const registerFeriante = async (req, res, pool) => {
   const { user_mail, rut, rut_div, nombre, apellido, telefono, role, contrasena } = req.body;
   try {
-      const existingUser = await pool.query('SELECT * FROM public.feriante WHERE user_mail = $1', [user_mail]);
-      if (existingUser.rows.length > 0) {
-          return res.status(409).json({ message: 'Correo ya registrado' });
-      }
-      const hashedPassword = await bcrypt.hash(contrasena, 10);
-      await pool.query(
-          `INSERT INTO public.feriante (user_mail, rut, rut_div, nombre, apellido, telefono, id_tipo_usuario, contrasena, perfil_privado) 
-           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
-          [user_mail, rut, rut_div, nombre, apellido, telefono, role, hashedPassword, false]
-      );
-      res.status(201).json({ message: 'Usuario registrado correctamente' });
+    const existingUser = await pool.query('SELECT * FROM public.feriante WHERE user_mail = $1', [user_mail]);
+    if (existingUser.rows.length > 0) {
+      return res.status(409).json({ message: 'Correo ya registrado' });
+    }
+
+    const hashedPassword = await bcrypt.hash(contrasena, 10);
+    await pool.query(
+      `INSERT INTO public.feriante (user_mail, rut, rut_div, nombre, apellido, telefono, id_tipo_usuario, contrasena, perfil_privado) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+      [user_mail, rut, rut_div, nombre, apellido, telefono, role, hashedPassword, false]
+    );
+
+    res.status(201).json({ message: 'Usuario registrado correctamente' });
   } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Error al registrar usuario' });
+    console.error('Error en el registro:', error); 
+    res.status(500).json({ message: 'Error interno del servidor' });
   }
 };
+
 
 // REGISTRO USUARIO -> LO REGISTRA EN LA BD
 const registerAdministrador_municipal = async (req, res, pool) => {
@@ -154,9 +157,8 @@ const registerAdministrador_municipal = async (req, res, pool) => {
 };
 
 // REGISTRO USUARIO GOOGLE
-const registerGoogleFeriante = async (req, res) => {
+const registerGoogleFeriante = async (req, res, pool) => {
   const { credential } = req.body;
-  
   if (!credential) {
     return res.status(400).json({ message: 'El token de Google no se proporcionó correctamente.' });
   }
@@ -172,40 +174,41 @@ const registerGoogleFeriante = async (req, res) => {
     const user_mail = payload.email;
     const nombre = payload.given_name;
     const apellido = payload.family_name;
-    const auth_google = payload.sub;
-    const url_foto_perfil = payload.picture;
 
     // Verificar si el usuario ya está registrado
-    const result = await req.pool.query('SELECT * FROM public.feriante WHERE user_mail = $1', [user_mail]);
+    const result = await pool.query('SELECT * FROM public.feriante WHERE user_mail = $1', [user_mail]);
     const existingUser = result.rows[0];
 
     if (existingUser) {
-      return res.status(409).json({ message: 'El correo electrónico ya está asociado a una cuenta.' });
-    }
-
-    // Crear nueva contraseña para el usuario
-    const randomPassword = Math.random().toString(36).slice(-8);
-    const hashedPassword = await bcrypt.hash(randomPassword, 10);
-
-    // Inserción del nuevo usuario
-    try {
-      const result = await req.pool.query(
-        `INSERT INTO public.feriante (user_mail, id_tipo_usuario, nombre, apellido, rut, rut_div, telefono, url_foto_perfil, auth_google, contrasena, perfil_privado) 
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING id_user_fte AS id_user`,
-        [user_mail, 2, nombre, apellido, 0, '0', 0, url_foto_perfil, auth_google, hashedPassword, true]
+      // Si el usuario ya existe, generar un token y devolverlo
+      const token = jwt.sign(
+        { id: existingUser.id_user_fte, email: existingUser.user_mail },
+        'your-secret-key',
+        { expiresIn: '5h' }
       );
-
-      const id_user = result.rows[0].id_user;
-      const token = jwt.sign({ id: id_user }, 'secret_key', { expiresIn: '1h' });
-      res.json({ token, role: 2, email: user_mail, id_user });
-    } catch (insertError) {
-      console.error('Error al insertar el usuario:', insertError);
-      res.status(500).json({ message: 'Error al registrar el usuario en la base de datos.' });
+      return res.status(200).json({
+        token,
+        role: existingUser.id_tipo_usuario,
+        email: existingUser.user_mail,
+        id_user: existingUser.id_user_fte,
+      });
     }
 
+    // Si el usuario no existe, registrarlo
+    const hashedPassword = await bcrypt.hash(Math.random().toString(36).slice(-8), 10);
+    const insertResult = await pool.query(
+      `INSERT INTO public.feriante (user_mail, nombre, apellido, contrasena, id_tipo_usuario, perfil_privado)
+       VALUES ($1, $2, $3, $4, $5, $6) RETURNING id_user_fte`,
+      [user_mail, nombre, apellido, hashedPassword, 2, false]
+    );
+
+    const id_user = insertResult.rows[0].id_user_fte;
+    const token = jwt.sign({ id: id_user, email: user_mail }, 'your-secret-key', { expiresIn: '5h' });
+
+    return res.status(201).json({ token, role: 2, email: user_mail, id_user });
   } catch (error) {
-    console.error('Error en la verificación del token de Google:', error);
-    res.status(400).json({ message: 'El token de Google no es válido.' });
+    console.error('Error en el registro con Google:', error);
+    res.status(500).json({ message: 'Error interno del servidor.' });
   }
 };
 

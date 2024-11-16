@@ -1,6 +1,7 @@
-// HomeSupervisor.tsx
 import { useParams } from "react-router-dom";
 import GestionSupervisor from "./GestionSupervisor";
+import './Supervisor.css';
+
 
 export const HomeSupervisor = () => {
   const { id_feria } = useParams<{ id_feria: string }>(); 

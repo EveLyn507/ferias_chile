@@ -8,7 +8,7 @@ interface BiografiaProps {
   setBiografia: (bio: string) => void;
 }
 
-const Biografia: React.FC<BiografiaProps> = ({  biografia, setBiografia }) => {
+const Biografia: React.FC<BiografiaProps> = ({ biografia, setBiografia }) => {
   const id_user = useSelector((state: AppStore) => state.user.id_user);
   const [mensajeError, setMensajeError] = useState<string | null>(null);
   const [mensajeExito, setMensajeExito] = useState<string | null>(null);
@@ -22,10 +22,10 @@ const Biografia: React.FC<BiografiaProps> = ({  biografia, setBiografia }) => {
           const data = await response.json();
           setBiografia(data.biografia || '');
         } else {
-          console.error('Error al cargar la biografía');
+          setMensajeError('Error al cargar la biografía.');
         }
       } catch (error) {
-        console.error('Error al conectar con el servidor:', error);
+        setMensajeError('Error al conectar con el servidor.');
       }
     };
     if (id_user) {
@@ -34,28 +34,32 @@ const Biografia: React.FC<BiografiaProps> = ({  biografia, setBiografia }) => {
   }, [id_user, setBiografia]);
 
   const guardarBiografia = async () => {
+    setMensajeError(null);
+    setMensajeExito(null);
+
     if (biografia.trim() === '') {
       setMensajeError('La biografía no puede estar vacía.');
+      return;
+    }
+
+    if (biografia.length > maxCaracteres) {
+      setMensajeError(`La biografía no puede superar los ${maxCaracteres} caracteres.`);
       return;
     }
 
     try {
       const response = await fetch('http://localhost:5000/api/guardar-biografia', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id_user, biografia }),
       });
-      console.log(id_user)
+
       if (response.ok) {
         setMensajeExito('Biografía actualizada con éxito.');
-        setMensajeError(null);
       } else {
-        console.error('Error al actualizar la biografía');
+        setMensajeError('Error al actualizar la biografía.');
       }
     } catch (error) {
-      console.error('Error al conectar con el servidor:', error);
       setMensajeError('Error al conectar con el servidor.');
     }
   };

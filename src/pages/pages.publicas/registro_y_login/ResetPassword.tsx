@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import axios from 'axios';
 import { useSearchParams } from 'react-router-dom';
@@ -9,14 +8,27 @@ export const ResetPassword = () => {
   const [confirmarContrasena, setConfirmarContrasena] = useState('');
   const [message, setMessage] = useState('');
 
+  const validarContrasena = (contrasena: string) =>
+    /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/.test(contrasena);
+
   const handleResetPassword = async () => {
     if (nuevaContrasena !== confirmarContrasena) {
       setMessage('Las contraseñas no coinciden');
       return;
     }
 
+    if (!validarContrasena(nuevaContrasena)) {
+      setMessage('La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número.');
+      return;
+    }
+
     try {
-      const token = searchParams.get('token'); // Obtener el token del enlace
+      const token = searchParams.get('token'); 
+
+      if (!token) {
+        setMessage('Token inválido o expirado.');
+        return;
+      }
 
       const response = await axios.post('http://localhost:5000/reset-password', {
         token,

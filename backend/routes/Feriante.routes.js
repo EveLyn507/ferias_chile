@@ -36,16 +36,19 @@ togglePerfilPrivado (req, res,pool);
 
 // Rutas para actualizar y cargar datos personales
 router.post('/api/actualizar-datos-personales', (req, res) => {
-  const pool = req.pool;
-  const { userMail, nombre, apellido, telefono , id_user } = req.body;
-  actualizarDatosPersonales( res,pool , userMail, nombre, apellido, telefono , id_user);
+  const { nombre, apellido, telefono, id_user } = req.body; 
+  actualizarDatosPersonales(res, req.pool, nombre, apellido, telefono, id_user);
 });
 
-
 router.get('/api/cargar-datos-personales/:id_user', (req, res) => {
+  console.log('Ruta /api/cargar-datos-personales llamada');
+  console.log('req.params:', req.params); // Comprobar si id_user se envía correctamente
+
   const pool = req.pool;
   const { id_user } = req.params;
-  cargarDatosPersonales( res,pool,id_user);
+
+  console.log('Pasando al controlador cargarDatosPersonales con id_user:', id_user);
+  cargarDatosPersonales(req, res); // No se pasa `pool` aquí, ya que está en `req.pool`
 });
 
 // Rutas para actualizar y cargar biografía

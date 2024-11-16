@@ -1,4 +1,3 @@
-// GestionSupervisor.tsx
 import React from 'react';
 import EstadoFeria from './EstadoFeria';
 import GestionPuestos from './GestionPuestos';
@@ -6,6 +5,8 @@ import MapaFeria from './MapaFeria';
 import VerificarDatos from './VerificarDatos';
 import RegistroCobrosFisicos from './RegistroCobrosFisicos';
 import { Link } from 'react-router-dom';
+import './Supervisor.css';
+
 
 interface GestionSupervisorProps {
   id_feria: number;

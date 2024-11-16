@@ -8,18 +8,23 @@ const pool = require('../server');
 const getEstadoPerfil = async (req, res) => {
   const { userMail } = req.params;
 
+  if (!userMail) {
+    return res.status(400).json({ message: 'El correo del usuario es obligatorio.' });
+  }
+
   try {
     const query = 'SELECT perfil_privado FROM feriante WHERE user_mail = $1';
     const result = await req.pool.query(query, [userMail]);
 
     if (result.rows.length === 0) {
+      console.error(`Usuario no encontrado: ${userMail}`);
       return res.status(404).json({ message: 'Usuario no encontrado' });
     }
 
     res.status(200).json({ perfil_privado: result.rows[0].perfil_privado });
   } catch (error) {
     console.error('Error al obtener el estado del perfil:', error);
-    res.status(500).json({ message: 'Error al obtener el estado del perfil' });
+    res.status(500).json({ message: 'Error al obtener el estado del perfil.' });
   }
 };
 
@@ -53,43 +58,72 @@ const togglePerfilPrivado = async (req, res, pool) => {
 };
 
 // Función para actualizar datos personales
-const actualizarDatosPersonales = async (res,pool ,  nombre, apellido, telefono , id_user) => {
+const actualizarDatosPersonales = async (res, pool, nombre, apellido, telefono, id_user) => {
   try {
+    // Validar los datos de entrada
+    if (!nombre || !apellido || !telefono || !id_user) {
+      return res.status(400).json({ message: 'Todos los campos son obligatorios.' });
+    }
+
+    // Validar que el teléfono sea un número
     const telefonoEntero = parseInt(telefono, 10);
+    if (isNaN(telefonoEntero)) {
+      return res.status(400).json({ message: 'El teléfono debe ser un número válido.' });
+    }
+
+    // Consulta SQL para actualizar datos personales
     const query = `
       UPDATE feriante
       SET nombre = $1, apellido = $2, telefono = $3
       WHERE id_user_fte = $4;
     `;
-    await pool.query(query, [nombre, apellido, telefonoEntero,id_user]);
-    res.status(200).json({ message: 'Datos personales actualizados correctamente' });
+    await pool.query(query, [nombre, apellido, telefonoEntero, id_user]);
+
+    // Responder con éxito
+    res.status(200).json({ message: 'Datos personales actualizados correctamente.' });
   } catch (error) {
     console.error('Error al actualizar los datos personales:', error);
-    res.status(500).json({ message: 'Error al actualizar los datos personales' });
+    res.status(500).json({ message: 'Error al actualizar los datos personales.' });
   }
 };
 
 // Función para cargar datos personales
-const cargarDatosPersonales = async (res,pool,id_user) => {
+const cargarDatosPersonales = async (req, res) => {
+  console.log('Entrando al controlador cargarDatosPersonales');
+  console.log('req.params:', req.params); // Verificar qué contiene req.params
+
+  const { id_user } = req.params;
+
+  if (!id_user) {
+    console.error('ID de usuario no proporcionado');
+    return res.status(400).json({ message: 'El ID de usuario es obligatorio.' });
+  }
 
   try {
+    console.log('Consultando la base de datos con id_user:', id_user);
     const query = `
       SELECT nombre, apellido, telefono
       FROM feriante
       WHERE id_user_fte = $1;
     `;
-    const result = await pool.query(query, [id_user]);
+    const result = await req.pool.query(query, [id_user]);
+
+    console.log('Resultado de la consulta:', result.rows);
 
     if (result.rows.length === 0) {
-      return res.status(404).json({ message: 'Usuario no encontrado' });
+      console.error('Usuario no encontrado en la base de datos');
+      return res.status(404).json({ message: 'Usuario no encontrado.' });
     }
-    
+
+    console.log('Enviando datos al cliente:', result.rows[0]);
     res.status(200).json(result.rows[0]);
   } catch (error) {
-    console.error('Error al cargar nombre, apellido y teléfono:', error);
-    res.status(500).json({ message: 'Error al cargar nombre, apellido y teléfono' });
+    console.error('Error al cargar datos personales:', error);
+    res.status(500).json({ message: 'Error al cargar datos personales.' });
   }
 };
+
+
 
 // Función para actualizar biografía
 const guardarBiografia = async (id_user, biografia, res,pool) => {
@@ -198,21 +232,50 @@ const cargarIntereses = async (res, pool, id_user) => {
 };
 
 // Función para actualizar correo
-const actualizarCorreo = async (req, res, pool) => { 
+const actualizarCorreo = async (req, res, pool) => {
   const { nuevoCorreo, user_mail } = req.body;
+
+  if (!nuevoCorreo || !user_mail) {
+    return res.status(400).json({ message: 'El correo actual y el nuevo correo son obligatorios.' });
+  }
 
   try {
     await pool.query('BEGIN');
-    const updateQueries = [
-      'UPDATE feriante SET user_mail = $1 WHERE user_mail = $2;',
-      'UPDATE intereses SET id_user_fte = (SELECT id_user_fte FROM feriante WHERE user_mail = $1) WHERE id_user_fte = (SELECT id_user_fte FROM feriante WHERE user_mail = $2);',
-      'UPDATE feriante SET perfil_privado = $1 WHERE user_mail = $2',
-      'UPDATE feriante SET contrasena = $1 WHERE id_user_fte = $2;'
-    ];
 
-    for (const query of updateQueries) {
-      await pool.query(query, [nuevoCorreo, user_mail]); // Asegúrate de que los parámetros estén en el orden correcto
-    }
+    // Actualizar el correo en la tabla feriante
+    const queryFeriante = 'UPDATE feriante SET user_mail = $1 WHERE user_mail = $2;';
+    await pool.query(queryFeriante, [nuevoCorreo, user_mail]);
+
+    // Actualizar intereses relacionados (si corresponde)
+    const queryIntereses = `
+      UPDATE intereses
+      SET id_user_fte = (
+        SELECT id_user_fte
+        FROM feriante
+        WHERE user_mail = $1
+      )
+      WHERE id_user_fte = (
+        SELECT id_user_fte
+        FROM feriante
+        WHERE user_mail = $2
+      );
+    `;
+    await pool.query(queryIntereses, [nuevoCorreo, user_mail]);
+
+    const queryRedesSociales = `
+      UPDATE redes_sociales
+      SET id_user_fte = (
+        SELECT id_user_fte
+        FROM feriante
+        WHERE user_mail = $1
+      )
+      WHERE id_user_fte = (
+        SELECT id_user_fte
+        FROM feriante
+        WHERE user_mail = $2
+      );
+    `;
+    await pool.query(queryRedesSociales, [nuevoCorreo, user_mail]);
 
     await pool.query('COMMIT');
     res.status(200).json({ message: 'Correo actualizado correctamente' });
@@ -222,6 +285,7 @@ const actualizarCorreo = async (req, res, pool) => {
     res.status(500).json({ message: 'Error interno del servidor' });
   }
 };
+
 
 // Función para actualizar la contraseña
 const actualizarContraseña = async (req, res) => {
