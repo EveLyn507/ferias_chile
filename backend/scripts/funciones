@@ -5,7 +5,12 @@ DROP FUNCTION IF EXISTS obtener_ferias_encargado(INTEGER);
 DROP FUNCTION IF EXISTS insertar_solicitud_apertura(CHARACTER VARYING, CHARACTER VARYING, INTEGER, CHARACTER VARYING);
 DROP FUNCTION IF EXISTS obtener_horarios_ferias_encargado( integer[]);
 DROP FUNCTION IF EXISTS obtener_horarios_ferias_feedFerias( integer[]);
-DROP FUNCTION IF EXISTS obtener_actividades_feria( integer[]);
+DROP FUNCTION IF EXISTS public.get_plano_elements( integer);
+DROP FUNCTION IF EXISTS public.insertar_solicitud_apertura( integer, integer);
+DROP FUNCTION IF EXISTS public.obtener_ferias_paginado( integer, integer , integer , integer);
+DROP FUNCTION IF EXISTS public.obtener_puestos_actividad( CHARACTER VARYING, DATE);
+DROP FUNCTION IF EXISTS public.traer_semana_actividad_feria( integer);
+
 
 -- FUNCIONES PARA EL ENCARGADOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 
