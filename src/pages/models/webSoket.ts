@@ -2,34 +2,41 @@
 import { io, Socket } from "socket.io-client";
 
 // Define la clase WebSocketService
-class WebSocketService {
+class userWebSocketService {
+  private static instance: userWebSocketService | null = null;  // Instancia estática para el singleton
   socket: Socket | null = null;
 
-  constructor() {
-    // La conexión no se realiza aquí, solo inicializamos la propiedad `socket`
+  private constructor() {
+    // Inicializar la propiedad socket, pero no realizar la conexión aún
     this.socket = null;
+  }
+
+  // Método para obtener la instancia del singleton
+  public static getInstance(): userWebSocketService {
+    if (!userWebSocketService.instance) {
+      userWebSocketService.instance = new userWebSocketService();
+    }
+    return userWebSocketService.instance;
   }
 
   // Método para obtener el token desde localStorage
   private getToken(): string | null {
-    // Obtener el objeto 'user' desde localStorage
     const user = localStorage.getItem("user");
     if (user) {
       try {
         const parsedUser = JSON.parse(user);
-        return parsedUser.token || null;  // Retorna el token si está presente
+        return parsedUser.token || null;
       } catch (e) {
         console.error("Error al parsear el objeto 'user' desde localStorage:", e);
         return null;
       }
     }
-    
-    return null; // Si no existe el objeto 'user', retornamos null
+    return null;
   }
 
   // Método para conectar al servidor WebSocket
   connect() {
-    const token = this.getToken(); // Obtener el token desde localStorage
+    const token = this.getToken();
 
     if (!token) {
       console.error("No se encontró un token en el localStorage");
@@ -88,9 +95,9 @@ class WebSocketService {
     if (this.socket) {
       this.socket.disconnect();
       console.log('Desconectado del servidor WebSocket');
-      this.socket = null; // Limpiar la instancia después de desconectar
+      this.socket = null;
     }
   }
 }
 
-export default WebSocketService;
+export default userWebSocketService;

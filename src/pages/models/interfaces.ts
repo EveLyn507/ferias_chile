@@ -107,26 +107,6 @@ export interface puesto {
 }
 
 
-export interface ActividadPuesto {
-    id_feria : number,
-    nombre_feria :string,
-    id_actividad_feria :number,
-    id_dia : number,
-    fecha : string,
-    id_puesto: number,
-    hora_inicio: string,
-    hora_termino:string,
-    id_arriendo_puesto: number,
-    id_estado_arriendo: number,
-    numero: number
-}
-
-
-export interface acPuestoProps{
-    puestos : ActividadPuesto[]
-}
-
-
 // USADO EN 
 export interface PuestosProp {
     puestos: puesto[];

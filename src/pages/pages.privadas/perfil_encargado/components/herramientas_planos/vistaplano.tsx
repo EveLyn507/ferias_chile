@@ -11,18 +11,13 @@ import MenuPuesto from './menus/MenuPuesto';
 import MenuCalle from './menus/MenuCalle';
 import MenuVacio from './menus/menuContainers';
 import { debounce } from 'lodash';
+import { vistaProps } from './models/canvasModels';
 
 
 
   const API_URL = 'http://localhost:5000';
 
-interface vistaProps {
-  savePlanoItem : (selectedItem : PlanoItemElement) => void
-  CreateNewItemElement: (newItem: PlanoItemElement) => Promise<PlanoItemElement>
-  UpdatePlano : (newPlano : plano) => void
-  DeleteItemPlano: (DeletedItem : DeletedItem) => void
 
-}
 
   const Vista = ({savePlanoItem , CreateNewItemElement,UpdatePlano ,DeleteItemPlano} : vistaProps ) => {
 

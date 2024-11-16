@@ -311,6 +311,8 @@ END;
 $$ LANGUAGE plpgsql;
 
 
+
+
 CREATE OR REPLACE FUNCTION obtener_puestos_actividad(func_nombre_f CHARACTER VARYING , func_fecha DATE )
 RETURNS TABLE (
 id_feria INTEGER,
@@ -323,7 +325,8 @@ hora_inicio TIME WITHOUT TIME ZONE,
 hora_termino TIME WITHOUT TIME ZONE,
 id_arriendo_puesto INTEGER,
 id_estado_arriendo INTEGER,
-numero INTEGER
+numero INTEGER,
+precio INTEGER
 
 ) AS $$
 
@@ -340,7 +343,8 @@ dpf.hora_inicio,
 dpf.hora_termino,
 ap.id_arriendo_puesto,
 ap.id_estado_arriendo,
-p.numero
+p.numero,
+p.precio
 
 from feria f
 
@@ -353,7 +357,6 @@ order by ap.id_puesto;
 
 END;
 $$ LANGUAGE plpgsql; 
-
 
 --FIN FUNCIONES FEED DE FERIASSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
 

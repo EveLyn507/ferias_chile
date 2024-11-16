@@ -1,6 +1,8 @@
 // socketManager.js
 const { verifyToken } = require('../auth/verifyToken');
 const { UpdatePuesto ,CreateNewItemElement  ,UpdatePlano ,DeleteItemPlano} = require('./controllers/wsEnfController');
+const { getArriendosFToday} = require('./controllers/FeedFeriasController');
+
 const pool = require('../auth/pool');
 
 const activeSockets = {};
@@ -30,7 +32,7 @@ function setupSocketServer(io) {
       socket.on('CreateNewItemElement', (newItem) => CreateNewItemElement(socket ,pool, newItem));
       socket.on('UpdatePlano', (UpdatedPlano) => UpdatePlano(socket ,pool, UpdatedPlano));
       socket.on('DeleteItem', (deletedItem) => DeleteItemPlano(socket ,pool, deletedItem));
-
+      socket.on('TodayFeriaElements', (params) => getArriendosFToday(socket ,pool, params));
 
       socket.emit('message', 'Conectado con el servidor');
 

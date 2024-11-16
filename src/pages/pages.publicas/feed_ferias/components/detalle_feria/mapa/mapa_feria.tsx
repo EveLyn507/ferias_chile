@@ -4,19 +4,19 @@ import { Stage, Layer, Rect, Line } from 'react-konva';
 import { useState, useEffect } from 'react';
 
 import React from 'react';
-import { CanvasProps } from './models/canvasModels';
-import StreetsLayer from './layers/streelayer';
-import PuestosLayer from './layers/puestoLayer';
-import { PlanoItemElement } from './models/vistaplanoModels';
+import PuestosLayer from './puestoLayer';
+import StreetsLayer from './streelayer';
+import { MapaCanvas } from './mapaModel';
 
-  const Canvas2: React.FC<CanvasProps> = ({
-    puestos,
-    setPuestos,
-    calles,
-    onItemClick,
+
+
+
+
+  const Mapa: React.FC<MapaCanvas> = ({
     plano,
-    onChangePlano,
-    isStatic = false,
+    puestos,
+    calles,
+    isStatic
 
   }) => { 
     const planX = 50;
@@ -24,9 +24,9 @@ import { PlanoItemElement } from './models/vistaplanoModels';
     const gridSize = 50;
     const controlSize = 8;
   
-    const [hoveredRect, setHoveredRect] = useState<PlanoItemElement | null>(null);
     const [image, setImage] = useState<HTMLImageElement | null>(null);
-
+   
+    
     // Cargar imagen de los puestos
     useEffect(() => {
     const img = new window.Image();
@@ -54,7 +54,6 @@ return (
       stroke="black"
       strokeWidth={2}
     />
-    
     {/*GRILLA DE LAS LINEAS DEL FONDO*/}
     {Array.from({ length: plano.width / gridSize }, (_, i) => (
       <Line
@@ -83,16 +82,6 @@ return (
         width={controlSize}
         height={controlSize}
         fill="blue"
-        draggable={true}
-        dragBoundFunc={(pos) => {
-          const newWidth = Math.max(200, pos.x - planX); // Restricción mínima
-          const newHeight = Math.max(200, pos.y - planY); // Restricción mínima
-
-          const newplano =  {...plano , width: newWidth , height : newHeight}
-          onChangePlano(newplano)
-          
-          return pos;
-        }}
       />
     )}
   </Layer>
@@ -100,12 +89,9 @@ return (
 
   <PuestosLayer
   puestos={puestos}  // Lista de puestos, debe ser un arreglo de objetos Rectangle
-  setPuestos={setPuestos}  // Función para actualizar los puestos
   isStatic={false}  // Si los puestos son estáticos o no (pueden moverse o redimensionarse)
   image={image}  // Imagen que se aplicará a los puestos (si es necesario)
-  onPuestoClick={onItemClick}  // Función que se ejecuta cuando se hace clic en un puesto
-  hoveredRect={hoveredRect}  // El puesto actualmente seleccionado o sobre el cual se pasa el ratón
-  setHoveredRect={setHoveredRect}  // Función para actualizar el puesto sobre el que se pasa el ratón
+
 />
 
 
@@ -113,8 +99,7 @@ return (
   {/* Capa para las calles */}
   <StreetsLayer 
         calles={calles}
-        onStreetClick={onItemClick}  // Función que se ejecuta cuando se hace clic en un puesto
-        isStatic={isStatic}
+        isStatic={false}
       />
 
 </Stage>
@@ -123,4 +108,4 @@ return (
 
   }  // fin
   
-  export default Canvas2;
+  export default Mapa;
