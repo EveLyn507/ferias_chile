@@ -6,10 +6,12 @@ import './cards_feed.css';
 export const CardFerias = ({ ferias }: FeriasProps) => {
   const semana = ['none', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
   
+console.log(ferias);
 
   return (
     <div className="card-container">
       {ferias.map((feria) => (
+        
         <div className="ag-courses_item" key={feria.id_feria}>
           <div className="ag-courses-item_bg"></div>
           <Card
@@ -42,7 +44,14 @@ export const CardFerias = ({ ferias }: FeriasProps) => {
                       {feria.actividades.map((actividad) => (
                         <li key={actividad.id_actividad_feria}>
                           Fecha: {new Date(actividad.fecha).toLocaleDateString('es-ES')}
+                          <Link
+                to={`/feria/${feria.id_feria}/${feria.nombre_feria}/${actividad.fecha}`}
+    
+              >
+                Ver Puestos
+              </Link>
                         </li>
+                        
                       ))}
                     </ul>
                   </div>

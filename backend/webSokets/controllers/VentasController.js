@@ -14,15 +14,27 @@ const { emitUpdateArriendo } = require('./roomFunction')
 
 
 const cambiar_estado_arriendo = async (pool , id_arriendo_puesto, disponible ) => {
-const restult = await pool.query (`
-  UPDATE arriendo_puesto 
-  SET id_estado_arriendo = $2
-  WHERE id_arriendo_puesto = $1 
-  RETURNING *;
+
+ console.log('cambiando arriendo' ,disponible );
+ 
+  const result = await pool.query(`
+    UPDATE arriendo_puesto 
+    SET id_estado_arriendo = $2
+    WHERE id_arriendo_puesto = $1 
+    RETURNING *;
+  `, [id_arriendo_puesto, disponible]);
+  console.log('esto es result',result.rows[0]);
   
-  `, [id_arriendo_puesto, disponible])
-  return restult.rows[0]
-}
+  if (result.rowCount === 0) {
+    
+    return null
+  } else {
+    console.log('El registro fue actualizado:', result.rows[0]);
+    return result.rows[0];
+  }
+  }  
+
+
 
 const updateTransactionStatus = async (buyOrder, status, pool) => {
   try {
@@ -53,7 +65,7 @@ const check_status_contrato = async ( buy_order ,pool  ) => {
 const activeChecks = {}; // Almacena los chequeos activos
 const maxRetries = 3; // Máximo número de intentos permitidos
 
-const startTransactionCheck = async (buy_order,id_arriendo_puesto ,token_ws, pool) => {
+const startTransactionCheck = async (io,id_feria, buy_order,id_arriendo_puesto ,token_ws, pool) => {
   if (activeChecks[buy_order]) return; // Evita iniciar un chequeo si ya está activo
 
   const estado = await check_status_contrato(buy_order, pool); // Asegúrate de esperar la resolución de la promesa
@@ -68,14 +80,22 @@ const startTransactionCheck = async (buy_order,id_arriendo_puesto ,token_ws, poo
         if (response.status === 'AUTHORIZED') {
           console.log(`Transacción ${buy_order} autorizada.`);
           await updateTransactionStatus(response.buy_order, 2, pool);
-          await cambiar_estado_arriendo(pool , id_arriendo_puesto, 3)
+          const estado = await cambiar_estado_arriendo(pool , id_arriendo_puesto, 3)
+
+          if(estado){
+            emitUpdateArriendo( io,id_feria, estado)
+           }
           clearInterval(intervalId); // Detiene el chequeo
           delete activeChecks[buy_order]; // Elimina el chequeo activo
 
         } else if (response.status === 'REJECTED') {
           console.log(`Transacción ${buy_order} rechazada.`);
           await updateTransactionStatus(response.buy_order, 3, pool);
-          await cambiar_estado_arriendo(pool , id_arriendo_puesto, 1)
+          const estado = await cambiar_estado_arriendo(pool , id_arriendo_puesto, 1)
+
+          if(estado){
+            emitUpdateArriendo( io,id_feria, estado)
+           }
           clearInterval(intervalId); // Detiene el chequeo
           delete activeChecks[buy_order]; // Elimina el chequeo activo
         }
@@ -90,7 +110,11 @@ const startTransactionCheck = async (buy_order,id_arriendo_puesto ,token_ws, poo
           if (retryCount >= maxRetries) {
             console.log(`Se alcanzó el número máximo de reintentos para la transacción ${buy_order}. Deteniendo chequeo.`);
             await updateTransactionStatus(buy_order, 3, pool);
-            await cambiar_estado_arriendo(pool , id_arriendo_puesto, 1)
+            const estado = await cambiar_estado_arriendo(pool , id_arriendo_puesto, 1)
+
+            if(estado){
+              emitUpdateArriendo( io,id_feria, estado)
+             }
             clearInterval(intervalId); // Detiene el chequeo
             delete activeChecks[buy_order]; // Elimina el chequeo activo
           }
@@ -103,7 +127,10 @@ const startTransactionCheck = async (buy_order,id_arriendo_puesto ,token_ws, poo
           if (retryCount >= maxRetries) {
             console.log(`Se alcanzó el número máximo de reintentos para la transacción ${buy_order}. Deteniendo chequeo.`);
             await updateTransactionStatus(buy_order, 3, pool);
-            await cambiar_estado_arriendo(pool , id_arriendo_puesto, 1)
+            const estado = await cambiar_estado_arriendo(pool , id_arriendo_puesto, 1)
+            if(estado){
+              emitUpdateArriendo( io,id_feria, estado)
+             }
             clearInterval(intervalId); // Detiene el chequeo
             delete activeChecks[buy_order]; // Elimina el chequeo activo
           }
@@ -115,8 +142,7 @@ const startTransactionCheck = async (buy_order,id_arriendo_puesto ,token_ws, poo
     activeChecks[buy_order] = intervalId;
 
   } else {
-    await updateTransactionStatus(buy_order, 3, pool); // Marca la transacción como rechazada
-    await cambiar_estado_arriendo(pool , id_arriendo_puesto, 1)
+
     console.log('La transaccion esta completada, cancelando chequeo.');
   }
 };
@@ -157,9 +183,10 @@ const createTransaction = async (io,socket, pool, params) => {
     // Guardar la transacción en la base de datos como "pendiente"
     await saveTransactionToDatabase( pool ,id_user_fte, id_arriendo_puesto , 1, 1, puesto.precio, buyOrder, sessionId);
     setTimeout(() => {
-      startTransactionCheck(buyOrder ,id_arriendo_puesto, token , pool)
+      startTransactionCheck(io,puesto.id_feria,buyOrder ,id_arriendo_puesto, token , pool)
 
-    } ) 
+    },40000 ) 
+
     // Responder con la URL y el token
     socket.emit('opentbk', {token , url})
   } catch (error) {
@@ -171,7 +198,7 @@ const createTransaction = async (io,socket, pool, params) => {
 
 
 
-
+ 
 // Función para confirmar el commit -- para el front
 const commitTransaction = async ( io,socket,pool ,params) => {
   console.log(params);
@@ -185,12 +212,19 @@ const commitTransaction = async ( io,socket,pool ,params) => {
       // Actualizar la transacción en la base de datos como "completada"
       await updateTransactionStatus(response.buy_order, 2, pool);
       const estado = await cambiar_estado_arriendo(pool , id_arriendo_puesto, 3)
-      emitUpdateArriendo( io,id_feria, estado)
+      console.log('esto es estado',estado);
+      
+      if(estado){
+        emitUpdateArriendo( io,id_feria, estado)
+       }
       socket.emit('comittbk' ,response )
     } else {
      await updateTransactionStatus(response.buy_order, 3,pool);
      const estado = await cambiar_estado_arriendo(pool ,id_arriendo_puesto, 1)    
-     emitUpdateArriendo( io,id_feria, estado)
+     if(estado){
+      emitUpdateArriendo( io,id_feria, estado)
+     }
+   
       socket.emit('comittbk' ,response )
     }
   } catch (error) {
