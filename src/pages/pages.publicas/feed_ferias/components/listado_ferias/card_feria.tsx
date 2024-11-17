@@ -1,51 +1,65 @@
 import { Link } from "react-router-dom";
 import { FeriasProps } from "../../../../models/interfaces";
 import { Card } from "../../../../components/card";
-import './cards_feed.css'
-// Define las props del componente, en este caso un array de objetos Feria
+import './cards_feed.css';
+
 export const CardFerias = ({ ferias }: FeriasProps) => {
-    const semana = ['none', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
+  const semana = ['none', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+  
 
-
-    return (
-        <div className="card-container">
+  return (
+    <div className="card-container">
+      {ferias.map((feria) => (
+        <div className="ag-courses_item" key={feria.id_feria}>
+          <div className="ag-courses-item_bg"></div>
           <Card
-            items={ferias}
-            renderFields={(feria) => [
-              { label: "Nombre", value: feria.nombre_feria },
-              { label: "Región", value: feria.region },
-              { label: "Comuna", value: feria.comuna },
+            items={[feria]} // Pasamos el único objeto como array
+            renderFields={() => [
+              { label: "Nombre", value: <h2 className="card-title">{feria.nombre_feria}</h2> },
+              { label: "Región", value: <p><strong>Región:</strong> {feria.region}</p> },
+              { label: "Comuna", value: <p><strong>Comuna:</strong> {feria.comuna}</p> },
               {
                 label: "Horarios de la feria",
                 value: (
-                  <ul>
-                    {feria.horarios.map((horario, index) => (
-                      <li key={index}>
-                        <strong>{semana[horario.id_dia]} De {horario.hora_inicio} A {horario.hora_termino}</strong>
-                      </li>
-                    ))}
-                  </ul>
+                  <div className="card-section">
+                    <strong>Horarios:</strong>
+                    <ul>
+                      {feria.horarios.map((horario, index) => (
+                        <li key={index}>
+                          {semana[horario.id_dia]}: {horario.hora_inicio} - {horario.hora_termino}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 ),
               },
               {
                 label: "Siguientes ferias",
                 value: (
-                  <ul>
-                    {feria.actividades.map((actividad) => (
-                      <li key={actividad.id_actividad_feria}>
-                        <strong>FECHA: {new Date(actividad.fecha).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' })}</strong>
-                        <br />
-                        <Link to={`/feria/${feria.id_feria}/${feria.nombre_feria}/${actividad.fecha}`}>Ver Puestos Feria</Link>
-                      </li>
-                    ))}
-                  </ul>
+                  <div className="card-section">
+           
+                    <ul>
+                      {feria.actividades.map((actividad) => (
+                        <li key={actividad.id_actividad_feria}>
+                          Fecha: {new Date(actividad.fecha).toLocaleDateString('es-ES')}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 ),
               },
             ]}
-            actions={(feria) => (
-              <li></li>
+            actions={() => (
+              <Link
+                to={`/feria/${feria.id_feria}/${feria.nombre_feria}/${feria.actividades[0]?.fecha}`}
+                className="circular-button"
+              >
+                Ver Puestos
+              </Link>
             )}
           />
         </div>
-      );
-    };
+      ))}
+    </div>
+  );
+};

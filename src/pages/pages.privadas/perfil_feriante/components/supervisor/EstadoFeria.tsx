@@ -1,23 +1,22 @@
-// EstadoFeria.tsx
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 interface Feria {
   id_feria: number;
   nombre: string;
-  comuna: string;
-  region: string;
-  estado: string;
+  nombre_comuna: string;
+  nombre_region: string;
+  estado_feria: string;
   puestos_ocupados: number;
   capacidad_total: number;
-  horarios?: { // Hacemos que horarios sea opcional para evitar errores si no existe
-    dia: string;
-    hora_inicio: string;
-    hora_termino: string;
-    id_dia_armado: number;
-    hora_inicio_armado: string;
-    hora_termino_armado: string;
-  }[];
+}
+
+interface horario_empleado {
+  id_detalle_horario: number;
+  id_dia: number;
+  id_vacante: number;
+  hora_entrada: string;
+  hora_salida: string;
 }
 
 interface EstadoFeriaProps {
@@ -26,6 +25,7 @@ interface EstadoFeriaProps {
 
 const EstadoFeria: React.FC<EstadoFeriaProps> = ({ id_feria }) => {
   const [feria, setFeria] = useState<Feria | null>(null);
+  const [horarios, setHorarios] = useState<horario_empleado[] | null>(null);
 
   useEffect(() => {
     const fetchFeriaEstado = async () => {
@@ -33,11 +33,39 @@ const EstadoFeria: React.FC<EstadoFeriaProps> = ({ id_feria }) => {
         const response = await axios.get('http://localhost:5000/api/supervisor/estado-feria', {
           params: { id_feria },
         });
+        console.log('Datos de feria:', response.data); // Para verificar los datos
         setFeria(response.data[0]);
       } catch (error) {
         console.error('Error al obtener el estado de la feria:', error);
       }
+
+      try {
+        // Corrección: Acceder a la propiedad `horario_empleado` en la respuesta
+        const response = await axios.get('http://localhost:5000/api/supervisor/obtener-horario', {
+          params: { id_feria },  // Enviar id_feria como un parámetro de consulta
+        });
+        console.log('Datos completos de horarios:', response.data); // Verificar los datos completos
+
+        // Filtrar solo los campos necesarios de `horario_empleado` en la respuesta
+        const filteredHorarios = response.data.map((item: any) => {
+          if (item.horario_empleado) {
+            return item.horario_empleado.map((horario: any) => ({
+              id_detalle_horario: horario.id_detalle_horario,
+              id_dia: horario.id_dia,
+              id_vacante: horario.id_vacante,
+              hora_entrada: horario.hora_entrada,
+              hora_salida: horario.hora_salida,
+            }));
+          }
+          return []; // Si no hay `horario_empleado`, devolver un arreglo vacío
+        }).flat(); // Usar `.flat()` para aplanar los arrays anidados
+
+        setHorarios(filteredHorarios); // Almacenar los horarios filtrados
+      } catch (error) {
+        console.error('Error al obtener los Horarios:', error);
+      }
     };
+
     fetchFeriaEstado();
   }, [id_feria]);
 
@@ -47,27 +75,30 @@ const EstadoFeria: React.FC<EstadoFeriaProps> = ({ id_feria }) => {
       {feria ? (
         <div>
           <h3>{feria.nombre}</h3>
-          <p>Comuna: {feria.comuna}</p>
-          <p>Región: {feria.region}</p>
-          <p>Estado: {feria.estado}</p>
-          <p>Ocupación: {feria.puestos_ocupados}/{feria.capacidad_total} puestos ocupados</p>
-          
-          <h4>Horarios:</h4>
-          <ul>
-            {feria.horarios && feria.horarios.length > 0 ? (
-              feria.horarios.map((horario, index) => (
-                <li key={index}>
-                  Día: {horario.dia} | Hora Inicio: {horario.hora_inicio} | Hora Término: {horario.hora_termino} <br />
-                  Día Armado: {horario.id_dia_armado} | Inicio Armado: {horario.hora_inicio_armado} | Fin Armado: {horario.hora_termino_armado}
-                </li>
-              ))
-            ) : (
-              <p>No hay horarios disponibles para esta feria</p>
-            )}
-          </ul>
+          <p><strong>Comuna:</strong> {feria.nombre_comuna}</p>
+          <p><strong>Región:</strong> {feria.nombre_region}</p>
+          <p><strong>Estado:</strong> {feria.estado_feria}</p>
+          <p><strong>Ocupación:</strong> {feria.puestos_ocupados}/{feria.capacidad_total} puestos ocupados</p>
         </div>
       ) : (
         <p>Cargando datos de la feria...</p>
+      )}
+
+      <h4>Horarios:</h4>
+      {horarios ? (
+        <ul>
+          {horarios.length > 0 ? (
+            horarios.map((horario, index) => (
+              <li key={index}>
+                Hora Entrada: {horario.hora_entrada} | Hora Salida: {horario.hora_salida}
+              </li>
+            ))
+          ) : (
+            <p>No hay horarios disponibles para esta feria</p>
+          )}
+        </ul>
+      ) : (
+        <p>Cargando horarios...</p>
       )}
     </div>
   );

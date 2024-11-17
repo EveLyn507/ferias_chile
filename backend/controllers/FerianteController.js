@@ -396,6 +396,7 @@ const misPostulaciones = async(res , pool, id_user_fte) => {
   try {
     const resutl = await pool.query(`
       SELECT 
+      f.id_feria,
       p.id_postulacion,
       ep.estado,
       f.nombre as nombre_feria,

@@ -48,7 +48,10 @@ useEffect(() => {
    <div className="cards-container">
       <CardFerias ferias={ferias} />
     </div>
-   <Paginacion  page={page} setPage={setPage}/>
+    <div className='paginacion1'>
+    <Paginacion  page={page} setPage={setPage}/>
+    </div>
+   
    </div>
         </>
     )

@@ -28,7 +28,7 @@ const GestionPuestos: React.FC<GestionPuestosProps> = ({ id_feria }) => {
     const fetchPuestos = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('http://localhost:5000/api/supervisor/puestos', {
+        const response = await axios.get(`http://localhost:5000/api/supervisor/puestos/${id_feria}`, {
           params: { id_feria },
         });
         setPuestos(response.data);
