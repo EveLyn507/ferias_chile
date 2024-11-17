@@ -48,16 +48,28 @@ export const LoginHome = () => {
                 </TabList>
 
                 <TabPanel>
-                    <LoginEncargado />
+                    <div className="form-card">
+                        <LoginEncargado />
+                        <button className="switch-form-button">¿No tienes cuenta? Regístrate</button>
+                    </div>
                 </TabPanel>
                 <TabPanel>
-                    <LoginFeriante />
+                    <div className="form-card">
+                        <LoginFeriante />
+                        <button className="switch-form-button">¿No tienes cuenta? Regístrate</button>
+                    </div>
                 </TabPanel>
                 <TabPanel>
-                    <LoginMunicipal />
+                    <div className="form-card">
+                        <LoginMunicipal />
+                        <button className="switch-form-button">¿No tienes cuenta? Regístrate</button>
+                    </div>
                 </TabPanel>
                 <TabPanel>
-                    <Recuperacion />
+                    <div className="form-card">
+                        <Recuperacion />
+                        <button className="switch-form-button">Volver al login</button>
+                    </div>
                 </TabPanel>
             </Tabs>
         </div>

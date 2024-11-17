@@ -21,6 +21,7 @@
 }
 
 .card {
+  color: #000000;
   width: 400px;
   padding: 20px;
   background-color: #ffffff;
@@ -86,27 +87,45 @@
   position: relative;
 }
 
-/* Estilo del botón circular */
-.circular-button {
+.button-container {
   position: absolute;
   bottom: 15px;
   right: 15px;
+  display: flex;
+  gap: 10px; /* Espacio entre botones */
+  flex-wrap: wrap; /* Permite que los botones pasen a la siguiente línea si no hay espacio horizontal */
+}
+
+.circular-button {
   width: 50px;
   height: 50px;
-  background-color:  rgb(4, 28, 76);
+  background-color: rgb(4, 28, 76);
   color: white;
   text-align: center;
   line-height: 50px;
   font-weight: bold;
   border-radius: 50%;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: background-color 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease, transform 0.1s ease;
   text-decoration: none;
+  cursor: pointer;
 }
 
 .circular-button:hover {
   background-color: #e07500;
 }
+
+.circular-button:focus {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+  background-color: #e07500;
+}
+
+.circular-button:active {
+  transform: scale(0.95);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
 
 /* Estilo para las secciones dentro del card */
 .card-section {

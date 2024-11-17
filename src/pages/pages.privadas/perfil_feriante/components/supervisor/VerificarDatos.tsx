@@ -21,14 +21,22 @@ const VerificarDatos: React.FC<VerificarDatosProps> = ({ id_feria }) => {
     const fetchFeriantes = async () => {
       try {
         setCargando(true);
-        const response = await axios.get('http://localhost:5000/api/supervisor/feriantes-activos', {
+        const response = await axios.get(`http://localhost:5000/api/supervisor/feriantes-activos/${id_feria}`, {
           params: { id_feria },
         });
-        setFeriantes(response.data);
-        setError(null);
-      } catch (error) {
-        console.error('Error al obtener la lista de feriantes activos:', error);
-        setError('Error al obtener la lista de feriantes activos.');
+
+        if (response.data.length === 0) {
+          setError('No se encontraron feriantes activos para esta feria.');
+        } else {
+          setFeriantes(response.data);
+          setError(null);
+        }
+      } catch (error: any) {
+        if (error.response && error.response.status === 404) {
+          setError(error.response.data.message); // Mensaje personalizado desde el backend.
+        } else {
+          setError('Error al obtener la lista de feriantes activos.');
+        }
       } finally {
         setCargando(false);
       }

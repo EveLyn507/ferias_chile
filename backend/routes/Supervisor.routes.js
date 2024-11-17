@@ -36,7 +36,7 @@ router.get('/feria/mapa', (req, res) => {
 });
 
 // Obtener la lista de feriantes activos en las ferias
-router.get('/feriantes-activos', (req, res) => {
+router.get('/feriantes-activos/:id_feria', (req, res) => {
     const pool = req.pool;
     obtenerFeriantesActivos(req, res, pool);
 });

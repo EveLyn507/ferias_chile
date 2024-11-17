@@ -5,8 +5,6 @@ import './cards_feed.css';
 
 export const CardFerias = ({ ferias }: FeriasProps) => {
   const semana = ['none', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
-  
-console.log(ferias);
 
   return (
     <div className="card-container">
@@ -25,13 +23,17 @@ console.log(ferias);
                 value: (
                   <div className="card-section">
                     <strong>Horarios:</strong>
-                    <ul>
-                      {feria.horarios.map((horario, index) => (
-                        <li key={index}>
-                          {semana[horario.id_dia]}: {horario.hora_inicio} - {horario.hora_termino}
-                        </li>
-                      ))}
-                    </ul>
+                    {feria.horarios?.length > 0 ? (
+                      <ul>
+                        {feria.horarios.map((horario, index) => (
+                          <li key={index}>
+                            {semana[horario.id_dia]}: {horario.hora_inicio} - {horario.hora_termino}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p>No hay horarios disponibles</p>
+                    )}
                   </div>
                 ),
               },
@@ -39,32 +41,36 @@ console.log(ferias);
                 label: "Siguientes ferias",
                 value: (
                   <div className="card-section">
-           
-                    <ul>
-                      {feria.actividades.map((actividad) => (
-                        <li key={actividad.id_actividad_feria}>
-                          Fecha: {new Date(actividad.fecha).toLocaleDateString('es-ES')}
-                          <Link
-                to={`/feria/${feria.id_feria}/${feria.nombre_feria}/${actividad.fecha}`}
-    
-              >
-                Ver Puestos
-              </Link>
-                        </li>
-                        
-                      ))}
-                    </ul>
+                    {feria.actividades?.length > 0 ? (
+                      <ul>
+                        {feria.actividades.map((actividad) => (
+                          <li key={actividad.id_actividad_feria}>
+                            Fecha: {new Date(actividad.fecha).toLocaleDateString('es-ES')}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p>No hay actividades disponibles</p>
+                    )}
                   </div>
                 ),
               },
             ]}
             actions={() => (
-              <Link
-                to={`/feria/${feria.id_feria}/${feria.nombre_feria}/${feria.actividades[0]?.fecha}`}
-                className="circular-button"
-              >
-                Ver Puestos
-              </Link>
+              <div className="button-container">
+                {feria.actividades?.map((actividad) => (
+                  <Link
+                    key={actividad.id_actividad_feria}
+                    to={`/feria/${feria.id_feria}/${feria.nombre_feria}/${actividad.fecha}`}
+                    className="circular-button"
+                  >
+                    {new Date(actividad.fecha).toLocaleDateString('es-ES', {
+                      day: '2-digit',
+                      month: 'short', // "short" muestra el nombre abreviado del mes (por ejemplo, "Nov" en lugar de "Noviembre")
+                    })}
+                  </Link>
+                ))}
+              </div>
             )}
           />
         </div>
