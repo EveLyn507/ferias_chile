@@ -1,16 +1,8 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { Rect, Text, Image as KonvaImage, Layer } from 'react-konva';
 import { PlanoItemElement } from '../models/vistaplanoModels';
+import { PuestosLayerProps } from '../models/canvasModels';
 
-interface PuestosLayerProps {
-  puestos: PlanoItemElement[];
-  setPuestos: React.Dispatch<React.SetStateAction<PlanoItemElement[]>>;
-  isStatic: boolean;
-  image: HTMLImageElement | null;
-  onPuestoClick: (item: PlanoItemElement) => void;
-  hoveredRect: PlanoItemElement | null;
-  setHoveredRect: React.Dispatch<React.SetStateAction<PlanoItemElement | null>>;
-}
 
 const PuestosLayer: React.FC<PuestosLayerProps> = ({
   puestos,

@@ -5,7 +5,12 @@ DROP FUNCTION IF EXISTS obtener_ferias_encargado(INTEGER);
 DROP FUNCTION IF EXISTS insertar_solicitud_apertura(CHARACTER VARYING, CHARACTER VARYING, INTEGER, CHARACTER VARYING);
 DROP FUNCTION IF EXISTS obtener_horarios_ferias_encargado( integer[]);
 DROP FUNCTION IF EXISTS obtener_horarios_ferias_feedFerias( integer[]);
-DROP FUNCTION IF EXISTS obtener_actividades_feria( integer[]);
+DROP FUNCTION IF EXISTS public.get_plano_elements( integer);
+DROP FUNCTION IF EXISTS public.insertar_solicitud_apertura( integer, integer);
+DROP FUNCTION IF EXISTS public.obtener_ferias_paginado( integer, integer , integer , integer);
+DROP FUNCTION IF EXISTS public.obtener_puestos_actividad( CHARACTER VARYING, DATE);
+DROP FUNCTION IF EXISTS public.traer_semana_actividad_feria( integer);
+
 
 -- FUNCIONES PARA EL ENCARGADOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 
@@ -311,6 +316,8 @@ END;
 $$ LANGUAGE plpgsql;
 
 
+
+
 CREATE OR REPLACE FUNCTION obtener_puestos_actividad(func_nombre_f CHARACTER VARYING , func_fecha DATE )
 RETURNS TABLE (
 id_feria INTEGER,
@@ -323,7 +330,8 @@ hora_inicio TIME WITHOUT TIME ZONE,
 hora_termino TIME WITHOUT TIME ZONE,
 id_arriendo_puesto INTEGER,
 id_estado_arriendo INTEGER,
-numero INTEGER
+numero INTEGER,
+precio INTEGER
 
 ) AS $$
 
@@ -340,7 +348,8 @@ dpf.hora_inicio,
 dpf.hora_termino,
 ap.id_arriendo_puesto,
 ap.id_estado_arriendo,
-p.numero
+p.numero,
+p.precio
 
 from feria f
 
@@ -353,7 +362,6 @@ order by ap.id_puesto;
 
 END;
 $$ LANGUAGE plpgsql; 
-
 
 --FIN FUNCIONES FEED DE FERIASSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
 

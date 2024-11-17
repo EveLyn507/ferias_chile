@@ -1,28 +1,27 @@
 import {  useNavigate } from "react-router-dom";
-import { acPuestoProps, ActividadPuesto,} from "../../../../models/interfaces";
 import { Card } from "../../../../components/card";
+import {  arriendo, arriendosListProp } from "./mapa/mapaModel";
 
 
 
-export const Card_puestos = ({ puestos }: acPuestoProps) => {
-   console.log(puestos)
+export const Card_arriendos = ({ arriendos }: arriendosListProp) => {
+
     const navigate = useNavigate();
-    const handleContratarClick = (puesto: ActividadPuesto) => {
-        // Navega a /pagosss y pasa el puesto seleccionado en el estado
-        navigate("/pagosss", { state: { puesto } });
+    const handleContratarClick = (arriendo: arriendo) => {
+        // Navega a /pagosss y pasa el arriendo seleccionado en el estado
+        navigate("/pagosss", { state: { arriendo } });
       };
 
       return (
         <Card
-          items={puestos}
-          renderFields={(puesto) => [
-            { label: "numero puesto", value: puesto.numero },
-            { label: "hora_inicio", value: puesto.hora_inicio },
-            { label: "hora_termino", value: puesto.hora_termino },
+          items={arriendos}
+          renderFields={(arriendo) => [
+            { label: "numero arriendo", value: arriendo.numero },
+            { label: "precio", value: arriendo.precio },
           ]}
-          actions={(puesto) => (
+          actions={(arriendo) => (
             <>
-                <button onClick={() => handleContratarClick(puesto)}>   Contratar </button> 
+                <button onClick={() => handleContratarClick(arriendo)}>   Contratar </button> 
             </>
           )}
         />

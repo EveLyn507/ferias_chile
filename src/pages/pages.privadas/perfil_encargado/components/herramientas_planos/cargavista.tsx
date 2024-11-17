@@ -1,28 +1,28 @@
-import { useEffect } from 'react';
 import Vista from './vistaplano';  // Asegúrate de que la ruta sea correcta
 
 import { DeletedItem, plano, PlanoItemElement } from './models/vistaplanoModels';
-import WebSocketService from './services/webSoket';
+import userWebSocketService from '../../../../models/webSoket';
+;
 
 // Crear una instancia única del WebSocketService fuera del componente
-const webSocketService = new WebSocketService();
+
 
 const Vistaplano = () => {
-
+  const WebSocketService = userWebSocketService.getInstance();
   const savePlanoItem = async (selectedItem: PlanoItemElement) =>  {
     console.log(selectedItem);
-    webSocketService.sendMessage('UpdatePuesto', selectedItem);
+    WebSocketService.sendMessage('UpdatePuesto', selectedItem);
 
     // Escuchar un mensaje del servidor
-    webSocketService.escucharMessage('datos actualizados');
+    WebSocketService.escucharMessage('datos actualizados');
   };
 
   const CreateNewItemElement = (newItem: PlanoItemElement): Promise<PlanoItemElement> => {
-    webSocketService.sendMessage('CreateNewItemElement', newItem);
+    WebSocketService.sendMessage('CreateNewItemElement', newItem);
 
     // Escuchar el evento desde el servidor con una promesa
     return new Promise((resolve, reject) => {
-      webSocketService.RecibeData("ItemCreated", (data) => {
+      WebSocketService.RecibeData("ItemCreated", (data) => {
 
         resolve(data);
 
@@ -34,20 +34,14 @@ const Vistaplano = () => {
   };
 
   const UpdatePlano = async (newPlano : plano) => {
-    webSocketService.sendMessage('UpdatePlano' , newPlano)
+    WebSocketService.sendMessage('UpdatePlano' , newPlano)
   }
 
   const DeleteItemPlano = async (deletedItem : DeletedItem) => {
-    webSocketService.sendMessage('DeleteItem' , deletedItem)
+    WebSocketService.sendMessage('DeleteItem' , deletedItem)
   }
 
   // Conecta el socket al montar y lo desconecta al desmontar
-  useEffect(() => {
-    webSocketService.connect();
-    return () => {
-      webSocketService.disconnect();
-    };
-  }, []);
 
   return (
     <div>

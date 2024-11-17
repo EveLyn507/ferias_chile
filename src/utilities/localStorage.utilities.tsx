@@ -11,6 +11,10 @@ export const clearLocalStorage = (key : string) => {
 }
 
 
+export const clearSessionStorage = (key : string) => {
+    sessionStorage.removeItem(key)
+}
+
 export const formatFecha = async () =>{
     
 }

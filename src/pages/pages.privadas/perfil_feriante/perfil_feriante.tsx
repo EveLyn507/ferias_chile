@@ -11,12 +11,12 @@ import { Link } from 'react-router-dom';
 import { setUserEmail } from '../../../redux/actions/userActions';
 import axios from 'axios';
 import './feriante.css';
-
+import FTEWebSocketService from '../../models/webSoket';
 
 const PerfilFeriantes: React.FC = () => {
   const userMail = useSelector((state: AppStore) => state.user.email); // Obtener correo del estado global
   const dispatch = useDispatch();
-
+  const FTEwebSocketService = FTEWebSocketService.getInstance();
   const [fotoPerfil, setFotoPerfil] = useState<string>('');
   const [nombre, setNombre] = useState<string>('');
   const [apellido, setApellido] = useState<string>('');
@@ -49,6 +49,12 @@ const PerfilFeriantes: React.FC = () => {
       console.error('Error al cambiar el estado del perfil:', error);
     }
   };
+
+
+  useEffect(() => {
+    FTEwebSocketService.connect()
+  })
+
 
   useEffect(() => {
     const cargarEstadoPerfil = async () => {
