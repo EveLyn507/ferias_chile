@@ -1,9 +1,13 @@
 // socketManager.js
 const { verifyToken } = require('../auth/verifyToken');
-const { UpdatePuesto ,CreateNewItemElement  ,UpdatePlano ,DeleteItemPlano} = require('./controllers/wsEnfController');
+const { UpdatePuesto ,CreateNewItemElement  ,UpdatePlano ,DeleteItemPlano ,} = require('./controllers/wsEnfController');
 const { getArriendosFToday} = require('./controllers/FeedFeriasController');
+const { commitTransaction , createTransaction} = require('./controllers/VentasController');
 
 const pool = require('../auth/pool');
+
+
+
 
 const activeSockets = {};
 
@@ -33,8 +37,45 @@ function setupSocketServer(io) {
       socket.on('UpdatePlano', (UpdatedPlano) => UpdatePlano(socket ,pool, UpdatedPlano));
       socket.on('DeleteItem', (deletedItem) => DeleteItemPlano(socket ,pool, deletedItem));
       socket.on('TodayFeriaElements', (params) => getArriendosFToday(socket ,pool, params));
+      socket.on('CreateTransaction', (params) => createTransaction(io, socket ,pool, params));
+      socket.on('confirm_Transaction', (params) => commitTransaction(io, socket ,pool, params));
 
-      socket.emit('message', 'Conectado con el servidor');
+      //SALAS
+        // Unirse o crear una sala con un nombre dinámico
+      socket.on('join_room', (roomName) => {
+        const {id_feria} = roomName.params
+        socket.join(roomName);
+        console.log(`User ${socket.id} joined room: ${id_feria}`);
+        
+        // Notificar al resto de usuarios en la sala
+        socket.to(roomName).emit('message', `User ${socket.id} has joined the room.`);
+      });
+
+
+      // Enviar mensaje a una sala específica
+      socket.on('send_message_toRoom', ({ room, message }) => {
+        io.to(room).emit('roomMSJ', message); // Envía el mensaje a todos en la sala
+      });
+
+      // Salir de una sala
+      socket.on('leave_room', (roomName) => {
+        socket.leave(roomName);
+        console.log(`User ${socket.id} left room: ${roomName}`); 
+
+      });
+
+
+      socket.on('serverMSJ' , (params) =>{
+        const {id_feria , msj } = params.params
+        
+        const size =  countClientsInRoom(id_feria)
+        if(size !== 0 ) {
+          io.to(id_feria).emit('room_message', { id_feria, msj });
+          console.log(`Server emitted to room: ${id_feria}`);
+        }   
+
+      })
+   
 
       socket.on('disconnect', () => {
         console.log(`Cliente ${socket.id} se ha desconectado`);
@@ -63,6 +104,5 @@ function setupSocketServer(io) {
     });
   });
 }
-
 
 module.exports = setupSocketServer;

@@ -43,7 +43,7 @@ export const View_detalle_feria = () => {
   }, []); // Este effect solo se ejecuta una vez cuando el componente se monta
 
     const carga = async() => {
-
+       WebSocketService.sendMessage('join_room' ,{id_feria})
 
         WebSocketService.sendMessage('TodayFeriaElements', {idFeria,nombre_feria, fecha });
 
@@ -67,6 +67,18 @@ export const View_detalle_feria = () => {
         await carga()
       }
       espera()
+
+
+      WebSocketService.RecibeData('roomMSJ', (updated: arriendo) => {
+        const updatedArriendos = arriendos.map((arriendo) =>
+          arriendo.id_arriendo_puesto === updated.id_arriendo_puesto ? { ...arriendo, ...updated } : arriendo
+        );
+      
+        setArriendos(updatedArriendos); // Asume que `setArriendos` es la función para actualizar el estado
+      });
+      
+
+      return () => WebSocketService.sendMessage('leave_room' , {idFeria})
     
     }, []);  // El segundo argumento vacío asegura que este effect solo se ejecuta una vez al montar el componente
     

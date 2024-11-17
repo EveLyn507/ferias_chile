@@ -58,5 +58,7 @@ const io = socketIo(server, {
   }
 });
 
+
 // Llamar a la función que maneja las conexiones de Socket.IO
 setupSocketServer(io);
+

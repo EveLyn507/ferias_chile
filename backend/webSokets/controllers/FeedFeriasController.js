@@ -69,4 +69,6 @@ const getArriendosFToday = async (socket , pool, params) => {
 
 }
 
+
+
   module.exports = { getArriendosFToday}
