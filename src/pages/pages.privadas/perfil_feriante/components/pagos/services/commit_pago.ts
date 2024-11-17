@@ -1,11 +1,11 @@
-export const confirmPayment = async (token_ws : string , id_arriendo_puesto : number ) => {
+export const confirmPayment = async (token_ws : string , id_arriendo_puesto : number , id_puesto : number) => {
     try {
       const response = await fetch('http://localhost:5000/api/webpay/commit', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ token_ws  ,id_arriendo_puesto}), // Enviar el token en el body
+        body: JSON.stringify({ token_ws  ,id_arriendo_puesto , id_puesto}), // Enviar el token en el body
       });
   
       if (response.ok) {

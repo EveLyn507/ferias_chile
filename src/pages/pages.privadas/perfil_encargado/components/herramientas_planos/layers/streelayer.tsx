@@ -4,6 +4,7 @@ import React, { useRef, useState } from 'react';
 import { Rect, Circle, Layer } from 'react-konva';
 import { PlanoItemElement } from '../models/vistaplanoModels';
 import { StreetPageProps } from '../models/canvasModels';
+import DistanceLine from './distanceLine';
 
 
 
@@ -11,6 +12,10 @@ const StreetsLayer: React.FC<StreetPageProps> = ({
   calles,
   onStreetClick,
   isStatic = false,
+  isAltPressed,
+  hoveredItem,
+  selectedItem,
+  setHoveredItem
 }) => {
   const layerRef = useRef(null);
 
@@ -80,6 +85,8 @@ const StreetsLayer: React.FC<StreetPageProps> = ({
               draggable={!isStatic} // Solo se puede mover si no es estático
               onDragMove={(e) => handleDragStreet(e, street, index)}
               onDragStart={() =>   setFocusedStreet(street) }
+              onMouseEnter={() => setHoveredItem(street)}
+              onMouseLeave={() => setHoveredItem(null)}
               onClick={() => {
                 if (!isStatic) {
                   setFocusedStreet(street); // Establece el foco al hacer clic en la calle
@@ -87,6 +94,7 @@ const StreetsLayer: React.FC<StreetPageProps> = ({
                 }
               }}
             />
+            {isAltPressed && hoveredItem && selectedItem && <DistanceLine itemA={selectedItem} itemB={hoveredItem} />}
 
             {/* Puntos de control para redimensionar */}
             {!isStatic && focusedStreet?.id_elemento === street.id_elemento && (

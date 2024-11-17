@@ -11,6 +11,9 @@ export interface CanvasProps {
     plano: plano 
     onChangePlano: (newPlano : plano) => void;
     isStatic?: boolean;
+    selectedItem : PlanoItemElement | null
+    setSelectedItem : (item : PlanoItemElement) => void
+
 
   }
 
@@ -21,8 +24,11 @@ export interface PuestosLayerProps {
   isStatic: boolean;
   image: HTMLImageElement | null;
   onPuestoClick: (item: PlanoItemElement) => void;
-  hoveredRect: PlanoItemElement | null;
-  setHoveredRect: React.Dispatch<React.SetStateAction<PlanoItemElement | null>>;
+  hoveredItem: PlanoItemElement | null;
+  setHoveredItem: (item: PlanoItemElement | null) => void
+  isAltPressed: boolean
+  selectedItem: PlanoItemElement | null
+
 }
 
 
@@ -30,6 +36,11 @@ export interface StreetPageProps {
   calles: PlanoItemElement[]; // Arreglo de calles
   onStreetClick: (item: PlanoItemElement) => void; // Para detectar item click
   isStatic?: boolean; // Indica si las calles son estáticas o no (opcional, valor por defecto es false)
+  hoveredItem: PlanoItemElement | null;
+  setHoveredItem: (item: PlanoItemElement | null) => void
+  isAltPressed : boolean;
+  selectedItem: PlanoItemElement | null
+  
 }
 
 

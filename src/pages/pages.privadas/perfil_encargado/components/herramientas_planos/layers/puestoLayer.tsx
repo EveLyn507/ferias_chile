@@ -2,6 +2,7 @@ import React, { useCallback, useRef, useState } from 'react';
 import { Rect, Text, Image as KonvaImage, Layer } from 'react-konva';
 import { PlanoItemElement } from '../models/vistaplanoModels';
 import { PuestosLayerProps } from '../models/canvasModels';
+import DistanceLine from './distanceLine';
 
 
 const PuestosLayer: React.FC<PuestosLayerProps> = ({
@@ -10,12 +11,13 @@ const PuestosLayer: React.FC<PuestosLayerProps> = ({
   isStatic,
   image,
   onPuestoClick,
-  hoveredRect,
-  setHoveredRect,
+  hoveredItem,
+  setHoveredItem,
+  isAltPressed,
+  selectedItem
 }) => {
   const layerRef = useRef(null);
   const [focusedPuesto, setFocusedPuesto] = useState<PlanoItemElement | null>(null);
-
   // Actualizar el puesto anterior al cambiar `focusedPuesto`
 
   const calculateDimensionsInMeters = useCallback((width: number, height: number) => {
@@ -38,6 +40,8 @@ const PuestosLayer: React.FC<PuestosLayerProps> = ({
               width={Puesto.dimenciones.width}
               height={Puesto.dimenciones.height}
               draggable={!isStatic}
+              onMouseEnter={() => setHoveredItem(Puesto)}
+              onMouseLeave={() => setHoveredItem(null)}
               onClick={() => {
                 if (!isStatic) {
                   setFocusedPuesto(Puesto);
@@ -45,6 +49,7 @@ const PuestosLayer: React.FC<PuestosLayerProps> = ({
                 }
               }}
               onDragStart={() => setFocusedPuesto(Puesto)}
+       
               onDragMove={(e) => {
                 if (!isStatic && focusedPuesto?.id_elemento === Puesto.id_elemento) {
                   const updatedpuestos = puestos.map((r) =>
@@ -57,6 +62,9 @@ const PuestosLayer: React.FC<PuestosLayerProps> = ({
                 }
               }}
             />
+
+            {isAltPressed && hoveredItem && selectedItem && <DistanceLine itemA={selectedItem} itemB={hoveredItem} />}
+
             <Text
               x={Puesto.dimenciones.x}
               y={Puesto.dimenciones.y - 20}
@@ -64,16 +72,16 @@ const PuestosLayer: React.FC<PuestosLayerProps> = ({
               fontSize={12}
               fill="black"
             />
+            
             {!isStatic && (
               <Text
                 x={Puesto.dimenciones.x}
                 y={Puesto.dimenciones.y - 40}
-                text={`Click para editar: ${metersWidth.toFixed(2)}m x ${metersHeight.toFixed(2)}m`}
+                text={` ${metersWidth.toFixed(2)}m x ${metersHeight.toFixed(2)}m`}
                 fontSize={12}
                 fill="black"
-                visible={hoveredRect?.id_elemento === Puesto.id_elemento}
-                onMouseEnter={() => setHoveredRect(Puesto)}
-                onMouseLeave={() => setHoveredRect(null)}
+                visible={true}
+  
               />
             )}
             {!isStatic && focusedPuesto?.id_elemento === Puesto.id_elemento && (

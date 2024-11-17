@@ -272,6 +272,9 @@ import { vistaProps } from './models/canvasModels';
               plano={plano}
               onChangePlano={setNewDimPlano}
               calles={calles}
+              selectedItem={selectedItem}
+              setSelectedItem={setSelectedItem}
+
              
             />
           </div>

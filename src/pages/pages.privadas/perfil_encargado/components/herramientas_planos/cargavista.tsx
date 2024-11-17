@@ -1,7 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import Vista from './vistaplano';  // Asegúrate de que la ruta sea correcta
 
 import { DeletedItem, plano, PlanoItemElement } from './models/vistaplanoModels';
 import userWebSocketService from '../../../../models/webSoket';
+import { useEffect } from 'react';
 ;
 
 // Crear una instancia única del WebSocketService fuera del componente
@@ -9,6 +11,16 @@ import userWebSocketService from '../../../../models/webSoket';
 
 const Vistaplano = () => {
   const WebSocketService = userWebSocketService.getInstance();
+
+  useEffect(() => {
+    const isSocketConnected = sessionStorage.getItem('socketConnected');
+
+    if (!isSocketConnected || WebSocketService.socket === null) {
+      WebSocketService.connect();
+      sessionStorage.setItem('socketConnected', 'true');  // Marca como conectado
+    }
+  }, []); // Este effect solo se
+
   const savePlanoItem = async (selectedItem: PlanoItemElement) =>  {
     console.log(selectedItem);
     WebSocketService.sendMessage('UpdatePuesto', selectedItem);

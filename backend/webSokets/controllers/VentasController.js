@@ -10,14 +10,18 @@ WebpayPlus.Transaction.client = axiosInstance;
 
 
 
+const { emitUpdateArriendo } = require('./roomFunction')
+
+
 const cambiar_estado_arriendo = async (pool , id_arriendo_puesto, disponible ) => {
 const restult = await pool.query (`
   UPDATE arriendo_puesto 
   SET id_estado_arriendo = $2
-  WHERE id_arriendo_puesto = $1;
+  WHERE id_arriendo_puesto = $1 
+  RETURNING *;
   
   `, [id_arriendo_puesto, disponible])
-  return restult
+  return restult.rows[0]
 }
 
 const updateTransactionStatus = async (buyOrder, status, pool) => {
@@ -128,14 +132,10 @@ const saveTransactionToDatabase = async ( pool, id_user_fte, id_arriendo_puesto 
 };
 
 
-
-
-
-
-
 // Función para crear la transacción
-const createTransaction = async (req, res, pool) => {
-  const { puesto, mail , id_user_fte} = req.body; // Obtener datos del POST
+const createTransaction = async (io,socket, pool, params) => {
+
+  const { puesto, mail , id_user_fte } = params.params; // Obtener datos del POST
   const returnUrl = `http://localhost:5173/pagos/estado`; // URL de retorno
   const emailFragment = mail.split('@')[0];
   const timestamp = new Date().getTime();  // Obtener el timestamp actual
@@ -143,9 +143,14 @@ const createTransaction = async (req, res, pool) => {
   const buyOrder = `order-${puesto.id_puesto}-${timestamp}-${emailFragment}`;
   const amount = puesto.precio
   const id_arriendo_puesto = puesto.id_arriendo_puesto
+
   try {
     // Crear la transacción con Transbank
-    await cambiar_estado_arriendo(pool , id_arriendo_puesto, 2)
+    const  estado = await cambiar_estado_arriendo(pool , id_arriendo_puesto, 2)
+    //cambiar el estado en la pagina
+
+    emitUpdateArriendo(io,puesto.id_feria , estado)
+
     const response = await (new WebpayPlus.Transaction()).create(buyOrder, sessionId, amount, returnUrl);
     const { token, url } = response;
 
@@ -156,10 +161,11 @@ const createTransaction = async (req, res, pool) => {
 
     } ) 
     // Responder con la URL y el token
-    res.json({ token, url  });
+    socket.emit('opentbk', {token , url})
   } catch (error) {
     console.error('Error creando la transacción:', error);
-    res.status(500).json({ error: error.message });
+    const nulo = null
+    socket.emit('opentbk', {nulo})
   }
 };
 
@@ -167,25 +173,29 @@ const createTransaction = async (req, res, pool) => {
 
 
 // Función para confirmar el commit -- para el front
-const commitTransaction = async (req, res, pool) => {
-  const { token_ws , id_arriendo_puesto} = req.body;
+const commitTransaction = async ( io,socket,pool ,params) => {
+  console.log(params);
+  
+  const { token , id_arriendo_puesto , id_feria} = params.params
   try {
-    const response = await (new WebpayPlus.Transaction()).commit(token_ws);
+    const response = await (new WebpayPlus.Transaction()).commit(token);
  
     
     if (response.status === 'AUTHORIZED') {
       // Actualizar la transacción en la base de datos como "completada"
       await updateTransactionStatus(response.buy_order, 2, pool);
-      await cambiar_estado_arriendo(pool , id_arriendo_puesto, 3)
-      res.json(response);  // Responder con la respuesta exitosa de la transacción
+      const estado = await cambiar_estado_arriendo(pool , id_arriendo_puesto, 3)
+      emitUpdateArriendo( io,id_feria, estado)
+      socket.emit('comittbk' ,response )
     } else {
-      await updateTransactionStatus(response.buy_order, 3,pool);
-       await cambiar_estado_arriendo(pool ,id_arriendo_puesto, 1)    
-      res.status(400).json(response);
+     await updateTransactionStatus(response.buy_order, 3,pool);
+     const estado = await cambiar_estado_arriendo(pool ,id_arriendo_puesto, 1)    
+     emitUpdateArriendo( io,id_feria, estado)
+      socket.emit('comittbk' ,response )
     }
   } catch (error) {
     console.error('Error confirmando la transacción:', error);
-    res.status(500).json({ error: 'Error al confirmar la transacción' });
+   
   }
 };
 
