@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
@@ -84,17 +85,18 @@ const EstadoFeria: React.FC<EstadoFeriaProps> = ({ id_feria }) => {
   return (
     <div className="estado-feria">
       <h2>Estado de Ocupación de la Feria</h2>
-      {feria && (
-        <div>
-          <h3>{feria.nombre}</h3>
-          <p><strong>Comuna:</strong> {feria.nombre_comuna}</p>
-          <p><strong>Región:</strong> {feria.nombre_region}</p>
-          <p><strong>Estado:</strong> {feria.estado_feria}</p>
-          <p><strong>Ocupación:</strong> {feria.puestos_ocupados}/{feria.capacidad_total} puestos ocupados</p>
-        </div>
-      ) : (
-        <p>Cargando datos de la feria...</p>
-      )}
+      {feria ? (
+  <div>
+    <h3>{feria.nombre}</h3>
+    <p><strong>Comuna:</strong> {feria.nombre_comuna}</p>
+    <p><strong>Región:</strong> {feria.nombre_region}</p>
+    <p><strong>Estado:</strong> {feria.estado_feria}</p>
+    <p><strong>Ocupación:</strong> {feria.puestos_ocupados}/{feria.capacidad_total} puestos ocupados</p>
+  </div>
+) : (
+  <p>Cargando datos de la feria...</p>
+)}
+
 
       <h4>Horarios:</h4>
       {horarios ? (

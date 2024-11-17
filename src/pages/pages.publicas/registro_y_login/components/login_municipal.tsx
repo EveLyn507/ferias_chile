@@ -8,6 +8,11 @@ const LoginMunicipal = () => {
 
   const validarMail = (mail: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail);
 
+
+
+
+
+  
   const handleLogin = async () => {
     setError('');
 
