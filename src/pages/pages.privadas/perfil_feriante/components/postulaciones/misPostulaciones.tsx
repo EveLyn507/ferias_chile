@@ -9,20 +9,21 @@ export const MisPostulaciones = () => {
 
 const id_user_fte = useSelector((store : AppStore) => store.user.id_user )
 const [misPost , setMisPost] = useState<Mispostulacion[]>([])
+console.log(misPost);
 
 
-const carga = async() => {
-  MiPostuService.LoadMisPostulaciones(id_user_fte)
-  const subscribe = MiPostuService.postulacion$.subscribe((postulacion) => {
-    setMisPost(postulacion)
-  }) 
-  return () => subscribe.unsubscribe()
-}
 //carga y setea los post en la variable  misPost
 useEffect(() =>{
-  carga()
+  MiPostuService.LoadMisPostulaciones(id_user_fte)
+  const carga = async() => {
+    const subscribe = MiPostuService.postulacion$.subscribe((postulacion) => {
+      setMisPost(postulacion)
+    }) 
+    return () => subscribe.unsubscribe()
+  }
+ carga()
 
-})
+},[])
 
 
   return (

@@ -8,6 +8,7 @@ const {
     obtenerFeriantesActivos,
     getFeriantesPendientes,
     registrarPago,
+    obtenerHorario,
 } = require('../controllers/SupervisorController');
 
 // Obtener el estado de las ferias
@@ -17,7 +18,7 @@ router.get('/estado-feria', (req, res) => {
 });
 
 // Obtener el listado de puestos para gestionar el estado
-router.get('/feria/puestos', (req, res) => {
+router.get('/puestos/:id_feria', (req, res) => {
     const pool = req.pool;
     getPuestos(req, res, pool);
 });
@@ -45,6 +46,13 @@ router.get('/feriantes-pendientes', (req, res) => {
   const pool = req.pool;
   getFeriantesPendientes(req, res, pool);
 });
+
+// Obtener HORARIOS DE LOS SUPERVISORES
+router.get('/obtener-horario/', (req, res) => {
+    const pool = req.pool;
+    obtenerHorario(req, res, pool);
+  });
+  
 
 // Registrar el pago físico de un feriante
 router.put('/feriantes/:id_user_fte/pago', (req, res) => {

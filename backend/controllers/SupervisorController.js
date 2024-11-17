@@ -1,12 +1,30 @@
-// Obtener el estado de la feria
 const obtenerEstadoFeria = async (req, res, pool) => {
+  const { id_feria } = req.query;
+  // Validar que id_feria es un número válido
+  if (!id_feria || isNaN(id_feria)) {
+    return res.status(400).json({ message: 'El id_feria debe ser un número válido' });
+  }
+
   try {
     const query = `
-      SELECT f.id_feria, ef.estado AS estado_feria
+      SELECT 
+        f.id_feria, 
+        f.nombre, 
+        c.comuna AS nombre_comuna, 
+        r.region AS nombre_region, 
+        ef.estado AS estado_feria
       FROM feria f
-      JOIN estado_feria ef ON f.id_estado = ef.id_estado;
+      JOIN estado_feria ef ON f.id_estado = ef.id_estado
+      JOIN comuna c ON c.id_comuna = f.id_comuna
+      JOIN region r ON r.id_region = c.id_region
+      WHERE f.id_feria = $1;
     `;
-    const result = await pool.query(query);
+
+    const result = await pool.query(query, [parseInt(id_feria, 10)]); // Asegurarse de pasar un entero
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'No se encontró una feria con el id proporcionado' });
+    }
+
     res.status(200).json(result.rows);
   } catch (error) {
     console.error('Error al obtener el estado de la feria:', error);
@@ -14,20 +32,70 @@ const obtenerEstadoFeria = async (req, res, pool) => {
   }
 };
 
+const obtenerHorario = async (req, res, pool) => {
+  const { id_feria } = req.query;
+  // Validar que id_feria es un número válido
+  if (!id_feria || isNaN(id_feria)) {
+    return res.status(400).json({ message: 'El id_feria debe ser un número válido' });
+  }
+
+  try {
+    const query = `
+      WITH horarios AS (
+        SELECT 
+          h.id_vacante,
+          json_agg(h) AS horario_empleado
+        FROM detalle_horario_empleado h
+        WHERE h.id_dia = $1  -- Si id_dia es la columna que debe usarse en lugar de id_feria
+        GROUP BY h.id_vacante
+      )
+      SELECT 
+        d.id_user_fte,
+        h.horario_empleado
+      FROM detalle_team_vacante d
+      LEFT JOIN horarios h ON d.id_vacante = h.id_vacante
+      WHERE d.id_feria = $1;  -- Filtramos también por id_feria en detalle_team_vacante
+    `;
+
+    // Pasamos id_feria como parámetro
+    const result = await pool.query(query, [parseInt(id_feria, 10)]); 
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'No se encontraron horarios para la feria con el id proporcionado' });
+    }
+
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error('Error al obtener los horarios:', error);  
+    res.status(500).json({ message: 'Error al obtener los horarios de la feria' });
+  }
+};
+
+
+
 // Obtener el listado de puestos para gestionar el estado (habilitar/bloquear)
 const getPuestos = async (req, res, pool) => {
   try {
+    const { id_feria } = req.params; // Obtener id_feria desde los parámetros de la ruta
+
+    if (!id_feria) {
+      return res.status(400).json({ message: 'El id_feria es requerido' });
+    }
+
     const puestos = await pool.query(`
       SELECT p.id_puesto, p.numero, ep.estado
       FROM puesto p
       JOIN estado_puesto ep ON p.id_estado_puesto = ep.id_estado_puesto
-    `);
+      WHERE p.id_feria = $1;
+    `, [id_feria]); // Pasar id_feria como parámetro
+
     res.status(200).json(puestos.rows);
   } catch (error) {
     console.error('Error al obtener puestos:', error);
     res.status(500).json({ message: 'Error al obtener puestos' });
   }
 };
+
 
 // Actualizar el estado de un puesto
 const togglePuestoEstado = async (req, res, pool) => {
@@ -136,5 +204,6 @@ module.exports = {
   togglePuestoEstado,
   getFeriantesPendientes,
   registrarPago,
-  aceptarPostulacion
+  aceptarPostulacion,
+  obtenerHorario
 };

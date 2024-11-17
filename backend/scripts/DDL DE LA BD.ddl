@@ -1,5 +1,5 @@
 -- Drop existing tables aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-
+DROP TABLE IF EXISTS elemento_plano CASCADE;
 DROP TABLE IF EXISTS dia_semana CASCADE;
 DROP TABLE IF EXISTS puesto_archivado CASCADE;
 DROP TABLE IF EXISTS arriendo_puesto CASCADE;
@@ -47,7 +47,10 @@ DROP TABLE IF EXISTS log_detalle_programa CASCADE;
 DROP TABLE IF EXISTS rol_empleado CASCADE;
 DROP TABLE IF EXISTS estado_solicitud CASCADE;
 DROP TABLE IF EXISTS estado_vacante CASCADE;
-
+DROP TABLE IF EXISTS estado_arriendo CASCADE;
+DROP TABLE IF EXISTS estado_contrato CASCADE;
+DROP TABLE IF EXISTS plano CASCADE;
+DROP TABLE IF EXISTS tipo_elemento CASCADE;
 
 CREATE TABLE actividad_feria (
     id_actividad_feria SERIAL NOT NULL,
@@ -368,7 +371,7 @@ CREATE TABLE puesto (
     descripcion      TEXT ,
     id_feria         INTEGER NOT NULL,
     id_estado_puesto INTEGER NOT NULL,
-    precio INTEGER NOT NULL
+    precio INTEGER 
 );
 
 ALTER TABLE puesto ADD CONSTRAINT puesto_pk PRIMARY KEY ( id_puesto );
@@ -377,7 +380,7 @@ CREATE TABLE estado_arriendo (
     id_estado_arriendo INTEGER,
     estado CHARACTER VARYING, 
     PRIMARY KEY(id_estado_arriendo)
-)
+);
 
 
 

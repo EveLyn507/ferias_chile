@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import axios from 'axios';
 import { AppStore } from '../../../redux/store';
 
 interface DatosPersonalesProps {
@@ -10,52 +11,96 @@ interface DatosPersonalesProps {
   setDatosPersonales: (datos: { nombre: string; apellido: string; telefono: string }) => void;
 }
 
-const DatosPersonales: React.FC<DatosPersonalesProps> = ({  nombre, apellido, telefono, setDatosPersonales }) => {
+const DatosPersonales: React.FC<DatosPersonalesProps> = ({ nombre, apellido, telefono, setDatosPersonales }) => {
   const id_user = useSelector((state: AppStore) => state.user.id_user);
   const [mensajeError, setMensajeError] = useState<string | null>(null);
   const [mensajeExito, setMensajeExito] = useState<string | null>(null);
+  const [datosLocales, setDatosLocales] = useState({
+    nombre: '',
+    apellido: '',
+    telefono: '',
+  });
 
+  // Validar teléfono
+  const validarTelefono = (telefono: string): boolean => /^[0-9]{7,15}$/.test(telefono);
+
+  // Sincronizar datos iniciales cuando se cargan
+  useEffect(() => {
+    setDatosLocales({
+      nombre,
+      apellido,
+      telefono,
+    });
+  }, [nombre, apellido, telefono]);
+
+  // Cargar datos personales
   useEffect(() => {
     const cargarDatosPersonales = async () => {
+      console.log('Enviando solicitud para cargar datos personales');
+      console.log('ID de usuario:', id_user);
+
       try {
-        const response = await fetch(`http://localhost:5000/api/cargar-datos-personales/${id_user}`);
-        if (response.ok) {
-          const data = await response.json();
-          setDatosPersonales({ nombre: data.nombre, apellido: data.apellido, telefono: data.telefono });
-        } else {
-          console.error('Error al cargar datos personales');
-        }
+        const response = await axios.get(`http://localhost:5000/api/cargar-datos-personales/${id_user}`);
+        console.log('Datos recibidos del servidor:', response.data);
+
+        setDatosPersonales({
+          nombre: response.data.nombre,
+          apellido: response.data.apellido,
+          telefono: response.data.telefono,
+        });
       } catch (error) {
         console.error('Error al cargar datos personales:', error);
+        setMensajeError('Error al cargar datos personales.');
       }
     };
 
-    if (id_user) { 
+    if (id_user) {
       cargarDatosPersonales();
+    } else {
+      console.error('ID de usuario no definido');
     }
-  }, [id_user, setDatosPersonales]);
+    // Solo depende de id_user para evitar múltiples llamadas
+  }, [id_user]);
 
-  const actualizarDatos = async () => {
-    try {
-      const response = await fetch('http://localhost:5000/api/actualizar-datos-personales', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ id_user, nombre, apellido, telefono }),
-      });
-
-      if (response.ok) {
-        setMensajeExito('Datos actualizados con éxito.');
-      } else {
-        setMensajeError('Error al actualizar los datos.');
-      }
-    } catch (error) {
-      setMensajeError('Error al conectar con el servidor.');
-    }
+  // Manejar cambios en el formulario
+  const manejarCambio = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setDatosLocales({
+      ...datosLocales,
+      [name]: value,
+    });
   };
 
-  
+  // Actualizar datos personales
+  const actualizarDatos = async () => {
+    setMensajeError(null);
+    setMensajeExito(null);
+
+    const { nombre, apellido, telefono } = datosLocales;
+
+    if (!nombre || !apellido || !telefono) {
+      setMensajeError('Todos los campos son obligatorios.');
+      return;
+    }
+
+    if (!validarTelefono(telefono)) {
+      setMensajeError('El teléfono debe tener entre 7 y 15 dígitos.');
+      return;
+    }
+
+    try {
+      await axios.post('http://localhost:5000/api/actualizar-datos-personales', {
+        id_user,
+        nombre,
+        apellido,
+        telefono,
+      });
+      setMensajeExito('Datos actualizados con éxito.');
+    } catch (error) {
+      console.error('Error al actualizar los datos:', error);
+      setMensajeError('Error al actualizar los datos.');
+    }
+  };
 
   return (
     <div>
@@ -64,14 +109,29 @@ const DatosPersonales: React.FC<DatosPersonalesProps> = ({  nombre, apellido, te
       {mensajeExito && <p style={{ color: 'green' }}>{mensajeExito}</p>}
 
       <label>Nombre:</label>
-      <input type="text" value={nombre} onChange={(e) => setDatosPersonales({ nombre: e.target.value, apellido, telefono })} />
-      
+      <input
+        type="text"
+        name="nombre"
+        value={datosLocales.nombre}
+        onChange={manejarCambio}
+      />
+
       <label>Apellido:</label>
-      <input type="text" value={apellido} onChange={(e) => setDatosPersonales({ nombre, apellido: e.target.value, telefono })} />
-      
+      <input
+        type="text"
+        name="apellido"
+        value={datosLocales.apellido}
+        onChange={manejarCambio}
+      />
+
       <label>Teléfono:</label>
-      <input type="text" value={telefono} onChange={(e) => setDatosPersonales({ nombre, apellido, telefono: e.target.value })} />
-      
+      <input
+        type="text"
+        name="telefono"
+        value={datosLocales.telefono}
+        onChange={manejarCambio}
+      />
+
       <button onClick={actualizarDatos}>Actualizar Datos</button>
     </div>
   );

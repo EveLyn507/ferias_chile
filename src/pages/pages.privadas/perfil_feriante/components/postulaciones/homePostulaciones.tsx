@@ -11,7 +11,20 @@ export const HomePostulaciones = () => {
         postulacionService.loadInitialVacante()
     },[])
 
+    useEffect(() => {
+      // Aplica el estilo al body solo mientras el componente esté montado
+      const originalBodyStyle = document.body.style.cssText;
+      document.body.style.display = 'flex';
+      document.body.style.justifyContent = 'center';
+      document.body.style.alignItems = 'center';
+      document.body.style.minHeight = '100vh';
+      document.body.style.margin = '0';
 
+      return () => {
+          // Restaura el estilo original del body al desmontar el componente
+          document.body.style.cssText = originalBodyStyle;
+      };
+  }, []);
 
   return (
 <>

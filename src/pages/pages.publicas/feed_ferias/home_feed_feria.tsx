@@ -4,6 +4,7 @@ import Feed_d_ferias from './components/listado_ferias/carga_feria';
 import { Filtros_base } from './components/listado_ferias/filtros';
 import '../../../css/base.css';
 import userWebSocketService from '../../models/webSoket';
+import Carrusel from './components/listado_ferias/carrusel';
 
 const View_feed = () => {
   const [selectedComuna, setSelectedComuna] = useState<number | null>(null);
@@ -21,11 +22,12 @@ const View_feed = () => {
     }
   }, []); // Este effect solo se ejecuta una vez cuando el componente se monta
 
-  return (
+  return (<div>
+    <div><Carrusel /></div>
     <div className="container">
       <Filtros_base onFilterC={(comuna) => setSelectedComuna(comuna)} onFilterR={(region) => setSelectedRegion(region)} />
       <Feed_d_ferias comuna={selectedComuna}  region={selectedRegion} />
-    </div>
+    </div></div>
   );
 };
 
