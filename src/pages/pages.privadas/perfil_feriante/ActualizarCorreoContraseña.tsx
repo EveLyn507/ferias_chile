@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import './feriante.css';
+
 
 interface ActualizarCorreoContraseñaProps {
   correo: string;
@@ -69,8 +71,10 @@ const ActualizarCorreoContraseña: React.FC<ActualizarCorreoContraseñaProps> = 
       });
 
       if (response.ok) {
-        setCorreo(correoActualizado); // Actualiza el estado local del correo
-        onCorreoActualizado(correoActualizado); // Callback para manejar la actualización global
+        const nuevoCorreo = correoActualizado;
+        setCorreo(nuevoCorreo); // Actualiza el correo local
+        onCorreoActualizado(nuevoCorreo); // Actualiza en el estado global
+        localStorage.setItem('userEmail', nuevoCorreo); // Actualiza el almacenamiento local
         setMensajeExito('Correo actualizado con éxito.');
       } else {
         const errorData = await response.json();

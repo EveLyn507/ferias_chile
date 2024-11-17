@@ -4,6 +4,8 @@ import GestionPuestos from './GestionPuestos';
 import VerificarDatos from './VerificarDatos';
 import RegistroCobrosFisicos from './RegistroCobrosFisicos';
 import { Link } from 'react-router-dom';
+import './Supervisor.css';
+
 
 interface GestionSupervisorProps {
   id_feria: number;

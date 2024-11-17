@@ -1,10 +1,10 @@
 import React from 'react';
 import { createTransaction } from './services/service.tb';
 import { useLocation } from 'react-router-dom';
-import { ActividadPuesto } from '../../../../models/interfaces';
 import { useSelector } from 'react-redux';
 import { AppStore } from '../../../../../redux/store';
 import { id_datos_puesto } from './rxjsx/sharing.puesto.pago';
+import { arriendo } from '../../../../pages.publicas/feed_ferias/components/detalle_feria/mapa/mapaModel';
 
 
 
@@ -12,11 +12,11 @@ const PaymentButton: React.FC = () => {
 
   const location = useLocation();
   
-  const puesto = location.state.puesto || {}; // Extraemos 'puesto' del estado
+  const puesto = location.state.arriendo || {}; // Extraemos 'puesto' del estado
   const id_user_fte = useSelector((store : AppStore) =>  store.user.id_user)
   const mail = useSelector((store : AppStore) =>  store.user.email)
 
-  const handlePayment = async (puesto : ActividadPuesto, id_user_fte : number , mail : string) => {
+  const handlePayment = async (puesto : arriendo, id_user_fte : number , mail : string) => {
    
     
      await id_datos_puesto.setSubject(puesto.id_arriendo_puesto); 

@@ -26,17 +26,26 @@ interface EstadoFeriaProps {
 const EstadoFeria: React.FC<EstadoFeriaProps> = ({ id_feria }) => {
   const [feria, setFeria] = useState<Feria | null>(null);
   const [horarios, setHorarios] = useState<horario_empleado[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchFeriaEstado = async () => {
       try {
+        if (!id_feria || isNaN(id_feria)) {
+          throw new Error('ID de feria no válido');
+        }
+
         const response = await axios.get('http://localhost:5000/api/supervisor/estado-feria', {
           params: { id_feria },
         });
         console.log('Datos de feria:', response.data); // Para verificar los datos
         setFeria(response.data[0]);
-      } catch (error) {
-        console.error('Error al obtener el estado de la feria:', error);
+        setError(null);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Error desconocido');
+      } finally {
+        setLoading(false);
       }
 
       try {
@@ -69,10 +78,13 @@ const EstadoFeria: React.FC<EstadoFeriaProps> = ({ id_feria }) => {
     fetchFeriaEstado();
   }, [id_feria]);
 
+  if (loading) return <p>Cargando datos de la feria...</p>;
+  if (error) return <p style={{ color: 'red' }}>{error}</p>;
+
   return (
-    <div>
+    <div className="estado-feria">
       <h2>Estado de Ocupación de la Feria</h2>
-      {feria ? (
+      {feria && (
         <div>
           <h3>{feria.nombre}</h3>
           <p><strong>Comuna:</strong> {feria.nombre_comuna}</p>

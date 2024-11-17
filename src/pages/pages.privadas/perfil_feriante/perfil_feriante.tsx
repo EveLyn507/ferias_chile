@@ -5,17 +5,18 @@ import InteresesVenta from './InteresesVentas';
 import RedesSociales from './RedesSociales';
 import ActualizarCorreoContraseña from './ActualizarCorreoContraseña';
 import FotoPerfil from './FotoPerfil';
-import HistorialActividades from './HistorialActividades';
 import { useSelector, useDispatch } from 'react-redux';
 import { AppStore } from '../../../redux/store';
 import { Link } from 'react-router-dom';
 import { setUserEmail } from '../../../redux/actions/userActions';
 import axios from 'axios';
+import './feriante.css';
+import FTEWebSocketService from '../../models/webSoket';
 
 const PerfilFeriantes: React.FC = () => {
   const userMail = useSelector((state: AppStore) => state.user.email); // Obtener correo del estado global
   const dispatch = useDispatch();
-
+  const FTEwebSocketService = FTEWebSocketService.getInstance();
   const [fotoPerfil, setFotoPerfil] = useState<string>('');
   const [nombre, setNombre] = useState<string>('');
   const [apellido, setApellido] = useState<string>('');
@@ -28,9 +29,10 @@ const PerfilFeriantes: React.FC = () => {
 
   // Manejar la actualización global del correo
   const handleCorreoActualizado = (nuevoCorreo: string) => {
-    setCorreo(nuevoCorreo);
-    dispatch(setUserEmail(nuevoCorreo));
-    localStorage.setItem('userEmail', nuevoCorreo);
+    setCorreo(nuevoCorreo); // Estado local
+    dispatch(setUserEmail(nuevoCorreo)); // Estado global
+    localStorage.setItem('userEmail', nuevoCorreo); // Almacenamiento local
+    console.log('Correo actualizado y sincronizado:', nuevoCorreo);
   };
 
   // Manejar el cambio de estado del perfil (público/privado)
@@ -48,23 +50,31 @@ const PerfilFeriantes: React.FC = () => {
     }
   };
 
+
   useEffect(() => {
-    // Cargar estado inicial del perfil al montar el componente
+    FTEwebSocketService.connect()
+  })
+
+
+  useEffect(() => {
     const cargarEstadoPerfil = async () => {
       try {
-          const response = await axios.get(`http://localhost:5000/api/perfil/estado/${correo}`);
-          if (response.status === 200) {
-              setPerfilPrivado(response.data.perfil_privado);
-          }
+        console.log(`Cargando estado del perfil para: ${correo}`);
+        const response = await axios.get(`http://localhost:5000/api/perfil/estado/${correo}`);
+        if (response.status === 200) {
+          setPerfilPrivado(response.data.perfil_privado);
+        }
       } catch (error) {
-          console.error('Error al cargar el estado del perfil:', error);
+        console.error('Error al cargar el estado del perfil:', error);
       }
-  };
-
-  if (correo) {
+    };
+  
+    if (correo) {
       cargarEstadoPerfil();
-  }
-}, [correo]);  
+    }
+  }, [correo]);
+  
+  
   return (
     <>
       <div>
@@ -113,7 +123,6 @@ const PerfilFeriantes: React.FC = () => {
         onCorreoActualizado={handleCorreoActualizado}
       />
 
-      <HistorialActividades />
       <Link to='postulaciones'> POSTULACIONES </Link>
    </>
   );

@@ -3,12 +3,9 @@
 import React, { useRef, useState } from 'react';
 import { Rect, Circle, Layer } from 'react-konva';
 import { PlanoItemElement } from '../models/vistaplanoModels';
+import { StreetPageProps } from '../models/canvasModels';
 
-interface StreetPageProps {
-  calles: PlanoItemElement[]; // Arreglo de calles
-  onStreetClick: (item: PlanoItemElement) => void; // Para detectar item click
-  isStatic?: boolean; // Indica si las calles son estáticas o no (opcional, valor por defecto es false)
-}
+
 
 const StreetsLayer: React.FC<StreetPageProps> = ({
   calles,

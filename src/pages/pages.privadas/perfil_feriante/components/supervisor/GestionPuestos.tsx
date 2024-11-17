@@ -1,4 +1,3 @@
-// GestionPuestos.tsx
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
@@ -9,7 +8,7 @@ interface Puesto {
 }
 
 interface GestionPuestosProps {
-  id_feria: number | null; // Permitir null para manejar casos donde id_feria no esté disponible
+  id_feria: number | null;
 }
 
 const GestionPuestos: React.FC<GestionPuestosProps> = ({ id_feria }) => {
@@ -18,7 +17,6 @@ const GestionPuestos: React.FC<GestionPuestosProps> = ({ id_feria }) => {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    // Validar id_feria antes de hacer la solicitud
     if (!id_feria || isNaN(id_feria)) {
       setError('ID de feria no válido');
       setLoading(false);
@@ -32,9 +30,8 @@ const GestionPuestos: React.FC<GestionPuestosProps> = ({ id_feria }) => {
           params: { id_feria },
         });
         setPuestos(response.data);
-        setError(null); // Limpiar errores previos
+        setError(null);
       } catch (error) {
-        console.error('Error al obtener los puestos:', error);
         setError('Error al obtener los datos de los puestos');
       } finally {
         setLoading(false);
@@ -47,14 +44,16 @@ const GestionPuestos: React.FC<GestionPuestosProps> = ({ id_feria }) => {
   const togglePuestoEstado = async (id_puesto: number, estado: string) => {
     try {
       const nuevoEstado = estado === 'Disponible' ? 'Bloqueado' : 'Disponible';
-      await axios.put(`http://localhost:5000/api/supervisor/puestos/${id_puesto}/estado`, { estado: nuevoEstado });
+      await axios.put(`http://localhost:5000/api/supervisor/puestos/${id_puesto}/estado`, {
+        estado: nuevoEstado,
+      });
       setPuestos((prevPuestos) =>
         prevPuestos.map((puesto) =>
           puesto.id_puesto === id_puesto ? { ...puesto, estado: nuevoEstado } : puesto
         )
       );
-    } catch (error) {
-      console.error('Error al actualizar el estado del puesto:', error);
+    } catch (err) {
+      setError('Error al actualizar el estado del puesto');
     }
   };
 
@@ -62,7 +61,7 @@ const GestionPuestos: React.FC<GestionPuestosProps> = ({ id_feria }) => {
   if (error) return <p style={{ color: 'red' }}>{error}</p>;
 
   return (
-    <div>
+    <div className="gestion-puestos">
       <h2>Gestión de Puestos</h2>
       <ul>
         {puestos.map((puesto) => (

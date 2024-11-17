@@ -3,7 +3,9 @@ import { resetUser } from '../redux/states/user'
 import {  PublicRoutes } from '../models';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { clearLocalStorage } from '../utilities/localStorage.utilities';
+import { clearLocalStorage, clearSessionStorage } from '../utilities/localStorage.utilities';
+import userWebSocketService from '../pages/models/webSoket';
+const WebSocketService = userWebSocketService.getInstance();
 
 export function Logout() {
     const navigate  = useNavigate();
@@ -12,7 +14,12 @@ export function Logout() {
         dispatch(resetUser());
         navigate(`/${PublicRoutes.LOGIN}`, {replace : true});
         clearLocalStorage("feriasStatus")
+        clearSessionStorage("socketConnected")
     };
+    if(WebSocketService){
+        WebSocketService.disconnect()
+    }
+
 
     return (
 
