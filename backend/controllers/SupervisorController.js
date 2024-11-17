@@ -130,18 +130,35 @@ const obtenerMapaFeria = async (req, res, pool) => {
 
 // Obtener feriantes activos en cada feria
 const obtenerFeriantesActivos = async (req, res, pool) => {
+  const { id_feria } = req.query;
+  // Validar que id_feria es un número válido
+  if (!id_feria || isNaN(id_feria)) {
+    return res.status(400).json({ message: 'El id_feria debe ser un número válido' });
+  }
+
   try {
-    const feriantes = await pool.query(`
-      SELECT f.id_user_fte, f.nombre, f.apellido, ec.detalle AS estado_pago
+    const query = `
+      SELECT f.id_user_fte, f.nombre, f.apellido, a.id_puesto, e.estado
       FROM feriante f
-      JOIN contrato_puesto cp ON f.id_user_fte = cp.id_user_fte
-      JOIN tipo_estado_contrato ec ON cp.estado_contrato = ec.id_status_contrato
-      WHERE ec.detalle != 'finalizado' AND ec.detalle != 'cancelado'
-    `);
-    res.status(200).json(feriantes.rows);
+      JOIN contrato_puesto c ON c.id_user_fte = f.id_user_fte
+      JOIN arriendo_puesto a ON c.id_arriendo_puesto = a.id_arriendo_puesto
+      JOIN estado_arriendo e ON a.id_estado_arriendo = e.id_estado_arriendo
+      JOIN puesto p ON a.id_puesto = p.id_puesto
+      JOIN feria fe ON p.id_feria = fe.id_feria
+      WHERE fe.id_feria = $1;
+    `;
+
+    // Pasamos id_feria como parámetro
+    const result = await pool.query(query, [parseInt(id_feria, 10)]); 
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'No se encontraron feriantes para la feria con el id proporcionado' });
+    }
+
+    res.status(200).json(result.rows);
   } catch (error) {
-    console.error('Error al obtener lista de pagos pendientes:', error);
-    res.status(500).json({ message: 'Error al obtener lista de pagos pendientes' });
+    console.error('Error al obtener los horarios:', error);  
+    res.status(500).json({ message: 'Error al obtener los feriantes de la feria' });
   }
 };
 

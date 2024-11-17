@@ -1,154 +1,168 @@
-/* General container styles */
 .login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: #f5f5f5;
-  flex-direction: column;
-  font-family: 'Arial', sans-serif;
-}
-
-/* General form styles */
-form, .input-group {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  background: #fff;
+  background: #ffffff;
+  color: #333;
+  margin: 50px auto;
+  width: 400px;
   padding: 20px;
   border-radius: 10px;
+  font-family: 'Roboto', sans-serif;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  max-width: 400px;
-  width: 100%;
 }
 
-form input, .input-group input {
-  padding: 10px;
-  border: 2px solid rgb(4, 28, 76);
-  border-radius: 5px;
-  font-size: 16px;
-}
-
-form input:focus, .input-group input:focus {
-  outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-}
-
-form button, .input-group button {
-  padding: 10px 20px;
-  font-size: 16px;
-  color: #fff;
-  background-color: rgb(4, 28, 76);
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-form button:hover, .input-group button:hover {
-  background-color: #003366;
-}
-
-/* Headings */
-h1, h2 {
-  color: rgb(4, 28, 76);
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-/* Error messages */
-p {
-  color: red;
-  font-size: 14px;
-  text-align: center;
-}
-
-/* Tabs styles */
 .react-tabs__tab-list {
   display: flex;
-  justify-content: center;
-  gap: 20px;
+  background: #f1f1f1;
+  width: 100%;
+  height: 50px;
+  margin: 0;
+  margin-bottom: 20px;
+  padding: 0;
+  position: relative;
+  list-style-type: none;
+  justify-content: space-around;
+  border-radius: 10px 10px 0 0; /* Rounded corners for top */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .react-tabs__tab {
-  padding: 10px 20px;
-  cursor: pointer;
-  font-size: 16px;
-  border: 2px solid rgb(4, 28, 76);
-  border-radius: 5px;
-  background-color: #fff;
-  transition: background-color 0.3s ease;
+  display: block;
+  padding: 0;
+  margin: 0;
 }
 
-.react-tabs__tab--selected {
-  background-color: rgb(4, 28, 76);
-  color: #fff;
+.react-tabs__tab a {
+  display: block;
+  background: #34495e;
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
+  padding: 14px 30px;
+  border-radius: 5px;
+  text-align: center;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.react-tabs__tab--selected a {
+  background: #e74c3c; /* Red color for selected tab */
+  transform: scale(1.05); /* Slight scale for selected tab */
+}
+
+.react-tabs__tab a:hover {
+  background: #1abc9c; /* Light green on hover */
+}
+
+.react-tabs__tab:last-child a {
+  width: auto;
+  padding: 14px 20px;
+  text-align: center;
+}
+
+.react-tabs__tab a:active {
+  background-color: #c0392b; /* Darker red when active */
+  transform: scale(1.1); /* More pronounced scale effect on click */
+}
+
+.react-tabs__tab a:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(41, 128, 185, 0.5); /* Focus shadow */
+}
+
+
+.form-card {
+  padding: 30px;
+  position: relative;
+}
+
+h1 {
+  font-size: 36px;
+  margin-bottom: 20px;
+  color: #2c3e50;
+}
+
+p {
+  font-size: 14px;
+  padding-bottom: 15px;
+  line-height: 1.5;
+  color: #7f8c8d;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="submit"] {
+  font-family: 'Roboto', sans-serif;
+  width: 100%;
+  height: 45px;
+  margin-bottom: 15px;
+  padding-left: 15px;
+  background: #ecf0f1;
+  border: 1px solid #bdc3c7;
+  color: #34495e;
+  outline: none;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+input[type="submit"] {
+  background-color: #e74c3c;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 25px; /* More space after the submit button */
+}
+
+input[type="submit"]:hover {
+  background-color: #c0392b;
+}
+
+.button {
+  border: none;
+  display: block;
+  background: #f7f7f7;
+  height: 45px;
+  width: 100%;
+  color: #ffffff;
+  text-align: center;
+  border-radius: 5px;
+  box-shadow: 0px 4px 2px rgba(255, 255, 255, 0.1);
+  transition: background 0.3s ease;
+  margin-bottom: 20px; /* Increased space between this and the next button */
+}
+
+.button:hover {
+  background: #3498db;
+  box-shadow: 0 4px 2px rgba(0, 0, 0, 0.15);
+}
+
+.button:active {
+  background: #2980b9;
+  box-shadow: 0 4px 2px rgba(0, 0, 0, 0.2);
+}
+
+.switch-form-button {
+  background: none;
+  border: none;
+  color: #2980b9;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 30px; /* Increased space between the switch button and others */
 }
 
 .react-tabs__tab-panel {
-  padding: 20px;
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 500px;
-  margin: 0 auto;
+  display: none;
 }
 
-/* Mobile responsive styles */
-@media (max-width: 768px) {
-  .react-tabs__tab {
-      font-size: 14px;
-    display: flex;
-    justify-content: center; /* Centrado horizontal */
-    align-items: center; /* Centrado vertical */
-    width: 100vh;
-    height: 70vh; /* Ocupa toda la altura de la ventana */
-    background-color: #f5f5f5; /* Fondo de la página */
-    border-radius: 3%;
-  }
-  
-  /* Estilo para las pestañas */
-  .react-tabs__tab-list {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-  }
-  
-  .react-tabs__tab {
-    padding: 10px 20px;
-    cursor: pointer;
-    font-size: 18px;
-    border: 2px solid rgb(4, 28, 76);
-    border-radius: 5px;
-    background-color: #fff;
-    transition: background-color 0.3s ease;
-  }
-  
-  .react-tabs__tab--selected {
-    background-color:rgb(4, 28, 76);
-    color: #fff;
-  }
-  
-  .react-tabs__tab-panel {
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 500px; /* Limitar el ancho de las pestañas */
-    margin: 0px 47px;
-  }
-  
-  @media (max-width: 768px) {
-    .react-tabs__tab {
-      font-size: 10px;
-      padding: 8px 16px;
-  }
+.react-tabs__tab-panel--selected {
+  display: block;
+  opacity: 0;
+  animation: fadeIn 0.5s forwards;
+}
 
-  .react-tabs__tab-panel {
-      padding: 15px;
-      max-width: 90%;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }

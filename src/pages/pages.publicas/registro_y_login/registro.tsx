@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 
 export const Registro = () => {
 
@@ -107,6 +107,21 @@ export const Registro = () => {
       console.error(err);
   }
 };
+
+useEffect(() => {
+  // Aplica el estilo al body solo mientras el componente esté montado
+  const originalBodyStyle = document.body.style.cssText;
+  document.body.style.display = 'flex';
+  document.body.style.justifyContent = 'center';
+  document.body.style.alignItems = 'center';
+  document.body.style.minHeight = '100vh';
+  document.body.style.margin = '100px';
+
+  return () => {
+      // Restaura el estilo original del body al desmontar el componente
+      document.body.style.cssText = originalBodyStyle;
+  };
+}, []);
 
 return (
 <>
