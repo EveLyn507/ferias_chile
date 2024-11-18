@@ -4,7 +4,6 @@ import 'react-tabs/style/react-tabs.css';
 import LoginEncargado from './components/login_encargado';
 import LoginFeriante from './components/login_feriante';
 import LoginMunicipal from './components/login_municipal';
-import {Recuperacion } from './recuperacion';
 import { useEffect } from 'react';
 import { clearLocalStorage } from '../../../utilities/localStorage.utilities';
 import { resetUser, UserKey } from '../../../redux/states/user';
@@ -39,36 +38,30 @@ export const LoginHome = () => {
 
     return (
         <div className="login-container">
+            <h1>Inicio de Sesion</h1>
             <Tabs>
                 <TabList>
                     <Tab>Encargado</Tab>
                     <Tab>Feriante</Tab>
                     <Tab>Municipal</Tab>
-                    <Tab>Recuperar Contraseña</Tab>
                 </TabList>
 
                 <TabPanel>
                     <div className="form-card">
                         <LoginEncargado />
-                        <button className="switch-form-button">¿No tienes cuenta? Regístrate</button>
+                        <a className="switch-form-button" href="/reset-password">Recuperar Contraseña</a>
                     </div>
                 </TabPanel>
                 <TabPanel>
                     <div className="form-card">
                         <LoginFeriante />
-                        <button className="switch-form-button">¿No tienes cuenta? Regístrate</button>
+                        <a className="switch-form-button" href="/reset-password">Recuperar Contraseña</a>
                     </div>
                 </TabPanel>
                 <TabPanel>
                     <div className="form-card">
                         <LoginMunicipal />
-                        <button className="switch-form-button">¿No tienes cuenta? Regístrate</button>
-                    </div>
-                </TabPanel>
-                <TabPanel>
-                    <div className="form-card">
-                        <Recuperacion />
-                        <button className="switch-form-button">Volver al login</button>
+                        <a className="switch-form-button" href="/reset-password">Recuperar Contraseña</a>
                     </div>
                 </TabPanel>
             </Tabs>

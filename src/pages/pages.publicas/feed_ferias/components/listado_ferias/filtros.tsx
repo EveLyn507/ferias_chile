@@ -25,29 +25,41 @@ export const Filtros_base = ({ onFilterC, onFilterR }: FiltrosBaseProps) => {
   const [selectedComuna, setSelectedComuna] = useState<number | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isFixed, setIsFixed] = useState(false);
 
   useEffect(() => {
     Promise.all([
-      import('../../../../../assets/regiones.json')
-        .then((data) =>
-          setRegiones(
-            data.default.map((region: { id_region: number; region: string }) => ({
-              id: region.id_region,
-              nombre: region.region,
-            }))
-          )
-        ),
-      import('../../../../../assets/comunas.json')
-        .then((data) =>
-          setComunas(
-            data.default.map((comuna: { id_comuna: number; id_region: number; comuna: string }) => ({
-              id: comuna.id_comuna,
-              regionId: comuna.id_region,
-              nombre: comuna.comuna,
-            }))
-          )
-        ),
+      import('../../../../../assets/regiones.json').then((data) =>
+        setRegiones(
+          data.default.map((region: { id_region: number; region: string }) => ({
+            id: region.id_region,
+            nombre: region.region,
+          }))
+        )
+      ),
+      import('../../../../../assets/comunas.json').then((data) =>
+        setComunas(
+          data.default.map((comuna: { id_comuna: number; id_region: number; comuna: string }) => ({
+            id: comuna.id_comuna,
+            regionId: comuna.id_region,
+            nombre: comuna.comuna,
+          }))
+        )
+      ),
     ]).catch((error) => console.error('Error al cargar los JSON:', error));
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY || document.documentElement.scrollTop;
+      const halfPage = document.documentElement.scrollHeight / 4.5;
+
+      setIsFixed(scrollPosition >= halfPage);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const handleRegionClick = (regionId: number) => {
@@ -63,15 +75,13 @@ export const Filtros_base = ({ onFilterC, onFilterR }: FiltrosBaseProps) => {
     onFilterC(comunaId);
   };
 
-
-
   return (
-    <div className="filtros-base">
+    <div className={`filtros-base ${isFixed ? 'fixed' : ''}`}>
       <div className="hamburger-menu" onClick={() => setIsMenuOpen(!isMenuOpen)}>
         ☰
       </div>
 
-      <div className={`region-container ${isMenuOpen ? 'active' : ""}`}>
+      <div className={`region-container ${isMenuOpen ? 'active' : ''}`}>
         {regiones.map((region) => (
           <button
             key={region.id}
@@ -85,9 +95,8 @@ export const Filtros_base = ({ onFilterC, onFilterR }: FiltrosBaseProps) => {
       </div>
 
       {selectedRegion && (
-        <div className={`comuna-container ${isMenuOpen ? 'active' : ""}`}>
+        <div className={`comuna-container ${isMenuOpen ? 'active' : ''}`}>
           <label className="comuna-label">Selecciona una Comuna:</label>
-
           <input
             type="text"
             placeholder="Buscar comuna..."
@@ -95,7 +104,6 @@ export const Filtros_base = ({ onFilterC, onFilterR }: FiltrosBaseProps) => {
             onChange={(e) => setSearchTerm(e.target.value)}
             className="search-input"
           />
-
           <div className="comuna-buttons">
             <button
               onClick={() => handleComunaClick(null)}
