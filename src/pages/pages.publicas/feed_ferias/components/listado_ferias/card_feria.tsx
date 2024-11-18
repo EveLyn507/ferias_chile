@@ -9,6 +9,7 @@ export const CardFerias = ({ ferias }: FeriasProps) => {
   return (
     <div className="card-container">
       {ferias.map((feria) => (
+        
         <div className="ag-courses_item" key={feria.id_feria}>
           <div className="ag-courses-item_bg"></div>
           <Card

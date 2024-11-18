@@ -44,11 +44,15 @@ function setupSocketServer(io) {
         // Unirse o crear una sala con un nombre dinámico
       socket.on('join_room', (roomName) => {
         const {id_feria} = roomName.params
-        socket.join(roomName);
-        console.log(`User ${socket.id} joined room: ${id_feria}`);
+        socket.join(id_feria);
+        const room = io.sockets.adapter.rooms.get(id_feria);
+        console.log(room);
+        
+        const size = room.size
+        console.log(`User ${socket.id} joined room: ${id_feria},  usuarios en sala ${size}` );
         
         // Notificar al resto de usuarios en la sala
-        socket.to(roomName).emit('message', `User ${socket.id} has joined the room.`);
+        socket.to(id_feria).emit('message', `User ${socket.id} has joined the room.`);
       });
 
 
@@ -59,23 +63,20 @@ function setupSocketServer(io) {
 
       // Salir de una sala
       socket.on('leave_room', (roomName) => {
-        socket.leave(roomName);
-        console.log(`User ${socket.id} left room: ${roomName}`); 
+        const {id_feria} = roomName.params
+        console.log(id_feria);
+        
+        socket.leave(id_feria);
+        const room = io.sockets.adapter.rooms.get(id_feria);
+        console.log(room);
+        
+        const size = 'room.size'
+        console.log(`User ${socket.id} left room: ${id_feria} , usuarios en sala ${size}`); 
 
       });
 
 
-      socket.on('serverMSJ' , (params) =>{
-        const {id_feria , msj } = params.params
-        
-        const size =  countClientsInRoom(id_feria)
-        if(size !== 0 ) {
-          io.to(id_feria).emit('room_message', { id_feria, msj });
-          console.log(`Server emitted to room: ${id_feria}`);
-        }   
 
-      })
-   
 
       socket.on('disconnect', () => {
         console.log(`Cliente ${socket.id} se ha desconectado`);

@@ -1,5 +1,10 @@
-import { useState } from 'react';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { PrivateRoutes } from '../../../../models';
+import { createUser } from '../../../../redux/states/user';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 const LoginEncargado = () => {
   const [mail, setMail] = useState('');
@@ -7,6 +12,18 @@ const LoginEncargado = () => {
   const [error, setError] = useState('');
 
   const validarMail = (mail: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      const { token, role } = JSON.parse(storedUser);
+      dispatch(createUser(JSON.parse(storedUser)));
+      navigate(`/${PrivateRoutes.PRIVATE}/${role}`, { replace: true });
+    }
+  }, [dispatch, navigate]);
+
+
 
   const handleLogin = async () => {
     setError('');
@@ -23,9 +40,13 @@ const LoginEncargado = () => {
 
     try {
       const response = await axios.post('http://localhost:5000/login1', { mail, contrasena });
-      console.log('Login exitoso:', response.data);
+      const { token, role, email, id_user } = response.data;
+      const userData = { token, role, email, id_user };
+      localStorage.setItem('user', JSON.stringify(userData));
+      dispatch(createUser(userData));
+      navigate(`/${PrivateRoutes.PRIVATE}/${role}`, { replace: true });
     } catch (error) {
-      console.error('Error de login:', error);
+      console.error('Error de login', error);
       setError('Credenciales incorrectas o error en el servidor.');
     }
   };

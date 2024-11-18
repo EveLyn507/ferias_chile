@@ -48,6 +48,7 @@ export const View_detalle_feria = () => {
         WebSocketService.sendMessage('TodayFeriaElements', {idFeria,nombre_feria, fecha });
 
         await WebSocketService.RecibeData('ResponceTodayFeriaElements', (data : todayArriendos) => {
+          
             // Filtramos los elementos donde id_tipo_elemento es igual a 1
             console.log(data);
             const puestosday = data.planoData.elements.filter(item => item.id_tipo_elemento === 1)
@@ -68,21 +69,35 @@ export const View_detalle_feria = () => {
       }
       espera()
 
+    
+    }, []); 
 
-      WebSocketService.RecibeData('roomMSJ', (updated: arriendo) => {
-        const updatedArriendos = arriendos.map((arriendo) =>
-          arriendo.id_arriendo_puesto === updated.id_arriendo_puesto ? { ...arriendo, ...updated } : arriendo
-        );
-      
-        setArriendos(updatedArriendos); // Asume que `setArriendos` es la función para actualizar el estado
+
+
+    const udapt = async () => {
+      await WebSocketService.RecibeData('room_message', (updated) => {
+        console.log(arriendos);  // Nota que aquí ya puede seguir mostrando datos previos
+        setArriendos(prevArriendos => {
+          const updatedArriendos = prevArriendos.map((arriendo) =>
+            arriendo.id_arriendo_puesto === updated.id_arriendo_puesto
+              ? { ...arriendo, id_estado_arriendo: updated.id_estado_arriendo }
+              : arriendo
+          );
+          console.log('update', updated);
+          console.log(updatedArriendos);
+          return updatedArriendos;  // Actualiza el estado de manera correcta
+        });
       });
+    }
+    
+
+    useEffect(() => {
+
+      udapt()
       
 
-      return () => WebSocketService.sendMessage('leave_room' , {idFeria})
-    
-    }, []);  // El segundo argumento vacío asegura que este effect solo se ejecuta una vez al montar el componente
-    
-
+      return () => WebSocketService.sendMessage('leave_room' , {id_feria})
+    },[])
 
     return (
 

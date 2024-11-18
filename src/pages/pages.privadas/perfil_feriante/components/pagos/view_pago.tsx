@@ -3,7 +3,6 @@ import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { AppStore } from '../../../../../redux/store';
-import { id_datos_puesto } from './rxjsx/sharing.puesto.pago';
 import { arriendo } from '../../../../pages.publicas/feed_ferias/components/detalle_feria/mapa/mapaModel';
 import userWebSocketService from '../../../../models/webSoket';
 
@@ -30,8 +29,9 @@ const PaymentButton: React.FC = () => {
 
 
   const handlePayment = async (puesto : arriendo, id_user_fte : number , mail : string) => {
-     await id_datos_puesto.setSubject(puesto.id_arriendo_puesto); 
+
      
+  localStorage.setItem('confirm', JSON.stringify(puesto.id_arriendo_puesto))
     try {
       WebSocketService.sendMessage('CreateTransaction' , {puesto , id_user_fte, mail})
      await  WebSocketService.RecibeData('opentbk' ,(data) => {

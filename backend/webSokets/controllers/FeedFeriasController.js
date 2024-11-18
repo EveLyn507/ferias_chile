@@ -25,6 +25,7 @@ const FeriaElements = async (pool ,id_feria) => {
 
   const get_puestos_actividad = async ( pool,nombre_feria , date) => {
 
+ 
     try{
     const resutl = await pool.query( `
       SELECT * FROM obtener_puestos_actividad($1, $2)` , [nombre_feria , date])
@@ -56,6 +57,7 @@ const getArriendosFToday = async (socket , pool, params) => {
             todayArriendos: todayArriendos
         }
       
+        
         
         socket.emit('ResponceTodayFeriaElements' , todayData)
 

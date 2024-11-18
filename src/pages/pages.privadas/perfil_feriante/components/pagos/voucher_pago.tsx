@@ -9,8 +9,8 @@ const ConfirmPayment: React.FC = () => {
   const id_arriend  = localStorage.getItem('confirm') 
   const f  = localStorage.getItem('f') 
   const id_feria = parseInt(f!)
-  const idArriendo  =  id_arriend ? parseInt(id_arriend) : 0
-  console.log(idArriendo);
+  const id_arriendo_puesto  =  id_arriend ? parseInt(id_arriend) : 0
+  console.log(id_arriendo_puesto);
   const WebSocketService = userWebSocketService.getInstance()
 
   useEffect(() => {
@@ -28,7 +28,7 @@ const ConfirmPayment: React.FC = () => {
     console.log(token);
 
     if (token) {
-      WebSocketService.sendMessage('confirm_Transaction', {token, idArriendo , id_feria})
+      WebSocketService.sendMessage('confirm_Transaction', {token, id_arriendo_puesto , id_feria})
       const com = async () => {
         await WebSocketService.RecibeData('comittbk' , (data) => {
           console.log(data);
