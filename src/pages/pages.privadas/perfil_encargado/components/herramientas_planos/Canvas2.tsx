@@ -23,6 +23,7 @@ const Canvas2: React.FC<CanvasProps> = ({
   const [isAltPressed, setIsAltPressed] = useState(false);
   const [hoveredItem, setHoveredItem] = useState<PlanoItemElement | null>(null);
   const [image, setImage] = useState<HTMLImageElement | null>(null);
+  const [imageS, setCalleImage] = useState<HTMLImageElement | null>(null);
 
 
   // Estado para el nivel de zoom
@@ -36,6 +37,17 @@ const Canvas2: React.FC<CanvasProps> = ({
     };
     img.onerror = () => {
       console.error('Error loading the image');
+    };
+  }, []);
+
+  useEffect(() => {
+    const img = new window.Image();
+    img.src = '/imagenes/calle.jpg'; // Ruta de la segunda imagen
+    img.onload = () => {
+      setCalleImage(img);
+    };
+    img.onerror = () => {
+      console.error('Error loading the calle image');
     };
   }, []);
 
@@ -230,6 +242,7 @@ const Canvas2: React.FC<CanvasProps> = ({
           calles={calles}
           onStreetClick={onItemClick}
           isStatic={isStatic}
+          image={imageS}
           hoveredItem={hoveredItem}
           setHoveredItem={setHoveredItem}
           isAltPressed={isAltPressed}

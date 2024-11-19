@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* StreetsLayer.tsx */
 import React, { useRef, useState } from 'react';
-import { Rect, Circle, Layer } from 'react-konva';
+import { Rect, Circle, Image as KonvaImage, Layer } from 'react-konva';
 import { PlanoItemElement } from '../models/vistaplanoModels';
 import { StreetPageProps } from '../models/canvasModels';
 import DistanceLine from './distanceLine';
@@ -11,6 +11,7 @@ import DistanceLine from './distanceLine';
 const StreetsLayer: React.FC<StreetPageProps> = ({
   calles,
   onStreetClick,
+  image,
   isStatic = false,
   isAltPressed,
   hoveredItem,
@@ -76,7 +77,8 @@ const StreetsLayer: React.FC<StreetPageProps> = ({
         return (
           <React.Fragment key={street.id_elemento}>
             {/* Calle Rectangular */}
-            <Rect
+            <KonvaImage
+              image={image || undefined}
               x={street.dimenciones.x}
               y={street.dimenciones.y}
               width={street.dimenciones.width}

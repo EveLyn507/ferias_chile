@@ -39,6 +39,7 @@ export interface StreetPageProps {
   setHoveredItem: (item: PlanoItemElement | null) => void
   isAltPressed : boolean;
   selectedItem: PlanoItemElement | null
+  image?: HTMLImageElement | null; // Propiedad correctamente definida
   
 }
 
