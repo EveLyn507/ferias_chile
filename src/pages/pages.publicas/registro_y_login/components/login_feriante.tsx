@@ -72,7 +72,6 @@ function LoginFeriante() {
   return (
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
       <div>
-        <h1>Login Feriante</h1>
         <input
           type="text"
           placeholder="Correo Electrónico"

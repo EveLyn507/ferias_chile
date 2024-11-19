@@ -53,7 +53,6 @@ const LoginEncargado = () => {
 
   return (
     <div>
-      <h1>Login Encargado</h1>
       <input
         type="text"
         placeholder="Correo Electrónico"

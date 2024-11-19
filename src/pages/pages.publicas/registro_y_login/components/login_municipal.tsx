@@ -37,7 +37,6 @@ const LoginMunicipal = () => {
 
   return (
     <div>
-      <h1>Login Municipal</h1>
       <input
         type="text"
         placeholder="Correo Electrónico"
