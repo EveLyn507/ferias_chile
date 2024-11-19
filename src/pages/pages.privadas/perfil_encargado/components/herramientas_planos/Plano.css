@@ -130,7 +130,7 @@
     z-index: 1000;
   }
   
-  @media (max-width: 1119px) {
+  @media (max-width: 700px) {
     .app {
       display: none; 
     }
