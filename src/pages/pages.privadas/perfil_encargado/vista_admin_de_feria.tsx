@@ -15,6 +15,7 @@ import { PostulantesFeria } from "./components/administrador_feria/postulantesFe
 import { postulacionService } from "./rxjs/sharingPostulaciones"
 import { StatusFeria } from "./components/status/statusFeria"
 import './perfil_e.css'
+import "./components/administrador_feria/administrador_feria.css";
 
 
 export const Admin_de_feria = () => {

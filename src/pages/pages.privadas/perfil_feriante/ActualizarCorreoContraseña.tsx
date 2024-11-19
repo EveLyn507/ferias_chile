@@ -35,17 +35,9 @@ const ActualizarCorreoContraseña: React.FC<ActualizarCorreoContraseñaProps> = 
   const actualizarCorreo = async () => {
     setMensajeError(null);
     setMensajeExito(null);
-    
-    
 
-     if (!correoActualizado || !correo) {
+    if (!correoActualizado || !correo) {
       setMensajeError('El correo actual y el nuevo correo son requeridos.');
-      return;
-    }
-    
-
-    if (!correoActualizado) {
-      setMensajeError('El correo es requerido.');
       return;
     }
 
@@ -54,27 +46,18 @@ const ActualizarCorreoContraseña: React.FC<ActualizarCorreoContraseñaProps> = 
       return;
     }
 
-   
-
     try {
-      
-      console.log({ correoActualizado, user_mail: correo });
       const response = await fetch('http://localhost:5000/api/actualizar-correo', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          nuevoCorreo: correoActualizado,
-          user_mail: correo, // Aquí debe ser el correo actual
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nuevoCorreo: correoActualizado, user_mail: correo }),
       });
 
       if (response.ok) {
         const nuevoCorreo = correoActualizado;
-        setCorreo(nuevoCorreo); // Actualiza el correo local
-        onCorreoActualizado(nuevoCorreo); // Actualiza en el estado global
-        localStorage.setItem('userEmail', nuevoCorreo); // Actualiza el almacenamiento local
+        setCorreo(nuevoCorreo); 
+        onCorreoActualizado(nuevoCorreo); 
+        localStorage.setItem('userEmail', nuevoCorreo); 
         setMensajeExito('Correo actualizado con éxito.');
       } else {
         const errorData = await response.json();

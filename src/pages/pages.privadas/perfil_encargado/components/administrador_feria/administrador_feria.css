@@ -1,0 +1,189 @@
+/* Colores principales */
+:root {
+    --primary-color: rgb(4, 28, 76);
+    --secondary-color: #f9f9f9;
+    --accent-color: #002b54;
+    --highlight-color: rgba(4, 28, 76, 0.1);
+    --text-color: white;
+    --text-dark: #333;
+  }
+  
+  /* Estilo general */
+  body {
+    font-family: 'Arial', sans-serif;
+    background-color: var(--secondary-color);
+    color: var(--primary-color);
+    margin: 0;
+    padding: 0;
+  }
+  
+  h1, h2 {
+    color: var(--primary-color);
+    text-align: center;
+  }
+  
+  /* Contenedor general */
+  .ferias {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px;
+    justify-content: center;
+    background: linear-gradient(to bottom, var(--secondary-color), var(--highlight-color));
+    border-radius: 8px;
+  }
+  
+  /* Tarjetas */
+  .card {
+    background: var(--text-color);
+    border: 1px solid var(--primary-color);
+    border-radius: 12px;
+    padding: 20px;
+    width: 300px;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  
+  .card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3);
+  }
+  
+  .card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .card ul li {
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: var(--text-dark);
+  }
+  
+  .card label {
+    font-weight: bold;
+    color: var(--primary-color);
+  }
+
+  /* Botones dentro de las tarjetas */
+.card button {
+    margin-top: 10px;
+    display: block; 
+    width: 100%; 
+    text-align: center;
+  }
+  
+  .card .button-group {
+  display: flex;
+  flex-direction: row; 
+  gap: 10px; 
+  margin-top: 10px;
+}
+
+.card .button-group button {
+  width: 40%; 
+  padding: 10px;
+  font-size: 14px;
+  border-radius: 8px;
+}
+  
+  /* Botones */
+  button {
+    background: var(--primary-color);
+    color: var(--text-color);
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s, transform 0.2s;
+  }
+  
+  button:hover {
+    background-color: var(--accent-color);
+    transform: translateY(-2px);
+  }
+  
+  button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  /* Formulario */
+  form {
+    background-color: var(--text-color);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+    margin: 20px auto;
+    max-width: 400px;
+  }
+  
+  form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: var(--primary-color);
+  }
+  
+  form input, form select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid var(--primary-color);
+    border-radius: 8px;
+  }
+  
+  form input:focus, form select:focus {
+    border-color: var(--accent-color);
+    outline: none;
+  }
+  
+  /* Selectores */
+  select {
+    width: auto;
+    padding: 10px;
+    border: 1px solid var(--primary-color);
+    border-radius: 8px;
+    font-size: 14px;
+  }
+  
+  /* Tablas */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+  }
+  
+  table th, table td {
+    border: 1px solid var(--primary-color);
+    padding: 10px;
+    text-align: left;
+  }
+  
+  table th {
+    background: var(--primary-color);
+    color: var(--text-color);
+  }
+  
+  table tr:nth-child(even) {
+    background-color: var(--highlight-color);
+  }
+  
+  /* Responsividad */
+  @media (max-width: 768px) {
+    .ferias {
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .card {
+      width: 90%;
+    }
+  
+    form {
+      width: 90%;
+    }
+  }
+  
