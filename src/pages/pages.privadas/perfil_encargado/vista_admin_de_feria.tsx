@@ -14,6 +14,7 @@ import { Tab, TabList, TabPanel, Tabs } from "react-tabs"
 import { PostulantesFeria } from "./components/administrador_feria/postulantesFeria"
 import { postulacionService } from "./rxjs/sharingPostulaciones"
 import { StatusFeria } from "./components/status/statusFeria"
+import "./components/administrador_feria/administrador_feria.css";
 
 
 export const Admin_de_feria = () => {

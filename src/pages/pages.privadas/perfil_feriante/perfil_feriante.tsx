@@ -14,9 +14,10 @@ import './feriante.css';
 import FTEWebSocketService from '../../models/webSoket';
 
 const PerfilFeriantes: React.FC = () => {
-  const userMail = useSelector((state: AppStore) => state.user.email); // Obtener correo del estado global
+  const userMail = localStorage.getItem('userEmail') || useSelector((state: AppStore) => state.user.email);
   const dispatch = useDispatch();
   const FTEwebSocketService = FTEWebSocketService.getInstance();
+
   const [fotoPerfil, setFotoPerfil] = useState<string>('');
   const [nombre, setNombre] = useState<string>('');
   const [apellido, setApellido] = useState<string>('');
@@ -26,55 +27,55 @@ const PerfilFeriantes: React.FC = () => {
   const [correo, setCorreo] = useState<string>(userMail);
   const [, setContraseña] = useState<string>('');
   const [perfilPrivado, setPerfilPrivado] = useState<boolean>(false);
+  
 
-  // Manejar la actualización global del correo
+  // Manejar la actualización global del correo y recargar datos relacionados
   const handleCorreoActualizado = (nuevoCorreo: string) => {
-    setCorreo(nuevoCorreo); // Estado local
-    dispatch(setUserEmail(nuevoCorreo)); // Estado global
-    localStorage.setItem('userEmail', nuevoCorreo); // Almacenamiento local
+    setCorreo(nuevoCorreo);
+    dispatch(setUserEmail(nuevoCorreo));
+    localStorage.setItem('userEmail', nuevoCorreo);
     console.log('Correo actualizado y sincronizado:', nuevoCorreo);
+
+    // Recargar datos relacionados con el nuevo correo
+    cargarEstadoPerfil(nuevoCorreo);
   };
 
-  // Manejar el cambio de estado del perfil (público/privado)
-  const togglePerfilPrivado = async () => {
+  const cargarEstadoPerfil = async (correo: string) => {
     try {
-      const response = await axios.put('http://localhost:5000/api/perfil/toggle-privado', {
-        userMail: correo,
-      });
-
+      console.log(`Cargando estado del perfil para: ${correo}`);
+      const response = await axios.get(`http://localhost:5000/api/perfil/estado/${correo}`);
       if (response.status === 200) {
         setPerfilPrivado(response.data.perfil_privado);
       }
     } catch (error) {
-      console.error('Error al cambiar el estado del perfil:', error);
+      console.error('Error al cargar el estado del perfil:', error);
     }
   };
 
+  const togglePerfilPrivado = async () => {
+    try {
+      console.log(`Intentando cambiar el estado del perfil para: ${correo}`);
+      const response = await axios.put('http://localhost:5000/api/perfil/toggle-privado', { userMail: correo });
+
+      if (response.status === 200) {
+        console.log('Estado del perfil actualizado:', response.data.perfil_privado);
+        setPerfilPrivado(response.data.perfil_privado);
+      }
+    } catch (error) {
+      console.error('Error al cambiar el estado del perfil:', error.response?.data || error.message);
+    }
+  };
 
   useEffect(() => {
     FTEwebSocketService.connect()
   })
 
-
   useEffect(() => {
-    const cargarEstadoPerfil = async () => {
-      try {
-        console.log(`Cargando estado del perfil para: ${correo}`);
-        const response = await axios.get(`http://localhost:5000/api/perfil/estado/${correo}`);
-        if (response.status === 200) {
-          setPerfilPrivado(response.data.perfil_privado);
-        }
-      } catch (error) {
-        console.error('Error al cargar el estado del perfil:', error);
-      }
-    };
-  
     if (correo) {
-      cargarEstadoPerfil();
+      cargarEstadoPerfil(correo);
     }
   }, [correo]);
-  
-  
+
   return (
     <>
       <div>

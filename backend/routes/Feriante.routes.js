@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const pool = require('../server');
 const {
   getEstadoPerfil,
   togglePerfilPrivado,
@@ -22,16 +23,12 @@ const {
   misPostulaciones
 } = require('../controllers/FerianteController');
 
-// Ruta para obtener el estado del perfil
-router.get('/api/perfil/estado/:userMail', (req, res) => {
-  const pool = req.pool;
- getEstadoPerfil (req, res,pool);
-});
+// Obtener estado del perfil
+router.get('/api/perfil/estado/:userMail', getEstadoPerfil);
 
-// Ruta para alternar el estado del perfil público/privado
-router.put('/api/perfil/toggle-privado',  (req, res) => {
-  const pool = req.pool;
-togglePerfilPrivado (req, res,pool);
+// Cambiar estado del perfil
+router.put('/api/perfil/toggle-privado', (req, res) => {
+  togglePerfilPrivado(req, res); 
 });
 
 // Rutas para actualizar y cargar datos personales

@@ -2,11 +2,11 @@ const fs = require('fs');
 const path = require('path');
 const bcrypt = require('bcrypt');
 const { log } = require('console');
-const pool = require('../server');
 
 // Controlador para obtener el estado del perfil
 const getEstadoPerfil = async (req, res) => {
   const { userMail } = req.params;
+  const pool = req.pool;
 
   if (!userMail) {
     return res.status(400).json({ message: 'El correo del usuario es obligatorio.' });
@@ -14,11 +14,11 @@ const getEstadoPerfil = async (req, res) => {
 
   try {
     const query = 'SELECT perfil_privado FROM feriante WHERE user_mail = $1';
-    const result = await req.pool.query(query, [userMail]);
+    const result = await pool.query(query, [userMail]);
 
     if (result.rows.length === 0) {
       console.error(`Usuario no encontrado: ${userMail}`);
-      return res.status(404).json({ message: 'Usuario no encontrado' });
+      return res.status(404).json({ message: `Usuario no encontrado: ${userMail}` });
     }
 
     res.status(200).json({ perfil_privado: result.rows[0].perfil_privado });
@@ -29,31 +29,36 @@ const getEstadoPerfil = async (req, res) => {
 };
 
 // Función para alternar el estado de perfil (público/privado)
-const togglePerfilPrivado = async (req, res, pool) => {
+const togglePerfilPrivado = async (req, res) => {
   const { userMail } = req.body;
+  const pool = req.pool; // Usar req.pool
+
+  if (!userMail) {
+    console.error('El correo del usuario es obligatorio.');
+    return res.status(400).json({ message: 'El correo del usuario es obligatorio.' });
+  }
 
   try {
-    const result = await pool.query(
-      'SELECT perfil_privado FROM feriante WHERE user_mail = $1',
-      [userMail]
-    );
+    console.log(`Cambiando estado del perfil para: ${userMail}`);
+    const querySelect = 'SELECT perfil_privado FROM feriante WHERE user_mail = $1';
+    const result = await pool.query(querySelect, [userMail]);
 
     if (result.rows.length === 0) {
+      console.error(`Usuario no encontrado: ${userMail}`);
       return res.status(404).json({ message: 'Usuario no encontrado' });
     }
 
     const currentStatus = result.rows[0].perfil_privado;
     const newStatus = !currentStatus;
 
-    await pool.query(
-      'UPDATE feriante SET perfil_privado = $1 WHERE user_mail = $2',
-      [newStatus, userMail]
-    );
+    const queryUpdate = 'UPDATE feriante SET perfil_privado = $1 WHERE user_mail = $2';
+    await pool.query(queryUpdate, [newStatus, userMail]);
 
+    console.log(`Estado del perfil actualizado: ${newStatus}`);
     res.status(200).json({ message: 'Estado del perfil actualizado correctamente', perfil_privado: newStatus });
   } catch (error) {
     console.error('Error al cambiar el estado del perfil:', error);
-    res.status(500).json({ message: 'Error al cambiar el estado del perfil' });
+    res.status(500).json({ message: 'Error al cambiar el estado del perfil.' });
   }
 };
 
@@ -232,50 +237,41 @@ const cargarIntereses = async (res, pool, id_user) => {
 };
 
 // Función para actualizar correo
-const actualizarCorreo = async (req, res, pool) => {
+const actualizarCorreo = async (req, res) => {
   const { nuevoCorreo, user_mail } = req.body;
+  const pool = req.pool;
 
   if (!nuevoCorreo || !user_mail) {
     return res.status(400).json({ message: 'El correo actual y el nuevo correo son obligatorios.' });
   }
-
+  console.log(`Correo actualizado: ${user_mail} -> ${nuevoCorreo}`);
   try {
     await pool.query('BEGIN');
 
-    // Actualizar el correo en la tabla feriante
-    const queryFeriante = 'UPDATE feriante SET user_mail = $1 WHERE user_mail = $2;';
-    await pool.query(queryFeriante, [nuevoCorreo, user_mail]);
+    // Actualizar correo en la tabla principal (feriante)
+    const queryFeriante = 'UPDATE feriante SET user_mail = $1 WHERE user_mail = $2 RETURNING id_user_fte;';
+    const resultFeriante = await pool.query(queryFeriante, [nuevoCorreo, user_mail]);
 
-    // Actualizar intereses relacionados (si corresponde)
+    if (resultFeriante.rowCount === 0) {
+      throw new Error('Usuario no encontrado en la base de datos.');
+    }
+
+    const idUser = resultFeriante.rows[0].id_user_fte;
+
+    // Actualizar correo en tablas relacionadas
     const queryIntereses = `
       UPDATE intereses
-      SET id_user_fte = (
-        SELECT id_user_fte
-        FROM feriante
-        WHERE user_mail = $1
-      )
-      WHERE id_user_fte = (
-        SELECT id_user_fte
-        FROM feriante
-        WHERE user_mail = $2
-      );
+      SET id_user_fte = $1
+      WHERE id_user_fte = $2;
     `;
-    await pool.query(queryIntereses, [nuevoCorreo, user_mail]);
+    await pool.query(queryIntereses, [idUser, idUser]);
 
     const queryRedesSociales = `
       UPDATE redes_sociales
-      SET id_user_fte = (
-        SELECT id_user_fte
-        FROM feriante
-        WHERE user_mail = $1
-      )
-      WHERE id_user_fte = (
-        SELECT id_user_fte
-        FROM feriante
-        WHERE user_mail = $2
-      );
+      SET id_user_fte = $1
+      WHERE id_user_fte = $2;
     `;
-    await pool.query(queryRedesSociales, [nuevoCorreo, user_mail]);
+    await pool.query(queryRedesSociales, [idUser, idUser]);
 
     await pool.query('COMMIT');
     res.status(200).json({ message: 'Correo actualizado correctamente' });
@@ -285,6 +281,7 @@ const actualizarCorreo = async (req, res, pool) => {
     res.status(500).json({ message: 'Error interno del servidor' });
   }
 };
+
 
 
 // Función para actualizar la contraseña

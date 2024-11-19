@@ -16,6 +16,7 @@ const RedesSociales: React.FC<RedesSocialesProps> = ({ userMail }) => {
   const [tiposRed, setTiposRed] = useState<{ id: number; red_social: string; url_foto_red: string }[]>([]);
 
   // Cargar tipos de redes sociales disponibles
+  
   useEffect(() => {
     const obtenerTiposRed = async () => {
       try {
@@ -34,6 +35,7 @@ const RedesSociales: React.FC<RedesSocialesProps> = ({ userMail }) => {
         console.log(`Cargando redes sociales para: ${userMail}`);
         const response = await axios.get(`http://localhost:5000/api/redes-sociales/${userMail}`);
         setEnlaces(response.data);
+        console.log('Redes sociales cargadas:', response.data);
       } catch (error) {
         console.error('Error al cargar redes sociales:', error);
       }
@@ -75,7 +77,7 @@ const RedesSociales: React.FC<RedesSocialesProps> = ({ userMail }) => {
       <h2>Redes Sociales</h2>
       <ul>
         {enlaces.map((enlace) => (
-          <li key={enlace.id}>
+          <li key={enlace.id}> 
             <img
               src={enlace.url_foto_red}
               alt={`${enlace.tipo} logo`}
@@ -92,9 +94,9 @@ const RedesSociales: React.FC<RedesSocialesProps> = ({ userMail }) => {
           value={tipoRed}
           onChange={(e) => setTipoRed(e.target.value)}
         >
-          <option value="">Seleccione una red social</option>
+          <option value="" key="default">Seleccione una red social</option> 
           {tiposRed.map((red) => (
-            <option key={red.id} value={red.red_social}>
+            <option key={red.id} value={red.red_social}> 
               {red.red_social}
             </option>
           ))}

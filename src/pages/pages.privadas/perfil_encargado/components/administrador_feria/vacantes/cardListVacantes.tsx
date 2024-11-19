@@ -157,12 +157,14 @@ const handleHorarioChange = (index: number, horarioIndex: number, field: keyof h
               ))}
             </div>
           </ul>
-          {!editStates[index] ? (
-            <button onClick={() => handleEdit(index)}>Actualizar</button>
-          ) : (
-            <button onClick={() => actualizarVacante(index , idFeria)}>Guardar Cambios</button>
-          )}
-          <button onClick={() => borrarVacante(formData.id_vacante)}>Eliminar Vacante</button>
+          <div className="button-group">
+            {!editStates[index] ? (
+              <button onClick={() => handleEdit(index)}>Actualizar</button>
+            ) : (
+              <button onClick={() => actualizarVacante(index, idFeria)}>Guardar Cambios</button>
+            )}
+            <button onClick={() => borrarVacante(formData.id_vacante)}>Eliminar Vacante</button>
+          </div>
         </div>
       ))}
     </div>

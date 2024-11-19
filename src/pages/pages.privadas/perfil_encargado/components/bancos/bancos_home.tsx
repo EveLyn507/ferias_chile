@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { bancoService } from "../../rxjs/sharingbankslist";
 import { useSelector } from "react-redux";
 import { AppStore } from "../../../../../redux/store";
+import "./banco.css";
 
 const BancosHome = () => {
   const id_user_enf = useSelector((store: AppStore) => store.user.id_user);
