@@ -23,7 +23,8 @@ import './mapa.css'
     const planY = 50;
     const gridSize = 50;
     const controlSize = 8;
-  
+    const [zoomLevel, setZoomLevel] = useState(1);
+
     const [image, setImage] = useState<HTMLImageElement | null>(null);
    
     
@@ -39,11 +40,49 @@ import './mapa.css'
     };
     }, []);
 
+  // Función para aumentar el zoom
+  const handleZoomIn = () => {
+    setZoomLevel((prevZoom) => {
+      const nextZoom = Math.floor(prevZoom + 1); // Redondea hacia abajo
+      return Math.min(nextZoom, 3.0); // Limita el zoom máximo a 2
+    });
+  };
 
+  // Función para reducir el zoom
+  const handleZoomOut = () => {
+    setZoomLevel((prevZoom) => {
+      const nextZoom = Math.floor(prevZoom - 0.5); // Redondea hacia abajo
+      return Math.max(nextZoom, 0.2); // Limita el zoom mínimo a 1
+    });
+  };
 
 return (
-  <div className='contenedor-mapa'>
-      <Stage width={window.innerWidth} height={window.innerHeight}>
+  <>
+      
+      {/* Botones de zoom */}
+    <div style={{ position: 'relative', top: '10px', right: '10px', paddingLeft: '5%'}}>
+    <button onClick={handleZoomIn} style={{ margin: '5px' }}>Zoom In</button>
+    <button onClick={handleZoomOut} style={{ margin: '5px' }}>Zoom Out</button>
+    </div>
+
+    <div
+    style={{
+      padding: '20%',
+    width: '1000px',  // Un tamaño fijo para el div
+    height: '500px', // Un tamaño fijo para el div
+    overflow: 'auto', // Habilitar scroll
+    position: 'relative',
+    }}>
+        
+      <Stage      
+       width={plano.width + planX } // Asegúrate de que el stage sea más grande que el div
+        height={plano.height + planY } // Asegúrate de que el stage sea más grande que el div
+        scaleX={zoomLevel} // Aplica el zoom al eje X
+        scaleY={zoomLevel} // Aplica el zoom al eje Y
+        style={{
+          backgroundColor: 'transparent',
+        }}
+      >
         <Layer>
 
         <Rect
@@ -104,7 +143,8 @@ return (
           />
 
     </Stage>
-  </div>
+    </div>
+    </>
 
 )
 
