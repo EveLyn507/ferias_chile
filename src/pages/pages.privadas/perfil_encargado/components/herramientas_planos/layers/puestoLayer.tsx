@@ -19,10 +19,10 @@ const PuestosLayer: React.FC<PuestosLayerProps> = ({
   const layerRef = useRef(null);
   const [focusedPuesto, setFocusedPuesto] = useState<PlanoItemElement | null>(null);
   // Actualizar el puesto anterior al cambiar `focusedPuesto`
-
+ const scale = 100
   const calculateDimensionsInMeters = useCallback((width: number, height: number) => {
-    const metersWidth = (width / 50) * 2; // Convertimos basado en tamaño base de 2 metros
-    const metersHeight = (height / 50) * 2;
+    const metersWidth = (width / scale) ; // Convertimos basado en tamaño base de 2 metros
+    const metersHeight = (height / scale) ;
     return { metersWidth, metersHeight };
   }, []);
 
@@ -68,7 +68,7 @@ const PuestosLayer: React.FC<PuestosLayerProps> = ({
             <Text
               x={Puesto.dimenciones.x}
               y={Puesto.dimenciones.y - 20}
-              text={`N${Puesto.nombre_elemento} | ${metersWidth.toFixed(2)}m x ${metersHeight.toFixed(2)}m`}
+              text={`N${Puesto.nombre_elemento} `}
               fontSize={12}
               fill="black"
             />
@@ -77,7 +77,7 @@ const PuestosLayer: React.FC<PuestosLayerProps> = ({
               <Text
                 x={Puesto.dimenciones.x}
                 y={Puesto.dimenciones.y - 40}
-                text={` ${metersWidth.toFixed(2)}m x ${metersHeight.toFixed(2)}m`}
+                text={` ${metersWidth.toFixed(1)}m x ${metersHeight.toFixed(1)}m`}
                 fontSize={12}
                 fill="black"
                 visible={true}

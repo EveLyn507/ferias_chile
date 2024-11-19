@@ -14,10 +14,13 @@ interface MenuCalleProps {
 
 const MenuCalle: React.FC<MenuCalleProps> = ({ selectedCalle ,setSelectedItem , deleteItem}) => {
 
-
+const scale = 100
   const handleChange = (field: keyof Street, value: any) => {
     if (!selectedCalle) return;
-    
+    if (field === "width" || field === "height") {
+      value = value * scale; // Convertimos el valor a píxeles si es necesario
+    }
+  
     // Crear un objeto actualizado para pasar a onUpdatePuesto
     const updatedCalle = { ...selectedCalle, dimenciones : { ...selectedCalle.dimenciones , [field]: value}  };
     setSelectedItem(updatedCalle);
@@ -34,7 +37,7 @@ const MenuCalle: React.FC<MenuCalleProps> = ({ selectedCalle ,setSelectedItem , 
           <input
             type="number"
             value={selectedCalle?.dimenciones.x}
-            onChange={(e) => handleChange("x", parseFloat(e.target.value))}
+            onChange={(e) => handleChange("x", parseInt(e.target.value))}
           />
         </label>
       </div>
@@ -45,7 +48,7 @@ const MenuCalle: React.FC<MenuCalleProps> = ({ selectedCalle ,setSelectedItem , 
           <input
             type="number"
             value={selectedCalle?.dimenciones.y}
-            onChange={(e) => handleChange("y", parseFloat(e.target.value))}
+            onChange={(e) => handleChange("y", parseInt(e.target.value))}
           />
         </label>
       </div>
@@ -55,8 +58,8 @@ const MenuCalle: React.FC<MenuCalleProps> = ({ selectedCalle ,setSelectedItem , 
           Ancho:
           <input
             type="number"
-            value={selectedCalle?.dimenciones.width}
-            onChange={(e) => handleChange("width", parseFloat(e.target.value))}
+            value={selectedCalle!.dimenciones.width / scale}
+            onChange={(e) => handleChange("width", parseInt(e.target.value))}
           />
         </label>
       </div>
@@ -65,8 +68,8 @@ const MenuCalle: React.FC<MenuCalleProps> = ({ selectedCalle ,setSelectedItem , 
           Alto:
           <input
             type="number"
-            value={selectedCalle?.dimenciones.height}
-            onChange={(e) => handleChange("height", parseFloat(e.target.value))}
+            value={selectedCalle!.dimenciones.height / scale}
+            onChange={(e) => handleChange("height", parseInt(e.target.value))}
           />
         </label>
       </div>
