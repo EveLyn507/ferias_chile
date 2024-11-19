@@ -25,7 +25,6 @@ export const Filtros_base = ({ onFilterC, onFilterR }: FiltrosBaseProps) => {
   const [selectedComuna, setSelectedComuna] = useState<number | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isFixed, setIsFixed] = useState(false);
 
   useEffect(() => {
     Promise.all([
@@ -49,18 +48,6 @@ export const Filtros_base = ({ onFilterC, onFilterR }: FiltrosBaseProps) => {
     ]).catch((error) => console.error('Error al cargar los JSON:', error));
   }, []);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY || document.documentElement.scrollTop;
-      const halfPage = document.documentElement.scrollHeight / 4.5;
-
-      setIsFixed(scrollPosition >= halfPage);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   const handleRegionClick = (regionId: number) => {
     setSelectedRegion(regionId);
@@ -76,7 +63,7 @@ export const Filtros_base = ({ onFilterC, onFilterR }: FiltrosBaseProps) => {
   };
 
   return (
-    <div className={`filtros-base ${isFixed ? 'fixed' : ''}`}>
+    <div className={`filtros-base`}>
       <div className="hamburger-menu" onClick={() => setIsMenuOpen(!isMenuOpen)}>
         ☰
       </div>

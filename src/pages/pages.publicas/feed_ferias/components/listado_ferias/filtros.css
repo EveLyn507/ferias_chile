@@ -4,23 +4,17 @@
   position: relative;
   top: 0;
   left: 30px;
-  z-index: 1000;
+  z-index: 10;
   width: 500px;
+  transition: all 0.3s ease-in-out;
 }
-
-.filtros-base.fixed {
-  position: fixed;
-  top: 0;
-  padding: 20px;
-  left: 30px;
-  z-index: 1000;
-  width: 500px;
-}
-
 
 @media (max-width: 1119px) {
   .filtros-base {
-    display: none;
+    display: block;
+    position: relative;
+    margin: 80px 10px;
+    padding: 10px;
   }
 
   .hamburger-menu {
@@ -37,10 +31,10 @@
 
   .filtros-base.open {
     display: flex;
-    width: calc(100% - 20px); /* Ajustado para móviles */
+    width: calc(100% - 20px);
     left: 0;
     margin: 80px 10px;
-    padding: 10px; /* Ajustado para mantener diseño limpio */
+    padding: 10px;
   }
 }
 
@@ -142,13 +136,6 @@
   color: #007bff;
 }
 
-.hamburger-menu {
-  font-size: 30px;
-  cursor: pointer;
-  padding: 10px;
-  text-align: center;
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  z-index: 10;
+.comuna-btn:hover {
+  background-color: #0056b3;
 }

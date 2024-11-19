@@ -9,10 +9,9 @@ export interface CanvasProps {
     calles: PlanoItemElement[];
     onItemClick: (item:  PlanoItemElement) => void;
     plano: plano 
-    onChangePlano: (newPlano : plano) => void;
     isStatic?: boolean;
     selectedItem : PlanoItemElement | null
-    setSelectedItem : (item : PlanoItemElement) => void
+    setSelectedItem : (item : PlanoItemElement | null) => void
 
 
   }

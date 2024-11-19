@@ -11,44 +11,49 @@ interface MenuDerechaProps {
 }
 
 
-
-
-
 const MenuDerecha: React.FC<MenuDerechaProps> = ({
   selectedPuesto,
   deleteItem,
   setSelectedItem,
-  isLoading,
+  
 }) => {
 
+const scale = 100
+
+const handleChangeDimencion = (field: keyof Rectangle, value: any) => {
+  if (!selectedPuesto) return;
+
+  if (field === "width" || field === "height") {
+    value = value * scale; // Convertimos el valor a píxeles si es necesario
+  }
 
 
-  const handleChangeDimencion = (field: keyof Rectangle, value: any) => {
-    if (!selectedPuesto) return;
-    
-    // Crear un objeto actualizado para pasar a onUpdatePuesto
-    const updatedPuesto = { ...selectedPuesto, dimenciones : { ...selectedPuesto.dimenciones, [field]: value }  };
-    setSelectedItem(updatedPuesto);
+
+  // Crear un objeto actualizado para pasar a onUpdatePuesto
+  const updatedPuesto = {
+    ...selectedPuesto,
+    dimenciones: {
+      ...selectedPuesto.dimenciones,
+      [field]: value,
+    },
   };
+
+  setSelectedItem(updatedPuesto);
+};
+
 
 
   const handleChangePdata = (field: keyof dataPuesto, value: any) => {
     if (!selectedPuesto) return;
     
+  
     // Crear un objeto actualizado para pasar a onUpdatePuesto
     const updatedPuesto = { ...selectedPuesto, dataPuesto : { ...selectedPuesto.dataPuesto!, [field]: value }  };
     setSelectedItem(updatedPuesto);
   };
 
 
-  const ActualizarPuesto = async () => {
-    if (!selectedPuesto || selectedPuesto.id_elemento === undefined) {
-      console.error("Error: `selectedPuesto` o `numero` no están definidos.");
-      return;
-    }
 
-
-  };
 
   return (
     <div className="menu-container">
@@ -60,15 +65,15 @@ const MenuDerecha: React.FC<MenuDerechaProps> = ({
           <input
             type="number"
             value={selectedPuesto?.dimenciones.x }
-            onChange={(e) => handleChangeDimencion("x", parseFloat(e.target.value))}
+            onChange={(e) => handleChangeDimencion("x", parseInt(e.target.value))}
           />
         </div>
         <div className="xy">
           <label>Y</label>
           <input
             type="number"
-            value={selectedPuesto?.dimenciones.y }
-            onChange={(e) => handleChangeDimencion("y", parseFloat(e.target.value))}
+            value={selectedPuesto?.dimenciones.y  }
+            onChange={(e) => handleChangeDimencion("y", parseInt(e.target.value))}
           />
         </div>
       </div>
@@ -78,16 +83,16 @@ const MenuDerecha: React.FC<MenuDerechaProps> = ({
           <label>Width</label>
           <input
             type="number"
-            value={selectedPuesto?.dimenciones.width }
-            onChange={(e) => handleChangeDimencion("width", parseFloat(e.target.value))}
+            value={selectedPuesto!.dimenciones.width! / scale  }
+            onChange={(e) => handleChangeDimencion("width", parseInt(e.target.value) )}
           />
         </div>
         <div className="xy">
-          <label>Height</label>
+          <label>Height</label> 
           <input
             type="number"
-            value={selectedPuesto?.dimenciones.height }
-            onChange={(e) => handleChangeDimencion("height", parseFloat(e.target.value))}
+            value={selectedPuesto!.dimenciones.height! /scale }
+            onChange={(e) => handleChangeDimencion("height", parseInt(e.target.value ))}
           />
         </div>
       </div>
@@ -105,7 +110,7 @@ const MenuDerecha: React.FC<MenuDerechaProps> = ({
         <label>Tipo de Puesto:</label>
         <select
           value={selectedPuesto?.dataPuesto?.id_tipo_puesto || ""}
-          onChange={(e) => handleChangePdata("id_tipo_puesto", e.target.value)}
+          onChange={(e) => handleChangePdata("id_tipo_puesto", parseInt(e.target.value))}
         >
           <option value="">Selecciona una opción</option>
           <option value="1">Día</option>
@@ -136,13 +141,7 @@ const MenuDerecha: React.FC<MenuDerechaProps> = ({
         />
       </div>
       <div className="botones-menu">
-      <button
-        onClick={ActualizarPuesto}
-        disabled={isLoading}
-        className="menu-button save-button"
-      >
-        {isLoading ? 'Guardando...' : 'Guardar'}
-      </button>
+
 
       <button
         onClick={() => deleteItem(selectedPuesto!)}

@@ -100,18 +100,13 @@ export const View_detalle_feria = () => {
     },[])
 
     return (
-
-        <>
-            <div>
-                <Mapa puestos={puestos} calles={calles} plano={plano}  isStatic={true}/>
-            </div>
-    
-            <div>
-                <Card_arriendos arriendos = {arriendos}/>
-            </div>
-        </>
-     
-    )
+      <div className="view-detalle-container">
+          <Card_arriendos arriendos={arriendos} />
+        <div className="mapa-container">
+          <Mapa puestos={puestos} calles={calles} plano={plano} isStatic={true} />
+        </div>
+      </div>
+    );
    
 };
 

@@ -9,9 +9,10 @@ import {  DeletedItem, plano, PlanoItemElement } from './models/vistaplanoModels
 import Canvas from './Canvas2';
 import MenuPuesto from './menus/MenuPuesto';
 import MenuCalle from './menus/MenuCalle';
-import MenuVacio from './menus/menuContainers';
+
 import { debounce } from 'lodash';
 import { vistaProps } from './models/canvasModels';
+import MenuPlano from './menus/menuPlano';
 
 
 
@@ -23,13 +24,14 @@ import { vistaProps } from './models/canvasModels';
 
     const [totalPuestos, setTotalPuestos] = useState<number>(0);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [Planocharge, setPlanocharge] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const { id_feria } = useParams<{ id_feria: string }>();
     const idFeria = id_feria ? parseInt(id_feria) : 0 //extrae el id feria
 
     //variables de la herramienta
   // tamaño del canvas por default
-  const[newDimplano, setNewDimPlano] = useState<plano | null>( null) // para tomar las nuevas dimenciones
+  const[newDimplano, setDimPlano] = useState<plano | null>( null) // para tomar las nuevas dimenciones
   const[plano, setPlano] = useState<plano>({
     id_feria : idFeria,
     id_plano : null,
@@ -143,6 +145,7 @@ import { vistaProps } from './models/canvasModels';
           setError('Error al obtener los datos de la feria');
         } finally {
           setIsLoading(false);
+          setPlanocharge(true)
         }
 
         console.log('me activo fetch');
@@ -155,9 +158,12 @@ import { vistaProps } from './models/canvasModels';
   
         //actualiza las dimenciones del plano 
         const OnChangePlano = async () => {
+  
+          
           UpdatePlano(newDimplano!)
           setPlano(newDimplano!)
         }
+
         const debouncedSavePlano = debounce(OnChangePlano, 300);
     
         useEffect(() => {
@@ -270,7 +276,6 @@ import { vistaProps } from './models/canvasModels';
               setPuestos={setPuestos}
               onItemClick={ItemClick}
               plano={plano}
-              onChangePlano={setNewDimPlano}
               calles={calles}
               selectedItem={selectedItem}
               setSelectedItem={setSelectedItem}
@@ -280,24 +285,29 @@ import { vistaProps } from './models/canvasModels';
           </div>
 
           <div>
-      {selectedItem?.id_tipo_elemento === 2? (
-        <MenuCalle
-          selectedCalle={selectedItem }
-          setSelectedItem={setSelectedItem}
-          deleteItem={deleteItem}
-          isLoading={isLoading}
-        />
-      ) : selectedItem?.id_tipo_elemento === 1 ? (
-        <MenuPuesto
-          selectedPuesto={selectedItem }
-          deleteItem={deleteItem}
-          setSelectedItem= {setSelectedItem}
-          isLoading={isLoading}
-        />
-      ) : (
-        <MenuVacio />
-      )}
-    </div>
+  {selectedItem?.id_tipo_elemento === 2 ? (
+    <MenuCalle
+      selectedCalle={selectedItem}
+      setSelectedItem={setSelectedItem}
+      deleteItem={deleteItem}
+      isLoading={isLoading}
+    />
+  ) : selectedItem?.id_tipo_elemento === 1 ? (
+    <MenuPuesto
+      selectedPuesto={selectedItem}
+      deleteItem={deleteItem}
+      setSelectedItem={setSelectedItem}
+      isLoading={isLoading}
+    />
+  ) : (
+    // Solo renderizar MenuPlano cuando 'plano' tenga datos
+    Planocharge === true ? (
+      <MenuPlano plano={plano} onChangePlano={setDimPlano} />
+    ) : (
+      <div>Esperando la carga de datos del plano...</div> // Mensaje mientras se carga
+    )
+  )}
+</div>
 
         </div>
       </div>

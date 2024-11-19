@@ -1,0 +1,15 @@
+.view-detalle-container {
+    position: relative;
+    width: 100%;
+    height: 100vh; /* Ocupa toda la altura de la pantalla */
+    display: flex;
+    justify-content: space-between; /* Separa elementos a izquierda y derecha */
+    align-items: flex-start; /* Alinea ambos contenedores al principio verticalmente */
+  }
+  
+  .mapa-container {
+    flex: 1; /* Ocupa el espacio disponible */
+    margin-left: 10px;
+  }
+  
+  

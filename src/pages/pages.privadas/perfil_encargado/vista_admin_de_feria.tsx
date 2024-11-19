@@ -14,6 +14,7 @@ import { Tab, TabList, TabPanel, Tabs } from "react-tabs"
 import { PostulantesFeria } from "./components/administrador_feria/postulantesFeria"
 import { postulacionService } from "./rxjs/sharingPostulaciones"
 import { StatusFeria } from "./components/status/statusFeria"
+import './perfil_e.css'
 import "./components/administrador_feria/administrador_feria.css";
 
 
@@ -33,48 +34,40 @@ useEffect(()=> {
 
 })
 
-  return (
 
 
+return (
+  <div className="admin-container">
+    <div className="admin-header">
+      <h1>Administración de {nombre}</h1>
+      <StatusFeria />
+    </div>
+    
+    <Tabs className="admin-tabs">
+      <TabList>
+        <Tab>VACANTES</Tab>
+        <Tab>POSTULANTES</Tab>
+        <Tab>PROGRAMA</Tab>
+        <Tab>BANCOS</Tab>
+      </TabList>
+      
+      <TabPanel>
+        <CrearVacante />
+        <EmpleadosFeria />
+      </TabPanel>
 
-    <> 
+      <TabPanel>
+        <PostulantesFeria />
+      </TabPanel>
 
-<div>
-<h1> Administracion de {nombre}</h1>
- <StatusFeria/>
-</div>
-<br />
+      <TabPanel>
+        <BooleanDaysSelector />
+      </TabPanel>
 
-
-<Tabs>
-            <TabList>
-                <Tab>VACANTES </Tab>
-                <Tab>POSTULANTES</Tab>
-                <Tab>PROGRAMA</Tab>
-                <Tab>BANCOS</Tab>
-            </TabList>
-            
-            <TabPanel>
-            <CrearVacante/>
-            <EmpleadosFeria/>
-            </TabPanel>
-            
-
-            <TabPanel>
-            <PostulantesFeria/>
-            </TabPanel>
-
-
-            <TabPanel>
-            <BooleanDaysSelector/>
-            </TabPanel>
-
-            <TabPanel>
-            <BancoFeria/>
-            </TabPanel>
-
-        </Tabs>
-
-    </>
-  )
+      <TabPanel>
+        <BancoFeria />
+      </TabPanel>
+    </Tabs>
+  </div>
+);
 }
