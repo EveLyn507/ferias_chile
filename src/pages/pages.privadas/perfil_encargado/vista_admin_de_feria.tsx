@@ -14,7 +14,6 @@ import { Tab, TabList, TabPanel, Tabs } from "react-tabs"
 import { PostulantesFeria } from "./components/administrador_feria/postulantesFeria"
 import { postulacionService } from "./rxjs/sharingPostulaciones"
 import { StatusFeria } from "./components/status/statusFeria"
-import './perfil_e.css'
 import "./components/administrador_feria/administrador_feria.css";
 
 
@@ -37,6 +36,7 @@ useEffect(()=> {
 
 
 return (
+  <div className="admin-feria">
   <div className="admin-container">
     <div className="admin-header">
       <h1>Administración de {nombre}</h1>
@@ -68,6 +68,7 @@ return (
         <BancoFeria />
       </TabPanel>
     </Tabs>
+  </div>
   </div>
 );
 }

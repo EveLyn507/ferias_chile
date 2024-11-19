@@ -21,16 +21,16 @@ useEffect(()=> {
 
     <>
     
-   
+   <div className="banco">
     <div>
-      
       <NuevoBanco/>
     </div>
 
     <div>
-<CardDatosBank/>
-
+      <CardDatosBank/>
     </div>
+   
+    </div> 
     </>
   );
 };
