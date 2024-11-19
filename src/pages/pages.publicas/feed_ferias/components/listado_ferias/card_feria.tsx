@@ -16,10 +16,10 @@ export const CardFerias = ({ ferias }: FeriasProps) => {
             items={[feria]} // Pasamos el único objeto como array
             renderFields={() => [
               { label: "Nombre", value: <h2 className="card-title">{feria.nombre_feria}</h2> },
-              { label: "Región", value: <p><strong>Región:</strong> {feria.region}</p> },
-              { label: "Comuna", value: <p><strong>Comuna:</strong> {feria.comuna}</p> },
+              { label: "", value: <p><strong>Región:</strong> {feria.region}</p> },
+              { label: "", value: <p><strong>Comuna:</strong> {feria.comuna}</p> },
               {
-                label: "Horarios de la feria",
+                label: "",
                 value: (
                   <div className="card-section">
                     <strong>Horarios:</strong>
@@ -28,36 +28,27 @@ export const CardFerias = ({ ferias }: FeriasProps) => {
                         {feria.horarios.map((horario, index) => (
                           <li key={index}>
                             {semana[horario.id_dia]}: {horario.hora_inicio} - {horario.hora_termino}
+                        
                           </li>
                         ))}
                       </ul>
+                      
                     ) : (
                       <p>No hay horarios disponibles</p>
                     )}
+                        <br />
+                            <br />
+                     
                   </div>
                 ),
-              },
-              {
-                label: "Siguientes ferias",
-                value: (
-                  <div className="card-section">
-                    {feria.actividades?.length > 0 ? (
-                      <ul>
-                        {feria.actividades.map((actividad) => (
-                          <li key={actividad.id_actividad_feria}>
-                            Fecha: {new Date(actividad.fecha).toLocaleDateString('es-ES')}
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p>No hay actividades disponibles</p>
-                    )}
-                  </div>
-                ),
-              },
+              }
+         
+             
             ]}
+            
             actions={() => (
               <div className="button-container">
+            
                 {feria.actividades?.map((actividad) => (
                   <Link
                     key={actividad.id_actividad_feria}

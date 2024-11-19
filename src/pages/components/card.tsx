@@ -14,7 +14,7 @@ interface CardProps<T> {
             <ul>
               {renderFields(item).map((field, i) => (
                 <li key={i}>
-                  {field.label}: {field.value}
+                  {field.label} {field.value}
                 </li>
               ))}
             </ul>

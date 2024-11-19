@@ -166,7 +166,7 @@ const createTransaction = async (io,socket, pool, params) => {
   const emailFragment = mail.split('@')[0];
   const timestamp = new Date().getTime();  // Obtener el timestamp actual
   const sessionId = `session-${puesto.id_puesto}-${timestamp}`;
-  const buyOrder = `order-${puesto.id_puesto}-${timestamp}-${emailFragment}`;
+  const buyOrder = `order-${puesto.id_puesto}-${timestamp}`;
   const amount = puesto.precio
   const id_arriendo_puesto = puesto.id_arriendo_puesto
 
