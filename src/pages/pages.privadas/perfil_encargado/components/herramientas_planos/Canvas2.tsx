@@ -1,242 +1,246 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-
-
 import { Stage, Layer, Rect, Line } from 'react-konva';
 import { useState, useEffect } from 'react';
-
 import React from 'react';
 import { CanvasProps } from './models/canvasModels';
 import StreetsLayer from './layers/streelayer';
 import PuestosLayer from './layers/puestoLayer';
 import { PlanoItemElement } from './models/vistaplanoModels';
 
-  const Canvas2: React.FC<CanvasProps> = ({
-    puestos,
-    setPuestos,
-    calles,
-    onItemClick,
-    plano,
-    onChangePlano,
-    isStatic = false,
-    selectedItem,
-    setSelectedItem
+const Canvas2: React.FC<CanvasProps> = ({
+  puestos,
+  setPuestos,
+  calles,
+  onItemClick,
+  plano,
+  isStatic = false,
+  selectedItem,
+  setSelectedItem
+}) => {
+  const planX = 50;
+  const planY = 50;
+  const gridSize = 50;
+  const [isAltPressed, setIsAltPressed] = useState(false);
+  const [hoveredItem, setHoveredItem] = useState<PlanoItemElement | null>(null);
+  const [image, setImage] = useState<HTMLImageElement | null>(null);
 
 
-  }) => { 
-    const planX = 50;
-    const planY = 50;
-    const gridSize = 50;
-    const controlSize = 8;
-    const [isAltPressed, setIsAltPressed] = useState(false);
-    const [hoveredItem, setHoveredItem] = useState<PlanoItemElement | null>(null); // null,
-    const [image, setImage] = useState<HTMLImageElement | null>(null);
+  // Estado para el nivel de zoom
+  const [zoomLevel, setZoomLevel] = useState(1);
 
-    // Cargar imagen de los puestos
-    useEffect(() => {
+  useEffect(() => {
     const img = new window.Image();
     img.src = '/imagenes/puesto.png';
     img.onload = () => {
-        setImage(img);
+      setImage(img);
     };
     img.onerror = () => {
-        console.error('Error loading the image');
+      console.error('Error loading the image');
     };
-    }, []);
+  }, []);
 
+  const moveKey = (item: PlanoItemElement, e: 'keyUp' | 'keydown' | 'keyLeft' | 'keyRigth') => {
+    let updated = { ...item };
 
-console.log('hover', hoveredItem);
-console.log('alt', isAltPressed);
+    if (e === 'keyUp') {
+      updated = {
+        ...item,
+        dimenciones: {
+          ...item.dimenciones,
+          y: item.dimenciones.y - 1
+        }
+      };
+    } else if (e === 'keydown') {
+      updated = {
+        ...item,
+        dimenciones: {
+          ...item.dimenciones,
+          y: item.dimenciones.y + 1
+        }
+      };
+    } else if (e === 'keyLeft') {
+      updated = {
+        ...item,
+        dimenciones: {
+          ...item.dimenciones,
+          x: item.dimenciones.x - 1
+        }
+      };
+    } else if (e === 'keyRigth') {
+      updated = {
+        ...item,
+        dimenciones: {
+          ...item.dimenciones,
+          x: item.dimenciones.x + 1
+        }
+      };
+    }
 
+    setSelectedItem(updated);
+  };
 
-const moveKey = (item: PlanoItemElement, e: 'keyUp' | 'keydown' | 'keyLeft' | 'keyRigth') => {
-  let updated = { ...item }; // Crea una copia del item original
-
-  // Actualizar las coordenadas según la tecla presionada
-  if (e === 'keyUp') {
-    updated = { 
-      ...item, 
-      dimenciones: { 
-        ...item.dimenciones, 
-        y: item.dimenciones.y - 1 // Mover hacia arriba
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (selectedItem) {
+        switch (event.key) {
+          case 'ArrowUp':
+            event.preventDefault();
+            moveKey(selectedItem, 'keyUp');
+            break;
+          case 'ArrowDown':
+            event.preventDefault();
+            moveKey(selectedItem, 'keydown');
+            break;
+          case 'ArrowLeft':
+            event.preventDefault();
+            moveKey(selectedItem, 'keyLeft');
+            break;
+          case 'ArrowRight':
+            event.preventDefault();
+            moveKey(selectedItem, 'keyRigth');
+            break;
+          default:
+            break;
+        }
       }
     };
-  } else if (e === 'keydown') {
-    updated = { 
-      ...item, 
-      dimenciones: { 
-        ...item.dimenciones, 
-        y: item.dimenciones.y + 1 // Mover hacia abajo
-      }
-    };
-  } else if (e === 'keyLeft') {
-    updated = { 
-      ...item, 
-      dimenciones: { 
-        ...item.dimenciones, 
-        x: item.dimenciones.x - 1 // Mover hacia la izquierda
-      }
-    };
-  } else if (e === 'keyRigth') {
-    updated = { 
-      ...item, 
-      dimenciones: { 
-        ...item.dimenciones, 
-        x: item.dimenciones.x + 1 // Mover hacia la derecha
-      }
-    };
-  }
 
-  // Actualiza el estado con el nuevo item
-  setSelectedItem(updated);
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [selectedItem]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Shift') {
+        setIsAltPressed(true);
+      }
+    };
+
+    const handleKeyUp = (event: KeyboardEvent) => {
+      if (event.key === 'Shift') {
+        setIsAltPressed(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  }, []);
+
+  // Función para aumentar el zoom
+  const handleZoomIn = () => {
+    setZoomLevel((prevZoom) => {
+      const nextZoom = Math.floor(prevZoom + 1); // Redondea hacia abajo
+      return Math.min(nextZoom, 4); // Limita el zoom máximo a 2
+    });
+  };
+
+  // Función para reducir el zoom
+  const handleZoomOut = () => {
+    setZoomLevel((prevZoom) => {
+      const nextZoom = Math.floor(prevZoom - 0.5); // Redondea hacia abajo
+      return Math.max(nextZoom, 0.5); // Limita el zoom mínimo a 1
+    });
+  };
+  
+
+  return (
+
+    <>
+      
+                {/* Botones de zoom */}
+        <div style={{ position: 'relative', top: '10px', right: '10px',paddingBottom: '10px' }}>
+        <button onClick={handleZoomIn} style={{ margin: '5px' }}>Zoom In</button>
+        <button onClick={handleZoomOut} style={{ margin: '5px' }}>Zoom Out</button>
+      </div>
+
+    <div
+      style={{
+        width: '1000px',  // Un tamaño fijo para el div
+        height: '500px', // Un tamaño fijo para el div
+        overflow: 'auto', // Habilitar scroll
+        position: 'relative',
+      }}
+    >
+
+
+      <Stage
+        width={plano.width + planX } // Asegúrate de que el stage sea más grande que el div
+        height={plano.height + planY } // Asegúrate de que el stage sea más grande que el div
+        scaleX={zoomLevel} // Aplica el zoom al eje X
+        scaleY={zoomLevel} // Aplica el zoom al eje Y
+        style={{
+          backgroundColor: 'transparent',
+        }}
+      >
+        <Layer>
+          <Rect
+            x={planX}
+            y={planY}
+            width={plano.width}
+            height={plano.height}
+            fill="lightgray"
+            stroke="black"
+            onClick={ () => setSelectedItem(null)}
+            strokeWidth={2}
+          />
+          {/* Grilla de las líneas del fondo */}
+          {Array.from({ length: plano.width / gridSize }, (_, i) => (
+            <Line
+              key={`v-${i}`}
+              points={[planX + i * gridSize, planY, planX + i * gridSize, planY + plano.height]}
+              stroke="#ddd"
+              strokeWidth={1}
+            />
+          ))}
+
+          {Array.from({ length: plano.height / gridSize }, (_, i) => (
+            <Line
+              key={`h-${i}`}
+              points={[planX, planY + i * gridSize, planX + plano.width, planY + i * gridSize]}
+              stroke="#ddd"
+              strokeWidth={1}
+            />
+          ))}
+
+     
+  
+        </Layer>
+
+        <PuestosLayer
+          puestos={puestos}
+          setPuestos={setPuestos}
+          isStatic={false}
+          image={image}
+          onPuestoClick={onItemClick}
+          hoveredItem={hoveredItem}
+          setHoveredItem={setHoveredItem}
+          isAltPressed={isAltPressed}
+          selectedItem={selectedItem}
+        />
+
+        <StreetsLayer
+          calles={calles}
+          onStreetClick={onItemClick}
+          isStatic={isStatic}
+          hoveredItem={hoveredItem}
+          setHoveredItem={setHoveredItem}
+          isAltPressed={isAltPressed}
+          selectedItem={selectedItem}
+        />
+      </Stage>
+
+ 
+    </div>
+    </>
+  );
 };
 
-useEffect(() => {
-  const handleKeyDown = (event: KeyboardEvent) => {
-    if (selectedItem) {
-      // Verificar si la tecla presionada es una flecha
-      switch (event.key) {
-        case 'ArrowUp':
-          event.preventDefault(); // Evitar scroll
-          moveKey(selectedItem, 'keyUp');
-          break;
-        case 'ArrowDown':
-          event.preventDefault(); // Evitar scroll
-          moveKey(selectedItem, 'keydown');
-          break;
-        case 'ArrowLeft':
-          event.preventDefault(); // Evitar scroll
-          moveKey(selectedItem, 'keyLeft');
-          break;
-        case 'ArrowRight':
-          event.preventDefault(); // Evitar scroll
-          moveKey(selectedItem, 'keyRigth');
-          break;
-        default:
-          break; // Si no es una tecla de flecha, no hacer nada
-      }
-    }
-  };
-
-  // Agregar el event listener cuando el componente se monte
-  window.addEventListener('keydown', handleKeyDown);
-
-  // Limpiar el event listener cuando el componente se desmonte
-  return () => {
-    window.removeEventListener('keydown', handleKeyDown);
-  };
-}, [selectedItem]);
-
-    useEffect(() => {
-      const handleKeyDown = (event: KeyboardEvent) => {
-        if (event.key === 'Shift') {
-          setIsAltPressed(true);
-        }
-      };
-  
-      const handleKeyUp = (event: KeyboardEvent) => {
-        if (event.key === 'Shift') {
-          setIsAltPressed(false);
-        }
-      };
-  
-      // Escuchar eventos
-      window.addEventListener('keydown', handleKeyDown);
-      window.addEventListener('keyup', handleKeyUp);
-  
-      // Limpiar eventos
-      return () => {
-        window.removeEventListener('keydown', handleKeyDown);
-        window.removeEventListener('keyup', handleKeyUp);
-      };
-    }, []);
-
-
-return (
-    <Stage width={window.innerWidth} height={window.innerHeight}>
-    <Layer>
-
-    <Rect
-      x={planX}
-      y={planY}
-      width={plano.width}
-      height={plano.height}
-      fill="lightgray"
-      stroke="black"
-      strokeWidth={2}
-    />
-    
-    {/*GRILLA DE LAS LINEAS DEL FONDO*/}
-    {Array.from({ length: plano.width / gridSize }, (_, i) => (
-      <Line
-        key={`v-${i}`}
-        points={[planX + i * gridSize, planY, planX + i * gridSize, planY + plano.height]}
-        stroke="#ddd"
-        strokeWidth={1}
-      />
-    ))}
-
-    {Array.from({ length: plano.height / gridSize }, (_, i) => (
-      <Line
-        key={`h-${i}`}
-        points={[planX, planY + i * gridSize, planX + plano.width, planY + i * gridSize]}
-        stroke="#ddd"
-        strokeWidth={1}
-      />
-    ))} 
-
-
-    {/* Controlador para redimensionar el plano */}
-    {!isStatic && (
-      <Rect
-        x={planX + plano.width - controlSize / 2}
-        y={planY + plano.height - controlSize / 2}
-        width={controlSize}
-        height={controlSize}
-        fill="blue"
-        draggable={true}
-        dragBoundFunc={(pos) => {
-          const newWidth = Math.max(200, Math.floor(pos.x - planX)); // Redondear a entero
-          const newHeight = Math.max(200, Math.floor(pos.y - planY)); // Redondear a entero
-
-          const newplano =  {...plano , width: newWidth , height : newHeight}
-          onChangePlano(newplano)
-          
-          return pos;
-        }}
-      />
-    )}
-  </Layer>
-
-
-  <PuestosLayer
-  puestos={puestos}  // Lista de puestos, debe ser un arreglo de objetos Rectangle
-  setPuestos={setPuestos}  // Función para actualizar los puestos
-  isStatic={false}  // Si los puestos son estáticos o no (pueden moverse o redimensionarse)
-  image={image}  // Imagen que se aplicará a los puestos (si es necesario)
-  onPuestoClick={onItemClick}  // Función que se ejecuta cuando se hace clic en un puesto
-  hoveredItem={hoveredItem}  // El puesto actualmente seleccionado o sobre el cual se pasa el ratón
-  setHoveredItem={setHoveredItem}  // Función para actualizar el puesto sobre el que se pasa el ratón
-  isAltPressed={isAltPressed}
-  selectedItem={selectedItem}
-/>
-
-
-
-  {/* Capa para las calles */}
-  <StreetsLayer 
-        calles={calles}
-        onStreetClick={onItemClick}  // Función que se ejecuta cuando se hace clic en un puesto
-        isStatic={isStatic}
-        hoveredItem={hoveredItem}  // El puesto actualmente seleccionado o sobre el cual se pasa el ratón
-        setHoveredItem={setHoveredItem}  // Función para actualizar el puesto sobre el que se pasa el ratón
-        isAltPressed={isAltPressed}
-        selectedItem={selectedItem}
-      />
-
-</Stage>
-)
-
-
-  }  // fin
-  
-  export default Canvas2;
+export default Canvas2;
