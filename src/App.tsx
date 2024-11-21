@@ -14,6 +14,7 @@ import PaymentButton from './pages/pages.privadas/perfil_feriante/components/pag
 import FeriaForm from './pages/pages.privadas/perfil_encargado/components/formulario/formulario_feria';
 const View_feed = lazy(() => import ('./pages/pages.publicas/feed_ferias/home_feed_feria'));
 const Privado = lazy(() => import ('./pages/pages.privadas/Private.routes'));
+import './App.css'
 
 
 

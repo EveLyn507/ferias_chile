@@ -23,7 +23,16 @@ export function Logout() {
 
     return (
 
-        <button  onClick={logOut}> Logout</button>
+        <li
+        style={{
+          padding: "10px 20px",
+          cursor: "pointer",
+          color: "#000000",
+        }}
+        onClick={logOut}
+      >
+        Cerrar Sesión
+      </li>
     )
 }
 

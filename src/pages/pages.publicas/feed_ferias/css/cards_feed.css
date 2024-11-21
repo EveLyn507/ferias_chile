@@ -1,0 +1,142 @@
+/* Contenedor de las ferias */
+.feria-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  padding: 20px;
+  background-color: #f0f0f0; /* Fondo claro para diferenciar */
+  height: auto; /* Mantén la altura del contenedor */
+  min-width: 100%;
+}
+
+/* Tarjeta individual */
+.card {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  width: 400px;
+  padding: 20px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column; /* Las secciones se organizan verticalmente */
+  height: 500px; /* Altura fija para todas las tarjetas */
+}
+
+/* Asegurando que las secciones dentro de la tarjeta tengan el alto especificado */
+.card section {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Asegura que el contenido empiece en la parte superior */
+  align-items: center;
+  padding: 10px;
+  overflow: hidden; /* Evita que el contenido sobresalga */
+}
+
+/* Título de la tarjeta (100px de altura) */
+.card-header {
+  height: 100px; /* El 100px de la altura total de la tarjeta */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Mantiene el título en la parte superior */
+  text-align: center; /* Asegura que el título esté centrado */
+  margin-bottom: 10px;
+}
+
+.card-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #042c4c;
+  margin: 0; /* Elimina márgenes para mejor control del espacio */
+}
+
+.card-location {
+  font-size: 1rem;
+  color: #555;
+}
+
+/* Sección de horarios (250px de altura) */
+.card-horarios {
+  height: 250px; /* El 250px de la altura total de la tarjeta */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* El contenido empieza desde arriba */
+}
+
+.card-horarios h3 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+  color: #042c4c;
+}
+
+.card-horarios ul {
+  padding-left: 20px;
+}
+
+.card-horarios li {
+  font-size: 0.9rem;
+  color: #333;
+}
+/* Sección de actividades */
+.card-actividades {
+  height: 150px; /* El 150px de la altura total de la tarjeta */
+  display: flex; /* Activa flexbox para el contenido */
+  flex-direction: column; /* Los elementos se apilan verticalmente */
+  justify-content: flex-start; /* Alinea los elementos al inicio de la sección */
+  align-items: center; /* Centra los elementos horizontalmente */
+  gap: 10px; /* Espacio entre el h3 y el contenedor de botones */
+}
+
+/* Título de actividades */
+.card-actividades h3 {
+  margin-top: 0; /* Elimina margen superior */
+  margin-bottom: 10px; /* Espacio entre el h3 y los botones */
+  font-size: 20px;
+  font-weight: bold;
+}
+
+/* Contenedor de botones */
+.botones-container {
+  display: flex; /* Alinea los botones horizontalmente */
+  justify-content: center; /* Centra los botones en el eje horizontal */
+  align-items: center; /* Centra los botones en el eje vertical */
+  gap: 3px; /* Espacio entre los botones */
+  overflow-x: auto;
+}
+
+/* Estilo de los botones circulares */
+.circular-button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #042c4c;
+  color: white;
+  font-size: 0.9rem;
+  font-weight: bold;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+
+
+.no-ferias-card {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  padding: 20px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px; /* Ajusta la altura como prefieras */
+}
+
+.no-ferias-card .card-title {
+  font-size: 1.5rem;
+  color: #777;
+}

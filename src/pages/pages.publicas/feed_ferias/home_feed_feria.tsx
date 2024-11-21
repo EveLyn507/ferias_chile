@@ -2,9 +2,12 @@
 import { useEffect, useState } from 'react';
 import Feed_d_ferias from './components/listado_ferias/carga_feria';
 import { Filtros_base } from './components/listado_ferias/filtros';
-import '../../../css/base.css';
 import userWebSocketService from '../../models/webSoket';
 import Carrusel from './components/listado_ferias/carrusel';
+import styles from './css/feed.module.css';
+import './css/carrusel.css';
+import './css/filtros.css';
+import './css/cards_feed.css'
 
 const View_feed = () => {
   const [selectedComuna, setSelectedComuna] = useState<number | null>(null);
@@ -22,12 +25,26 @@ const View_feed = () => {
     }
   }, []); // Este effect solo se ejecuta una vez cuando el componente se monta
 
-  return (<div>
-    <div><Carrusel /></div>
-    <div className="container">
-      <Filtros_base onFilterC={(comuna) => setSelectedComuna(comuna)} onFilterR={(region) => setSelectedRegion(region)} />
-      <Feed_d_ferias comuna={selectedComuna}  region={selectedRegion} />
-    </div></div>
+  return (
+    <>
+    <div>
+      <Carrusel />
+    </div>
+
+    <div className={styles['feed-container']}>
+  <div className={styles['filtros']}>
+    <Filtros_base
+      onFilterC={(comuna) => setSelectedComuna(comuna)}
+      onFilterR={(region) => setSelectedRegion(region)}
+    />
+  </div>
+
+  <div className={styles['feed']}>
+    <Feed_d_ferias comuna={selectedComuna} region={selectedRegion} />
+  </div>
+</div>
+
+    </>
   );
 };
 

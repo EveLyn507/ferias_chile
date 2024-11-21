@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Link } from "react-router-dom";
 import { Logeado } from "./perfil_loged";
 import { useSelector } from "react-redux";
@@ -14,11 +15,8 @@ export const Nav_bar = () => {
         ☰ 
       </div>
       <ul className={`Nav_item ${isOpen ? "active" : ""}`}>
-        <li><Link to={"/pagosss"} onClick={handleCloseMenu}>Pago Simulado</Link></li>
         <li><Link to="/registro" onClick={handleCloseMenu}>Regístrate</Link></li>
-        <li><Link to="/empresas" onClick={handleCloseMenu}>Empresas</Link></li>
         <li><Link to="/Feed-ferias" onClick={handleCloseMenu}>Feed-Ferias</Link></li>
-        <li><Link to='private/1/bancos' onClick={handleCloseMenu}>Bancos</Link></li>
         <Logeado/>
         {role === 1 && ( 
           <li><Link to="/formulario-feria" onClick={handleCloseMenu}>Crear Feria</Link></li>
