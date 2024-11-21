@@ -1,13 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Link } from "react-router-dom";
-import { PrivateRoutes } from "../../../models";
-import { Card_feria_encargado } from "./components/ferias_d_encargado/card_feria_encargado";
 import { useEffect } from "react";
 import { feriasService } from "./rxjs/sharingFeriasEn";
 import { useSelector } from "react-redux";
 import { AppStore } from "../../../redux/store";
 import './perfil_e.css';
 import userWebSocketService from "../../models/webSoket";
+import { Card_feria_encargado } from "./components/ferias_d_encargado/card_feria_encargado";
 
 
 const PerfilEn = () => {
@@ -53,15 +51,6 @@ const PerfilEn = () => {
       <div className="card-container">
         <Card_feria_encargado />
       </div>
-
-      <ul>
-        <li>
-          <Link to={`${PrivateRoutes.BANCOS}`}>BANCOS</Link>
-        </li>
-        <li>
-          <Link to="TEAM">EMPLEADOS</Link>
-        </li>
-      </ul>
     </div>
   );
 };

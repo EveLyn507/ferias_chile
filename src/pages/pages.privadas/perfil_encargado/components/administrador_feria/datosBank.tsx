@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { DatosBank } from "../../../../models/interfaces";
 import { bancoService } from "../../rxjs/sharingbankslist";
 import { asociarBankFeria, getFeriaBank } from "../../services/admin_feria_fuctions";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 
 export const BancoFeria = () => {
@@ -73,6 +73,7 @@ return (
         <li>No hay bancos disponibles</li>
       </ul>
     )}
+  <li><Link to='private/1/bancos'>Ingresa tus bancos</Link></li> 
   </>
 );
 

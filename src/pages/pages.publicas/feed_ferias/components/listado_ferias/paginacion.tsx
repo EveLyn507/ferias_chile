@@ -1,5 +1,4 @@
 
-import './cards_feed.css'
 
 interface pageProps {
     page : number
