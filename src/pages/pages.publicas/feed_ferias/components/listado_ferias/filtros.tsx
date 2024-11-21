@@ -1,7 +1,4 @@
 import { useState, useEffect } from 'react';
-import '../../../../../css/base.css';
-import './filtros.css';
-
 interface Region {
   id: number;
   nombre: string;
@@ -24,7 +21,8 @@ export const Filtros_base = ({ onFilterC, onFilterR }: FiltrosBaseProps) => {
   const [selectedRegion, setSelectedRegion] = useState<number | null>(null);
   const [selectedComuna, setSelectedComuna] = useState<number | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+
 
   useEffect(() => {
     Promise.all([
@@ -48,7 +46,6 @@ export const Filtros_base = ({ onFilterC, onFilterR }: FiltrosBaseProps) => {
     ]).catch((error) => console.error('Error al cargar los JSON:', error));
   }, []);
 
-
   const handleRegionClick = (regionId: number) => {
     setSelectedRegion(regionId);
     onFilterR(regionId);
@@ -63,12 +60,11 @@ export const Filtros_base = ({ onFilterC, onFilterR }: FiltrosBaseProps) => {
   };
 
   return (
-    <div className={`filtros-base`}>
-      <div className="hamburger-menu" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-        ☰
-      </div>
+    
+      <>
 
-      <div className={`region-container ${isMenuOpen ? 'active' : ''}`}>
+      <label>REGIONES:</label>
+      <div className="region-filter">
         {regiones.map((region) => (
           <button
             key={region.id}
@@ -81,23 +77,26 @@ export const Filtros_base = ({ onFilterC, onFilterR }: FiltrosBaseProps) => {
         ))}
       </div>
 
-      {selectedRegion && (
-        <div className={`comuna-container ${isMenuOpen ? 'active' : ''}`}>
-          <label className="comuna-label">Selecciona una Comuna:</label>
-          <input
-            type="text"
-            placeholder="Buscar comuna..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="search-input"
-          />
-          <div className="comuna-buttons">
+      {selectedRegion ? (
+        <>
+          <div className="search">
+            <input
+              type="text"
+              placeholder="Buscar comuna..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="search-input"
+            />
+          </div>
+          <label>COMUNAS</label>
+          <div className="comuna-filter">
             <button
               onClick={() => handleComunaClick(null)}
               className={`comuna-btn ${selectedComuna === null ? 'selected' : ''}`}
             >
               Todas las Comunas
             </button>
+
             {comunas
               .filter(
                 (comuna) =>
@@ -115,8 +114,12 @@ export const Filtros_base = ({ onFilterC, onFilterR }: FiltrosBaseProps) => {
                 </button>
               ))}
           </div>
-        </div>
+        </>
+      ) : (
+        <p>Selecciona una región para ver las comunas disponibles.</p> // Mensaje cuando no hay región seleccionada
       )}
-    </div>
+          </>
+
+
   );
 };

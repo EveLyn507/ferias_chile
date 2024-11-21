@@ -1,0 +1,62 @@
+
+
+/* Contenedor de los botones de paginación */
+.paginacion {
+    width: 100%;
+    display: flex;
+    justify-content: center; /* Centra los botones horizontalmente */
+    gap: 10px; /* Espacio entre los botones */
+    padding: 10px 0;
+  }
+  
+  /* Estilo de los botones de paginación */
+  .paginacion button {
+    background-color: #042c4c;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Hover - Cambia el color del fondo al pasar el ratón */
+  .paginacion button:hover {
+    background-color: #03528a;
+    transform: scale(1.05);
+  }
+  
+  /* Active - Cuando el botón está siendo presionado */
+  .paginacion button:active {
+    background-color: #023a5b;
+    transform: scale(0.95);
+  }
+  
+  /* Botón deshabilitado */
+  .paginacion button:disabled {
+    background-color: #c0c0c0;
+    cursor: not-allowed;
+    transform: none;
+  }
+  
+  /* Estilo del botón actual (el número de página activo) */
+  .paginacion .active {
+    background-color: #0276b0;
+    font-weight: bold;
+  }
+  
+  /* Estilo para los botones de salto (Primero y Último) */
+  .paginacion .first, .paginacion .last {
+    font-size: 1.1rem;
+  }
+  
+  /* Estilo para los botones de "Anterior" y "Siguiente" */
+  .paginacion .prev, .paginacion .next {
+    font-size: 1.2rem;
+  }
+  

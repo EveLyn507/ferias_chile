@@ -18,6 +18,7 @@ useEffect(() => {
     return () => subscribe.unsubscribe()
 })
 
+console.log(solicitudes);
 
   return (
     <>

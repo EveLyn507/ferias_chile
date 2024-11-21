@@ -1,14 +1,12 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { Card_arriendos } from "./components/detalle_feria/card_puestos";
 import { useParams } from "react-router-dom";
-import "../../../css/base.css";
 import Mapa from "./components/detalle_feria/mapa/mapa_feria";
 import { arriendo, plano, PlanoItemElement, todayArriendos } from "./components/detalle_feria/mapa/mapaModel";
 import userWebSocketService from "../../models/webSoket";
-import './detalle-feria.css'
 
-
-export const View_detalle_feria = () => {
+export const View_detalle_feria = () => { 
   const WebSocketService = userWebSocketService.getInstance();
   const { id_feria } = useParams<{ id_feria: string }>();
   const idFeria = id_feria ? parseInt(id_feria) : 0;
