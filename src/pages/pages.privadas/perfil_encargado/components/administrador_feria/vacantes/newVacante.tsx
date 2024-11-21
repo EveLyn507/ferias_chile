@@ -1,53 +1,77 @@
-import { useState } from "react"
+import { useState } from "react";
 import { horarioVacante, vacante } from "../../../../../models/interfaces";
 import { saveVacanteFeria } from "../../../services/admin_feria_fuctions";
 import { useParams } from "react-router-dom";
 import { NewHorario } from "./newHorario";
 
 export const CrearVacante = () => {
-  // Variables de url o redux
+  // Variables de URL o Redux
   const { id_feria } = useParams<{ id_feria: string }>();
-  const idFeria = id_feria ? parseInt(id_feria, 10) : 0; // Se pasa hacia aca para que no quede como undefined o null
+  const idFeria = id_feria ? parseInt(id_feria, 10) : 0;
 
-  // Variables internas que completan el objeto que se enviara al backend
+  // Variables internas
   const [rol, setRol] = useState('');
   const semana = ['none', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
-  const [horarios, setHorarios] = useState<horarioVacante[]>([]); // Esta es la lista de horarios de la nueva vacante
+  const [horarios, setHorarios] = useState<horarioVacante[]>([]);
+  const [warnings, setWarnings] = useState<string[]>([]); // Mensajes de advertencia
 
-  const [warnings, setWarnings] = useState<string[]>([]); // Estado para los mensajes de advertencia
-
-  // Funciones componente hijo -> NewHorario
-  const saveHorario = async (newHorario: horarioVacante) => {
+  // Funciones del componente hijo -> NewHorario
+  const saveHorario = (newHorario: horarioVacante) => {
+    // Validación para evitar horarios duplicados en el mismo día
+    if (horarios.some(h => h.id_dia === newHorario.id_dia)) {
+      setWarnings([...warnings, `Ya existe un horario para ${semana[newHorario.id_dia]}.`]);
+      return;
+    }
     setHorarios([...horarios, newHorario]);
-  }
-
-
+    setWarnings([]); // Limpiar advertencias si todo está correcto
+  };
 
   const todayISO = new Date().toISOString().split('T')[0];
 
-  // INICIO FUNCION guardarVacante -- guarda en backend y en rxjs vacante
-  const guardarVacante = async () => {
+  const validarHorarios = () => {
     const newWarnings: string[] = [];
 
-    // Validar si hay al menos un horario y si se ha seleccionado un rol
+    // Validar que haya al menos un horario
     if (horarios.length === 0) {
       newWarnings.push("Debe agregar al menos un horario.");
     }
+
+    // Validar que cada horario tenga horas válidas
+    horarios.forEach((horario, index) => {
+      if (!horario.hora_entrada || !horario.hora_salida) {
+        newWarnings.push(`El horario ${index + 1} está incompleto.`);
+      }
+      if (horario.hora_entrada >= horario.hora_salida) {
+        newWarnings.push(`La hora de inicio debe ser anterior a la hora de término en el horario ${index + 1}.`);
+      }
+    });
+
+    return newWarnings;
+  };
+
+  const guardarVacante = async () => {
+    const newWarnings: string[] = [];
+
+    // Validar el rol
     if (rol === '') {
       newWarnings.push("Debe seleccionar un rol.");
     }
 
+    // Validar horarios
+    const horarioWarnings = validarHorarios();
+    newWarnings.push(...horarioWarnings);
+
+    // Mostrar advertencias si las hay
     if (newWarnings.length > 0) {
-      setWarnings(newWarnings); // Actualizar advertencias
-      return; // No continuar si hay advertencias
+      setWarnings(newWarnings);
+      return;
     }
 
-    // Esto es el objeto que se enviara al backend
     const vacante: vacante = {
       id_vacante: 0,
       id_user_fte: null,
       id_feria: idFeria,
-      id_rol: parseInt(rol), // Asegurarse de que el rol sea un número
+      id_rol: parseInt(rol), // Convertir rol a número
       ingreso: todayISO,
       termino: todayISO,
       id_estado_vacante: 1,
@@ -55,64 +79,75 @@ export const CrearVacante = () => {
     };
 
     try {
-      // Guardar en backend y en rxjs
       await saveVacanteFeria(vacante);
-
-      // Resetea los estados si es necesario
-      setRol('');
-      setHorarios([]);
-      setWarnings([]); // Limpiar advertencias al guardar exitosamente
+      setRol(''); // Resetear rol
+      setHorarios([]); // Resetear horarios
+      setWarnings([]); // Limpiar advertencias
     } catch (error) {
       console.error("Error al crear la vacante:", error);
+      setWarnings(["Error al guardar la vacante. Intente nuevamente."]);
     }
-  }
-  // FIN FUNCION guardarVacante
+  };
 
-  // ELIMINA EL HORARIO
-  const eliminarHorario = async (id_dia: number) => {
-    const currentHorarios = horarios;
-    const updatedHorarios = currentHorarios.filter(b => b.id_dia !== id_dia);
-    setHorarios(updatedHorarios);
-  }
+  const eliminarHorario = (id_dia: number) => {
+    setHorarios(horarios.filter(h => h.id_dia !== id_dia));
+  };
 
   return (
     <>
-      <h2>CREAR NUEVA VACANTE</h2>
-      <div>
-        <div>
-          <select 
+      <div className="crear-vacante">
+        <h2 className="crear-vacante-title">CREAR NUEVA VACANTE</h2>
+        <div className="crear-vacante-form">
+          <div className="crear-vacante-role">
+            <select 
               id="role" 
-              name="role"  
+              className="crear-vacante-select" 
               value={rol} 
               onChange={(e) => setRol(e.target.value)} 
-              required>
-              <option value="" disabled>Select a role</option>
+              required
+            >
+              <option value="" disabled>Seleccione un rol</option>
               <option value="1">Supervisor</option>
               <option value="2">Ayudante</option> 
-          </select>
-          <div><NewHorario saveHorario={saveHorario} /> {/* Pasas la función al hijo */}</div>
-        </div>
-        
-        <div>
-          {horarios.map((horario, index) => (
-            <div className="ferias" key={index}>
-              <strong>{semana[horario.id_dia]} de {horario.hora_entrada} a {horario.hora_salida}</strong>
-              <button onClick={() => eliminarHorario(horario.id_dia)}> eliminar Horario</button>
+            </select>
+            <div className="crear-vacante-horario">
+              <NewHorario saveHorario={saveHorario} /> {/* Pasar la función al hijo */}
             </div>
-          ))}
-        </div>
-        
-        {/* Mostrar mensajes de advertencia si los hay */}
-        {warnings.length > 0 && (
-          <div style={{ color: "red", marginTop: "10px" }}>
-            {warnings.map((warning, index) => (
-              <p key={index}>{warning}</p>
+          </div>
+          
+          <div className="crear-vacante-horarios-list">
+            {horarios.map((horario, index) => (
+              <div className="crear-vacante-horario-item" key={index}>
+                <strong className="crear-vacante-horario-label">
+                  {semana[horario.id_dia]} de {horario.hora_entrada} a {horario.hora_salida}
+                </strong>
+                <button 
+                  className="crear-vacante-horario-delete-btn" 
+                  onClick={() => eliminarHorario(horario.id_dia)}
+                >
+                  Eliminar Horario
+                </button>
+              </div>
             ))}
           </div>
-        )}
-        {/* Botón "Agregar vacante" */}
-        <button onClick={guardarVacante}>agregar vacante</button>
-      </div>
+          
+          {/* Mostrar advertencias */}
+          {warnings.length > 0 && (
+            <div className="crear-vacante-warnings" style={{ color: "red", marginTop: "10px" }}>
+              {warnings.map((warning, index) => (
+                <p key={index} className="crear-vacante-warning-item">{warning}</p>
+              ))}
+            </div>
+          )}
+          <button 
+            className="crear-vacante-submit-btn" 
+            onClick={guardarVacante}
+          >
+            Agregar Vacante
+          </button>
+        </div>
+</div>
+
     </>
-  )
-}
+  );
+};

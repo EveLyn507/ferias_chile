@@ -5,12 +5,13 @@ import { getProgramaFeria, GuardarProgramacionFeria } from '../../services/admin
 
 const BooleanDaysSelector = () => {
   const { id_feria } = useParams<{ id_feria: string }>();
-  const idFeria = id_feria ?? ''; // O puedes usar un valor como '0' o 'default'
+  const idFeria = id_feria ?? ''; 
   const semana = ['domingo', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
 
-  const [actualPrograma, setActual] = useState<ProgramaFeria[]>([]); // Lista de programas actual
-  const [UpdatedPrograma, setUpdatedPro] = useState<ProgramaFeria[]>([]);  // lista modificada que se enviara al backend al guardarla
+  const [actualPrograma, setActual] = useState<ProgramaFeria[]>([]);
+  const [UpdatedPrograma, setUpdatedPro] = useState<ProgramaFeria[]>([]);
   const [isModified, setIsModified] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
   useEffect(() => {
     getProgramaFeria(idFeria)
@@ -26,6 +27,25 @@ const BooleanDaysSelector = () => {
   useEffect(() => {
     setIsModified(JSON.stringify(actualPrograma) !== JSON.stringify(UpdatedPrograma));
   }, [actualPrograma, UpdatedPrograma]);
+
+  const validateData = () => {
+    const errors: string[] = [];
+    UpdatedPrograma.forEach((programa, index) => {
+      if (!programa.hora_inicio || !programa.hora_termino) {
+        errors.push(`Debe completar las horas de inicio y término en el día ${semana[programa.id_dia]}.`);
+      }
+      if (programa.hora_inicio >= programa.hora_termino) {
+        errors.push(`La hora de inicio debe ser anterior a la hora de término en el día ${semana[programa.id_dia]}.`);
+      }
+      if (programa.hora_inicio_armado && programa.hora_termino_armado) {
+        if (programa.hora_inicio_armado >= programa.hora_termino_armado) {
+          errors.push(`La hora de inicio de armado debe ser anterior a la hora de término en el día ${semana[programa.id_dia]}.`);
+        }
+      }
+    });
+    setValidationErrors(errors);
+    return errors.length === 0;
+  };
 
   const handleInputChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, type, checked, value } = e.target;
@@ -49,11 +69,16 @@ const BooleanDaysSelector = () => {
   };
 
   const sendData = async () => {
+    if (!validateData()) {
+      console.error("Errores de validación:", validationErrors);
+      return;
+    }
     if (idFeria !== '') {
       try {
         const result = await GuardarProgramacionFeria(UpdatedPrograma, idFeria);
         console.log('Datos enviados correctamente:', result.message);
-        setActual(UpdatedPrograma); // Actualiza el estado actual con los datos nuevos
+        setActual(UpdatedPrograma); 
+        setValidationErrors([]); 
       } catch (error) {
         console.error('Error al guardar la programación:', error);
       }
@@ -63,46 +88,53 @@ const BooleanDaysSelector = () => {
   };
 
   return (
-    <div>
+    <div className="boolean-days-selector">
       {UpdatedPrograma.map((programa, index) => (
-        <div key={index} style={{ marginBottom: '20px', display: 'inline-block', marginTop: '5rem', marginLeft: '2rem' }}>
-          <strong>
+        <div 
+          key={index} 
+          className="boolean-days-item" 
+          style={{ marginBottom: '20px', display: 'inline-block', marginTop: '5rem', marginLeft: '2rem' }}
+        >
+          <strong className="boolean-days-day-label">
             Día de la feria: {semana[programa.id_dia]}
           </strong>
           <br />
-          <ul>
-            <li>
-              <label htmlFor={`hora_inicio-${index}`}>
+          <ul className="boolean-days-list">
+            <li className="boolean-days-list-item">
+              <label htmlFor={`hora_inicio-${index}`} className="boolean-days-label">
                 Hora de inicio:
               </label>
               <input
                 type="time"
                 id={`hora_inicio-${index}`}
+                className="boolean-days-input"
                 name="hora_inicio"
                 value={programa.hora_inicio}
                 onChange={(e) => handleInputChange(index, e)}
               />
             </li>
             <br />
-            <li>
-              <label htmlFor={`hora_termino-${index}`}>
+            <li className="boolean-days-list-item">
+              <label htmlFor={`hora_termino-${index}`} className="boolean-days-label">
                 Hora de término:
               </label>
               <input
                 type="time"
                 id={`hora_termino-${index}`}
+                className="boolean-days-input"
                 name="hora_termino"
                 value={programa.hora_termino}
                 onChange={(e) => handleInputChange(index, e)}
               />
             </li>
             <br />
-            <strong>Dia del armado de la feria</strong>
+            <strong className="boolean-days-subtitle">Día del armado de la feria</strong>
             <br />
-            <li>
-              <label htmlFor={`id_dia_armado-${index}`}>Día de armado:</label>
+            <li className="boolean-days-list-item">
+              <label htmlFor={`id_dia_armado-${index}`} className="boolean-days-label">Día de armado:</label>
               <select
                 id={`id_dia_armado-${index}`}
+                className="boolean-days-select"
                 name="id_dia_armado"
                 value={programa.id_dia_armado}
                 onChange={(e) => handleSelectChange(index, e)}
@@ -113,39 +145,42 @@ const BooleanDaysSelector = () => {
               </select>
             </li>
             <br />
-            <li>
-              <label htmlFor={`hora_inicio_armado-${index}`}>
+            <li className="boolean-days-list-item">
+              <label htmlFor={`hora_inicio_armado-${index}`} className="boolean-days-label">
                 Hora de inicio armado:
               </label>
               <input
                 type="time"
                 id={`hora_inicio_armado-${index}`}
+                className="boolean-days-input"
                 name="hora_inicio_armado"
                 value={programa.hora_inicio_armado}
                 onChange={(e) => handleInputChange(index, e)}
               />
             </li>
             <br />
-            <li>
-              <label htmlFor={`hora_termino_armado-${index}`}>
+            <li className="boolean-days-list-item">
+              <label htmlFor={`hora_termino_armado-${index}`} className="boolean-days-label">
                 Hora de término armado:
               </label>
               <input
                 type="time"
                 id={`hora_termino_armado-${index}`}
+                className="boolean-days-input"
                 name="hora_termino_armado"
                 value={programa.hora_termino_armado}
                 onChange={(e) => handleInputChange(index, e)}
               />
             </li>
             <br />
-            <li>
-              <label htmlFor={`activo-${index}`}>
+            <li className="boolean-days-list-item">
+              <label htmlFor={`activo-${index}`} className="boolean-days-label">
                 Activar horario:
               </label>
               <input
                 type="checkbox"
                 id={`activo-${index}`}
+                className="boolean-days-checkbox"
                 name="activo"
                 checked={programa.activo}
                 onChange={(e) => handleInputChange(index, e)}
@@ -155,10 +190,22 @@ const BooleanDaysSelector = () => {
         </div>
       ))}
       <br />
-      <button onClick={sendData} disabled={!isModified}>
+      {validationErrors.length > 0 && (
+        <div className="boolean-days-error" style={{ color: "red" }}>
+          {validationErrors.map((error, i) => (
+            <p key={i}>{error}</p>
+          ))}
+        </div>
+      )}
+      <button 
+        className="boolean-days-save-btn" 
+        onClick={sendData} 
+        disabled={!isModified}
+      >
         Guardar Programa
       </button>
-    </div>
+</div>
+
   );
 };
 

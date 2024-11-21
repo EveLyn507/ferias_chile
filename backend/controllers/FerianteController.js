@@ -286,21 +286,25 @@ const actualizarCorreo = async (req, res) => {
 
 // Función para actualizar la contraseña
 const actualizarContraseña = async (req, res) => {
-  const { nuevaContraseña, id_user_fte } = req.body;
-  if (!nuevaContraseña) {
-    return res.status(400).json({ message: 'La nueva contraseña es requerida' });
+  const { nuevaContraseña, userMail } = req.body;
+
+  if (!nuevaContraseña || !userMail) {
+    return res.status(400).json({ message: 'Correo y nueva contraseña son requeridos.' });
   }
 
   try {
     const hashedPassword = await bcrypt.hash(nuevaContraseña, 10);
+    const query = 'UPDATE feriante SET contrasena = $1 WHERE user_mail = $2';
+    const result = await req.pool.query(query, [hashedPassword, userMail]);
 
-    const query = 'UPDATE feriante SET contrasena = $1 WHERE id_user_fte = $2;';
-    await req.pool.query(query, [hashedPassword, id_user_fte]);
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: 'Usuario no encontrado.' });
+    }
 
-    res.status(200).json({ message: 'Contraseña actualizada correctamente' });
+    res.status(200).json({ message: 'Contraseña actualizada con éxito.' });
   } catch (error) {
     console.error('Error al actualizar la contraseña:', error);
-    res.status(500).json({ message: 'Error interno del servidor' });
+    res.status(500).json({ message: 'Error interno del servidor.' });
   }
 };
 
