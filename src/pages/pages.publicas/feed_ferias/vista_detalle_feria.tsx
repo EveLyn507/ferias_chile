@@ -79,9 +79,8 @@ export const View_detalle_feria = () => {
 
   return ( 
     <>
-
+ 
         <Mapa puestos={puestos} calles={calles} plano={plano} isStatic={true} arriendos={arriendos} />
-   
         </>
   );  
 };

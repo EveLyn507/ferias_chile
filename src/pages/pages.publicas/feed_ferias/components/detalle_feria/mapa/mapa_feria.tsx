@@ -76,7 +76,6 @@ import { ArriendoModal } from './cartel';
 return (
     <div className='mapa-container'>
 
-
     <div className='zoom'>
     <button onClick={handleZoomIn} style={{ margin: '5px' }}>Zoom In</button>
     <button onClick={handleZoomOut} style={{ margin: '5px' }}>Zoom Out</button>

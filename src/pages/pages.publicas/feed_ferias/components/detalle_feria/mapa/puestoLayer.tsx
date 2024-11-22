@@ -48,6 +48,7 @@ const PuestosLayer: React.FC<PuestosMapaProps> = ({
               onMouseEnter={() => handleMouseEnter(Puesto)} // Muestra el cartel con el puesto al pasar el ratón
               onMouseLeave={handleMouseLeave}  // Oculta el cartel cuando el ratón sale
               onClick={() =>  itemClick(Puesto.dataPuesto!.id_puesto!)  }
+              
             />
             <Text
               x={Puesto.dimenciones.x}
