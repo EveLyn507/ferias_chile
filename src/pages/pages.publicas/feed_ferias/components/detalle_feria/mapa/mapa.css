@@ -1,4 +1,46 @@
-.contenedor-mapa{
-
-    margin: 150px 0;
+.mapa-container {
+    max-width: 1350px; /* Máximo ancho del contenedor */
+    max-height: 600px; /* Máxima altura del contenedor */
+    width: 100%; /* Asegura que sea flexible y ocupe el ancho disponible */
+    height: auto; /* Permite que el contenedor sea flexible verticalmente */
+    margin-top: 6%;
+    margin-left: 2%;
+    margin-right: 2%;
+    display: flex;
+    flex-direction: column;
+    padding: 1%;
+    background-color: #f0f0f0; /* Fondo claro para diferenciar */
+    overflow: auto; /* Evita que el contenido desborde el contenedor */
 }
+
+.zoom {
+    max-height: 5%;
+    display: flex;
+    justify-content: flex-end; /* Alinea el zoom al final */
+}
+
+.mapa {
+    display: flex; /* Flexbox para centrar contenido */
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center; /* Centra verticalmente */
+    width: 100%; /* Asegura que ocupe todo el ancho del contenedor */
+    height: 100%; /* Ocupa toda la altura disponible */
+    position: relative; /* Permite que los canvas se posicionen dentro del contenedor */
+
+}
+
+.stage {
+    width: 100%; /* Asegura que el stage ocupe todo el espacio disponible */
+    height: 100%; /* Asegura que el stage ocupe todo el espacio disponible */
+}
+
+.mapa canvas {
+    position: absolute; /* Los canvas deben superponerse */
+
+    width: 100%;  /* Ajusta el canvas al tamaño del contenedor */
+    height: 100%; /* Ajusta el canvas al tamaño del contenedor */
+    margin: auto; /* Centra el canvas dentro de su contenedor */
+
+}
+
+

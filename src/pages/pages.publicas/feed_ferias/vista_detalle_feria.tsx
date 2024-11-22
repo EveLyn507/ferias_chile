@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
-import { Card_arriendos } from "./components/detalle_feria/card_puestos";
 import { useParams } from "react-router-dom";
 import Mapa from "./components/detalle_feria/mapa/mapa_feria";
 import { arriendo, plano, PlanoItemElement, todayArriendos } from "./components/detalle_feria/mapa/mapaModel";
@@ -25,7 +24,6 @@ export const View_detalle_feria = () => {
   const { fecha } = useParams<{ fecha: string }>() as { fecha: string };
 
   // Estado para controlar qué componente se muestra
-  const [selectedComponent, setSelectedComponent] = useState(0); // 0 = Card_arriendos, 1 = Mapa
 
   // Conexión WebSocket solo si no está conectado y no se ha realizado previamente
   useEffect(() => {
@@ -79,27 +77,13 @@ export const View_detalle_feria = () => {
     return () => WebSocketService.sendMessage("leave_room", { id_feria });
   }, []);
 
-  return (
-    <div className="view-detalle-container">
-      {/* Botón para alternar entre Card_arriendos y Mapa */}
-      <div className="toggle-button-container">
-        <button 
-          className="toggle-button"
-          onClick={() => setSelectedComponent(selectedComponent === 0 ? 1 : 0)}>
-          {selectedComponent === 0 ? "Mostrar Mapa" : "Mostrar Arriendos"}
-        </button>
-      </div>
+  return ( 
+    <>
 
-      {/* Mostrar componente basado en el valor de selectedComponent */}
-      {selectedComponent === 0 ? (
-        <Card_arriendos arriendos={arriendos} />
-      ) : (
-        <div className="mapa-container">
-          <Mapa puestos={puestos} calles={calles} plano={plano} isStatic={true} />
-        </div>
-      )}
-    </div>
-  );
+        <Mapa puestos={puestos} calles={calles} plano={plano} isStatic={true} arriendos={arriendos} />
+   
+        </>
+  );  
 };
 
 export default View_detalle_feria;
