@@ -12,6 +12,7 @@ export const Registro = () => {
   const [contrasena,Setcontrasena] = useState('');
   const [contrasena2,Setcontrasena2] = useState('');
   const [error2, setError2] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   const [role, setRole] = useState('');
 
   const validarNombre = (nombre: string) => /^[a-zA-ZÀ-ÿ\s]{1,40}$/.test(nombre);
@@ -101,6 +102,7 @@ export const Registro = () => {
           });
       }
 
+      setSuccessMessage('Registro completado exitosamente.');
       console.log('Registro exitoso:', response?.data);
   } catch (err) {
       setError2('Error al registrar usuario');
@@ -186,9 +188,10 @@ return (
                 <option value={3}>Administrador Muni</option>
             </select>
       </div>
-    <button type="submit">registrarse</button>
-    {error2 && <p>{error2}</p>}
-</form>
+      <button type="submit">Registrarse</button>
+        {error2 && <p style={{ color: 'red' }}>{error2}</p>}
+        {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
+      </form>
 
 
 
