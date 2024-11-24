@@ -10,7 +10,7 @@ import { resetUser, UserKey } from '../../../redux/states/user';
 import { PublicRoutes } from '../../../models';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import './login.css'
+import './css/login.css'
 
 export const LoginHome = () => {
     const dispatch = useDispatch();

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* StreetsLayer.tsx */
 import React, { useRef, useState } from 'react';
-import { Rect, Circle, Image as KonvaImage, Layer } from 'react-konva';
+import {  Circle, Image as KonvaImage, Layer } from 'react-konva';
 import { PlanoItemElement } from '../models/vistaplanoModels';
 import { StreetPageProps } from '../models/canvasModels';
 import DistanceLine from './distanceLine';

@@ -6,8 +6,9 @@ import { useState, useEffect } from 'react';
 import React from 'react';
 import PuestosLayer from './puestoLayer';
 import StreetsLayer from './streelayer';
-import { MapaCanvas } from './mapaModel';
+import { arriendo, MapaCanvas } from './mapaModel';
 import './mapa.css'
+import { ArriendoModal } from './cartel';
 
 
 
@@ -16,7 +17,8 @@ import './mapa.css'
     plano,
     puestos,
     calles,
-    isStatic
+    isStatic,
+    arriendos
 
   }) => { 
     const planX = 50;
@@ -26,7 +28,22 @@ import './mapa.css'
     const [zoomLevel, setZoomLevel] = useState(1);
 
     const [image, setImage] = useState<HTMLImageElement | null>(null);
-   
+    const [isModalOpen, setModalOpen] = useState(false);
+    const [selectedObject, setSelectedObject] = useState<arriendo | null>(null);
+  
+    
+    const handleObjectClick =  (idP : number) => {
+      const arrSelect =  arriendos.find(arr => arr.id_puesto === idP)
+      console.log(arrSelect, idP);
+      
+      if(arrSelect){
+        setSelectedObject(arrSelect);
+        setModalOpen(true);
+      }
+    
+    };
+
+    
     
     // Cargar imagen de los puestos
     useEffect(() => {
@@ -57,31 +74,20 @@ import './mapa.css'
   };
 
 return (
-  <>
-      
-      {/* Botones de zoom */}
-    <div style={{ position: 'relative', top: '10px', right: '10px', paddingLeft: '5%'}}>
+    <div className='mapa-container'>
+
+    <div className='zoom'>
     <button onClick={handleZoomIn} style={{ margin: '5px' }}>Zoom In</button>
     <button onClick={handleZoomOut} style={{ margin: '5px' }}>Zoom Out</button>
     </div>
 
-    <div
-    style={{
-      padding: '20%',
-    width: '1000px',  // Un tamaño fijo para el div
-    height: '500px', // Un tamaño fijo para el div
-    overflow: 'auto', // Habilitar scroll
-    position: 'relative',
-    }}>
-        
-      <Stage      
+    <div className='mapa'>
+      <Stage  className='stage'
        width={plano.width + planX } // Asegúrate de que el stage sea más grande que el div
         height={plano.height + planY } // Asegúrate de que el stage sea más grande que el div
         scaleX={zoomLevel} // Aplica el zoom al eje X
         scaleY={zoomLevel} // Aplica el zoom al eje Y
-        style={{
-          backgroundColor: 'transparent',
-        }}
+
       >
         <Layer>
 
@@ -131,6 +137,7 @@ return (
       puestos={puestos}  // Lista de puestos, debe ser un arreglo de objetos Rectangle
       isStatic={false}  // Si los puestos son estáticos o no (pueden moverse o redimensionarse)
       image={image}  // Imagen que se aplicará a los puestos (si es necesario)
+      itemClick={handleObjectClick}
 
     />
 
@@ -144,7 +151,16 @@ return (
 
     </Stage>
     </div>
-    </>
+
+
+    <ArriendoModal
+        isOpen={isModalOpen}
+        onClose={() => setModalOpen(false)}
+        arriendo={selectedObject}
+      />
+    </div>
+
+    
 
 )
 

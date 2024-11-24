@@ -9,6 +9,7 @@ export const Perfil_admin = () => {
 
 
   const id_user_adm = useSelector((store : AppStore) => store.user.id_user )   
+  
     useEffect((() => { 
       solisaperService.LoadInitialData(id_user_adm)
       

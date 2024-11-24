@@ -10,7 +10,7 @@ DROP FUNCTION IF EXISTS public.insertar_solicitud_apertura( integer, integer);
 DROP FUNCTION IF EXISTS public.obtener_ferias_paginado( integer, integer , integer , integer);
 DROP FUNCTION IF EXISTS public.obtener_puestos_actividad( CHARACTER VARYING, DATE);
 DROP FUNCTION IF EXISTS public.traer_semana_actividad_feria( integer);
-
+DROP FUNCTION IF EXISTS public.obtener_actividades_feria( integer[]);
 
 -- FUNCIONES PARA EL ENCARGADOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 
