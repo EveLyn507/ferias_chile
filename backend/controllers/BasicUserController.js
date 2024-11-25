@@ -27,7 +27,7 @@ const login_encargado = async (req, res, pool) => {
 
     
     const token = jwt.sign({ id: nombre, email: email }, 'your-secret-key', {
-      expiresIn: '5h', // Duración del token
+      expiresIn: '24h', // Duración del token
     });    
 
     res.json({ token, role, email ,id_user});
@@ -55,7 +55,7 @@ const login_feriante = async (req, res, pool) => {
 
 
     const token = jwt.sign({ id: nombre, email: email }, 'your-secret-key', {
-      expiresIn: '5h', // Duración del token
+      expiresIn: '24h', // Duración del token
     });    
 
     res.json({ token, role, email ,id_user});
@@ -81,7 +81,7 @@ const login_municipal = async (req, res, pool) => {
     }
 
     const token = jwt.sign({ id: nombre, email: email }, 'your-secret-key', {
-      expiresIn: '5h', // Duración del token
+      expiresIn: '24h', // Duración del token
     });  
     res.json({ token, role, email ,id_user});
   } catch (err) {
