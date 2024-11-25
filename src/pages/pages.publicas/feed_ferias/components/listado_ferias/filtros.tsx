@@ -89,6 +89,7 @@ export const Filtros_base = ({ onFilterC, onFilterR }: FiltrosBaseProps) => {
             />
           </div>
           <label>COMUNAS</label>
+          <br />
           <div className="comuna-filter">
             <button
               onClick={() => handleComunaClick(null)}

@@ -1,0 +1,103 @@
+/* General container for the login page */
+.login-container {
+  
+  text-align: center;
+  background-color: #f5f7fa; /* Soft background color */
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+  width: 90%;
+  height: 100%;
+  max-width: 500px;
+  margin: auto;
+  font-family: 'Arial', sans-serif;
+}
+
+/* Title styling */
+.login-container h1 {
+  margin-top: 25%;
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+
+
+/* Card for each login form */
+.form-card {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: left;
+}
+
+/* Input fields styling */
+.form-card  input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.form-card  input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+}
+
+/* Buttons styling */
+.form-card  button {
+
+  width: 100%;
+  margin: auto;
+  text-align: center !important;
+  background-color: #0056b3;
+  color: white;
+  border-radius: 5px;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+  &:hover {
+    background-color: #007bff;
+  }
+}
+
+/* Link for password reset */
+.switch-form-button {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 0.9rem;
+  color: #007bff;
+  text-decoration: none;
+  transition: color 0.3s;
+
+  &:hover {
+    color: #0056b3;
+  }
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+  .login-container {
+      padding: 20px;
+      width: 100%;
+  }
+
+  .react-tabs__tab-list {
+      flex-wrap: wrap;
+  }
+
+  .react-tabs__tab {
+      flex: 1;
+      text-align: center;
+  }
+}

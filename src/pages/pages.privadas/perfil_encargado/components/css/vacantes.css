@@ -1,0 +1,125 @@
+.vacantes-container {
+
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+}
+
+.empleados {
+    max-height: 500px;
+    gap: 1px;
+    width: 95%;
+    margin: auto;
+    overflow-y: auto;
+}
+
+.empy-vacante {
+    gap: 1px;
+    max-height: 500px;
+    width: 95%;
+    margin: auto;
+    overflow-y: auto;
+  
+}
+
+.card-vacante {
+  max-height: 50px;
+}
+
+
+ /* los circulos de horarios*/
+ .horarios {
+  position: absolute; /* Asegura que el hover-info se posicione relativo a la celda */
+
+}
+  .circulos-container {
+    margin-left: 5%;
+    height: 100%;
+    align-items: center;
+    display: flex;
+    gap: 5px; /* Espaciado entre los círculos */
+  }
+  
+  .dia-circle {
+    width: 30px; /* Tamaño reducido */
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px; /* Texto más pequeño */
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+  
+  .dia-circle.activo {
+    background-color: green;
+    color: white;
+  }
+  
+  .dia-circle.inactivo {
+    background-color: grey;
+    color: white;
+  }
+  
+
+
+  .hover-info {
+    display: none; /* Oculto por defecto */
+    position: absolute;
+    top: 10px; /* Asegura que comience cerca del borde superior */
+    left: 50%;
+    transform: translate(-50%, -100%); /* Centra el contenido y lo posiciona arriba */
+    background-color: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    z-index: 10;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    min-width: 60%;
+    max-height: 200px; /* Altura máxima para evitar que se extienda demasiado */
+    overflow-y: auto; /* Scroll interno si el contenido es demasiado grande */
+    white-space: normal; /* Permite saltos de línea */
+  }
+  
+  .horario:hover .hover-info {
+    display: block; /* Muestra al pasar el ratón sobre el contenedor */
+  }
+  
+
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .data-table th,
+  .data-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+    font-size: 14px; /* Tamaño base del texto */
+  }
+  
+  .data-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+  }
+  
+  .data-table td.horario,
+  .data-table th.horario {
+    font-size: 16px; /* Texto más grande */
+    font-weight: bold;
+    width: 30%; /* Más espacio para la columna de horario */
+  }
+  
+  .data-table td {
+    height: 10px;
+    width: 15%; /* Espacio proporcional para las demás columnas */
+  }
+  
+  .data-table tr:hover {
+    background-color: #f9f9f9; /* Color de fondo en hover */
+  }
+  
+

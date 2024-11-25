@@ -1,0 +1,130 @@
+/* Contenedor principal del formulario */
+
+.container-form{
+    display: flex;
+    height: 100%;
+    width: 50%;
+    margin: auto;
+    margin-top: 5%;
+    margin-bottom: 3%;
+
+}
+
+.form-container {
+    display: flex;
+    gap: 20px; /* Consistente en toda la estructura */
+    width: 100%;
+    height: 100%;
+    margin: auto;
+    padding: 20px;
+    border-radius: 8px;
+    flex-wrap: wrap;
+  }
+  
+  /* Fila que contiene los pares de campos (como nombre y apellido, etc.) */
+  .form-row {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+
+  }
+
+  .form-row div {
+    flex: 1; /* Ajusta dinámicamente el tamaño */
+  }
+  
+  /* Cada columna dentro de la fila */
+
+  .col-datos-per,
+  .col-contacto {
+ 
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    max-width: 100%;  /* Limita el tamaño de cada columna */
+  }
+  
+  .col-password{
+    width: 100%;
+    
+  }
+
+  /* Input general de los campos */
+  .col-datos-per input,
+  .col-contacto input,
+  .col-password input {
+    width: 100%; /* Ocupa todo el ancho de su contenedor */
+    padding: 12px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+    box-sizing: border-box;  /* Hace que el padding no afecte el tamaño total */
+    transition: border-color 0.3s ease;
+
+    &:focus {
+      border-color: #4CAF50;
+      outline: none;
+    }
+  }
+  
+  /* Etiquetas de los campos */
+  
+  .col-datos-per label,
+  .col-contacto label,
+  .col-password label {
+    font-weight: bold;
+    font-size: 14px;
+    color: #333;
+  }
+  
+  /* Estilo para los botones */
+  .form-container button {
+    position: static;
+    width: 80%;
+    margin: auto;
+    max-height: 50px;
+    flex-direction: row;
+    background-color: rgb(4, 28, 76) !important;
+    color: white !important;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: #45a049;
+    }
+  }
+
+  
+  /* Estilo de los mensajes de error */
+  .error {
+    height: 5px;
+    color: red;
+    font-size: 14px;
+    font-weight: bold;
+    white-space: normal; /* Asegura que el texto no se comprima en una sola línea */
+  }
+
+ 
+  
+  /*ontacto {
+      max-wi/* Media Queries */
+@media (max-width: 932px) {
+    .form-container {
+      flex-direction: column; /* Asegura que el contenedor principal se apile */
+      width: 80%;
+    }
+  
+    .form-row {
+      flex-direction: column; /* Apila las filas */
+    }
+  
+    .col-datos-per,
+    .col-contacto,
+    .col-password {
+      max-width: 100%;
+      flex: 1;
+    }
+  }

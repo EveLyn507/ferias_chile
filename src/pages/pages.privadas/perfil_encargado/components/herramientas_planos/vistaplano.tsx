@@ -12,7 +12,7 @@ import MenuCalle from './menus/MenuCalle';
 
 import { debounce } from 'lodash';
 import { vistaProps } from './models/canvasModels';
-import MenuPlano from './menus/menuPlano';
+import MenuPlano from './menus/MenuPlano';
 
 
 

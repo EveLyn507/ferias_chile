@@ -241,6 +241,22 @@ CREATE TABLE plano (
     PRIMARY KEY (id_plano)
 );
 
+
+CREATE TABLE puesto (
+    id_puesto        SERIAL NOT NULL,
+    id_tipo_puesto   INTEGER ,
+    numero           INTEGER NOT NULL,
+    descripcion      TEXT ,
+    id_feria         INTEGER NOT NULL,
+    id_estado_puesto INTEGER NOT NULL,
+    precio INTEGER 
+);
+
+ALTER TABLE puesto ADD CONSTRAINT puesto_pk PRIMARY KEY ( id_puesto );
+
+
+
+
 ALTER TABLE plano 
     ADD CONSTRAINT id_feria_to_plano_FK FOREIGN KEY (id_feria)
         REFERENCES feria (id_feria);
@@ -364,17 +380,6 @@ ALTER TABLE postulaciones
     ADD CONSTRAINT id_estado_postulacion_FK FOREIGN KEY (id_estado)
          REFERENCES estado_postulacion (id_estado);
 
-CREATE TABLE puesto (
-    id_puesto        SERIAL NOT NULL,
-    id_tipo_puesto   INTEGER ,
-    numero           INTEGER NOT NULL,
-    descripcion      TEXT ,
-    id_feria         INTEGER NOT NULL,
-    id_estado_puesto INTEGER NOT NULL,
-    precio INTEGER 
-);
-
-ALTER TABLE puesto ADD CONSTRAINT puesto_pk PRIMARY KEY ( id_puesto );
 
 CREATE TABLE estado_arriendo (
     id_estado_arriendo INTEGER,

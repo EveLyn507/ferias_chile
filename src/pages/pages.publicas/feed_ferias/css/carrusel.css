@@ -1,11 +1,12 @@
 .carrusel-container {
-  width: 100%;
+  width: auto;
   height: 65vh;
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
   overflow: hidden;
+
 }
 
 .carrusel {

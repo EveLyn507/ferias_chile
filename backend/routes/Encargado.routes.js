@@ -130,8 +130,8 @@ router.post('/updateHorarioVacante', (req, res) => {
 
 router.post('/getPostulacionesEnf', (req, res) => {
   const pool = req.pool
-  const {id_user_enf} = req.body
-  getPostulacionesEnf(res,pool,id_user_enf)
+  const {id_user_enf , id_feria} = req.body
+  getPostulacionesEnf(res,pool,id_user_enf , id_feria)
   }) 
 
 router.post('/aceptarPostulacion', (req, res) => {

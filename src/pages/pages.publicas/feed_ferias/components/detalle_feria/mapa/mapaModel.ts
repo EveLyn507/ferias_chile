@@ -59,6 +59,7 @@ export interface PuestosMapaProps {
     puestos: PlanoItemElement[];
     isStatic: false;
     image: HTMLImageElement | null;
+    itemClick: (idP : number) => void
 
   }
   
@@ -81,6 +82,7 @@ export interface PuestosMapaProps {
     calles: PlanoItemElement[];
     plano: plano 
     isStatic : true
+    arriendos : arriendo[]
   }
   
 

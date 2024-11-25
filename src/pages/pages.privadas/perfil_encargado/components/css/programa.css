@@ -1,0 +1,21 @@
+
+
+
+.programa-container {
+
+    width: 100%;
+    margin: auto;
+    margin-bottom: 5%;
+
+} 
+
+.programa {
+
+    display: flex;
+    width: 97%;
+    margin: auto;
+}
+
+
+
+

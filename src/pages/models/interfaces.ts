@@ -196,3 +196,10 @@ export interface ftePostulacion{
     fte_nombre : string,
     fte_apellido : string
 }
+
+
+
+export interface homeProps{
+    idFeria : number
+    nombreF: string
+  }

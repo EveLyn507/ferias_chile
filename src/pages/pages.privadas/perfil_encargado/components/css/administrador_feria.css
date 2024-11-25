@@ -1,0 +1,343 @@
+/* Global Styles */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: #f9f9f9;
+    color: rgb(4, 28, 76);
+  }
+  
+  h1, h2 {
+    text-align: center;
+    margin: 1rem 0;
+    color: rgb(4, 28, 76);
+  }
+  
+  /* Admin Feria */
+  .admin-feria {
+    padding: 20px;
+    background-color: #f9f9f9;
+  }
+  
+  .admin-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+  }
+  
+  .admin-header {
+    border-bottom: 2px solid rgb(4, 28, 76);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+  }
+  
+  .admin-tabs .react-tabs__tab-list {
+    display: flex;
+    justify-content: space-around;
+    border-bottom: 2px solid rgb(4, 28, 76);
+    padding: 0;
+    list-style: none;
+    margin-bottom: 20px;
+  }
+  
+  .admin-tabs .react-tabs__tab {
+    padding: 10px 20px;
+    cursor: pointer;
+    color: rgb(4, 28, 76);
+  }
+  
+  .admin-tabs .react-tabs__tab--selected {
+    border-bottom: 2px solid rgb(4, 28, 76);
+    color: rgb(4, 28, 76);
+    font-weight: bold;
+  }
+  
+  /* Boolean Days Selector */
+  .boolean-days-selector {
+    padding: 20px;
+  }
+  
+  .boolean-days-item {
+    border: 1px solid rgb(4, 28, 76);
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .boolean-days-day-label {
+    font-weight: bold;
+  }
+  
+  .boolean-days-label {
+    display: block;
+    margin-bottom: 5px;
+    color: rgb(4, 28, 76);
+  }
+  
+  .boolean-days-input,
+  .boolean-days-select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .boolean-days-checkbox {
+    margin-right: 10px;
+  }
+  
+  .boolean-days-save-btn {
+    padding: 10px 20px;
+    background: rgb(4, 28, 76);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .boolean-days-save-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+  }
+  
+  .boolean-days-error {
+    color: red;
+  }
+  
+  /* Postulantes Feria */
+  .postulantes-feria {
+    padding: 20px;
+  }
+  
+  .postulante-card {
+    border: 1px solid rgb(4, 28, 76);
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .postulante-info {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .postulante-info-item {
+    margin-bottom: 5px;
+  }
+  
+  .postulante-label {
+    font-weight: bold;
+    color: rgb(4, 28, 76);
+  }
+  
+  .postulante-accept-btn,
+  .postulante-reject-btn {
+    padding: 8px 16px;
+    margin-right: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .postulante-accept-btn {
+    background: #28a745;
+    color: #fff;
+  }
+  
+  .postulante-reject-btn {
+    background: #dc3545;
+    color: #fff;
+  }
+  
+  /* Banco Feria */
+  .banco-feria {
+    padding: 20px;
+  }
+  
+  .banco-feria-select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .banco-feria-save-btn {
+    padding: 10px 20px;
+    background: rgb(4, 28, 76);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .banco-feria-error {
+    color: red;
+  }
+  
+  /* Empleados Feria */
+  .empleados-feria {
+    padding: 20px;
+  }
+  
+  .empleado-card {
+    border: 1px solid rgb(4, 28, 76);
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .empleado-info {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .empleado-info-item {
+    margin-bottom: 10px;
+  }
+  
+  .empleado-input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .empleado-horarios {
+    margin-top: 10px;
+  }
+  
+  .empleado-horario-item {
+    margin-bottom: 10px;
+  }
+  
+  .empleado-horario-select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .empleado-horario-input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .empleado-actions button {
+    padding: 8px 16px;
+    margin-right: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .empleado-edit-btn {
+    background: rgb(4, 28, 76);
+    color: #fff;
+  }
+  
+  .empleado-save-btn {
+    background: rgb(4, 28, 76);
+    color: #fff;
+  }
+  
+  .empleado-delete-btn {
+    background: #dc3545;
+    color: #fff;
+  }
+  
+  /* New Horario */
+  .new-horario {
+    padding: 10px;
+    border: 1px solid rgb(4, 28, 76);
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+  
+  .new-horario-input,
+  .new-horario-select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .new-horario-btn {
+    padding: 10px 20px;
+    background: rgb(4, 28, 76);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .new-horario-error {
+    color: red;
+  }
+  
+  /* Crear Vacante */
+  .crear-vacante {
+    padding: 20px;
+  }
+  
+  .crear-vacante-title {
+    text-align: center;
+    margin-bottom: 20px;
+    color: rgb(4, 28, 76);
+  }
+  
+  .crear-vacante-form {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .crear-vacante-select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .crear-vacante-horarios-list {
+    margin-top: 20px;
+  }
+  
+  .crear-vacante-horario-item {
+    margin-bottom: 10px;
+  }
+  
+  .crear-vacante-horario-label {
+    display: block;
+    margin-bottom: 5px;
+    color: rgb(4, 28, 76);
+  }
+  
+  .crear-vacante-horario-delete-btn {
+    padding: 8px 16px;
+    background: #dc3545;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .crear-vacante-submit-btn {
+    padding: 10px 20px;
+    background: rgb(4, 28, 76)45;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  

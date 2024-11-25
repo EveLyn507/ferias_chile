@@ -10,7 +10,7 @@ import { resetUser, UserKey } from '../../../redux/states/user';
 import { PublicRoutes } from '../../../models';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import './login.css'
+import './css/login.css'
 
 export const LoginHome = () => {
     const dispatch = useDispatch();
@@ -21,20 +21,7 @@ export const LoginHome = () => {
         dispatch(resetUser());
         navigate(`/${PublicRoutes.LOGIN}`, { replace: true });
     }, []);
-    useEffect(() => {
-        // Aplica el estilo al body solo mientras el componente esté montado
-        const originalBodyStyle = document.body.style.cssText;
-        document.body.style.display = 'flex';
-        document.body.style.justifyContent = 'center';
-        document.body.style.alignItems = 'center';
-        document.body.style.minHeight = '100vh';
-        document.body.style.margin = '0';
 
-        return () => {
-            // Restaura el estilo original del body al desmontar el componente
-            document.body.style.cssText = originalBodyStyle;
-        };
-    }, []);
 
     return (
         <div className="login-container">

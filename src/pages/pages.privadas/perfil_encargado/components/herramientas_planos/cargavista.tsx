@@ -21,6 +21,8 @@ const Vistaplano = () => {
     }
   }, []); // Este effect solo se
 
+
+
   const savePlanoItem = async (selectedItem: PlanoItemElement) =>  {
     console.log(selectedItem);
     WebSocketService.sendMessage('UpdatePuesto', selectedItem);
@@ -31,19 +33,19 @@ const Vistaplano = () => {
 
   const CreateNewItemElement = (newItem: PlanoItemElement): Promise<PlanoItemElement> => {
     WebSocketService.sendMessage('CreateNewItemElement', newItem);
-
     // Escuchar el evento desde el servidor con una promesa
     return new Promise((resolve, reject) => {
       WebSocketService.RecibeData("ItemCreated", (data) => {
-
         resolve(data);
-
       });
 
       // Timeout opcional si el servidor no responde
       setTimeout(() => reject(new Error("Tiempo de espera agotado")), 5000); // 10 segundos de espera
     });
   };
+
+
+
 
   const UpdatePlano = async (newPlano : plano) => {
     WebSocketService.sendMessage('UpdatePlano' , newPlano)

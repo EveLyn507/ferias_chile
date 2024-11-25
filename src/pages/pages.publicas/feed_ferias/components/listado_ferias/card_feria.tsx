@@ -20,7 +20,7 @@ export const CardFerias = ({ ferias }: FeriasProps) => {
       {ferias.length === 0 ? (
         <div className="card no-ferias-card">
           <header className="card-header">
-            <h2 className="card-title">Aún no hay ferias en esta ubicación</h2>
+            <h2 className="card-title">Aún no hay ferias en esta seccion</h2>
           </header>
         </div>
       ) : (
