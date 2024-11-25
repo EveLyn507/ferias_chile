@@ -4,27 +4,18 @@ import { idFeriaService } from "../../rxjs/sharing.id_feria";
 import { useEffect, useState } from "react";
 import { Feria } from "../../../../models/interfaces";
 import { feriasService } from "../../rxjs/sharingFeriasEn";
-import './card-feria-encargado.css'
+
 
 // Define las props del componente, en este caso un array de objetos Feria
 export const Card_feria_encargado = () => {
-    const [ferias, setFerias] = useState<Feria[]>([]);
-    const semana = ['none', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 
-
-useEffect(() => {
-    const subscribe = feriasService.ferias$.subscribe((feriasEn) => {
-        setFerias(feriasEn)
-    } )
-    return () => subscribe.unsubscribe()
-})
 
     return (
         <div>
             {ferias.length === 0 ? ( // Verifica que feriasEn sea un array y esté vacío
                 <p>Aún no has creado tu primera feria.</p>
             ) : (
-                <div className="custom-card-feria-wrapper">
+                <section className="mis-ferias">
                 <Card
                     items={ferias}
                     renderFields={(feria) => [
@@ -53,7 +44,7 @@ useEffect(() => {
                     </ul>
                     )}
                 />
-                </div>
+                </section>
             )}
         </div>
     );

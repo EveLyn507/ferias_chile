@@ -2,12 +2,12 @@
 import { useSelector } from "react-redux";
 import { AppStore } from "../../../../../redux/store";
 import { useEffect, useState } from "react";
-import { DatosBank } from "../../../../models/interfaces";
+import { DatosBank, homeProps } from "../../../../models/interfaces";
 import { bancoService } from "../../rxjs/sharingbankslist";
 import { asociarBankFeria, getFeriaBank } from "../../services/admin_feria_fuctions";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams  } from "react-router-dom";
 
-export const BancoFeria = () => {
+export const BancoFeria =({idFeria } : homeProps) =>{
   const id_user_enf = useSelector((store: AppStore) => store.user.id_user);
   const [bancos, setBancos] = useState<DatosBank[]>([]); // lista de todos los bancos
   const [feriaBanco, setFeriaBanco] = useState<string | null>(''); // el banco asociado a la feria
@@ -103,7 +103,7 @@ export const BancoFeria = () => {
           <li className="banco-feria-empty-item">No hay bancos disponibles</li>
         </ul>
       )}
-  <li><Link to='private/1/bancos'>Ingresa tus bancos</Link></li> 
+  <li><Link to={`bancos`}>Ingresa tus bancos</Link></li> 
 </div>
 
   );

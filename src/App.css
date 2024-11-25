@@ -30,9 +30,8 @@ html, body {
 }
 
 
-footer {
+.pie {
   background-color: rgb(4, 28, 76);
-  color: white;
   text-align: center;
   padding: 1rem 0;
   margin-top: auto; /* Empuja el footer al final */
@@ -100,6 +99,42 @@ footer {
   .Nav_item.active {
     display: flex; 
   }
+}
+
+.react-tabs {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Tabs container */
+.react-tabs__tab-list {
+  display: flex;
+  justify-content: center;
+  border-bottom: 2px solid #ddd;
+  margin-bottom: 20px;
+  padding: 0;
+}
+
+.react-tabs__tab {
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #666;
+  border: none;
+  border-bottom: 2px solid transparent;
+  transition: all 0.3s;
+}
+
+.react-tabs__tab--selected {
+  color: #007bff; /* Active tab color */
+  border-bottom: 2px solid #007bff;
+}
+
+.react-tabs__tab:hover {
+  color: #0056b3; /* Hover effect for tabs */
 }
 
 

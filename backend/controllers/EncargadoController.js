@@ -169,7 +169,7 @@ const getPlanoElements = async (res, pool ,id_feria) => {
 
 const getPrograma = async (req , res , pool) => {
 
-  const id_feria = parseInt(req.params.id_feria, 10);
+  const id_feria = req.params.id_feria
 
 try{
 const result = await pool.query(`
@@ -474,7 +474,7 @@ const deleteVacante = async (req,res, pool) => {
  }
 
 //MODULO POSTULANTES 
-const getPostulacionesEnf = async ( res , pool , id_user_enf) => {
+const getPostulacionesEnf = async ( res , pool , id_user_enf , id_feria) => {
   try {
     const result = await pool.query(`
     SELECT f.id_feria , f.nombre as f_nombre, dtv.id_vacante , p.id_postulacion , p.id_user_fte, fte.nombre as fte_nombre , fte.apellido as fte_apellido
@@ -483,7 +483,7 @@ const getPostulacionesEnf = async ( res , pool , id_user_enf) => {
     JOIN detalle_team_vacante dtv on dtv.id_feria = f.id_feria
     JOIN postulaciones p on p.id_vacante = dtv.id_vacante 
     RIGHT JOIN feriante fte on fte.id_user_fte = p.id_user_fte
-    WHERE enf.id_user_enf  = $1 AND p.id_estado =1` , [id_user_enf]
+    WHERE enf.id_user_enf  = $1  AND f.id_feria = $2 AND p.id_estado = 1` , [id_user_enf , id_feria]
     );
     res.json(result.rows)  // Retorna el resultado del horario insertado
   } catch (error) {

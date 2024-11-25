@@ -1,12 +1,12 @@
 
 import axios from "axios";
 import { DatosBank, horarioVacante, ProgramaFeria, vacante } from "../../../models/interfaces";
-import { vancanteService } from "../rxjs/sharingVacantes";
+import { VacanteService } from "../rxjs/sharingVacantes";
 import { postulacionService } from "../rxjs/sharingPostulaciones";
 import { bancoService } from "../rxjs/sharingbankslist";
 
 // PROGRAMACION DE LA FERIA
-export const  GuardarProgramacionFeria = async (programacion : ProgramaFeria[] ,id_feria : string )  =>  {
+export const  GuardarProgramacionFeria = async (programacion : ProgramaFeria[] ,id_feria : number )  =>  {
 
     try{
       const response  = await axios.post(`http://localhost:5000/administracion/:id_feria` ,{programacion , id_feria})
@@ -25,7 +25,7 @@ export const  GuardarProgramacionFeria = async (programacion : ProgramaFeria[] ,
     }
   } 
 
-  export const getProgramaFeria = async (id_feria: string): Promise<ProgramaFeria[]> => {
+  export const getProgramaFeria = async (id_feria: number): Promise<ProgramaFeria[]> => {
     try {
       const response = await axios.get(`http://localhost:5000/getProgramacion/${id_feria}`);
       
@@ -174,7 +174,7 @@ export const  GuardarProgramacionFeria = async (programacion : ProgramaFeria[] ,
       const resVacante = response.data;
 
       // Agrega la vacante a rxjs vacantes
-      vancanteService.addVacante(resVacante);
+      VacanteService.addVacante(resVacante);
 
 
   }
@@ -211,7 +211,7 @@ export const  updateVacanteFeria = async (vacante : vacante , id_feria : number)
        const algo = result.data
        console.log(algo);
        
-      vancanteService.updateVacante(vacante, id_feria); // Actualiza la lista usando RxJS
+      VacanteService.updateVacante(vacante, id_feria); // Actualiza la lista usando RxJS
       
   }
   catch (error) {
@@ -227,7 +227,7 @@ export const  updateVacanteFeria = async (vacante : vacante , id_feria : number)
     try{
        await axios.post(`http://localhost:5000/deleteVacante` ,{id_vacante})
        //elemina la vacante de rxjs vacantes
-      vancanteService.removeVacante(id_vacante); // Actualiza la lista usando RxJS
+      VacanteService.removeVacante(id_vacante); // Actualiza la lista usando RxJS
       
   }
   catch (error) {
@@ -239,10 +239,10 @@ export const  updateVacanteFeria = async (vacante : vacante , id_feria : number)
 
 
 
-  export const  getPostulacionesEnf = async (id_user_enf :number)  =>  {
+  export const  getPostulacionesEnf = async (id_user_enf :number , id_feria : number)  =>  {
 
     try{
-       const postulaciones = await axios.post(`http://localhost:5000/getPostulacionesEnf` ,{id_user_enf})
+       const postulaciones = await axios.post(`http://localhost:5000/getPostulacionesEnf` ,{id_user_enf , id_feria})
        //elemina la vacante de rxjs vacantes
        const enfpost = postulaciones.data
         return enfpost 

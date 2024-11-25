@@ -1,57 +1,88 @@
-// validations.ts
-
-export const validarNombre = (nombre: string): string | null => {
-    if (!/^[a-zA-ZÀ-ÿ\s]{1,40}$/.test(nombre)) {
-      return 'El nombre solo debe contener letras.';
+// Mensajes de error centralizados
+const errorMessages = {
+    nombre: 'Solo letras.',
+    mail: 'Correo inválido.',
+    telefono: 'Teléfono inválido.',
+    contrasena: 'Debe contener 8 caracteres mínimo, 1 mayúscula, 1 minúscula y 1 número.',
+    contrasenaNoCoincide: 'Las contraseñas no coinciden.',
+    rut: 'RUT inválido.',
+    dv: 'DV inválido.',
+    rutFalta: 'Falta el RUT.',
+    rutLongitud: 'El RUT debe tener 7 u 8 dígitos.',
+    faltaDv: 'Falta DV.',
+  };
+  
+  // Función de validación genérica con expresión regular
+  const validarConExpresion = (valor: string, regex: RegExp, errorMsg: string): string | null => {
+    if (!regex.test(valor)) {
+      return errorMsg;
     }
     return null;
   };
   
-  export const validarMail = (user_mail: string): string | null => {
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(user_mail)) {
-      return 'El correo no tiene un formato válido.';
+  // Validaciones por campo
+  export const validarNombre = (nombre: string): string | null =>
+    validarConExpresion(nombre, /^[a-zA-ZÀ-ÿ\s]{1,40}$/, errorMessages.nombre);
+  
+  export const validarMail = (mail: string): string | null =>
+    validarConExpresion(mail, /^[^\s@]+@[^\s@]+\.[^\s@]+$/, errorMessages.mail);
+  
+  export const validarTelefono = (telefono: string): string | null =>
+    validarConExpresion(telefono, /^[0-9]{7,15}$/, errorMessages.telefono);
+  
+  export const validarContrasena = (contrasena: string): string | null =>
+    validarConExpresion(contrasena, /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/, errorMessages.contrasena);
+  
+  // Validar que las contraseñas coincidan
+  export const validarContrasenasCoinciden = (contrasena: string, contrasena2: string): string | null =>
+    contrasena !== contrasena2 ? errorMessages.contrasenaNoCoincide : null;
+  
+  // Validación del dígito verificador del RUT
+  const validarGuion = (dv: string): string | null => {
+    if (!dv) {
+      return errorMessages.faltaDv;
+    }
+    if (!/^[0-9Kk]$/.test(dv)) {
+      return errorMessages.dv;
     }
     return null;
   };
   
-  export const validarTelefono = (telefono: string): string | null => {
-    if (!/^[0-9]{7,15}$/.test(telefono)) {
-      return 'El teléfono debe tener entre 7 y 15 dígitos.';
+  // Validación del RUT completo
+  export const validarRutCompleto = (rut: string, dv: string): string | null => {
+    if (!rut) {
+      return errorMessages.rutFalta;
     }
-    return null;
-  };
   
-  export const validarContrasena = (contrasena: string): string | null => {
-    if (!/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/.test(contrasena)) {
-      return 'La contraseña debe tener al menos 8 caracteres, incluyendo mayúsculas, minúsculas y un número.';
-    }
-    return null;
-  };
+    // Normaliza el RUT eliminando puntos y guiones
+    const rutLimpio = rut.replace(/\./g, '').replace('-', '');
   
-  export const validarContrasenasCoinciden = (contrasena: string, contrasena2: string): string | null => {
-    if (contrasena !== contrasena2) {
-      return 'Las contraseñas no coinciden.';
+    // Validar que el número RUT tenga entre 7 y 8 dígitos
+    if (!/^\d{7,8}$/.test(rutLimpio)) {
+      return errorMessages.rutLongitud;
     }
-    return null;
-  };
   
-  export const validarRutCompleto = (rut: string, rut_div: string): string | null => {
-    rut = rut.replace(/\./g, '').replace('-', '');
-    rut_div = rut_div.toUpperCase();
-    if (!/^[0-9]{7,8}$/.test(rut) || !/^[0-9K]$/.test(rut_div)) {
-      return 'El RUT ingresado no es válido.';
-    }
+    // Validar el DV
+    const errorDv = validarGuion(dv);
+    if (errorDv) return errorDv;
+  
+    // Calcular el dígito verificador esperado
     let suma = 0;
-    let multiplo = 2;
-    for (let i = rut.length - 1; i >= 0; i--) {
-      suma += parseInt(rut.charAt(i), 10) * multiplo;
-      multiplo = (multiplo < 7) ? multiplo + 1 : 2;
+    let multiplicador = 2;
+    for (let i = rutLimpio.length - 1; i >= 0; i--) {
+      suma += parseInt(rutLimpio.charAt(i), 10) * multiplicador;
+      multiplicador = multiplicador < 7 ? multiplicador + 1 : 2;
     }
-    const dvCalculado = 11 - (suma % 11);
-    const dv = dvCalculado === 11 ? '0' : dvCalculado === 10 ? 'K' : dvCalculado.toString();
-    if (dv !== rut_div) {
-      return 'El RUT ingresado no es válido.';
+  
+    const resto = suma % 11;
+    const dvCalculado = 11 - resto;
+    const dvEsperado = dvCalculado === 11 ? '0' : dvCalculado === 10 ? 'K' : dvCalculado.toString().toUpperCase();
+  
+    // Comparar el DV ingresado con el calculado
+    if (dvEsperado !== dv.toUpperCase()) {
+      return errorMessages.rut;
     }
-    return null;
+  
+    return null; // RUT válido
   };
   

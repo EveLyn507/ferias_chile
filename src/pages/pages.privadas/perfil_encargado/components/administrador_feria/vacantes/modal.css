@@ -1,0 +1,58 @@
+/* VacanteModal.css */
+.vacante-modal {
+    top: 50%;
+    left: 50%;
+    right: auto;
+    bottom: auto;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    border-radius: 10px;
+    width: 400px;
+    max-height: 80vh;
+    overflow: auto;
+  }
+  
+  .vacante-modal select,
+  .vacante-modal input {
+    margin: 5px 0;
+    padding: 5px;
+    width: 100%;
+  }
+  
+  .horario-item {
+    margin-bottom: 10px;
+  }
+  
+  .modal-footer {
+    margin-top: 15px;
+    text-align: right;
+  }
+  
+  .modal-footer button {
+    padding: 10px;
+    border-radius: 5px;
+  }
+  
+  .modal-footer button:first-child {
+    margin-right: 10px;
+  }
+  
+  .modal-footer button:nth-child(1) {
+    background-color: #28A745;
+    color: white;
+    border: none;
+  }
+  
+  .modal-footer button:nth-child(2) {
+    background-color: #DC3545;
+    color: white;
+    border: none;
+  }
+  
+  .modal-footer button:nth-child(3) {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+  }
+  

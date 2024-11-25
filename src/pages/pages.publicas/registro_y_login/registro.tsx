@@ -7,7 +7,7 @@ import {
   validarContrasenasCoinciden,
   validarRutCompleto
 } from './validaciones';
-import './css/registro.css';  // Importa el archivo CSS
+import './css/registro.css';
 
 export const Registro = () => {
   const [values, setValues] = useState({
@@ -34,14 +34,16 @@ export const Registro = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+
     setValues((prevValues) => ({
       ...prevValues,
       [name]: value
     }));
-    validateField(name, value);
+
+    validateField(name, value, { ...values, [name]: value });
   };
 
-  const validateField = (name: string, value: string) => {
+  const validateField = (name: string, value: string, currentValues: typeof values): string => {
     let errorMessage = '';
 
     switch (name) {
@@ -61,11 +63,11 @@ export const Registro = () => {
         errorMessage = validarContrasena(value) || '';
         break;
       case 'contrasena2':
-        errorMessage = validarContrasenasCoinciden(values.contrasena, value) || '';
+        errorMessage = validarContrasenasCoinciden(currentValues.contrasena, value) || '';
         break;
       case 'rut':
       case 'rut_div':
-        errorMessage = validarRutCompleto(values.rut, values.rut_div) || '';
+        errorMessage = validarRutCompleto(currentValues.rut,currentValues.rut_div) || '';
         break;
       default:
         break;
@@ -75,117 +77,134 @@ export const Registro = () => {
       ...prevErrors,
       [name]: errorMessage
     }));
+
+    return errorMessage;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    const newErrors: typeof errors = {};
+    let hasErrors = false;
+
     Object.keys(values).forEach((field) => {
-      validateField(field, values[field]);
+      const errorMessage = validateField(field, values[field], values);
+      newErrors[field] = errorMessage;
+      if (errorMessage) hasErrors = true;
     });
-    if (Object.values(errors).every((error) => error === '')) {
-      console.log('Formulario enviado');
+
+    setErrors(newErrors);
+
+    if (!hasErrors) {
+      console.log('Formulario enviado:', values);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="form-container">
-      <div className="form-row">
-        <div>
-          <label>Nombre</label>
-          <input
-            type="text"
-            name="nombre"
-            value={values.nombre}
-            onChange={handleInputChange}
-          />
-          {errors.nombre && <p className="error">{errors.nombre}</p>}
+    <div className="container-form">
+      <form onSubmit={handleSubmit} className="form-container">
+        <div className="col-datos-per">
+          <div className="form-row">
+            <div>
+              <label>Nombre</label>
+              <input
+                type="text"
+                name="nombre"
+                value={values.nombre}
+                onChange={handleInputChange}
+              />
+              {errors.nombre && <span className="error">{errors.nombre}</span>}
+            </div>
+
+            <div>
+              <label>Apellido</label>
+              <input
+                type="text"
+                name="apellido"
+                value={values.apellido}
+                onChange={handleInputChange}
+              />
+              {errors.apellido && <span className="error">{errors.apellido}</span>}
+            </div>
+          </div>
+
+          <div className="form-row">
+            <div>
+              <label>RUT</label>
+              <input
+                type="number"
+                name="rut"
+                value={values.rut}
+                onChange={handleInputChange}
+              />
+              {errors.rut && <span className="error">{errors.rut}</span>}
+            </div>
+
+            <div>
+              <label>DV</label>
+              <input
+                type="text"
+                name="rut_div"
+                value={values.rut_div}
+                onChange={handleInputChange}
+              />
+
+            </div>
+          </div>
         </div>
 
-        <div>
-          <label>Apellido</label>
-          <input
-            type="text"
-            name="apellido"
-            value={values.apellido}
-            onChange={handleInputChange}
-          />
-          {errors.apellido && <p className="error">{errors.apellido}</p>}
-        </div>
-      </div>
+        <div className="col-contacto">
+          <div>
+            <label>Correo Electrónico</label>
+            <input
+              type="email"
+              name="user_mail"
+              value={values.user_mail}
+              onChange={handleInputChange}
+            />
+            {errors.user_mail && <span className="error">{errors.user_mail}</span>}
+          </div>
 
-      <div className="form-row">
-        <div>
-          <label>Correo Electrónico</label>
-          <input
-            type="email"
-            name="user_mail"
-            value={values.user_mail}
-            onChange={handleInputChange}
-          />
-          {errors.user_mail && <p className="error">{errors.user_mail}</p>}
-        </div>
-
-        <div>
-          <label>Teléfono</label>
-          <input
-            type="text"
-            name="telefono"
-            value={values.telefono}
-            onChange={handleInputChange}
-          />
-          {errors.telefono && <p className="error">{errors.telefono}</p>}
-        </div>
-      </div>
-
-      <div className="form-row">
-        <div>
-          <label>Contraseña</label>
-          <input
-            type="password"
-            name="contrasena"
-            value={values.contrasena}
-            onChange={handleInputChange}
-          />
-          {errors.contrasena && <p className="error">{errors.contrasena}</p>}
+          <div>
+            <label>Teléfono</label>
+            <input
+              type="text"
+              name="telefono"
+              value={values.telefono}
+              onChange={handleInputChange}
+            />
+            {errors.telefono && <span className="error">{errors.telefono}</span>}
+          </div>
         </div>
 
-        <div>
-          <label>Confirmar Contraseña</label>
-          <input
-            type="password"
-            name="contrasena2"
-            value={values.contrasena2}
-            onChange={handleInputChange}
-          />
-          {errors.contrasena2 && <p className="error">{errors.contrasena2}</p>}
-        </div>
-      </div>
-
-      <div className="form-row">
-        <div>
-          <label>RUT</label>
-          <input
-            type="text"
-            name="rut"
-            value={values.rut}
-            onChange={handleInputChange}
-          />
-          {errors.rut && <p className="error">{errors.rut}</p>}
+        <div className="col-password">
+          <div>
+            <label>Contraseña</label>
+            <input
+              type="password"
+              name="contrasena"
+              value={values.contrasena}
+              onChange={handleInputChange}
+            />
+            {errors.contrasena && <span className="error">{errors.contrasena}</span>}
+          </div>
         </div>
 
-        <div>
-          <label>Dígito Verificador</label>
-          <input
-            type="text"
-            name="rut_div"
-            value={values.rut_div}
-            onChange={handleInputChange}
-          />
-          {errors.rut_div && <p className="error">{errors.rut_div}</p>}
+        <div className="col-password">
+          <div>
+            <label>Confirmar Contraseña</label>
+            <input
+              type="password"
+              name="contrasena2"
+              value={values.contrasena2}
+              onChange={handleInputChange}
+            />
+            {errors.contrasena2 && <span className="error">{errors.contrasena2}</span>}
+          </div>
         </div>
-      </div>
 
-      <button type="submit">Registrar</button>
-    </form>
+        <button type="submit">Registrar</button>
+      </form>
+    </div>
   );
 };
