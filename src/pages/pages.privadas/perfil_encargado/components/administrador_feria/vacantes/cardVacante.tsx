@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { vacante } from "../../../../../models/interfaces";
 import { DivHorario } from "./divHorario";
-import { VacanteModal } from "./actualizarVacante"; // Importa tu modal para editar vacantes
+import { VacanteModal } from "./vacanteModal"; // Importa tu modal para editar vacantes
 
 interface VacanteCardProps {
   formData: vacante;
@@ -26,28 +26,26 @@ const VacanteCard: React.FC<VacanteCardProps> = ({
   };
 
   return (
-    <div className="card-vacante">
-      <span className="nombre-emp">{formData.id_user_fte}</span>
-      <span className="rol-emp">{formData.id_rol}</span>
-
+    <tbody className="card-vacante">
+      <td className="nombre-emp">{formData.id_user_fte}</td>
+      <td className="rol-emp">{formData.id_rol}</td>
+      <td className="horario">
       <DivHorario horarios={formData.horarios} />
-      <span className="ingreso">{formData.ingreso}</span>
-      <span className="termino">{formData.termino}</span>
+      </td>
+      <td className="ingreso">{formData.ingreso}</td>
+      <td className="termino">{formData.termino}</td>
 
-      {/* Botón para abrir el modal */}
+     <td>
       <button onClick={handleModalOpen}>Actualizar</button>
-
-      {/* Botón para eliminar vacante */}
-      <button onClick={() => borrarVacante(formData.id_vacante)}>Eliminar Vacante</button>
-
-      {/* Modal de edición */}
+      <button onClick={() => borrarVacante(formData.id_vacante)}>Eliminar </button>
+      </td>
       <VacanteModal
         isOpen={isModalOpen}
         onClose={handleModalClose}
         vacante={formData} // Pasa la vacante para editarla
         onSave={actualizarVacante}
       />
-    </div>
+    </tbody>
   );
 };
 

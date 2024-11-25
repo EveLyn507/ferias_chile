@@ -4,7 +4,7 @@ import { getProgramaFeria, GuardarProgramacionFeria } from "../../services/admin
 import EditProgramaModal from "./programaModal";  // Importa el modal
 
 const BooleanDaysSelector = ({ idFeria, nombreF }: homeProps) => {
-  const semana = ['none', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
+  const semana = ['none', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
 
   const [programaF, setActual] = useState<ProgramaFeria[]>([]); // Lista de programas actual
   const [UpdatedPrograma, setUpdatedPro] = useState<ProgramaFeria[]>([]);  // lista modificada que se enviara al backend al guardarla
@@ -57,26 +57,37 @@ const BooleanDaysSelector = ({ idFeria, nombreF }: homeProps) => {
 
   return (
     <div className="programa-container">
-      <div className="programa">
-        <span>dia</span>
-        <span>hora_inicio</span>
-        <span>hora_termino</span>
-        <span>id_dia_armado</span>
-        <span>hora_inicio_armado</span>
-        <span>hora_termino_armado</span>
-      </div>
-
-      {programaF.map((programa) => (
-        <div key={programa.id_dia} className="programa">
-          <span>{semana[programa.id_dia]}</span>
-          <span>{programa.hora_inicio}</span>
-          <span>{programa.hora_termino}</span>
-          <span>{programa.id_dia_armado}</span>
-          <span>{programa.hora_inicio_armado}</span>
-          <span>{programa.hora_termino_armado}</span>
-          <button onClick={() => handleEditClick(programa)}>Editar</button>
-        </div>
-      ))}
+      <table className="data-table">
+        <thead>
+          <tr>
+            <th>Dia</th>
+            <th>Hora_inicio</th>
+            <th>Hora_termino</th>
+            <th>Id_dia_armado</th>
+            <th>Hora_inicio_armado</th>
+            <th>Hora_termino_armado</th>
+            <th>activo?</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+          {programaF.map((programa) => (
+            <tbody key={programa.id_dia} >
+              <td>{semana[programa.id_dia]}</td>
+              <td>{programa.hora_inicio}</td>
+              <td>{programa.hora_termino}</td>
+              <td>{programa.id_dia_armado}</td>
+              <td>{programa.hora_inicio_armado}</td>
+              <td>{programa.hora_termino_armado}</td>
+              <td>{programa.activo}</td>
+              <td>
+          
+              <button onClick={() => handleEditClick(programa)}>Editar</button>
+             
+              </td>
+              </tbody>
+          ))}
+     
+      </table>
 
       {/* Modal para editar la vacante */}
       {selectedPrograma && (
@@ -90,6 +101,7 @@ const BooleanDaysSelector = ({ idFeria, nombreF }: homeProps) => {
 
       <button onClick={sendData} disabled={!isModified}>Guardar Cambios</button>
     </div>
+    
   );
 };
 

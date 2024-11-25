@@ -6,68 +6,33 @@
 }
 
 .empleados {
-    max-height: 50%;
+    max-height: 500px;
     gap: 1px;
-
     width: 95%;
     margin: auto;
+    overflow-y: auto;
 }
 
 .empy-vacante {
     gap: 1px;
-    max-height: 50%;
+    max-height: 500px;
     width: 95%;
     margin: auto;
+    overflow-y: auto;
   
 }
 
 .card-vacante {
-
-   display: flex;
-   gap: 1px;
-   border-bottom: gray solid 1px;
-   width: 100%;
-   margin: auto;
-
+  max-height: 50px;
 }
 
 
-
-.header-grilla {
-    display: flex;
-   gap: 1px;
-   border-bottom: gray solid 1px;
-   width: 100%;
-   margin: auto;
+ /* los circulos de horarios*/
+ .horarios {
+  position: absolute; /* Asegura que el hover-info se posicione relativo a la celda */
 
 }
-
-
-.nombre-emp,
-.rol-emp,
-.ingreso,
-.termino {
-
-    text-align: center;
-    min-width: 10%;
-    border-right: gray solid 1px;
- 
-}
-
-
-.horarios {
-    display: flex;
-    text-align: center;
-    align-items: center;
-    min-width: 20%;
-    position: relative; /* Necesario para posicionar el hover-info */
-    display: inline-block;
-    border-right: gray solid 1px;
-
-  }
-  
   .circulos-container {
-    
     margin-left: 5%;
     height: 100%;
     align-items: center;
@@ -76,8 +41,8 @@
   }
   
   .dia-circle {
-    width: 25px; /* Tamaño reducido */
-    height: 25px;
+    width: 30px; /* Tamaño reducido */
+    height: 30px;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -97,6 +62,8 @@
     color: white;
   }
   
+
+
   .hover-info {
     display: none; /* Oculto por defecto */
     position: absolute;
@@ -110,16 +77,49 @@
     font-size: 12px;
     z-index: 10;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    max-width: 300px;
+    min-width: 60%;
     max-height: 200px; /* Altura máxima para evitar que se extienda demasiado */
     overflow-y: auto; /* Scroll interno si el contenido es demasiado grande */
     white-space: normal; /* Permite saltos de línea */
   }
   
-  .horarios:hover .hover-info {
+  .horario:hover .hover-info {
     display: block; /* Muestra al pasar el ratón sobre el contenedor */
   }
   
 
-
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .data-table th,
+  .data-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+    font-size: 14px; /* Tamaño base del texto */
+  }
+  
+  .data-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+  }
+  
+  .data-table td.horario,
+  .data-table th.horario {
+    font-size: 16px; /* Texto más grande */
+    font-weight: bold;
+    width: 30%; /* Más espacio para la columna de horario */
+  }
+  
+  .data-table td {
+    height: 10px;
+    width: 15%; /* Espacio proporcional para las demás columnas */
+  }
+  
+  .data-table tr:hover {
+    background-color: #f9f9f9; /* Color de fondo en hover */
+  }
+  
 

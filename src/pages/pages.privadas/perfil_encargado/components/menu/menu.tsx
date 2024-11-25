@@ -12,11 +12,11 @@
     return (
 
         <div className="enfmenu">
-            <h1>menu</h1>
+            <h1>Mis Ferias</h1>
             <div className="misFerias">
             {nombresF.map((F) => (
 
-            <h4 key={F.id} onClick={() => changeFeria(F.id)} >   {F.nombre}   </h4>
+            <button key={F.id} onClick={() => changeFeria(F.id)} >   {F.nombre}   </button>
             ))}
 
             </div>
