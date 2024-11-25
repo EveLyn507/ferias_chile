@@ -23,7 +23,7 @@ const Paginacion = ({page , setPage } : pageProps) => {
     };
 
     return (
-        <div className="center-content">
+        <div className="col-pagi">
           <button
             className="pagination-button"
             onClick={prevPage}

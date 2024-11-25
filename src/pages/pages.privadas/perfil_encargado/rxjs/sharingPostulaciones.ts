@@ -40,8 +40,8 @@ class PostulacionesService {
   }
 
   // Función para cargar los bancos desde la base de datos, recibiendo el mail como argumento
-  loadInitialVacante(id_user_enf : number) {
-    getPostulacionesEnf(id_user_enf).then(postulaciones => {
+  loadInitialVacante(id_user_enf : number , id_feria : number) {
+    getPostulacionesEnf(id_user_enf , id_feria).then(postulaciones => {
       this.setVacante(postulaciones); // Actualiza la lista con los datos obtenidos
     }).catch(error => {
       console.error("Error al cargar las vacantes:", error);

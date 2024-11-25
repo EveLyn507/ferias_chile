@@ -21,8 +21,6 @@ export const CrearVacante = () => {
     setHorarios([...horarios, newHorario]);
   }
 
-
-
   const todayISO = new Date().toISOString().split('T')[0];
 
   // INICIO FUNCION guardarVacante -- guarda en backend y en rxjs vacante

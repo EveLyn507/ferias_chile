@@ -22,38 +22,13 @@
   font-weight: 600;
 }
 
-/* Tabs container */
-.react-tabs__tab-list {
-  display: flex;
-  justify-content: center;
-  border-bottom: 2px solid #ddd;
-  margin-bottom: 20px;
-  padding: 0;
-}
 
-.react-tabs__tab {
-  padding: 10px 20px;
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: bold;
-  color: #666;
-  border: none;
-  border-bottom: 2px solid transparent;
-  transition: all 0.3s;
-}
-
-.react-tabs__tab--selected {
-  color: #007bff; /* Active tab color */
-  border-bottom: 2px solid #007bff;
-}
-
-.react-tabs__tab:hover {
-  color: #0056b3; /* Hover effect for tabs */
-}
 
 /* Card for each login form */
 .form-card {
-
+  display: flex;
+  width: 100%;
+  flex-direction: column;
   background: #fff;
   padding: 20px;
   border-radius: 10px;
@@ -62,8 +37,8 @@
 }
 
 /* Input fields styling */
-input {
-  width: calc(100% - 20px);
+.form-card  input {
+  width: 100%;
   padding: 10px;
   margin-bottom: 15px;
   border: 1px solid #ddd;
@@ -72,26 +47,28 @@ input {
   box-sizing: border-box;
 }
 
-input:focus {
+.form-card  input:focus {
   outline: none;
   border-color: #007bff;
   box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
 }
 
 /* Buttons styling */
-button {
-  background-color: #007bff;
+.form-card  button {
+
+  width: 100%;
+  margin: auto;
+  text-align: center !important;
+  background-color: #0056b3;
   color: white;
-  border: none;
   border-radius: 5px;
   padding: 10px 15px;
   cursor: pointer;
   font-size: 1rem;
   transition: background-color 0.3s;
-}
-
-button:hover {
-  background-color: #0056b3;
+  &:hover {
+    background-color: #007bff;
+  }
 }
 
 /* Link for password reset */
@@ -102,10 +79,10 @@ button:hover {
   color: #007bff;
   text-decoration: none;
   transition: color 0.3s;
-}
 
-.switch-form-button:hover {
-  color: #0056b3;
+  &:hover {
+    color: #0056b3;
+  }
 }
 
 /* Responsive design */

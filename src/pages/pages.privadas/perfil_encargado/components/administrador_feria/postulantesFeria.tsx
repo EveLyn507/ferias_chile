@@ -1,34 +1,27 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react"
 import { postulacionService } from "../../rxjs/sharingPostulaciones"
-import { ftePostulacion } from "../../../../models/interfaces"
-import { useParams } from "react-router-dom"
+import { ftePostulacion, homeProps } from "../../../../models/interfaces"
+
 import { aceptarPostulacion, rechazarPostulacion } from "../../services/admin_feria_fuctions"
 
-export const PostulantesFeria = () => {
-const {id_feria} = useParams<{id_feria :string}>() 
-const idFeria = id_feria ? parseInt(id_feria, 10) : 0
+export const PostulantesFeria = ({idFeria} : homeProps) =>{
+
 
 const [postulaciones , setPostulacion] = useState<ftePostulacion[]>([])
 
 
-const cargaPostFilter = async(idFeria : number) => {
-    await postulacionService.postulacionesFeriaFilter(idFeria)
-
-   const subscription = postulacionService.postulacion$.subscribe((postulaciones) => {
-    console.log("Postulaciones recibidas:", postulaciones);
-    setPostulacion(postulaciones);
-    return () => {
-        subscription.unsubscribe();
-    };
-});
-}
-
-
 
 useEffect(() => {
-  
-    cargaPostFilter(idFeria)
+
+  const subscription = postulacionService.postulacion$.subscribe((postulacionesf) => {
+    console.log("Postulaciones recibidas:", postulacionesf);
+    setPostulacion(postulacionesf);
+
+    console.log('id',idFeria);
+    return () =>  subscription.unsubscribe();
+ 
+});
 
 }, []);
 
@@ -42,11 +35,7 @@ const rechazar = async (id_postulacion: number,id_vacante : number , id_user_fte
     rechazarPostulacion(id_postulacion,id_vacante,id_user_fte)
 }
 
-{postulaciones.map((postulacion) => {
-    console.log(postulacion.fte_nombre, typeof postulacion.fte_nombre , typeof postulacion.id_vacante);
 
-    // Rest of the code
-  })}
   
 
 
