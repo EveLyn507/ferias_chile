@@ -7,6 +7,8 @@ export const Card_arriendos = ({ arriendos }: arriendosListProp) => {
   const estado = ['none', 'disponible', 'en proceso venta', 'arrendado'];
   const navigate = useNavigate();
 
+console.log(arriendos);
+
   const handleContratarClick = (arriendo: arriendo) => {
     navigate("/pagosss", { state: { arriendo } });
   };

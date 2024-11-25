@@ -3,6 +3,7 @@ const { verifyToken } = require('../auth/verifyToken');
 const { UpdatePuesto ,CreateNewItemElement  ,UpdatePlano ,DeleteItemPlano ,} = require('./controllers/wsEnfController');
 const { getArriendosFToday} = require('./controllers/FeedFeriasController');
 const { commitTransaction , createTransaction} = require('./controllers/VentasController');
+const {obtenerSolicitudes, confirmSoli, declineSoli} = require('./controllers/MuniController')
 
 const pool = require('../auth/pool');
 
@@ -39,6 +40,30 @@ function setupSocketServer(io) {
       socket.on('TodayFeriaElements', (params) => getArriendosFToday(socket ,pool, params));
       socket.on('CreateTransaction', (params) => createTransaction(io, socket ,pool, params));
       socket.on('confirm_Transaction', (params) => commitTransaction(io, socket ,pool, params));
+      socket.on('obtener_solicitudes', (id_user_adm) => obtenerSolicitudes(socket, pool, id_user_adm));
+      socket.on("confirmar_solicitud", async (data) => {console.log("Datos recibidos del cliente:", data);
+        const { id_feria, id_solicitud } = data.params;
+        console.log("id_feria:", id_feria, "id_solicitud:", id_solicitud);
+        if (!id_feria || !id_solicitud) {
+          console.error("Parámetros faltantes:", { id_feria, id_solicitud });
+          socket.emit("error", "Parámetros faltantes");
+          return; 
+        }
+        console.log("Parámetros extraídos correctamente:", { id_feria, id_solicitud });     
+        await confirmSoli(socket, pool, id_feria, id_solicitud);
+      });
+  
+      socket.on("rechazar_solicitud", async (data) => {console.log("Datos recibidos del cliente:", data);
+        const { id_feria, id_solicitud } = data.params;
+        console.log("id_feria:", id_feria, "id_solicitud:", id_solicitud);
+        if (!id_feria || !id_solicitud) {
+          console.error("Parámetros faltantes:", { id_feria, id_solicitud });
+          socket.emit("error", "Parámetros faltantes");
+          return; 
+        }
+        console.log("Parámetros extraídos correctamente:", { id_feria, id_solicitud });     
+        await declineSoli(socket, pool, id_feria, id_solicitud);
+      });
 
       //SALAS
         // Unirse o crear una sala con un nombre dinámico

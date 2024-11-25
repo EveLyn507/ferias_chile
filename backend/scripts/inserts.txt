@@ -54,7 +54,7 @@ VALUES (4, 'ELIMINADO');
 INSERT INTO tipo_elemento (id_tipo_elemento, elemento)
 VALUES 
 (1, 'puesto'),
-(2,'calle')
+(2,'calle');
 
 --tipo puesto
 
@@ -373,7 +373,7 @@ insert into estado_postulacion VALUES
 insert into estado_arriendo VALUES
 (1,'Disponible'),
 (2,'Confirmando compra'),
-(3,'ocupado')
+(3,'ocupado');
 
 insert into estado_solicitud VALUES
 (1,'En espera'),
