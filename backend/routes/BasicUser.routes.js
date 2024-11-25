@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../credenciales');
-const { login_encargado,login_feriante,login_municipal, registerEncargado_feria, registerFeriante, registerAdministrador_municipal, registerGoogleFeriante, recuperarContrasena, verificarTokenRecuperacion } = require('../controllers/BasicUserController.js');
+const { login_encargado,login_feriante,login_municipal, registerEncargado_feria, registerFeriante, registerAdministrador_municipal, registerGoogleFeriante, actualizarContrasena } = require('../controllers/BasicUserController.js');
 const { get_feria,get_puestos_feria  } = require('../controllers/FeedController.js');
 
 // Ruta de login
@@ -55,16 +55,10 @@ router.post('/registro/google', (req , res) => {
   registerGoogleFeriante(req,res,pool);
 })
 
-// Ruta para enviar enlace de recuperación
-router.post('/recuperacion', (req, res) => {
-  const pool = req.pool;
-  recuperarContrasena(req, res,pool);
-});
-
 // Ruta para restablecer contraseña
 router.post('/reset-password', (req, res) => {
   const pool = req.pool;
-  verificarTokenRecuperacion(req, res,pool);
+  actualizarContrasena(req, res,pool);
 });
 
 

@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { useSearchParams } from 'react-router-dom';
 
 export const ResetPassword = () => {
-  const [searchParams] = useSearchParams();
+  const [email, setEmail] = useState('');
   const [nuevaContrasena, setNuevaContrasena] = useState('');
   const [confirmarContrasena, setConfirmarContrasena] = useState('');
   const [message, setMessage] = useState('');
@@ -23,15 +22,8 @@ export const ResetPassword = () => {
     }
 
     try {
-      const token = searchParams.get('token'); 
-
-      if (!token) {
-        setMessage('Token inválido o expirado.');
-        return;
-      }
-
       const response = await axios.post('http://localhost:5000/reset-password', {
-        token,
+        email,
         nuevaContrasena,
       });
 
@@ -45,6 +37,12 @@ export const ResetPassword = () => {
   return (
     <div>
       <h2>Restablecer Contraseña</h2>
+      <input
+        type="email"
+        placeholder="Ingresa tu correo"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
       <input
         type="password"
         placeholder="Nueva Contraseña"

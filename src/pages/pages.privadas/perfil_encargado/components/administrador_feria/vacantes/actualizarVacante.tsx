@@ -6,19 +6,18 @@ interface modalProps {
   isOpen: boolean;
   onClose: () => void;
   vacante: vacante;
-  onSave: (updatedVacante: vacante, id_feria: number) => void; // Función para manejar los cambios
+  onSave: (updatedVacante: vacante, id_feria: number) => void;
 }
 
-// Asegúrate de configurar el root del modal correctamente
 Modal.setAppElement("#root");
 
 export const VacanteModal = ({ isOpen, onClose, vacante, onSave }: modalProps) => {
   const semana = ['none', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
 
-  // Estado local para manejar los cambios
   const [editedVacante, setEditedVacante] = useState<vacante>(vacante);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  // Maneja el cambio de los valores principales de la vacante
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setEditedVacante({
@@ -27,18 +26,47 @@ export const VacanteModal = ({ isOpen, onClose, vacante, onSave }: modalProps) =
     });
   };
 
-  // Maneja el cambio de los horarios dentro de la vacante
   const handleHorarioChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     const updatedHorarios = [...editedVacante.horarios];
-    updatedHorarios[index] = { ...updatedHorarios[index], [name]: value }; // Actualiza el horario en el índice correspondiente
+    updatedHorarios[index] = { ...updatedHorarios[index], [name]: value };
     setEditedVacante({ ...editedVacante, horarios: updatedHorarios });
   };
 
-  // Guarda los cambios realizados y cierra el modal
+  const validateVacante = () => {
+    if (!editedVacante.ingreso || !editedVacante.termino) {
+      setErrorMessage("Las fechas de ingreso y término son obligatorias.");
+      return false;
+    }
+
+    if (editedVacante.ingreso >= editedVacante.termino) {
+      setErrorMessage("La fecha de ingreso debe ser anterior a la fecha de término.");
+      return false;
+    }
+
+    for (const horario of editedVacante.horarios) {
+      if (!horario.hora_entrada || !horario.hora_salida) {
+        setErrorMessage("Todos los horarios deben incluir una hora de entrada y salida.");
+        return false;
+      }
+
+      if (horario.hora_entrada >= horario.hora_salida) {
+        setErrorMessage(`La hora de entrada debe ser anterior a la hora de salida (${semana[horario.id_dia]}).`);
+        return false;
+      }
+    }
+
+    return true;
+  };
+
   const handleSaveClick = () => {
-    onSave(editedVacante, editedVacante.id_feria); // Llama a la función de guardado con la vacante editada
-    onClose(); // Cierra el modal
+    if (validateVacante()) {
+      onSave(editedVacante, editedVacante.id_feria);
+      setErrorMessage(null);
+      setSuccessMessage("Los cambios se han guardado correctamente.");
+      setTimeout(() => setSuccessMessage(null), 3000); // Limpiar mensaje después de 3 segundos
+      onClose();
+    }
   };
 
   return (
@@ -65,6 +93,9 @@ export const VacanteModal = ({ isOpen, onClose, vacante, onSave }: modalProps) =
       }}
     >
       <h2>Editar Detalles del Puesto</h2>
+
+      {errorMessage && <p style={{ color: "red", marginBottom: "10px" }}>{errorMessage}</p>}
+      {successMessage && <p style={{ color: "green", marginBottom: "10px" }}>{successMessage}</p>}
 
       <label>
         <strong>ID:</strong> {editedVacante.id_vacante}
@@ -109,7 +140,6 @@ export const VacanteModal = ({ isOpen, onClose, vacante, onSave }: modalProps) =
       </label>
       <br />
 
-      {/* Mapeo de horarios para permitir su edición */}
       <h3>Horarios:</h3>
       {editedVacante.horarios.map((horario, index) => (
         <div key={index} style={{ marginBottom: "10px" }}>
@@ -121,7 +151,7 @@ export const VacanteModal = ({ isOpen, onClose, vacante, onSave }: modalProps) =
               type="time"
               name="hora_entrada"
               value={horario.hora_entrada}
-              onChange={(e) => handleHorarioChange(index, e)} // Actualiza cada horario individualmente
+              onChange={(e) => handleHorarioChange(index, e)}
               style={{ margin: "5px 0", padding: "5px", width: "100%" }}
             />
           </label>
@@ -132,7 +162,7 @@ export const VacanteModal = ({ isOpen, onClose, vacante, onSave }: modalProps) =
               type="time"
               name="hora_salida"
               value={horario.hora_salida}
-              onChange={(e) => handleHorarioChange(index, e)} // Actualiza cada horario individualmente
+              onChange={(e) => handleHorarioChange(index, e)}
               style={{ margin: "5px 0", padding: "5px", width: "100%" }}
             />
           </label>

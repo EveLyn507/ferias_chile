@@ -1,129 +1,102 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState } from "react"
-import { postulacionService } from "../../rxjs/sharingPostulaciones"
-import { ftePostulacion, homeProps } from "../../../../models/interfaces"
+import { useEffect, useState } from "react";
+import { postulacionService } from "../../rxjs/sharingPostulaciones";
+import { ftePostulacion, homeProps } from "../../../../models/interfaces";
+import { aceptarPostulacion, rechazarPostulacion } from "../../services/admin_feria_fuctions";
 
-import { aceptarPostulacion, rechazarPostulacion } from "../../services/admin_feria_fuctions"
-
-export const PostulantesFeria = ({idFeria} : homeProps) =>{
-
-
+export const PostulantesFeria = ({ idFeria }: homeProps) => {
   const [postulaciones, setPostulacion] = useState<ftePostulacion[]>([]);
-  const [validationErrors, setValidationErrors] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null); // Para errores
+  const [successMessage, setSuccessMessage] = useState<string | null>(null); // Para mensajes de éxito
 
-  const cargaPostFilter = async (idFeria: number) => {
-    if (!idFeria || idFeria === 0) {
-      setValidationErrors("El ID de la feria no es válido.");
-      return;
-    }
-
-    await postulacionService.postulacionesFeriaFilter(idFeria);
-
-    const subscription = postulacionService.postulacion$.subscribe((postulaciones) => {
-      console.log("Postulaciones recibidas:", postulaciones);
-      setPostulacion(postulaciones);
-      setValidationErrors(null); // Limpiar errores previos si los datos se cargaron correctamente
-      return () => {
-        subscription.unsubscribe();
-      };
+  useEffect(() => {
+    const subscription = postulacionService.postulacion$.subscribe((postulacionesf) => {
+      console.log("Postulaciones recibidas:", postulacionesf);
+      setPostulacion(postulacionesf);
     });
-  };
 
-useEffect(() => {
+    console.log("id", idFeria);
 
-  const subscription = postulacionService.postulacion$.subscribe((postulacionesf) => {
-    console.log("Postulaciones recibidas:", postulacionesf);
-    setPostulacion(postulacionesf);
-
-    console.log('id',idFeria);
-    return () =>  subscription.unsubscribe();
- 
-});
-
-}, []);
+    return () => subscription.unsubscribe();
+  }, []);
 
   const aceptar = async (id_postulacion: number, id_vacante: number, id_user_fte: number) => {
-    if (!id_postulacion || !id_vacante || !id_user_fte) {
-      setValidationErrors("Faltan datos para aceptar la postulación.");
-      return;
-    }
-
-    const confirmAccept = window.confirm("¿Estás seguro de aceptar esta postulación?");
-    if (confirmAccept) {
-      try {
-        await aceptarPostulacion(id_postulacion, id_vacante, id_user_fte);
-        setValidationErrors(null);
-        await cargaPostFilter(idFeria); // Recargar datos después de la acción
-      } catch (error) {
-        console.error("Error al aceptar la postulación:", error);
-        setValidationErrors("Ocurrió un error al aceptar la postulación.");
-      }
+    try {
+      await aceptarPostulacion(id_postulacion, id_vacante, id_user_fte);
+      setError(null);
+      setSuccessMessage("Postulación aceptada exitosamente.");
+    } catch (error) {
+      console.error("Error al aceptar la postulación:", error);
+      setError("Error al aceptar la postulación. Intente nuevamente.");
+      setSuccessMessage(null);
     }
   };
 
   const rechazar = async (id_postulacion: number, id_vacante: number, id_user_fte: number) => {
-    if (!id_postulacion || !id_vacante || !id_user_fte) {
-      setValidationErrors("Faltan datos para rechazar la postulación.");
-      return;
-    }
-
-    const confirmReject = window.confirm("¿Estás seguro de rechazar esta postulación?");
-    if (confirmReject) {
-      try {
-        await rechazarPostulacion(id_postulacion, id_vacante, id_user_fte);
-        setValidationErrors(null);
-        await cargaPostFilter(idFeria); // Recargar datos después de la acción
-      } catch (error) {
-        console.error("Error al rechazar la postulación:", error);
-        setValidationErrors("Ocurrió un error al rechazar la postulación.");
-      }
+    try {
+      await rechazarPostulacion(id_postulacion, id_vacante, id_user_fte);
+      setError(null);
+      setSuccessMessage("Postulación rechazada exitosamente.");
+    } catch (error) {
+      console.error("Error al rechazar la postulación:", error);
+      setError("Error al rechazar la postulación. Intente nuevamente.");
+      setSuccessMessage(null);
     }
   };
 
   return (
-    <div className="postulantes-feria">
-      {validationErrors && (
-        <div className="postulantes-error" style={{ color: "red", marginBottom: "10px" }}>
-          {validationErrors}
+    <div className="ferias">
+      {error && (
+        <div style={{ color: "red", marginBottom: "10px" }}>
+          <p>{error}</p>
+        </div>
+      )}
+      {successMessage && (
+        <div style={{ color: "green", marginBottom: "10px" }}>
+          <p>{successMessage}</p>
         </div>
       )}
       {postulaciones.length > 0 ? (
         postulaciones.map((postulacion) => (
-          <div className="postulante-card" key={postulacion.id_postulacion}>
-            <ul className="postulante-info">
-              <li className="postulante-info-item">
-                <span className="postulante-label">Nombre:</span> {postulacion.fte_nombre} {postulacion.fte_apellido}
-              </li>
-              <li className="postulante-info-item">
-                <span className="postulante-label">Id Vacante:</span> {postulacion.id_vacante}
-              </li>
-              <li className="postulante-info-item">
-                <span className="postulante-label">Id Feria:</span> {postulacion.id_feria}
-              </li>
-              <li className="postulante-info-item">
-                <span className="postulante-label">Id Usuario:</span> {postulacion.id_user_fte}
-              </li>
-              <div className="postulante-actions">
-                <button 
-                  className="postulante-accept-btn" 
-                  onClick={() => aceptar(postulacion.id_postulacion, postulacion.id_vacante, postulacion.id_user_fte)}
-                >
-                  Aceptar
-                </button>
-                <button 
-                  className="postulante-reject-btn" 
-                  onClick={() => rechazar(postulacion.id_postulacion, postulacion.id_vacante, postulacion.id_user_fte)}
-                >
-                  Rechazar
-                </button>
-              </div>
+          <div className="card" key={postulacion.id_postulacion}>
+            <ul>
+              <li>Nombre: {postulacion.fte_nombre} {postulacion.fte_apellido}</li>
+              <li>Id Vacante a la que aplica: {postulacion.id_vacante}</li>
+              <li>Id Feria: {postulacion.id_feria}</li>
+              <li>Id Usuario: {postulacion.id_user_fte}</li>
+              <button
+                onClick={() => aceptar(postulacion.id_postulacion, postulacion.id_vacante, postulacion.id_user_fte)}
+                style={{
+                  padding: "8px 12px",
+                  marginRight: "10px",
+                  backgroundColor: "#28a745",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                }}
+              >
+                Aceptar
+              </button>
+              <button
+                onClick={() => rechazar(postulacion.id_postulacion, postulacion.id_vacante, postulacion.id_user_fte)}
+                style={{
+                  padding: "8px 12px",
+                  backgroundColor: "#dc3545",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                }}
+              >
+                Rechazar
+              </button>
             </ul>
-      </div>
-    ))
-  ) : (
-    <p className="no-postulantes-message">Aún no hay postulantes</p>
-  )}
-</div>
-
+          </div>
+        ))
+      ) : (
+        <p>Aún no hay postulantes</p>
+      )}
+    </div>
   );
 };

@@ -1,9 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import { ProgramaFeria } from '../../../../models/interfaces';
-import './progra.css'
-
-
+import './progra.css';
 
 interface EditProgramaModalProps {
   isOpen: boolean;
@@ -21,6 +19,13 @@ const EditProgramaModal: React.FC<EditProgramaModalProps> = ({
   onSave,
 }) => {
   const [editedPrograma, setEditedPrograma] = useState<ProgramaFeria>(programa);
+  const [warnings, setWarnings] = useState<string[]>([]);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    setWarnings([]);
+    setSuccessMessage(null);
+  }, [isOpen]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -30,9 +35,39 @@ const EditProgramaModal: React.FC<EditProgramaModalProps> = ({
     }));
   };
 
+  const validateFields = (): boolean => {
+    const errors: string[] = [];
+    if (!editedPrograma.hora_inicio) {
+      errors.push("La hora de inicio es obligatoria.");
+    }
+    if (!editedPrograma.hora_termino) {
+      errors.push("La hora de término es obligatoria.");
+    }
+    if (editedPrograma.hora_inicio && editedPrograma.hora_termino && editedPrograma.hora_inicio >= editedPrograma.hora_termino) {
+      errors.push("La hora de inicio debe ser anterior a la hora de término.");
+    }
+    if (!editedPrograma.hora_inicio_armado) {
+      errors.push("La hora de inicio del armado es obligatoria.");
+    }
+    if (!editedPrograma.hora_termino_armado) {
+      errors.push("La hora de término del armado es obligatoria.");
+    }
+    if (editedPrograma.hora_inicio_armado && editedPrograma.hora_termino_armado && editedPrograma.hora_inicio_armado >= editedPrograma.hora_termino_armado) {
+      errors.push("La hora de inicio del armado debe ser anterior a la hora de término.");
+    }
+    setWarnings(errors);
+    return errors.length === 0;
+  };
+
   const handleSave = () => {
-    onSave(editedPrograma);
-    onClose();
+    if (validateFields()) {
+      onSave(editedPrograma);
+      setSuccessMessage("Programa actualizado correctamente.");
+      setTimeout(() => {
+        onClose();
+        setSuccessMessage(null);
+      }, 2000);
+    }
   };
 
   return (
@@ -45,6 +80,21 @@ const EditProgramaModal: React.FC<EditProgramaModalProps> = ({
       overlayClassName="modal-overlay"
     >
       <h2>Editar Programa</h2>
+
+      {warnings.length > 0 && (
+        <div className="modal-warnings" style={{ color: "red", marginBottom: "10px" }}>
+          {warnings.map((warning, index) => (
+            <p key={index}>{warning}</p>
+          ))}
+        </div>
+      )}
+
+      {successMessage && (
+        <div className="modal-success" style={{ color: "green", marginBottom: "10px" }}>
+          <p>{successMessage}</p>
+        </div>
+      )}
+
       <label>Hora Inicio</label>
       <input
         type="time"
