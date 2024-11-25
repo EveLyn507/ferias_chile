@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { vacante } from "../../../../../models/interfaces";
 import { DivHorario } from "./divHorario";
-import { VacanteModal } from "./actualizarVacante";
+import { VacanteModal } from "./vacanteModal"; // Importa tu modal para editar vacantes
 
 interface VacanteCardProps {
   formData: vacante;
@@ -15,8 +15,8 @@ const VacanteCard: React.FC<VacanteCardProps> = ({
   borrarVacante,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false); // Estado para abrir/cerrar el modal
-  const [successMessage, setSuccessMessage] = useState<string | null>(null); // Estado para manejar el mensaje de éxito
-  const [errorMessage, setErrorMessage] = useState<string | null>(null); // Estado para manejar el mensaje de error
+  const [, setSuccessMessage] = useState<string | null>(null); // Estado para manejar el mensaje de éxito
+  const [, setErrorMessage] = useState<string | null>(null); // Estado para manejar el mensaje de error
 
   const handleModalOpen = () => {
     setIsModalOpen(true); // Abre el modal cuando se hace clic en "Actualizar"
@@ -67,38 +67,26 @@ const VacanteCard: React.FC<VacanteCardProps> = ({
   };
 
   return (
-    <div className="card-vacante">
-      <span className="nombre-emp">{formData.id_user_fte}</span>
-      <span className="rol-emp">{formData.id_rol}</span>
-
+    <tbody className="card-vacante">
+      <td className="nombre-emp">{formData.id_user_fte}</td>
+      <td className="rol-emp">{formData.id_rol}</td>
+      <td className="horario">
       <DivHorario horarios={formData.horarios} />
-      <span className="ingreso">{formData.ingreso}</span>
-      <span className="termino">{formData.termino}</span>
+      </td>
+      <td className="ingreso">{formData.ingreso}</td>
+      <td className="termino">{formData.termino}</td>
 
-      {/* Botón para abrir el modal */}
+     <td>
       <button onClick={handleModalOpen}>Actualizar</button>
-
-      {/* Botón para eliminar vacante */}
-      <button onClick={() => borrarVacante(formData.id_vacante)}>Eliminar Vacante</button>
-
-      {/* Mensaje de éxito */}
-      {successMessage && (
-        <p style={{ color: "green", marginTop: "10px" }}>{successMessage}</p>
-      )}
-
-      {/* Mensaje de error */}
-      {errorMessage && (
-        <p style={{ color: "red", marginTop: "10px" }}>{errorMessage}</p>
-      )}
-
-      {/* Modal de edición */}
+      <button onClick={() => borrarVacante(formData.id_vacante)}>Eliminar </button>
+      </td>
       <VacanteModal
         isOpen={isModalOpen}
         onClose={handleModalClose}
         vacante={formData} // Pasa la vacante para editarla
         onSave={handleVacanteUpdate} // Maneja la actualización
       />
-    </div>
+    </tbody>
   );
 };
 

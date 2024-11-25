@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import { ProgramaFeria } from '../../../../models/interfaces';
-import './progra.css';
+import './prograModal.css'
+
+
 
 interface EditProgramaModalProps {
   isOpen: boolean;
@@ -34,6 +36,19 @@ const EditProgramaModal: React.FC<EditProgramaModalProps> = ({
       [name]: name === 'id_dia_armado' || name === 'id_dia' ? parseInt(value, 10) : value,
     }));
   };
+
+
+  const handleChangebox = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, type, checked, value } = e.target;
+    const inputValue = type === 'checkbox' ? checked : value;
+  
+    setEditedPrograma((prev) => ({
+      ...prev,
+      [name]: inputValue,
+    }));
+  };
+  
+
 
   const validateFields = (): boolean => {
     const errors: string[] = [];
@@ -129,6 +144,13 @@ const EditProgramaModal: React.FC<EditProgramaModalProps> = ({
         name="hora_termino_armado"
         value={editedPrograma.hora_termino_armado}
         onChange={handleChange}
+      />
+        <label>horario activo</label>
+          <input
+        type="checkbox" 
+        name="activo"
+        checked={editedPrograma.activo}
+        onChange={handleChangebox}
       />
       <div className="modal-actions">
         <button onClick={onClose}>Cancelar</button>

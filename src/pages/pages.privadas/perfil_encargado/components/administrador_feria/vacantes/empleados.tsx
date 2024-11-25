@@ -83,34 +83,43 @@ export const EmpleadosFeria = ({ idFeria }: homeProps) => {
 
       {/* Vacantes con empleado asignado */}
       <div className="empleados">
-        <h3>Mis empleados</h3>
-        <div className="header-grilla">
-          <span className="nombre-emp">Nombre</span>
-          <span className="rol-emp">Rol</span>
-          <span className="horarios">Horarios</span>
-          <span className="ingreso">Ingreso</span>
-          <span className="termino">Término</span>
+      <h3>Empleados</h3>
+      <table className="data-table">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Rol</th>
+          <th className="horario">Horario</th>
+          <th>Ingreso</th>
+          <th>Término</th>
+          <th>Acciones</th>
+        </tr> 
+        </thead>
+          {vacantesConEmpleado.map((formData) => (
+            <VacanteCard
+              key={formData.id_vacante}
+              formData={formData}
+              actualizarVacante={handleSaveVacante}
+              borrarVacante={ borrarVacante}
+            />
+          ))}
+  
+        </table>
         </div>
-        {vacantesConEmpleado.map((formData) => (
-          <VacanteCard
-            key={formData.id_vacante}
-            formData={formData}
-            actualizarVacante={handleSaveVacante}
-            borrarVacante={borrarVacante}
-          />
-        ))}
-      </div>
-
       {/* Vacantes sin empleado asignado */}
       <div className="empy-vacante">
         <h3>Vacantes abiertas</h3>
-        <div className="header-grilla">
-          <span className="nombre-emp">Nombre</span>
-          <span className="rol-emp">Rol</span>
-          <span className="horarios">Horarios</span>
-          <span className="ingreso">Ingreso</span>
-          <span className="termino">Término</span>
-        </div>
+        <table className="data-table">
+          <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Rol</th>
+          <th className="horario">Horario</th>
+          <th>Ingreso</th>
+          <th>Término</th>
+          <th>Acciones</th>
+        </tr>
+        </thead>
         {vacantesSinEmpleado.map((formData) => (
           <VacanteCard
             key={formData.id_vacante}
@@ -119,7 +128,9 @@ export const EmpleadosFeria = ({ idFeria }: homeProps) => {
             borrarVacante={() => borrarVacante(formData.id_vacante)}
           />
         ))}
-      </div>
+
+      </table>
+    </div>
     </div>
   );
 };
