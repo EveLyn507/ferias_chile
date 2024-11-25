@@ -212,72 +212,12 @@ const registerGoogleFeriante = async (req, res, pool) => {
   }
 };
 
-const recuperarContrasena = async (req, res, pool) => {
-  const { email } = req.body;
+// Actualizar contraseña mediante correo
+const actualizarContrasena = async (req, res, pool) => {
+  const { email, nuevaContrasena } = req.body;
 
   try {
-    // Verificar si el correo existe en alguna de las tablas de usuarios
-    const userQueries = [
-      'SELECT user_mail FROM public.encargado_feria WHERE user_mail = $1',
-      'SELECT user_mail FROM public.feriante WHERE user_mail = $1',
-      'SELECT user_mail FROM public.administrador_municipal WHERE user_mail = $1'
-    ];
-
-    let userFound = false;
-    for (const query of userQueries) {
-      const result = await pool.query(query, [email]);
-      if (result.rows.length > 0) {
-        userFound = true;
-        break;
-      }
-    }
-
-    if (!userFound) {
-      return res.status(404).json({ message: 'Correo no registrado' });
-    }
-
-    // Generar un token JWT para recuperación con expiración de 1 hora
-    const token = jwt.sign({ email }, 'secret_key', { expiresIn: '1h' });
-    const resetLink = `http://localhost:5173/reset-password?token=${token}`;
-
-    // Configuración del servicio de correo
-    const transporter = nodemailer.createTransport({
-      service: 'Gmail',
-      auth: {
-        user: 'manasesvergara10@gmail.com',
-        pass: 'zicq enmm rtyk brdq'
-      }
-    });
-
-    const mailOptions = {
-      from: 'manasesvergara10@gmail.com',
-      to: email,
-      subject: 'Recuperación de Contraseña',
-      text: `Haz clic en el siguiente enlace para restablecer tu contraseña: ${resetLink}`
-    };
-
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.error('Error al enviar el correo:', error);
-        return res.status(500).json({ message: 'Error al enviar correo de recuperación' });
-      }
-      res.status(200).json({ message: 'Correo de recuperación enviado si el correo está registrado.' });
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Error al enviar correo de recuperación' });
-  }
-};
-
-const verificarTokenRecuperacion = async (req, res, pool) => {
-  const { token, nuevaContrasena } = req.body;
-
-  try {
-    // Verificación del token
-    const decoded = jwt.verify(token, 'secret_key');
-    const email = decoded.email;
-
-    // Encriptación de la nueva contraseña
+    // Encriptar la nueva contraseña
     const hashedPassword = await bcrypt.hash(nuevaContrasena, 10);
     const updateQueries = [
       'UPDATE public.encargado_feria SET contrasena = $1 WHERE user_mail = $2',
@@ -285,19 +225,29 @@ const verificarTokenRecuperacion = async (req, res, pool) => {
       'UPDATE public.administrador_municipal SET contrasena = $1 WHERE user_mail = $2'
     ];
 
-    // Aplicar la actualización en cada tabla
+    let updated = false;
+
+    // Actualizar la contraseña en las tablas correspondientes
     for (const query of updateQueries) {
-      await pool.query(query, [hashedPassword, email]);
+      const result = await pool.query(query, [hashedPassword, email]);
+      if (result.rowCount > 0) {
+        updated = true;
+        break;
+      }
     }
 
-    res.status(200).json({ message: 'Contraseña restablecida con éxito' });
+    if (!updated) {
+      return res.status(404).json({ message: 'Correo no registrado' });
+    }
+
+    res.status(200).json({ message: 'Contraseña actualizada con éxito' });
   } catch (error) {
-    console.error('Token inválido o expirado:', error);
-    res.status(400).json({ message: 'Enlace de recuperación inválido o expirado' });
+    console.error('Error al actualizar la contraseña:', error);
+    res.status(500).json({ message: 'Error interno del servidor' });
   }
 };
 
 
 
 
-module.exports = { login_encargado,login_feriante,login_municipal, registerEncargado_feria, registerFeriante, registerAdministrador_municipal, registerGoogleFeriante, recuperarContrasena, verificarTokenRecuperacion};
+module.exports = { login_encargado,login_feriante,login_municipal, registerEncargado_feria, registerFeriante, registerAdministrador_municipal, registerGoogleFeriante, actualizarContrasena};

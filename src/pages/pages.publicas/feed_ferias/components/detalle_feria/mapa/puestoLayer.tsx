@@ -36,6 +36,11 @@ const PuestosLayer: React.FC<PuestosMapaProps> = ({
       {puestos.map((Puesto) => {
         const { metersWidth, metersHeight } = calculateDimensionsInMeters(Puesto.dimenciones.width, Puesto.dimenciones.height);
 
+        const estadoColor =
+          Puesto.dataPuesto?.id_estado_puesto === 1 ? 'green' : 'red'; // Verde para disponible, rojo para ocupado
+        const estadoTexto =
+          Puesto.dataPuesto?.id_estado_puesto === 1 ? 'Disponible' : 'Ocupado';
+
         return (
           <React.Fragment key={Puesto.id_elemento}>
             <KonvaImage
@@ -56,6 +61,14 @@ const PuestosLayer: React.FC<PuestosMapaProps> = ({
               text={`N${Puesto.nombre_elemento} | ${metersWidth.toFixed(2)}m x ${metersHeight.toFixed(2)}m`}
               fontSize={12}
               fill="black"
+            />
+
+            <Text
+              x={Puesto.dimenciones.x}
+              y={Puesto.dimenciones.y - 40}
+              text={estadoTexto}
+              fontSize={12}
+              fill={estadoColor} // Cambia el color según el estado
             />
 
             {/* Renderizar el Cartel de Konva cuando showCartel es true */}
