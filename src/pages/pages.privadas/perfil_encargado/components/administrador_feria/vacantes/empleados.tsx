@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { VacanteService } from "../../../rxjs/sharingVacantes";
-import { homeProps, vacante } from "../../../../../models/interfaces";
-import { updateVacanteFeria } from "../../../services/admin_feria_fuctions";
+import {   homeProps, vacante } from "../../../../../models/interfaces";
+import {   updateVacanteFeria } from "../../../services/admin_feria_fuctions";
 import VacanteCard from "./cardVacante";
 
 export const EmpleadosFeria = ({ idFeria }: homeProps) => {
   const [vacantes, setVacantes] = useState<Map<number, vacante>>(new Map());
-  const [validationError, setValidationError] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+
 
   useEffect(() => {
     const subscription = VacanteService.vacante$.subscribe((vacantes) => {
@@ -17,40 +17,10 @@ export const EmpleadosFeria = ({ idFeria }: homeProps) => {
     return () => subscription.unsubscribe();
   }, [idFeria]);
 
-  const validateVacante = (updatedVacante: vacante) => {
-    if (!updatedVacante.ingreso || !updatedVacante.termino) {
-      return "La vacante debe tener fechas válidas de ingreso y término.";
-    }
 
-    if (updatedVacante.ingreso >= updatedVacante.termino) {
-      return "La fecha de ingreso debe ser anterior a la fecha de término.";
-    }
-
-    for (const horario of updatedVacante.horarios) {
-      if (!horario.hora_entrada || !horario.hora_salida) {
-        return "Todos los horarios deben tener horas de entrada y salida válidas.";
-      }
-
-      if (horario.hora_entrada >= horario.hora_salida) {
-        return `En el día ${horario.id_dia}, la hora de entrada debe ser anterior a la hora de salida.`;
-      }
-    }
-
-    return null; // No hay errores
-  };
 
   const handleSaveVacante = (updatedVacante: vacante, id_feria: number) => {
-    const error = validateVacante(updatedVacante);
-    if (error) {
-      setValidationError(error);
-      setSuccessMessage(null);
-      return;
-    }
-
-    setValidationError(null);
-    setSuccessMessage("Vacante actualizada exitosamente.");
     updateVacanteFeria(updatedVacante, id_feria);
-
     setVacantes((prevVacantes) => {
       const updatedVacantes = new Map(prevVacantes);
       updatedVacantes.set(updatedVacante.id_vacante, updatedVacante);
@@ -60,8 +30,6 @@ export const EmpleadosFeria = ({ idFeria }: homeProps) => {
 
   const borrarVacante = async (id_vacante: number) => {
     VacanteService.removeVacante(id_vacante);
-    setSuccessMessage("Vacante eliminada exitosamente.");
-    setValidationError(null);
   };
 
   const vacantesConEmpleado = Array.from(vacantes.values()).filter(
@@ -71,15 +39,16 @@ export const EmpleadosFeria = ({ idFeria }: homeProps) => {
     (v) => v.id_user_fte === null
   );
 
+
+
+
+
+
+
   return (
     <div className="vacantes-container">
       {/* Mostrar mensajes */}
-      {validationError && (
-        <div style={{ color: "red", marginBottom: "10px" }}>{validationError}</div>
-      )}
-      {successMessage && (
-        <div style={{ color: "green", marginBottom: "10px" }}>{successMessage}</div>
-      )}
+
 
       {/* Vacantes con empleado asignado */}
       <div className="empleados">
@@ -87,7 +56,7 @@ export const EmpleadosFeria = ({ idFeria }: homeProps) => {
       <table className="data-table">
       <thead>
         <tr>
-          <th>Nombre</th>
+          <th>Nombre Empleado</th>
           <th>Rol</th>
           <th className="horario">Horario</th>
           <th>Ingreso</th>
@@ -101,6 +70,7 @@ export const EmpleadosFeria = ({ idFeria }: homeProps) => {
               formData={formData}
               actualizarVacante={handleSaveVacante}
               borrarVacante={ borrarVacante}
+              id_feria={idFeria}
             />
           ))}
   
@@ -112,12 +82,13 @@ export const EmpleadosFeria = ({ idFeria }: homeProps) => {
         <table className="data-table">
           <thead>
         <tr>
-          <th>Nombre</th>
+          <th>Nombre Empleado</th>
           <th>Rol</th>
           <th className="horario">Horario</th>
           <th>Ingreso</th>
           <th>Término</th>
           <th>Acciones</th>
+          <th>Postulantes</th>
         </tr>
         </thead>
         {vacantesSinEmpleado.map((formData) => (
@@ -126,6 +97,7 @@ export const EmpleadosFeria = ({ idFeria }: homeProps) => {
             formData={formData}
             actualizarVacante={handleSaveVacante}
             borrarVacante={() => borrarVacante(formData.id_vacante)}
+            id_feria={idFeria}
           />
         ))}
 

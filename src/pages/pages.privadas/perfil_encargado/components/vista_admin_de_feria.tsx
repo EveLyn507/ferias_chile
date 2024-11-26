@@ -7,8 +7,6 @@ import { VacanteService } from "../rxjs/sharingVacantes"
 import { bancoService } from "../rxjs/sharingbankslist"
 import { EmpleadosFeria } from "./administrador_feria/vacantes/empleados"
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs"
-import { PostulantesFeria } from "./administrador_feria/postulantesFeria"
-import { postulacionService } from "../rxjs/sharingPostulaciones"
 import { StatusFeria } from "./status/statusFeria"
 import { Feria } from "../../../models/interfaces"
 
@@ -28,7 +26,6 @@ useEffect(()=> {
 
   VacanteService.loadInitialVacante(mail, idFeria)
   bancoService.loadInitialBancos(id_user_enf)
-  postulacionService.loadInitialVacante(id_user_enf , idFeria)
 
 })
 
@@ -48,7 +45,6 @@ return (
     <Tabs>
       <TabList >
         <Tab>VACANTES</Tab>
-        <Tab>POSTULANTES</Tab>
         <Tab>PROGRAMA</Tab>
         <Tab>BANCOS</Tab>
       </TabList>
@@ -58,9 +54,6 @@ return (
         <EmpleadosFeria idFeria={idFeria} nombreF={nombre} />
       </TabPanel>
 
-      <TabPanel>
-        <PostulantesFeria idFeria={idFeria} nombreF={nombre} />
-      </TabPanel>
 
       <TabPanel>
         <BooleanDaysSelector idFeria={idFeria} nombreF={nombre} />

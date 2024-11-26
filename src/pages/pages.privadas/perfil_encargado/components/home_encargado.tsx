@@ -10,6 +10,7 @@ import { Admin_de_feria } from "./vista_admin_de_feria";
 import './css/home.css';
 import './css/vacantes.css'
 import './css/programa.css'
+import './css/banco.css'
 
 const PerfilEn = () => {
   const id_user_enf = useSelector((store: AppStore) => store.user.id_user);

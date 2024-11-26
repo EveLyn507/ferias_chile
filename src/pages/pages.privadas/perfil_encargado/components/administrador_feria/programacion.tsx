@@ -61,13 +61,14 @@ const BooleanDaysSelector = ({ idFeria, nombreF }: homeProps) => {
         <thead>
           <tr>
             <th>Dia</th>
-            <th>Hora_inicio</th>
-            <th>Hora_termino</th>
-            <th>Id_dia_armado</th>
-            <th>Hora_inicio_armado</th>
-            <th>Hora_termino_armado</th>
-            <th>activo?</th>
+            <th>Hora inicio</th>
+            <th>Hora termino</th>
+            <th>Dia de Armado</th>
+            <th>Hora inicio armado</th>
+            <th>Hora termino armado</th>
+            <th>activa</th>
             <th>Acciones</th>
+    
           </tr>
         </thead>
           {programaF.map((programa) => (

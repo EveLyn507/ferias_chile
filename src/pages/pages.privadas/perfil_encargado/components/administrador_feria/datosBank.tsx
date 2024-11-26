@@ -19,7 +19,9 @@ export const BancoFeria = ({ idFeria }: homeProps) => {
       const b = await getFeriaBank(idFeria);
       setFeriaBanco(b ?? "seleccione un banco");
     } catch (error) {
-      setWarnings(["Error al cargar los bancos asociados a la feria."]);
+      console.log(error);
+      
+      setWarnings(["Error al cargar los bancos asociados a la feria."] );
     }
   };
 
@@ -36,6 +38,8 @@ export const BancoFeria = ({ idFeria }: homeProps) => {
       setSuccessMessage("Banco asociado exitosamente a la feria."); // Mostrar mensaje de éxito
       await cargaBankF(); // Recargar los datos después de asociar
     } catch (error) {
+      console.log(error);
+      
       setWarnings(["Error al asociar el banco. Intente nuevamente."]);
       setSuccessMessage(null); // Limpiar mensaje de éxito si hay errores
     }
@@ -54,10 +58,11 @@ export const BancoFeria = ({ idFeria }: homeProps) => {
   }, []);
 
   return (
-    <>
-      <div>
-        {/* Otros elementos */}
-      </div>
+
+    <div className="banco-container">
+      <div className="banco">
+
+      <span>Correo asociado</span>
       {bancos.length > 0 ? (
         <>
           <select
@@ -95,9 +100,8 @@ export const BancoFeria = ({ idFeria }: homeProps) => {
           <li>No hay bancos disponibles</li>
         </ul>
       )}
-      <li>
-        <Link to={`bancos`}>Ingresa tus bancos</Link>
-      </li>
-    </>
+          <Link to={`bancos`}>Ingresa tus bancos</Link>
+          </div>
+          </div>
   );
 };

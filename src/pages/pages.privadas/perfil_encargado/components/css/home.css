@@ -48,7 +48,7 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra ligera */
     cursor: pointer; /* Manito al pasar el ratón */
     transition: all 0.3s ease; /* Transiciones suaves */
-    margin-bottom: 3px;
+    margin-bottom: 8px;
   }
   
   .misFerias button:hover {

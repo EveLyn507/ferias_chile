@@ -2,7 +2,6 @@
 import axios from "axios";
 import { DatosBank, horarioVacante, ProgramaFeria, vacante } from "../../../models/interfaces";
 import { VacanteService } from "../rxjs/sharingVacantes";
-import { postulacionService } from "../rxjs/sharingPostulaciones";
 import { bancoService } from "../rxjs/sharingbankslist";
 
 // PROGRAMACION DE LA FERIA
@@ -239,10 +238,10 @@ export const  updateVacanteFeria = async (vacante : vacante , id_feria : number)
 
 
 
-  export const  getPostulacionesEnf = async (id_user_enf :number , id_feria : number)  =>  {
+  export const  getPostulacionesEnf = async (id_user_enf :number , id_feria : number , id_vacante : number)  =>  {
 
     try{
-       const postulaciones = await axios.post(`http://localhost:5000/getPostulacionesEnf` ,{id_user_enf , id_feria})
+       const postulaciones = await axios.post(`http://localhost:5000/getPostulacionesEnf` ,{id_user_enf , id_feria, id_vacante})
        //elemina la vacante de rxjs vacantes
        const enfpost = postulaciones.data
         return enfpost 
@@ -262,7 +261,7 @@ export const  updateVacanteFeria = async (vacante : vacante , id_feria : number)
        const enfpost = postulaciones.data
 
        if (enfpost.status === 200){
-        postulacionService.aceptarPostulacion(id_vacante)
+
         console.log(enfpost);
        }else {
         console.log(enfpost);
@@ -284,7 +283,7 @@ export const  updateVacanteFeria = async (vacante : vacante , id_feria : number)
        const enfpost = postulaciones.data
 
        if (enfpost.status === 200){
-        postulacionService.rechazarPostulacion(id_postulacion)
+
         return enfpost
        }else {
         console.log(enfpost.status)

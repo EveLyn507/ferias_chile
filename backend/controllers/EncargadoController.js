@@ -319,10 +319,6 @@ const createFeria = async (req, res) => {
   }
 };
 
-// Manda las vacantes a l a feria seleccionada
-const getVacantesFeria1 = async (req,res, pool) => {}
-// FIN PERFIL ENCARGADO MODULO --> BANCOS
-
 const getHorariosVacante = async (idsvacante, pool) =>{
 
 const result = await pool.query(`
@@ -333,8 +329,7 @@ const result = await pool.query(`
 }
 
 // ADMINISTRACION FERIAS MODULO --> VACANTES DE LA FERIA
-const getVacantesFeria = async (req, res, pool) => {
-  const { id_feria } = req.body;
+const getVacantesFeria = async (res, pool , id_feria) => {
   try {
     const result = await pool.query(` 
       SELECT id_vacante ,id_user_fte, id_rol, id_feria, to_char(ingreso, 'YYYY-MM-DD') as ingreso,to_char(termino, 'YYYY-MM-DD') as termino, id_estado_vacante
@@ -474,16 +469,21 @@ const deleteVacante = async (req,res, pool) => {
  }
 
 //MODULO POSTULANTES 
-const getPostulacionesEnf = async ( res , pool , id_user_enf , id_feria) => {
+const getPostulacionesEnf = async ( res , pool , id_user_enf , id_feria , id_vacante) => {
   try {
     const result = await pool.query(`
-    SELECT f.id_feria , f.nombre as f_nombre, dtv.id_vacante , p.id_postulacion , p.id_user_fte, fte.nombre as fte_nombre , fte.apellido as fte_apellido
-    FROM encargado_feria enf 
-    JOIN feria f on  f.id_user_enf = enf.id_user_enf
-    JOIN detalle_team_vacante dtv on dtv.id_feria = f.id_feria
-    JOIN postulaciones p on p.id_vacante = dtv.id_vacante 
-    RIGHT JOIN feriante fte on fte.id_user_fte = p.id_user_fte
-    WHERE enf.id_user_enf  = $1  AND f.id_feria = $2 AND p.id_estado = 1` , [id_user_enf , id_feria]
+
+      SELECT 
+      dtv.id_vacante,
+      p.id_postulacion,
+      p.id_user_fte,
+      fte.nombre ||' '|| fte.apellido  as nombre_postulante
+         FROM encargado_feria enf 
+         JOIN feria f on  f.id_user_enf = enf.id_user_enf
+         JOIN detalle_team_vacante dtv on dtv.id_feria = f.id_feria
+         JOIN postulaciones p on p.id_vacante = dtv.id_vacante 
+         RIGHT JOIN feriante fte on fte.id_user_fte = p.id_user_fte
+         WHERE enf.id_user_enf  = $1  AND f.id_feria = $2 AND dtv.id_vacante = $3 AND p.id_estado = 1;` , [id_user_enf , id_feria , id_vacante]
     );
     res.json(result.rows)  // Retorna el resultado del horario insertado
   } catch (error) {

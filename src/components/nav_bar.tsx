@@ -15,7 +15,8 @@ export const Nav_bar = () => {
         ☰ 
       </div>
       <ul className={`Nav_item ${isOpen ? "active" : ""}`}>
-        <li><Link to="/registro" onClick={handleCloseMenu}>Regístrate</Link></li>
+        {!role &&     <li><Link to="/registro" onClick={handleCloseMenu}>Regístrate</Link></li>}
+    
         <li><Link to="/Feed-ferias" onClick={handleCloseMenu}>Feed-Ferias</Link></li>
         <Logeado/>
         {role === 1 && ( 

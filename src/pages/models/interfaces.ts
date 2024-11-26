@@ -189,12 +189,10 @@ export interface listBanks {
 
 export interface ftePostulacion{
     id_feria : number,
-    f_nombre : string,
     id_vacante : number,
     id_postulacion : number,
     id_user_fte : number,
-    fte_nombre : string,
-    fte_apellido : string
+    nombre_postulante: string
 }
 
 
