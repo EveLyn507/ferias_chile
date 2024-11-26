@@ -149,12 +149,12 @@ const startTransactionCheck = async (io,id_feria, buy_order,id_arriendo_puesto ,
 
 
 
-const saveTransactionToDatabase = async ( pool, id_user_fte, id_arriendo_puesto , id_tipo_pago, estado_contrato, precio, buyOrder, sessionId) => {
+const saveTransactionToDatabase = async ( pool, id_user_fte, id_arriendo_puesto , id_tipo_pago, id_estado_contrato, precio, buyOrder, sessionId) => {
   const timestampUTC = new Date().toISOString(); 
   await pool.query(`
     INSERT INTO contrato_puesto (id_user_fte, fecha, id_arriendo_puesto, id_tipo_pago, id_estado_contrato, precio, buy_order, session_id)
     VALUES ($1, $2, $3, $4,$5,$6,$7,$8)`,
-    [ id_user_fte,timestampUTC,id_arriendo_puesto,id_tipo_pago, estado_contrato, precio, buyOrder, sessionId]);
+    [ id_user_fte,timestampUTC,id_arriendo_puesto,id_tipo_pago, id_estado_contrato, precio, buyOrder, sessionId]);
 };
 
 

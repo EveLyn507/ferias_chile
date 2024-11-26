@@ -1,20 +1,23 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useSelector } from "react-redux";
+//import { useSelector } from "react-redux";
 import { Card_soli_muni } from "./components/card_soli"
-import { AppStore } from "../../../redux/store";
+//import { AppStore } from "../../../redux/store";
 import { useEffect } from "react";
-import { solisaperService } from "./rxjs/soliaper";
+//import { solisaperService } from "./rxjs/soliaper";
+import userWebSocketService from "../../models/webSoket";
 
 export const Perfil_admin = () => {
+  const WebSocketService = userWebSocketService.getInstance();
 
+  useEffect(() => {
+    const isSocketConnected = sessionStorage.getItem('socketConnected');
 
-  const id_user_adm = useSelector((store : AppStore) => store.user.id_user )   
-  
-    useEffect((() => { 
-      solisaperService.LoadInitialData(id_user_adm)
-      
-    }) ,[]);
-    
+    if (!isSocketConnected || WebSocketService.socket === null) {
+      WebSocketService.connect();
+      sessionStorage.setItem('socketConnected', 'true');  // Marca como conectado
+    }
+  }, []); // Este effect solo se
+
   return (
    <>
    <h1>PERFIL ADMINISTRADOR MUNICIPAL</h1>

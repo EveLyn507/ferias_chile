@@ -296,21 +296,36 @@ const createFeria = async (req, res) => {
   const { id_user_enf, nombre, id_comuna, mail_banco } = req.body;
 
   try {
-    const query = `
+    // Iniciar una transacción
+    await req.pool.query('BEGIN');
+
+    const query1 = `
       INSERT INTO feria (id_user_enf, nombre, id_comuna, mail_banco)
       VALUES ($1, $2, $3, $4)
       RETURNING id_feria;
     `;
-    const values = [id_user_enf, nombre, id_comuna, mail_banco];
+    const values1 = [id_user_enf, nombre, id_comuna, mail_banco];
+    const result1 = await req.pool.query(query1, values1);
+    const nuevoIdFeria = result1.rows[0].id_feria; 
 
-    const result = await req.pool.query(query, values);
-    const nuevoIdFeria = result.rows[0].id_feria;
+    const query2 = `
+      INSERT INTO solicitudes_apertura (id_user_adm, id_feria, id_estado)
+      VALUES ($1, $2, $3)
+      RETURNING id_solicitud;
+    `;
+    const values2 = [1, nuevoIdFeria, 1]; 
+    const result2 = await req.pool.query(query2, values2);
+    const nuevoIdSolicitud = result2.rows[0].id_solicitud; 
+ 
+    await req.pool.query('COMMIT');
 
     res.status(201).json({
-      message: 'Feria creada exitosamente',
+      message: 'Feria y solicitud de apertura creados exitosamente',
       id_feria: nuevoIdFeria,
+      id_solicitud: nuevoIdSolicitud,
     });
   } catch (error) {
+    await req.pool.query('ROLLBACK');
     console.error('Error al guardar la feria:', error);
     res.status(500).json({
       message: 'Error al guardar la feria',
