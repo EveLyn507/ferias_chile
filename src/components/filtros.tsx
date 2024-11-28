@@ -26,7 +26,7 @@ export const Filtros_base = ({ onFilterC, onFilterR }: FiltrosBaseProps) => {
 
   useEffect(() => {
     Promise.all([
-      import('../../../../../assets/regiones.json').then((data) =>
+      import('../assets/regiones.json').then((data) =>
         setRegiones(
           data.default.map((region: { id_region: number; region: string }) => ({
             id: region.id_region,
@@ -34,7 +34,7 @@ export const Filtros_base = ({ onFilterC, onFilterR }: FiltrosBaseProps) => {
           }))
         )
       ),
-      import('../../../../../assets/comunas.json').then((data) =>
+      import('../assets/comunas.json').then((data) =>
         setComunas(
           data.default.map((comuna: { id_comuna: number; id_region: number; comuna: string }) => ({
             id: comuna.id_comuna,

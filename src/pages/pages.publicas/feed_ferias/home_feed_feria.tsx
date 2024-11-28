@@ -1,18 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react';
 import Feed_d_ferias from './components/listado_ferias/carga_feria';
-import { Filtros_base } from './components/listado_ferias/filtros';
+import { Filtros_base } from '../../../components/filtros';
 import userWebSocketService from '../../models/webSoket';
 import Carrusel from './components/listado_ferias/carrusel';
 import styles from './css/feed.module.css';
 import './css/carrusel.css';
-import './css/filtros.css';
 import './css/cards_feed.css'
-
+import './css/filtros.css'
 const View_feed = () => {
   const [selectedComuna, setSelectedComuna] = useState<number | null>(null);
   const [selectedRegion, setSelectedRegion] = useState<number | null>(null);
-    console.log('idcomuna',selectedComuna, 'idregion',selectedRegion );
+
     const WebSocketService = userWebSocketService.getInstance();
 
       // Conexión WebSocket solo si no está conectado y no se ha realizado previamente

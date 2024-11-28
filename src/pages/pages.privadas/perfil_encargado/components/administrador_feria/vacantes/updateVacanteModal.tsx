@@ -2,6 +2,7 @@ import { useState } from "react";
 import Modal from "react-modal";
 import { vacante } from "../../../../../models/interfaces";
 
+
 interface modalProps {
   isOpen: boolean;
   onClose: () => void;

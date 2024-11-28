@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { AppStore } from '../../../redux/store';
+import { AppStore } from '../../../../redux/store';
 import { useSelector } from 'react-redux';
-import './feriante.css';
+
 
 interface RedesSocialesProps {
   userMail: string;

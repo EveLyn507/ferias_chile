@@ -3,7 +3,7 @@ import { homeProps, ProgramaFeria } from "../../../../models/interfaces";
 import { getProgramaFeria, GuardarProgramacionFeria } from "../../services/admin_feria_fuctions";
 import EditProgramaModal from "./programaModal";  // Importa el modal
 
-const BooleanDaysSelector = ({ idFeria, nombreF }: homeProps) => {
+const BooleanDaysSelector = ({ id_feria, nombreF }: homeProps) => {
   const semana = ['none', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
 
   const [programaF, setActual] = useState<ProgramaFeria[]>([]); // Lista de programas actual
@@ -13,7 +13,7 @@ const BooleanDaysSelector = ({ idFeria, nombreF }: homeProps) => {
   const [selectedPrograma, setSelectedPrograma] = useState<ProgramaFeria | null>(null);
 
   useEffect(() => {
-    getProgramaFeria(idFeria)
+    getProgramaFeria(id_feria)
       .then((res: ProgramaFeria[]) => {
         setActual(res); 
         setUpdatedPro([...res]); 
@@ -21,7 +21,7 @@ const BooleanDaysSelector = ({ idFeria, nombreF }: homeProps) => {
       .catch((error) => {
         console.error("Error al cargar la programación:", error);
       });
-  }, [idFeria]);
+  }, [id_feria]);
 
   useEffect(() => {
     setIsModified(JSON.stringify(programaF) !== JSON.stringify(UpdatedPrograma));
@@ -44,14 +44,14 @@ const BooleanDaysSelector = ({ idFeria, nombreF }: homeProps) => {
   const sendData = async () => {
     if (nombreF !== "") {
       try {
-        const result = await GuardarProgramacionFeria(UpdatedPrograma, idFeria);
+        const result = await GuardarProgramacionFeria(UpdatedPrograma, id_feria);
         console.log("Datos enviados correctamente:", result.message);
         setActual(UpdatedPrograma); // Actualiza el estado actual con los datos nuevos
       } catch (error) {
         console.error("Error al guardar la programación:", error);
       }
     } else {
-      console.log("Error: id_feria es null o undefined", idFeria);
+      console.log("Error: id_feria es null o undefined", id_feria);
     }
   };
 
@@ -68,11 +68,13 @@ const BooleanDaysSelector = ({ idFeria, nombreF }: homeProps) => {
             <th>Hora termino armado</th>
             <th>activa</th>
             <th>Acciones</th>
-    
           </tr>
         </thead>
           {programaF.map((programa) => (
             <tbody key={programa.id_dia} >
+              <tr>
+
+        
               <td>{semana[programa.id_dia]}</td>
               <td>{programa.hora_inicio}</td>
               <td>{programa.hora_termino}</td>
@@ -81,11 +83,11 @@ const BooleanDaysSelector = ({ idFeria, nombreF }: homeProps) => {
               <td>{programa.hora_termino_armado}</td>
               <td>{programa.activo}</td>
               <td>
-          
               <button onClick={() => handleEditClick(programa)}>Editar</button>
-             
               </td>
+              </tr>
               </tbody>
+        
           ))}
      
       </table>

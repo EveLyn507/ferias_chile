@@ -386,33 +386,69 @@ const getHorariosVacante = async (idsvacante, pool) =>{
   }
   
 
-  const getVacantesVacias = async ( res, pool) => {
+const getFeriasConVacantesVacias = async (res, pool , id_comuna, id_region ) => {
+
+  
+  try {
+    const result = await pool.query(`
+    WITH ferias_con_conteo AS (
+        SELECT 
+            f.id_feria,
+            f.nombre,
+            f.id_comuna,
+            c.comuna,
+            c.id_region,
+            r.region,
+            (
+                SELECT COUNT(*)
+                FROM detalle_team_vacante dtv
+                WHERE dtv.id_feria = f.id_feria
+            ) AS conteo_vacantes
+        FROM feria f
+        JOIN comuna c ON f.id_comuna = c.id_comuna
+        JOIN region r ON c.id_region = r.id_region
+        WHERE (f.id_comuna = $1 OR $1 IS NULL)
+        AND (c.id_region = $2 OR $2 IS NULL)
+    )
+    SELECT * 
+    FROM ferias_con_conteo
+    WHERE conteo_vacantes > 0;
+` , [ id_comuna, id_region])
+
+      res.json(result.rows)
+  } catch (error) {
+    res.status(500)
+    console.log('error al obtener datos');
+    
+  }
+}
+
+//cambiar a x feria
+  const getVacantesFeria = async ( res, pool , id_feria) => {
 
     try {
       const result = await pool.query(` 
-        SELECT id_vacante ,id_user_fte, id_rol, id_feria, to_char(ingreso, 'YYYY-MM-DD') as ingreso,to_char(termino, 'YYYY-MM-DD') as termino, id_estado_vacante
-        FROM detalle_team_vacante
-        WHERE id_user_fte IS NULL; 
-      `);
-  
-        //añade los horarios de la vacante 
-        const  vacantes = result.rows
-        const vacantesIds = vacantes.map(vacante => vacante.id_vacante);
-      
-      // 3. Obtiene los horarios solo para esas ferias
-      const horarios = await getHorariosVacante(vacantesIds,pool);
-  
-      // 4. Combina las ferias con sus horarios
-      const vacantesConHorarios = vacantes.map(vacante => {
-        const horariosVacante = horarios.filter(horario => horario.id_vacante === vacante.id_vacante);
-        return {
-          ...vacante,
-          horarios: horariosVacante
-        };
-      });
-      res.json(vacantesConHorarios);
+      SELECT  
+      dtv.id_vacante,
+      dtv.id_rol,
+      rol.rol,
+      dtv.ingreso,
+      dtv.termino,
+      dtv.id_estado_vacante,
+      (
+      SELECT
+      json_agg(dhe)
+      FROM detalle_horario_empleado dhe 
+      WHERE dhe.id_vacante = dtv.id_vacante
+      ) as horario_empleado
+      FROM feria f 
+      JOIN detalle_team_vacante dtv ON f.id_feria = dtv.id_feria
+      JOIN rol_empleado rol ON rol.id_rol = dtv.id_rol 
+      WHERE f.id_feria = $1 AND id_estado_vacante = 1;` , [id_feria]);
+      res.json(result.rows)
   
     } catch (err) {
+      res.status(500)
       console.log('error al obtener vacantes: ', err);
     }
   };
@@ -474,8 +510,7 @@ const misPostulaciones = async(res , pool, id_user_fte) => {
       LEFT JOIN detalle_team_vacante dtv ON p.id_vacante = dtv.id_vacante
       JOIN feria f ON dtv.id_feria = f.id_feria
       JOIN rol_empleado re ON re.id_rol = dtv.id_rol
-      WHERE p.id_user_fte = $1
-      ` , [id_user_fte])  
+      WHERE p.id_user_fte = $1;` , [id_user_fte])  
   
       res.json(resutl.rows)
     
@@ -503,7 +538,8 @@ module.exports = {
   obtenerRedesSociales,
   agregarRedSocial,
   eliminarRedSocial,
-  getVacantesVacias,   //inicio modulo postulaciones
+  getVacantesFeria,   //inicio modulo postulaciones
+  getFeriasConVacantesVacias,
   insertPostulacion,
   misPostulaciones
 };

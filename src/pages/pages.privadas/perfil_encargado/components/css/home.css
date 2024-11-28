@@ -18,6 +18,8 @@
   
 
   .enfmenu {
+    display: flex;
+    flex-direction: column;
     width: 100%; /* Ancho del menú */
     background-color: #f4f4f4; /* Fondo del menú */
     border-radius: 10px; /* Esquinas redondeadas */
@@ -36,10 +38,15 @@
   
   .misFerias {
     display: flex;
+    width: 100%;
+    min-height: 400px;
+    max-height: 400px;
     flex-direction: column; /* Elementos en columna */
+    overflow-y:auto;
   }
   
-  .misFerias button {
+  .enfmenu button {
+    width: 100%;
     font-size: 18px; /* Tamaño del texto */
     color: #555; /* Color del texto */
     padding: 10px; /* Espaciado interno de cada opción */
@@ -51,18 +58,19 @@
     margin-bottom: 8px;
   }
   
-  .misFerias button:hover {
+  .enfmenu button:hover {
     background-color: #007bff; /* Fondo azul al pasar el ratón */
     color: white; /* Texto blanco */
-    transform: scale(1.05); /* Efecto de escala */
+
   }
   
   .misFerias h4:active {
-    transform: scale(0.95); /* Pequeño efecto al hacer clic */
     background-color: #0056b3; /* Color más oscuro al presionar */
   }
   
-
+.menuView {
+  width: 100%;
+}
 
 .admin-f-container {
   margin-top: 20px;

@@ -21,7 +21,7 @@ export const CardDatosBank = () => {
       prev.map((editState, i) => (i === index ? true : editState))
     );
     setValidationErrors([]);
-  };
+  }; 
 
   const handleUpdate = (index: number) => {
     const currentData = formDataList[index];
@@ -72,45 +72,54 @@ export const CardDatosBank = () => {
   };
 
   return (
-    <div className="card-bancos">
+    <>
       {formDataList.map((formData, index) => (
         <div className="banco-card" key={formData.mail_banco}>
-          <ul className="banco-info">
-            <li className="banco-info-item">
+          <div className="card-body">
+
+      
+             <label> Correo : {formData.mail_banco}</label>
+        
+             <div className="input-field">
+            <label>Nombre asociado</label>
               <input
+              
                 type="text"
                 value={formData.nombre_asociado}
                 readOnly={!editStates[index]}
                 onChange={(e) => handleChange(index, "nombre_asociado", e.target.value)}
               />
-            </li>
-            <li className="banco-info-item">
+     
+            </div>
+          <div className="input-field">
+          <label>Numero de Cuenta</label>
               <input
                 type="text"
                 value={formData.numero_cuenta}
                 readOnly={!editStates[index]}
                 onChange={(e) => handleChange(index, "numero_cuenta", e.target.value)}
-              />
-            </li>
-            <li className="banco-info-item">
-              <label>{formData.mail_banco}</label>
-            </li>
-          </ul>
+              />   
+              
+            </div>
+              <div className="card-buttons">
+          
           {!editStates[index] ? (
-            <button className="banco-edit-btn" onClick={() => handleEdit(index)}>
-              Actualizar
+            <button  onClick={() => handleEdit(index)}>
+              Act
             </button>
           ) : (
-            <button className="banco-save-btn" onClick={() => handleUpdate(index)}>
-              Guardar Cambios
+            <button onClick={() => handleUpdate(index)}>
+              Sav
             </button>
           )}
           <button
-            className="banco-delete-btn"
+            
             onClick={() => borrarBank(formData.mail_banco)}
           >
-            Borrar Banco
+            Eli
           </button>
+          </div> 
+        </div>
         </div>
       ))}
       {validationErrors.length > 0 && (
@@ -120,6 +129,6 @@ export const CardDatosBank = () => {
           ))}
         </div>
       )}
-    </div>
+    </>
   );
 };

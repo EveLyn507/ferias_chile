@@ -1,0 +1,113 @@
+.postulacion-container{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+    height: auto;
+}
+
+
+.postu-filter{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    width: 100%;
+   gap: 2px;
+ 
+}
+
+.region-filter ,
+.comuna-filter{
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 10px;
+    background-color: #f0f0f0;
+    padding: 10px;
+}
+
+.comuna-filter{
+    border-bottom: gray solid 2px;
+}
+
+.cards-container {
+    display: flex;
+    border: red solid 1px;
+    padding: 20px;
+}
+
+.vacantes {
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.vacante-content {
+    margin: auto;
+    border: black solid 1px;
+}
+
+
+
+
+
+/* Estilo para la tabla */
+.cards-container table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 1em;
+    font-family: Arial, sans-serif;
+    text-align: left;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo para las celdas de encabezado */
+.cards-container thead tr {
+    background-color: #f4f4f4;
+    color: #333;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.cards-container th,.cards-container  td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+}
+
+/* Estilo para las filas de datos */
+.cards-container tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.cards-container tbody tr:hover {
+    background-color: #f1f1f1;
+    cursor: pointer;
+}
+
+/* Botón dentro de las filas */
+.cards-container button {
+    padding: 8px 12px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+.cards-container button:hover {
+    background-color: #0056b3;
+}
+
+/* Estilo para el mensaje de "No hay ferias" */
+.cards-container label {
+    font-size: 1.2em;
+    color: #666;
+    margin: 20px;
+    display: block;
+    text-align: center;
+}

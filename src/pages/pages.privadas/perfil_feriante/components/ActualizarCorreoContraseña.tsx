@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './feriante.css';
+
 
 
 interface ActualizarCorreoContraseñaProps {
@@ -64,7 +64,7 @@ const ActualizarCorreoContraseña: React.FC<ActualizarCorreoContraseñaProps> = 
         setMensajeError('Error al actualizar el correo: ' + errorData.message);
       }
     } catch (error) {
-      setMensajeError('Error al conectar con el servidor: ' + error.message);
+      setMensajeError('Error al conectar con el servidor: ' + error);
     }
   };
 
@@ -104,8 +104,8 @@ const ActualizarCorreoContraseña: React.FC<ActualizarCorreoContraseñaProps> = 
         const errorData = await response.json();
         setMensajeError('Error al actualizar la contraseña: ' + errorData.message);
       }
-    } catch (error: any) {
-      setMensajeError('Error al conectar con el servidor: ' + error.message);
+    } catch (error) {
+      setMensajeError('Error al conectar con el servidor: ' + error);
     }
   };
 

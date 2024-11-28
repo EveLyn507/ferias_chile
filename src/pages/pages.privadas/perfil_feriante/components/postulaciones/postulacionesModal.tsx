@@ -1,13 +1,20 @@
-import { useEffect, useState } from "react"
-import { postulacionService } from "../../rxjs/rxjsPostulaciones"
-import { postulacion, vacante } from "../../../../models/interfaces"
+import {  useState } from "react"
+import { postulacion } from "../../../../models/interfaces"
 import { insertPostulacion } from "../../services/postulacionesFunction"
 import { useSelector } from "react-redux"
 import  { AppStore } from "../../../../../redux/store"
+import Modal from 'react-modal'
+import { vacantePostular } from "./interfaces"
 
-export const CardPostulaciones = () => {
+interface modalProps {
+    isOpen: boolean
+    onClose: () => void
+    vacantes: vacantePostular[]
+}
 
-const [VacantesUp , setVacatesUp] = useState<vacante[]>([])
+Modal.setAppElement('#root')
+
+export const FteModalPostulaciones = ({ isOpen, vacantes , onClose} : modalProps) => {
 const semana = ['none', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
 const rol = ['none' , 'supervisor', 'ayudante']
 const id_user_fte = useSelector((store : AppStore) => store.user.id_user)
@@ -21,12 +28,6 @@ const [postulacion, setPostulacion] = useState<postulacion>({
     
 })
 
-useEffect(() => {
- const subscription = postulacionService.vacante$.subscribe((vacantes) => {
-setVacatesUp(vacantes)
- })
-    return () => subscription.unsubscribe();
-},[])
 
 const postular = async (id_vacante: number) => {
     // Actualiza el estado de la postulacion
@@ -41,16 +42,37 @@ const postular = async (id_vacante: number) => {
 };
 
 
-
-console.log(VacantesUp);
-
     return (
-        <div className="ferias">
-            {VacantesUp.map((vacante) => (
-                <div className="card" key={vacante.id_vacante}>
+
+        <Modal
+        isOpen={isOpen}
+        onRequestClose={onClose}
+        style={{
+          overlay: {
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+          },
+          content: {
+            top: "50%",
+            left: "50%",
+            right: "auto",
+            bottom: "auto",
+            marginRight: "-50%",
+            transform: "translate(-50%, -50%)",
+            padding: "20px",
+            borderRadius: "10px",
+            width: "600px",
+            maxHeight: "80vh",
+            overflow: "auto",
+          },
+        }}
+      >
+        
+        <div className="vacantes">
+            {vacantes.map((vacante) => (
+                <div className="vacante-content" key={vacante.id_vacante}>
 
                     <ul>
-                        <li>FERIA : {vacante.id_feria}</li>
+                        <li>FERIA : {vacante.id_vacante}</li>
                         <h3>Rol : {rol[vacante.id_rol]}</h3>
                         <li> FECHA INGRESO : {vacante.ingreso}</li>
                         <li> FECHA DE TERMINO : {vacante.termino}</li>
@@ -75,6 +97,7 @@ console.log(VacantesUp);
             ))}
        
         </div>
+        </Modal>
     )
 
 

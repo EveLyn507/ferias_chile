@@ -1,30 +1,25 @@
-import { useEffect } from "react"
-import { postulacionService } from "../../rxjs/rxjsPostulaciones"
-import { CardPostulaciones } from "./cardPostulaciones"
+import {  useState } from "react"
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs"
 import { MisPostulaciones } from "./misPostulaciones"
+import { Filtros_base } from "../../../../../components/filtros"
+import './homePostu.css'
+import { getFeriasConVacantesVacias } from "../../services/postulacionesFunction"
+import { FeriasTable } from "./feriasTable"
+import { feriaVacante } from "./interfaces"
 
 export const HomePostulaciones = () => {
+  const [selectedComuna, setSelectedComuna] = useState<number | null>(null);
+  const [selectedRegion, setSelectedRegion] = useState<number | null>(null);
+  const [vacantesFeria, setVacantesFeria] = useState<feriaVacante[] | null>(null)
+
+  
+    const filtrar = async () => {
+   
+        const feriasConVacantes = await getFeriasConVacantesVacias(selectedComuna, selectedRegion) 
+        setVacantesFeria(feriasConVacantes)
+    }
 
 
-    useEffect(() => {
-        postulacionService.loadInitialVacante()
-    },[])
-
-    useEffect(() => {
-      // Aplica el estilo al body solo mientras el componente esté montado
-      const originalBodyStyle = document.body.style.cssText;
-      document.body.style.display = 'flex';
-      document.body.style.justifyContent = 'center';
-      document.body.style.alignItems = 'center';
-      document.body.style.minHeight = '100vh';
-      document.body.style.margin = '0';
-
-      return () => {
-          // Restaura el estilo original del body al desmontar el componente
-          document.body.style.cssText = originalBodyStyle;
-      };
-  }, []);
 
   return (
 <>
@@ -33,13 +28,27 @@ export const HomePostulaciones = () => {
 <Tabs>
 
     <TabList>
-      <Tab>Vacantes Disponibles</Tab>
+      <Tab>Vacantes</Tab>
       <Tab>Mis Postulaciones</Tab>
     </TabList>
 
 
     <TabPanel>
-    <CardPostulaciones/>
+      <div className="postulacion-container">
+
+  
+      <div className="postu-filter">
+      <Filtros_base onFilterC={setSelectedComuna} onFilterR={setSelectedRegion}/>
+      </div>
+      <div>
+      <button onClick={() => filtrar()}> filtrar</button>
+      </div>
+
+      <div className="cards-container">
+    <FeriasTable ferias={vacantesFeria}/>
+    </div>
+    </div>
+
     </TabPanel>
 
     <TabPanel>

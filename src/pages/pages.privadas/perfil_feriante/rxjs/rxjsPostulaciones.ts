@@ -2,7 +2,6 @@
 import { BehaviorSubject } from 'rxjs';
 
 import { vacante } from '../../../models/interfaces';
-import { getVacantesVaciasfte } from '../services/postulacionesFunction';
 
 
 
@@ -42,14 +41,7 @@ class PostulacionesService {
 
   }
 
-  // Función para cargar los bancos desde la base de datos, recibiendo el mail como argumento
-  loadInitialVacante() {
-    getVacantesVaciasfte().then(vacante => {
-      this.setVacante(vacante); // Actualiza la lista con los datos obtenidos
-    }).catch(error => {
-      console.error("Error al cargar las vacantes:", error);
-    });
-  }
+
 
 
 }//fin

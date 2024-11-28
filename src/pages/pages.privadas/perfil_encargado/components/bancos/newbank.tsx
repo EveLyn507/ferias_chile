@@ -9,7 +9,7 @@ export const NuevoBanco = () => {
 
   const [newbank, setNewBank] = useState<DatosBank>({
     mail_banco: '',
-    nombre_asociado: '',
+    nombre_asociado: '', 
     numero_cuenta: '',
     id_user_enf: id_user,
   });
@@ -63,43 +63,44 @@ export const NuevoBanco = () => {
   };
 
   return (
-    <div className="nuevo-banco">
-      <div className="nuevo-banco-field">
-        <label>Correo del Banco</label>
+      <>
+      <label> Ingresar Nuevo Banco</label>
+      <div className="inputs">
+        <div className="input-field">
+        <label> Correo</label>
         <input
           type="text"
-          className="nuevo-banco-input"
           placeholder="Correo del banco"
           value={newbank.mail_banco}
           onChange={(e) => setNewBank({ ...newbank, mail_banco: e.target.value })}
-        />
+        />        
       </div>
-
-      <div className="nuevo-banco-field">
-        <label>Nombre Asociado</label>
+        <div className="input-field">
+        <label> Nombre </label>
         <input
           type="text"
-          className="nuevo-banco-input"
           placeholder="Nombre asociado"
           value={newbank.nombre_asociado}
           onChange={(e) => setNewBank({ ...newbank, nombre_asociado: e.target.value })}
-        />
-      </div>
-
-      <div className="nuevo-banco-field">
-        <label>Número de Cuenta</label>
+        />   
+         </div>
+  
+    <div className="input-field">
+    <label> Numero de cuenta</label>
         <input
           type="text"
-          className="nuevo-banco-input"
           placeholder="Número de cuenta"
           value={newbank.numero_cuenta}
           onChange={(e) => setNewBank({ ...newbank, numero_cuenta: e.target.value })}
         />
-      </div>
+          </div>
 
-      <button className="nuevo-banco-btn" onClick={handleAdd}>
-        Agregar Banco
-      </button>
+          <div className="input-field">
+             <button  onClick={handleAdd}>Agregar </button>
+           </div>
+          </div>
+  
+
 
       {validationErrors.length > 0 && (
         <div className="nuevo-banco-errors">
@@ -114,6 +115,6 @@ export const NuevoBanco = () => {
           <p>{successMessage}</p>
         </div>
       )}
-    </div>
+   </>
   );
 };

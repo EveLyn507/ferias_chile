@@ -6,7 +6,7 @@ import store from './redux/store';
 import { Nav_bar } from './components';
 import { NotFound, PrivateRoutes, PublicRoutes } from './models/index'; // rutas url 
 import { LoginHome, Registro, ResetPassword } from './pages/pages.publicas/registro_y_login/index';
-import PerfilFeriantes from './pages/pages.privadas/perfil_feriante/perfil_feriante';
+import PerfilFeriantes from './pages/pages.privadas/perfil_feriante/components/perfil_feriante';
 import View_detalle_feria from './pages/pages.publicas/feed_ferias/vista_detalle_feria';
 import ConfirmPayment from './pages/pages.privadas/perfil_feriante/components/pagos/voucher_pago';
 import PaymentButton from './pages/pages.privadas/perfil_feriante/components/pagos/view_pago';

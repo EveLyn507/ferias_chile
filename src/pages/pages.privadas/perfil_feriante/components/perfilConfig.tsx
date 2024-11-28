@@ -6,15 +6,15 @@ import RedesSociales from './RedesSociales';
 import ActualizarCorreoContraseña from './ActualizarCorreoContraseña';
 import FotoPerfil from './FotoPerfil';
 import { useSelector, useDispatch } from 'react-redux';
-import { AppStore } from '../../../redux/store';
+import { AppStore } from '../../../../redux/store';
 import { Link } from 'react-router-dom';
-import { setUserEmail } from '../../../redux/actions/userActions';
+import { setUserEmail } from '../../../../redux/actions/userActions';
 import axios from 'axios';
-import './feriante.css';
-import FTEWebSocketService from '../../models/webSoket';
+import FTEWebSocketService from '../../../models/webSoket';
 
-const PerfilFeriantes: React.FC = () => {
-  const userMail = localStorage.getItem('userEmail') || useSelector((state: AppStore) => state.user.email);
+const ConfiguracionPerfil: React.FC = () => {
+  const reduxMail = useSelector((state: AppStore) => state.user.email);
+  const userMail = localStorage.getItem('userEmail') || reduxMail
   const dispatch = useDispatch();
   const FTEwebSocketService = FTEWebSocketService.getInstance();
 
@@ -62,7 +62,7 @@ const PerfilFeriantes: React.FC = () => {
         setPerfilPrivado(response.data.perfil_privado);
       }
     } catch (error) {
-      console.error('Error al cambiar el estado del perfil:', error.response?.data || error.message);
+      console.error('Error al cambiar el estado del perfil:',error);
     }
   };
 
@@ -85,6 +85,9 @@ const PerfilFeriantes: React.FC = () => {
         </button>
       </div>
 
+      <section className="datos-personales">
+
+
       <FotoPerfil 
         setFotoPerfil={setFotoPerfil} 
         userMail={correo} 
@@ -102,7 +105,8 @@ const PerfilFeriantes: React.FC = () => {
           setTelefono(telefono);
         }}
       />
-
+      </section>
+      
       <Biografia 
         userMail={correo} 
         biografia={biografia} 
@@ -129,4 +133,4 @@ const PerfilFeriantes: React.FC = () => {
   );
 };
 
-export default PerfilFeriantes;
+export default ConfiguracionPerfil;

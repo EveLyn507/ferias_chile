@@ -5,7 +5,7 @@ import {   Route } from 'react-router-dom';
 import { Logout } from '../../components/index';
 import RoleGuard from '../../guard/rol.guard.tsx';
 import { Roles } from '../../models/rol.ts';
-import Perfil_feriante from './perfil_feriante/perfil_feriante.tsx';
+import Perfil_feriante from './perfil_feriante/components/perfil_feriante.tsx';
 import { Perfil_admin } from './perfil_muni/home_administrador.tsx';
 import PerfilEn from './perfil_encargado/components/home_encargado.tsx';
 import Bancos_home from './perfil_encargado/components/bancos/bancos_home.tsx';

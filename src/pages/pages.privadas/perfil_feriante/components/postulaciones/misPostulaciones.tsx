@@ -9,7 +9,7 @@ export const MisPostulaciones = () => {
 
 const id_user_fte = useSelector((store : AppStore) => store.user.id_user )
 const [misPost , setMisPost] = useState<Mispostulacion[]>([])
-console.log(misPost);
+
 
 
 //carga y setea los post en la variable  misPost

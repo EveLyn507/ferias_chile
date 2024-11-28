@@ -123,3 +123,11 @@
   }
   
 
+.actions {
+
+  flex: 1;
+
+}
+.actions button {
+width: 2px;
+}

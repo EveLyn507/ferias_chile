@@ -1,12 +1,19 @@
 import { useState } from "react";
-import { horarioVacante, vacante } from "../../../../../models/interfaces";
-import { saveVacanteFeria } from "../../../services/admin_feria_fuctions";
-import { useParams } from "react-router-dom";
+import { horarioVacante, vacante } from "../../../../../../models/interfaces";
+import { saveVacanteFeria } from "../../../../services/admin_feria_fuctions";
 import { NewHorario } from "./newHorario";
+import Modal from "react-modal";
 
-export const CrearVacante = () => {
-  const { id_feria } = useParams<{ id_feria: string }>();
-  const idFeria = id_feria ? parseInt(id_feria, 10) : 0;
+
+interface newVacanteModal {
+  isOpen : boolean
+  id_feria : number;
+  onClose : () => void
+}
+
+Modal.setAppElement("#root")
+
+export const CrearVacanteModal = ({id_feria , isOpen, onClose} : newVacanteModal) => {
 
   const [rol, setRol] = useState('');
   const semana = ['none', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
@@ -39,7 +46,7 @@ export const CrearVacante = () => {
     const vacante: vacante = {
       id_vacante: 0,
       id_user_fte: null,
-      id_feria: idFeria,
+      id_feria: id_feria,
       id_rol: parseInt(rol),
       ingreso: todayISO,
       termino: todayISO,
@@ -67,7 +74,23 @@ export const CrearVacante = () => {
   };
 
   return (
-    <>
+    <Modal
+    isOpen={isOpen}
+    onRequestClose={onClose}
+    contentLabel="Postulaciones Modal"
+    style={{
+      content: {
+        maxWidth: "600px",
+        margin: "auto",
+        padding: "20px",
+        borderRadius: "10px",
+        overflow: "auto",
+      },
+      overlay: {
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+      },
+    }}
+  >
       <h2>CREAR NUEVA VACANTE</h2>
       <div>
         <div>
@@ -112,6 +135,21 @@ export const CrearVacante = () => {
 
         <button onClick={guardarVacante}>Agregar Vacante</button>
       </div>
-    </>
+
+          <button
+            onClick={onClose}
+            style={{
+              float: "right",
+              padding: "5px 10px",
+              backgroundColor: "#6c757d",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+              cursor: "pointer",
+            }}
+          >
+            Cerrar
+          </button>
+   </Modal>
   );
 };

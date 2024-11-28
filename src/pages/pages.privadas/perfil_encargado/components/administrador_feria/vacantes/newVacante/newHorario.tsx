@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { horarioVacante } from "../../../../../models/interfaces";
+import { horarioVacante } from "../../../../../../models/interfaces";
 
 interface newVacanteProps {
   saveHorario: (horario: horarioVacante) => void;

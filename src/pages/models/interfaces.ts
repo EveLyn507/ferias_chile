@@ -198,6 +198,6 @@ export interface ftePostulacion{
 
 
 export interface homeProps{
-    idFeria : number
+    id_feria : number
     nombreF: string
   }

@@ -7,7 +7,7 @@ import { bancoService } from "../../rxjs/sharingbankslist";
 import { asociarBankFeria, getFeriaBank } from "../../services/admin_feria_fuctions";
 import { Link } from "react-router-dom";
 
-export const BancoFeria = ({ idFeria }: homeProps) => {
+export const BancoFeria = ({ id_feria }: homeProps) => {
   const id_user_enf = useSelector((store: AppStore) => store.user.id_user);
   const [bancos, setBancos] = useState<DatosBank[]>([]); // Lista de todos los bancos
   const [feriaBanco, setFeriaBanco] = useState<string | null>(""); // Banco asociado a la feria
@@ -16,7 +16,7 @@ export const BancoFeria = ({ idFeria }: homeProps) => {
 
   const cargaBankF = async () => {
     try {
-      const b = await getFeriaBank(idFeria);
+      const b = await getFeriaBank(id_feria);
       setFeriaBanco(b ?? "seleccione un banco");
     } catch (error) {
       console.log(error);
@@ -80,7 +80,7 @@ export const BancoFeria = ({ idFeria }: homeProps) => {
             ))}
           </select>
 
-          <button onClick={() => asociar(feriaBanco, idFeria)}>Guardar Banco</button>
+          <button onClick={() => asociar(feriaBanco, id_feria)}>Guardar Banco</button>
 
           {warnings.length > 0 && (
             <div style={{ color: "red", marginTop: "10px" }}>

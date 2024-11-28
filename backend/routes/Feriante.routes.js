@@ -18,7 +18,8 @@ const {
   obtenerRedesSociales,
   agregarRedSocial,
   eliminarRedSocial,
-  getVacantesVacias,//modulo postulaciones
+  getVacantesFeria,//modulo postulaciones
+  getFeriasConVacantesVacias,
   insertPostulacion,
   misPostulaciones
 } = require('../controllers/FerianteController');
@@ -119,7 +120,13 @@ router.put('/api/redes-sociales/:id',  (req, res) => {
 //INICIO MODULO POSTULACIONES 
 router.post('/getVacantesVacias', (req, res) => {
   const pool = req.pool;
-  getVacantesVacias(res, pool);
+  getVacantesFeria(res, pool);
+});
+
+router.post('/getFeriasConVacantesVacias', (req, res) => {
+  const pool = req.pool;
+  const {id_comuna, id_region } = req.body;
+  getFeriasConVacantesVacias(res, pool, id_comuna, id_region);
 });
 
 router.post('/insertPostulacion', (req, res) => {

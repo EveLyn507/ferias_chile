@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { AppStore } from '../../../redux/store';
-import './feriante.css';
+import { AppStore } from '../../../../redux/store';
+
 
 
 interface FotoPerfilProps {

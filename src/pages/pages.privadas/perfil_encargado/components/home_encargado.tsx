@@ -11,6 +11,7 @@ import './css/home.css';
 import './css/vacantes.css'
 import './css/programa.css'
 import './css/banco.css'
+import BancosHome from "./bancos/bancos_home";
 
 const PerfilEn = () => {
   const id_user_enf = useSelector((store: AppStore) => store.user.id_user);
@@ -19,7 +20,12 @@ const PerfilEn = () => {
   const nombresF = Array.from(feriasMap.values()).map(feria => ({id : feria.id_feria, nombre :feria.nombre_feria}) );
   const persistFeria = localStorage.getItem('tabferia')
   const [actualF, setActualF] = useState<Feria | null>(null)
+  const[menuView,setMenuView] = useState<string>('admin')
 
+  const views : Record<string , JSX.Element>=  {
+    'admin' : actualF ? <Admin_de_feria feria={actualF}/> : <p>aca se podrian poner actividades generales etcetc</p>,
+    'banco' : <BancosHome/>
+  }
 
 
 
@@ -62,12 +68,11 @@ const PerfilEn = () => {
     <div className="enf-container">
 
       <div className="enfmenu-container">
-        <Menu nombresF={nombresF} changeFeria={changeFeria} />
+        <Menu nombresF={nombresF} changeFeria={changeFeria} setMenuView={setMenuView} id_feria={Number(persistFeria)!}/>
       </div>
 
       <div className="admin-f-container">
-         {actualF ? <Admin_de_feria feria={actualF}/> : <p>aca se podrian poner actividades generales etcetc</p> }
-  
+        {views[menuView]}
       </div>
   
     </div>

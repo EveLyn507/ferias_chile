@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { bancoService } from "../../rxjs/sharingbankslist";
 import { useSelector } from "react-redux";
 import { AppStore } from "../../../../../redux/store";
-import "./banco.css";
+import "./misBanco.css";
 
 const BancosHome = () => {
   const id_user_enf = useSelector((store: AppStore) => store.user.id_user);
@@ -15,16 +15,18 @@ const BancosHome = () => {
   }, []);
 
   return (
-    <div className="bancos-home">
+
       <div className="bancos-container">
+
         <div className="nuevo-banco">
           <NuevoBanco />
         </div>
+
         <div className="bancos-list">
-          <CardDatosBank />
+          <CardDatosBank /> 
         </div>
       </div>
-    </div>
+
   );
 };
 

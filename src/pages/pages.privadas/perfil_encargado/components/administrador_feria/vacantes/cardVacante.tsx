@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ftePostulacion, vacante } from "../../../../../models/interfaces";
 import { DivHorario } from "./divHorario";
-import { VacanteModal } from "./vacanteModal"; // Importa tu modal para editar vacantes
+import { VacanteModal } from "./updateVacanteModal"; // Importa tu modal para editar vacantes
 import { PostulacionModal } from "./postulacionModal";
 import { useSelector } from "react-redux";
 import { AppStore } from "../../../../../../redux/store";
@@ -111,9 +111,9 @@ const VacanteCard: React.FC<VacanteCardProps> = ({
       <td className="ingreso">{formData.ingreso}</td>
       <td className="termino">{formData.termino}</td>
 
-     <td>
-      <button onClick={handleModalOpen}>Actualizar</button>
-      <button onClick={() => borrarVacante(formData.id_vacante)}>Eliminar </button>
+     <td className="actions">
+      <button onClick={handleModalOpen}>A</button>
+      <button  onClick={() => borrarVacante(formData.id_vacante)}>D</button>
       </td>
         {!formData.id_user_fte &&  <td><button onClick={() => PostuModalOpen(formData.id_vacante)}>Postulantes</button></td>}
 

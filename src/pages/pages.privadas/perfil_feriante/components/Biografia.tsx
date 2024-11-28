@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { AppStore } from '../../../redux/store';
+import { AppStore } from '../../../../redux/store';
 
 interface BiografiaProps {
   userMail: string;

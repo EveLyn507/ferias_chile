@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { AppStore } from '../../../redux/store';
+import { AppStore } from '../../../../redux/store';
 
 interface InteresesVentaProps {
   userMail: string;
@@ -25,6 +25,8 @@ const InteresesVenta: React.FC<InteresesVentaProps> = ({ intereses, setIntereses
           setMensajeError('Error al cargar los intereses.');
         }
       } catch (error) {
+        console.log(error);
+        
         setMensajeError('Error al conectar con el servidor.');
       }
     };
@@ -68,6 +70,8 @@ const InteresesVenta: React.FC<InteresesVentaProps> = ({ intereses, setIntereses
         setMensajeError('Error al agregar el interés.');
       }
     } catch (error) {
+      console.log(error);
+      
       setMensajeError('Error al conectar con el servidor.');
     }
   };
@@ -90,6 +94,8 @@ const InteresesVenta: React.FC<InteresesVentaProps> = ({ intereses, setIntereses
         setMensajeError('Error al eliminar el interés.');
       }
     } catch (error) {
+      console.log(error);
+      
       setMensajeError('Error al conectar con el servidor.');
     }
   };

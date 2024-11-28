@@ -45,8 +45,6 @@ useEffect(() => {
 
 return (
     <>
-
-
         <> 
       <Modal
         isOpen={isOpen}
@@ -65,6 +63,7 @@ return (
           },
         }}
       >
+        
         <div className="ferias">
           <h2>Postulaciones</h2>
           <button
