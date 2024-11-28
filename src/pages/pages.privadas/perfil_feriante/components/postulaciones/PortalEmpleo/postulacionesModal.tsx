@@ -1,25 +1,39 @@
-import {  useState } from "react"
-import { postulacion } from "../../../../models/interfaces"
-import { insertPostulacion } from "../../services/postulacionesFunction"
+import {  useEffect, useState } from "react"
+import { postulacion } from "../../../../../models/interfaces"
+import { insertPostulacion } from "../../../services/postulacionesFunction"
 import { useSelector } from "react-redux"
-import  { AppStore } from "../../../../../redux/store"
+import  { AppStore } from "../../../../../../redux/store"
 import Modal from 'react-modal'
-import { vacantePostular } from "./interfaces"
-
+import { vacantePostular } from "../interfaces"
+import './postuModal.css'
+import { DivHorario } from "./divHorario"
 interface modalProps {
     isOpen: boolean
     onClose: () => void
     vacantes: vacantePostular[]
+    nombre_f : string | null
 }
 
 Modal.setAppElement('#root')
 
-export const FteModalPostulaciones = ({ isOpen, vacantes , onClose} : modalProps) => {
-const semana = ['none', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
+export const FteModalPostulaciones = ({ isOpen, vacantes , onClose , nombre_f} : modalProps) => {
 const rol = ['none' , 'supervisor', 'ayudante']
 const id_user_fte = useSelector((store : AppStore) => store.user.id_user)
 const mail = useSelector((store : AppStore) => store.user.email)
 
+
+useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+
+    // Limpieza para restaurar el scroll
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [isOpen]);
 
 const [postulacion, setPostulacion] = useState<postulacion>({
     id_user_fte : id_user_fte,
@@ -61,36 +75,29 @@ const postular = async (id_vacante: number) => {
             padding: "20px",
             borderRadius: "10px",
             width: "600px",
-            maxHeight: "80vh",
+            height: "60%",
             overflow: "auto",
           },
         }}
       >
         
         <div className="vacantes">
+            <span>Vancantes libres en <strong>{nombre_f}</strong></span>
             {vacantes.map((vacante) => (
                 <div className="vacante-content" key={vacante.id_vacante}>
 
                     <ul>
-                        <li>FERIA : {vacante.id_vacante}</li>
                         <h3>Rol : {rol[vacante.id_rol]}</h3>
                         <li> FECHA INGRESO : {vacante.ingreso}</li>
                         <li> FECHA DE TERMINO : {vacante.termino}</li>
                     </ul> 
+          
                     <h3>HORARIOS</h3>
-                    <div>
-                     {vacante.horarios.map((horario) => (
-                        <div key={horario.id_detalle_horario}>
-                         
-                        <ul>
-                            <li>DIA  {semana[horario.id_dia]} DE {horario.hora_entrada} A {horario.hora_salida} </li>
-                      
-                        </ul>
+                    <div className="horario">
+                
+                        <DivHorario horarios={vacante.horarios}/>
+                   
                         </div>
-
-                     ) )}
-                    
-                    </div>      
                     <button onClick={() => postular(vacante.id_vacante)}>POSTULAR</button>       
                 </div>
                 

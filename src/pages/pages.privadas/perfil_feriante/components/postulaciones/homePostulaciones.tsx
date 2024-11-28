@@ -1,10 +1,10 @@
 import {  useState } from "react"
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs"
-import { MisPostulaciones } from "./misPostulaciones"
+import { MisPostulaciones } from "./misPostulaciones/misPostulaciones"
 import { Filtros_base } from "../../../../../components/filtros"
 import './homePostu.css'
 import { getFeriasConVacantesVacias } from "../../services/postulacionesFunction"
-import { FeriasTable } from "./feriasTable"
+import { FeriasTable } from "./PortalEmpleo/feriasTable"
 import { feriaVacante } from "./interfaces"
 
 export const HomePostulaciones = () => {
@@ -40,8 +40,8 @@ export const HomePostulaciones = () => {
       <div className="postu-filter">
       <Filtros_base onFilterC={setSelectedComuna} onFilterR={setSelectedRegion}/>
       </div>
-      <div>
-      <button onClick={() => filtrar()}> filtrar</button>
+      <div className="search">
+      <button onClick={() => filtrar()}> Realizar Busqueda</button>
       </div>
 
       <div className="cards-container">
@@ -52,7 +52,9 @@ export const HomePostulaciones = () => {
     </TabPanel>
 
     <TabPanel>
+
     <MisPostulaciones/>
+
     </TabPanel>
 
 </Tabs>

@@ -57,7 +57,7 @@ const BooleanDaysSelector = ({ id_feria, nombreF }: homeProps) => {
 
   return (
     <div className="programa-container">
-      <table className="data-table">
+      <table className="programa-table">
         <thead>
           <tr>
             <th>Dia</th>
@@ -66,7 +66,7 @@ const BooleanDaysSelector = ({ id_feria, nombreF }: homeProps) => {
             <th>Dia de Armado</th>
             <th>Hora inicio armado</th>
             <th>Hora termino armado</th>
-            <th>activa</th>
+            <th>activado</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -81,7 +81,7 @@ const BooleanDaysSelector = ({ id_feria, nombreF }: homeProps) => {
               <td>{programa.id_dia_armado}</td>
               <td>{programa.hora_inicio_armado}</td>
               <td>{programa.hora_termino_armado}</td>
-              <td>{programa.activo}</td>
+              {programa.activo ? <td className="si">SI</td> : <td className="no">NO</td>}
               <td>
               <button onClick={() => handleEditClick(programa)}>Editar</button>
               </td>

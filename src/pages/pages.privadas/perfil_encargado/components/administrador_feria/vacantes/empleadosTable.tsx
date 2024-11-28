@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { VacanteService } from "../../../rxjs/sharingVacantes";
 import {   homeProps, vacante } from "../../../../../models/interfaces";
-import {   updateVacanteFeria } from "../../../services/admin_feria_fuctions";
+import {   deleteVacante, updateVacanteFeria } from "../../../services/admin_feria_fuctions";
 import VacanteCard from "./cardVacante";
 import { CrearVacanteModal } from "./newVacante/newVacanteModal";
 
@@ -38,7 +38,7 @@ export const EmpleadosFeria = ({ id_feria }: homeProps) => {
   };
 
   const borrarVacante = async (id_vacante: number) => {
-    VacanteService.removeVacante(id_vacante);
+    deleteVacante(id_vacante)
   };
 
   const vacantesConEmpleado = Array.from(vacantes.values()).filter(
@@ -64,7 +64,7 @@ export const EmpleadosFeria = ({ id_feria }: homeProps) => {
      <CrearVacanteModal isOpen={newVacantIsOpen} id_feria={id_feria} onClose={newVacantClose}/> 
       <h3>Empleados</h3>
 
-      <table className="data-table">
+      <table className="vacante-table">
       <thead>
         <tr>
           <th>Nombre Empleado</th>
@@ -90,7 +90,7 @@ export const EmpleadosFeria = ({ id_feria }: homeProps) => {
       {/* Vacantes sin empleado asignado */}
       <div className="empy-vacante">
         <h3>Vacantes abiertas</h3>
-        <table className="data-table">
+        <table className="vacante-table">
           <thead>
         <tr>
           <th>Nombre Empleado</th>

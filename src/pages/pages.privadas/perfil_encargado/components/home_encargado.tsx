@@ -8,7 +8,7 @@ import { Menu } from "./menu/menu";
 import { Feria } from "../../../models/interfaces";
 import { Admin_de_feria } from "./vista_admin_de_feria";
 import './css/home.css';
-import './css/vacantes.css'
+import './css/tables.css'
 import './css/programa.css'
 import './css/banco.css'
 import BancosHome from "./bancos/bancos_home";

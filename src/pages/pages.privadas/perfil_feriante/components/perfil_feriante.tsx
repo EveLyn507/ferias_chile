@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import FTEWebSocketService from '../../../models/webSoket';
 import { useSelector } from 'react-redux';
 import { AppStore } from '../../../../redux/store';
-import ConfiguracionPerfil from './perfilConfig';
+import ConfiguracionPerfil from './perfilConfig/perfilConfig';
 import { HomePostulaciones } from './postulaciones/homePostulaciones';
 import { Menu } from './menu/menufte';
 import './home.css';

@@ -34,26 +34,11 @@
 
 .cards-container {
     display: flex;
-    border: red solid 1px;
     padding: 20px;
 }
 
-.vacantes {
-    display: flex;
-    width: 100%;
-    flex-wrap: wrap;
-    gap: 20px;
-}
 
-.vacante-content {
-    margin: auto;
-    border: black solid 1px;
-}
-
-
-
-
-
+ 
 /* Estilo para la tabla */
 .cards-container table {
     width: 100%;
@@ -76,6 +61,7 @@
 .cards-container th,.cards-container  td {
     padding: 12px 15px;
     border: 1px solid #ddd;
+  
 }
 
 /* Estilo para las filas de datos */
@@ -111,3 +97,20 @@
     display: block;
     text-align: center;
 }
+
+.search {
+    margin: 5px;
+    width: 60%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.search button{
+    background-color: #007BFF;
+    color: white;
+    width: 100%;
+    &:hover {
+        background-color: #0056b3;
+    }
+}
+

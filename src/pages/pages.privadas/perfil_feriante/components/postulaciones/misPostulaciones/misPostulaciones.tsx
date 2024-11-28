@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react"
-import { MiPostuService } from "../../rxjs/rxjsMiPostulacion"
+import { MiPostuService } from "../../../rxjs/rxjsMiPostulacion"
 import { useSelector } from "react-redux"
-import { AppStore } from "../../../../../redux/store"
-import { Mispostulacion } from "../../../../models/interfaces"
+import { AppStore } from "../../../../../../redux/store"
+import { Mispostulacion } from "../../../../../models/interfaces"
 import { Link } from "react-router-dom"
-
+import './misPostulaciones.css'
 export const MisPostulaciones = () => {
 
 const id_user_fte = useSelector((store : AppStore) => store.user.id_user )
@@ -29,17 +29,17 @@ useEffect(() =>{
   return (
     
     <>
-    <div className="ferias">
+    <div className="mis-post">
     {misPost.map((mipost) => (
-      <div className="card" key={mipost.id_postulacion}>
-        <ul>
-          <li> estado de su postulacion :{mipost.estado} </li>
-          <li> feria :{mipost.nombre_feria}</li>
-          <li>  trabajo : {mipost.rol} </li>
-          <li> fecha de inicio :{mipost.fecha_ingreso} </li>
-          <li> fecha de termino : {mipost.fecha_termino} </li>
+      <div className="postulacion-content" key={mipost.id_postulacion}>
+  
+          <span> Estado de su postulacion: {mipost.estado} </span>
+          <span> Feria: {mipost.nombre_feria}</span>
+          <span> Rol: {mipost.rol} </span>
+          <span> Fecha de inicio: {mipost.fecha_ingreso} </span>
+          <span> Fecha de termino: {mipost.fecha_termino} </span>
           <Link to={`/private/2/postulaciones/supervisor/${mipost.id_feria}`}>SUPERVISOR</Link>
-        </ul>
+   
       </div>
     ))}
     </div>

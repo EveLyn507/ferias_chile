@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { AppStore } from '../../../../redux/store';
+import { AppStore } from '../../../../../redux/store';
 
 interface BiografiaProps {
   userMail: string;
@@ -25,6 +25,8 @@ const Biografia: React.FC<BiografiaProps> = ({ biografia, setBiografia }) => {
           setMensajeError('Error al cargar la biografía.');
         }
       } catch (error) {
+        console.log(error);
+        
         setMensajeError('Error al conectar con el servidor.');
       }
     };
@@ -60,6 +62,8 @@ const Biografia: React.FC<BiografiaProps> = ({ biografia, setBiografia }) => {
         setMensajeError('Error al actualizar la biografía.');
       }
     } catch (error) {
+      console.log(error);
+      
       setMensajeError('Error al conectar con el servidor.');
     }
   };

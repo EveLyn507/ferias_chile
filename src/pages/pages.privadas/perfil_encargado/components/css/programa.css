@@ -1,21 +1,18 @@
-
-
-
 .programa-container {
 
-    width: 100%;
+    width: 97%;
     margin: auto;
     margin-bottom: 5%;
 
 } 
 
-.programa {
 
-    display: flex;
-    width: 97%;
-    margin: auto;
+
+.si{
+    color: green;
 }
 
-
-
+.no {
+    color: red;
+}
 

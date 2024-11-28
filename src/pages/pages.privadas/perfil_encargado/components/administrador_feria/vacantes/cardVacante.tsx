@@ -103,6 +103,7 @@ const VacanteCard: React.FC<VacanteCardProps> = ({
 
   return (
     <tbody className="card-vacante">
+      <tr>
       <td className="nombre-emp">{formData.id_user_fte}</td>
       <td className="rol-emp">{formData.id_rol}</td>
       <td className="horario">
@@ -110,13 +111,15 @@ const VacanteCard: React.FC<VacanteCardProps> = ({
       </td>
       <td className="ingreso">{formData.ingreso}</td>
       <td className="termino">{formData.termino}</td>
-
      <td className="actions">
+ 
       <button onClick={handleModalOpen}>A</button>
       <button  onClick={() => borrarVacante(formData.id_vacante)}>D</button>
       </td>
-        {!formData.id_user_fte &&  <td><button onClick={() => PostuModalOpen(formData.id_vacante)}>Postulantes</button></td>}
 
+
+        {!formData.id_user_fte &&  <td><button onClick={() => PostuModalOpen(formData.id_vacante)}>Postulantes</button></td>}
+        </tr>
       <VacanteModal
         isOpen={isModalOpen}
         onClose={handleModalClose}

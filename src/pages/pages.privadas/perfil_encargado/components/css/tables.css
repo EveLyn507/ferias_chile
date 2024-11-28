@@ -1,0 +1,154 @@
+/* General container styles */
+.vacantes-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
+/* Employee and vacancy containers */
+.empleados,
+.empy-vacante {
+  max-height: 500px;
+  gap: 1px;
+  width: 95%;
+  margin: auto;
+  overflow-y: auto;
+}
+
+/* Vacancy card styles */
+.card-vacante {
+  
+  max-height: 50px;
+}
+
+/* Schedule circles */
+.horarios {
+  position: relative; /* Ensures hover-info is positioned relative to this container */
+}
+
+.circulos-container {
+  margin-left: 5%;
+  display: flex;
+  align-items: center;
+  gap: 5px; /* Space between circles */
+  height: 100%;
+}
+
+.dia-circle {
+  width: 30px; /* Circle size */
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+
+.dia-circle.activo {
+  background-color: green;
+  color: white;
+}
+
+.dia-circle.inactivo {
+  background-color: grey;
+  color: white;
+}
+
+/* Hover information for schedules */
+.hover-info {
+  display: none; /* Hidden by default */
+  position: absolute;
+  transform: translate(-50%, -100%); /* Centers above the circle */
+  background-color: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 12px;
+  z-index: 10;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  min-width: 100%;
+  max-height: 100px;
+  overflow-y: auto; /* Scroll for large content */
+  white-space: normal; /* Allows line breaks */
+}
+
+.horarios:hover .hover-info {
+  display: block; /* Shows on hover */
+}
+
+/* Table styles */
+.vacante-table, 
+.programa-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 1em;
+  font-family: Arial, sans-serif;
+  text-align: left;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+}
+
+.vacante-table thead tr,
+.programa-table thead tr {
+  background-color: #f4f4f4;
+  color: #333;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.vacante-table th, 
+.vacante-table td,
+.programa-table th, 
+.programa-table td {
+  padding: 7px 3px;
+  border: 1px solid #ddd;
+  text-align: center;
+  font-size: 14px; /* Base text size */
+  width: 15%;
+  gap: 5px;
+
+}
+
+.vacante-table .horario {
+  display: flex;
+  flex-direction: column;
+  width: auto;
+  height: 100%;
+}
+
+/* Hover and alternating rows */
+.vacante-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.vacante-table tbody tr:hover {
+  background-color: #d6d3d3;
+
+}
+
+/* Button styles */
+.vacante-table button, 
+.programa-table button {
+  padding: 8px 12px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: background-color 0.2s ease;
+
+}
+
+.vacante-table button:hover, 
+.programa-table button:hover {
+  background-color: #0056b3;
+}
+
+
+

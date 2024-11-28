@@ -4,7 +4,12 @@ html, body {
   margin: 0; /* Elimina el margen del body */
   padding: 0; /* Elimina el relleno del body */
   width: 100%;
+
+  padding-right: var(--scrollbar-width, 0);
+  transition: padding-right 0.2s ease;
 }
+
+
 
 #root {
   height: 100%;

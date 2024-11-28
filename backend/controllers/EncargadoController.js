@@ -349,7 +349,7 @@ const getVacantesFeria = async (res, pool , id_feria) => {
     const result = await pool.query(` 
       SELECT id_vacante ,id_user_fte, id_rol, id_feria, to_char(ingreso, 'YYYY-MM-DD') as ingreso,to_char(termino, 'YYYY-MM-DD') as termino, id_estado_vacante
       FROM detalle_team_vacante
-      WHERE id_feria = $1; 
+      WHERE id_feria = $1 AND id_estado_vacante != 3; 
     `, [id_feria]);
 
       //añade los horarios de la vacante 
@@ -472,14 +472,16 @@ const deleteVacante = async (req,res, pool) => {
   const  {id_vacante} = req.body
  try{
    await pool.query(` 
-     DELETE FROM detalle_horario_empleado
-     WHERE id_vacante = $1 `, [id_vacante]) 
+     UPDATE postulaciones 
+     set id_estado = 5
+     where id_vacante = $1` , [id_vacante])
    await pool.query(` 
-     DELETE FROM detalle_team_vacante 
+    UPDATE detalle_team_vacante
+    set id_estado_vacante = 3
      WHERE id_vacante = $1 `, [id_vacante]) 
-     res.status(200).json({message : 'vacante borrada correctamente'})
+     res.status(200).json({message : 'vacante marcada como eliminada correctamente'})
  }catch (err){
-   console.log('error al borrar banco ' ,err)
+   console.log('error al borrar vacante ' ,err)
    }
  }
 
