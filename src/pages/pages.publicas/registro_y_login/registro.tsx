@@ -8,6 +8,7 @@ import {
   validarRutCompleto
 } from './validaciones';
 import './css/registro.css';
+import axios from 'axios';
 
 export const Registro = () => {
   const [values, setValues] = useState({
@@ -18,7 +19,8 @@ export const Registro = () => {
     contrasena: '',
     contrasena2: '',
     rut: '',
-    rut_div: ''
+    rut_div: '',
+    role: '' 
   });
 
   const [errors, setErrors] = useState({
@@ -29,10 +31,13 @@ export const Registro = () => {
     contrasena: '',
     contrasena2: '',
     rut: '',
-    rut_div: ''
+    rut_div: '',
+    role: '' 
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const [error2, setError2] = useState(''); 
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
 
     setValues((prevValues) => ({
@@ -67,7 +72,10 @@ export const Registro = () => {
         break;
       case 'rut':
       case 'rut_div':
-        errorMessage = validarRutCompleto(currentValues.rut,currentValues.rut_div) || '';
+        errorMessage = validarRutCompleto(currentValues.rut, currentValues.rut_div) || '';
+        break;
+      case 'role': 
+        errorMessage = value ? '' : 'Debe seleccionar un rol.';
         break;
       default:
         break;
@@ -81,7 +89,7 @@ export const Registro = () => {
     return errorMessage;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const newErrors: typeof errors = {};
@@ -96,7 +104,50 @@ export const Registro = () => {
     setErrors(newErrors);
 
     if (!hasErrors) {
-      console.log('Formulario enviado:', values);
+      try {
+        let response;
+        const { role, user_mail, rut, rut_div, nombre, apellido, telefono, contrasena } = values;
+
+        if (role === '1') {
+          response = await axios.post('http://localhost:5000/registro/encargado', {
+            user_mail,
+            rut: parseInt(rut),
+            rut_div,
+            nombre,
+            apellido,
+            telefono: parseInt(telefono),
+            role,
+            contrasena
+          });
+        } else if (role === '2') {
+          response = await axios.post('http://localhost:5000/registro/feriante', {
+            user_mail,
+            rut: parseInt(rut),
+            rut_div,
+            nombre,
+            apellido,
+            telefono: parseInt(telefono),
+            role,
+            contrasena
+          });
+        } else if (role === '3') {
+          response = await axios.post('http://localhost:5000/registro/municipal', {
+            user_mail,
+            rut: parseInt(rut),
+            rut_div,
+            nombre,
+            apellido,
+            telefono: parseInt(telefono),
+            role,
+            contrasena
+          });
+        }
+
+        console.log('Registro exitoso:', response?.data);
+      } catch (err) {
+        setError2('Error al registrar usuario');
+        console.error(err);
+      }
     }
   };
 
@@ -148,7 +199,6 @@ export const Registro = () => {
                 value={values.rut_div}
                 onChange={handleInputChange}
               />
-
             </div>
           </div>
         </div>
@@ -203,7 +253,26 @@ export const Registro = () => {
           </div>
         </div>
 
+        <div>
+          <label>Rol</label>
+          <select
+            name="role"
+            value={values.role}
+            onChange={handleInputChange}
+            required
+          >
+            <option value="" disabled>
+              Select a role
+            </option>
+            <option value="1">Encargado</option>
+            <option value="2">Feriante</option>
+            <option value="3">Administrador Muni</option>
+          </select>
+          {errors.role && <span className="error">{errors.role}</span>}
+        </div>
+
         <button type="submit">Registrar</button>
+        {error2 && <p className="error">{error2}</p>}
       </form>
     </div>
   );

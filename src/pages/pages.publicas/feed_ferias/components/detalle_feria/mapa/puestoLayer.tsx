@@ -36,10 +36,18 @@ const PuestosLayer: React.FC<PuestosMapaProps> = ({
       {puestos.map((Puesto) => {
         const { metersWidth, metersHeight } = calculateDimensionsInMeters(Puesto.dimenciones.width, Puesto.dimenciones.height);
 
-        const estadoColor =
-          Puesto.dataPuesto?.id_estado_puesto === 1 ? 'green' : 'red'; // Verde para disponible, rojo para ocupado
-        const estadoTexto =
-          Puesto.dataPuesto?.id_estado_puesto === 1 ? 'Disponible' : 'Ocupado';
+        const estadoConfig = (() => {
+          switch (Puesto.dataPuesto?.id_estado_puesto) {
+            case 1:
+              return { texto: 'Disponible', color: 'green' };
+            case 2:
+              return { texto: 'En proceso venta', color: 'orange' };
+            case 3:
+              return { texto: 'Arrendado', color: 'red' };
+            default:
+              return { texto: 'Estado desconocido', color: 'gray' };
+          }
+        })();
 
         return (
           <React.Fragment key={Puesto.id_elemento}>
@@ -52,7 +60,9 @@ const PuestosLayer: React.FC<PuestosMapaProps> = ({
               draggable={isStatic}
               onMouseEnter={() => handleMouseEnter(Puesto)} // Muestra el cartel con el puesto al pasar el ratón
               onMouseLeave={handleMouseLeave}  // Oculta el cartel cuando el ratón sale
-              onClick={() =>  itemClick(Puesto.dataPuesto!.id_puesto!)  }
+              onClick={() =>
+                estadoConfig.texto !== 'Arrendado' &&
+                itemClick(Puesto.dataPuesto!.id_puesto!)  }
               
             />
             <Text
@@ -66,9 +76,9 @@ const PuestosLayer: React.FC<PuestosMapaProps> = ({
             <Text
               x={Puesto.dimenciones.x}
               y={Puesto.dimenciones.y - 40}
-              text={estadoTexto}
+              text={estadoConfig.texto}
               fontSize={12}
-              fill={estadoColor} // Cambia el color según el estado
+              fill={estadoConfig.color} 
             />
 
             {/* Renderizar el Cartel de Konva cuando showCartel es true */}
