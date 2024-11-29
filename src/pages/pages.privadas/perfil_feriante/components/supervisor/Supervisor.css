@@ -1,213 +1,73 @@
-/* General container styles */
 .supervisor-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    max-width: 800px;
-    margin: 20px auto;
-    font-family: 'Arial', sans-serif;
-}
-
-/* Header styles */
-.supervisor-container h1,
-.supervisor-container h2,
-.supervisor-container h3,
-.supervisor-container h4 {
-    color: #062a4f;
-    margin-bottom: 15px;
-}
-
-.supervisor-container h1 {
-    font-size: 28px;
-}
-
-.supervisor-container h2 {
-    font-size: 24px;
-}
-
-.supervisor-container h3,
-.supervisor-container h4 {
-    font-size: 20px;
-}
-
-/* Paragraph styles */
-.supervisor-container p {
-    font-size: 14px;
-    color: #333;
-    margin-bottom: 10px;
-}
-
-/* Table styles */
-.supervisor-container table {
+    gap: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+.supervisor-header {
     width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-}
-
-.supervisor-container th,
-.supervisor-container td {
-    border: 1px solid #d1d1d1;
-    text-align: left;
-    padding: 10px;
-}
-
-.supervisor-container th {
-    background-color: #062a4f;
-    color: white;
-    text-transform: uppercase;
-}
-
-.supervisor-container td {
-    background-color: #f4f8fc;
-}
-
-/* Button styles */
-.supervisor-container button {
-    padding: 10px 20px;
-    margin: 10px 0;
-    border: none;
-    border-radius: 5px;
-    background-color: #062a4f;
-    color: white;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.supervisor-container button:hover {
-    background-color: #04458c;
-}
-
-/* Error and success messages */
-.supervisor-container .error-message {
-    color: red;
-    font-size: 12px;
-    margin-bottom: 10px;
-}
-
-.supervisor-container .success-message {
-    color: green;
-    font-size: 12px;
-    margin-bottom: 10px;
-}
-
-/* List styles */
-.supervisor-container ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.supervisor-container li {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #e9f1f7;
-    margin-bottom: 5px;
-    padding: 10px;
-    border-radius: 5px;
-}
-
-/* Image styles for MapaFeria */
-.mapa-feria img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Loading and error states */
-.supervisor-container .loading-message {
-    font-size: 16px;
-    color: #666;
-    margin-bottom: 15px;
-}
-
-.supervisor-container .error-message {
-    font-size: 16px;
-    color: red;
-    margin-bottom: 15px;
-}
-
-/* Specific styles for components */
-/* EstadoFeria */
-.estado-feria {
-    margin-bottom: 20px;
+    text-align: center;
+    background-color: #f8f9fa;
+    padding: 10px 0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .supervisor-section {
+    width: 100%;
     background-color: #ffffff;
     padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* GestionPuestos */
-.gestion-puestos ul {
-    padding: 0;
-}
-
-.gestion-puestos li {
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .supervisor-link {
+    width: 100%;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    border: 1px solid #d1d1d1;
-    margin-bottom: 5px;
-    border-radius: 5px;
-}
-
-/* VerificarDatos */
-.verificar-datos ul {
-    padding: 0;
-}
-
-.verificar-datos li {
-    padding: 10px;
-    border: 1px solid #d1d1d1;
-    margin-bottom: 5px;
-    border-radius: 5px;
-}
-
-/* RegistroCobrosFisicos */
-.registro-cobros ul {
-    padding: 0;
-}
-
-.registro-cobros li {
-    padding: 10px;
-    border: 1px solid #d1d1d1;
-    margin-bottom: 5px;
-    border-radius: 5px;
-}
-
-/* Links */
-.supervisor-container a {
-    color: #0453a0;
+    justify-content: center;
+  }
+  
+  .button {
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
     text-decoration: none;
-    font-weight: bold;
-    margin-top: 20px;
+    border-radius: 5px;
+    text-align: center;
     font-size: 16px;
-}
-
-.supervisor-container a:hover {
-    text-decoration: underline;
-}
-
-/* Responsiveness */
-@media (max-width: 768px) {
+    font-weight: bold;
+  }
+  
+  .button.secondary {
+    background-color: #6c757d;
+  }
+  
+  .button:hover {
+    background-color: #0056b3;
+  }
+  
+  .button.secondary:hover {
+    background-color: #5a6268;
+  }
+  
+  @media (max-width: 768px) {
     .supervisor-container {
-        padding: 10px;
-        max-width: 100%;
+      padding: 10px;
+      gap: 15px;
     }
-
-    .supervisor-container h1 {
-        font-size: 24px;
+  
+    .button {
+      font-size: 14px;
+      padding: 8px 16px;
     }
-
-    .supervisor-container button {
-        font-size: 12px;
-        padding: 8px 16px;
+  
+    .supervisor-section {
+      padding: 10px;
     }
-}
+  }
+  
