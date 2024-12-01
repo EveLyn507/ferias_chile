@@ -1,11 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import Mapa from "./components/detalle_feria/mapa/mapa_feria";
-import { arriendo, plano, PlanoItemElement, todayArriendos } from "./components/detalle_feria/mapa/mapaModel";
-import userWebSocketService from "../../models/webSoket";
+import userWebSocketService from "../../../../../models/webSoket";
+import { arriendo, PlanoItemElement, todayArriendos, plano } from "./mapaModel";
+import Mapa from "./mapa_feria";
 
-export const MapaSupervisor = () => { 
+
+
+export const View_detalle_feria = () => { 
   const WebSocketService = userWebSocketService.getInstance();
   const { id_feria } = useParams<{ id_feria: string }>();
   const idFeria = id_feria ? parseInt(id_feria) : 0;
@@ -85,4 +87,4 @@ export const MapaSupervisor = () => {
   );  
 };
 
-export default MapaSupervisor;
+export default View_detalle_feria;

@@ -13,6 +13,7 @@ import { HomeSupervisor } from './perfil_feriante/components/supervisor/homeSupe
 import { HomeTeam } from './perfil_encargado/components/team/homeTeam.tsx';
 import { HomePostulaciones } from './perfil_feriante/components/postulaciones/homePostulaciones.tsx';
 import Vistaplano from './perfil_encargado/components/herramientas_planos/cargavista.tsx';
+import MapaSupervisor from '../pages.publicas/feed_ferias/vista_detalle_feria.tsx';
 
 
 
@@ -33,6 +34,7 @@ function Privado() {
       <Route path={PrivateRoutes.PERFILFERIANTE} element={<Perfil_feriante />} />
       <Route path={PrivateRoutes.SUPERVISOR} element={<HomeSupervisor />} />
       <Route path={PrivateRoutes.POSTULACIONES} element={< HomePostulaciones/>} />
+      <Route path={PrivateRoutes.MAPASUPERVISOR} element={< MapaSupervisor/>} />
     </Route>
 
     <Route element={<RoleGuard rol={Roles.MUNICIPAL} />}>

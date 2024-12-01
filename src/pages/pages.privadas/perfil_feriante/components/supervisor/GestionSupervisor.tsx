@@ -1,4 +1,3 @@
-import React from 'react';
 import EstadoFeria from './EstadoFeria';
 import GestionPuestos from './GestionPuestos';
 import VerificarDatos from './VerificarDatos';
@@ -11,7 +10,11 @@ interface GestionSupervisorProps {
   nombre_feria: string;
 }
 
-const GestionSupervisor: React.FC<GestionSupervisorProps> = ({ id_feria, nombre_feria }) => (
+const GestionSupervisor = ({ id_feria, nombre_feria } : GestionSupervisorProps) => {
+
+return (
+
+
   <div className="supervisor-container">
     <header className="supervisor-header">
       <h1>Panel de Supervisor</h1>
@@ -22,7 +25,7 @@ const GestionSupervisor: React.FC<GestionSupervisorProps> = ({ id_feria, nombre_
     </section>
 
     <div className="supervisor-link">
-      <Link to={`/feria/${id_feria}/${nombre_feria}`} className="button">
+      <Link to={`/feria/${id_feria}/${nombre_feria}/${"2024-11-22"}`} className="button">
         Ver Feria
       </Link>
     </div>
@@ -45,6 +48,7 @@ const GestionSupervisor: React.FC<GestionSupervisorProps> = ({ id_feria, nombre_
       </Link>
     </div>
   </div>
-);
+  )
+}
 
 export default GestionSupervisor;
