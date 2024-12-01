@@ -12,6 +12,7 @@ interface GestionSupervisorProps {
 
 const GestionSupervisor = ({ id_feria, nombre_feria } : GestionSupervisorProps) => {
 
+  
 return (
 
 

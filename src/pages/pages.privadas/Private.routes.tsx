@@ -14,8 +14,7 @@ import { HomeTeam } from './perfil_encargado/components/team/homeTeam.tsx';
 import { HomePostulaciones } from './perfil_feriante/components/postulaciones/homePostulaciones.tsx';
 import Vistaplano from './perfil_encargado/components/herramientas_planos/cargavista.tsx';
 import MapaSupervisor from '../pages.publicas/feed_ferias/vista_detalle_feria.tsx';
-
-
+import '../../App.css';
 
 function Privado() {
 
