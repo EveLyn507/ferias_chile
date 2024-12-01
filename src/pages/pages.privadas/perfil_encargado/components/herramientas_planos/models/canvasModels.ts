@@ -4,8 +4,8 @@ import {  plano, PlanoItemElement } from "./vistaplanoModels";
 
 
 export interface CanvasProps {
-    puestos: PlanoItemElement[];
-    setPuestos: React.Dispatch<React.SetStateAction<PlanoItemElement[]>>;
+    puestos: Map<number,PlanoItemElement>;
+    setPuestos: React.Dispatch<React.SetStateAction<Map<number,PlanoItemElement>>>;
     calles: PlanoItemElement[];
     onItemClick: (item:  PlanoItemElement) => void;
     plano: plano 
@@ -18,8 +18,8 @@ export interface CanvasProps {
 
 
 export interface PuestosLayerProps {
-  puestos: PlanoItemElement[];
-  setPuestos: React.Dispatch<React.SetStateAction<PlanoItemElement[]>>;
+  puestos: Map<number,PlanoItemElement>;
+  setPuestos: React.Dispatch<React.SetStateAction<Map<number,PlanoItemElement>>>;
   isStatic: boolean;
   image: HTMLImageElement | null;
   onPuestoClick: (item: PlanoItemElement) => void;
