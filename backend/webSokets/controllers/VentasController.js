@@ -12,6 +12,8 @@ WebpayPlus.Transaction.client = axiosInstance;
 
 const { emitUpdateArriendo } = require('./roomFunction')
 
+const activeChecks = {}; // Almacena los chequeos activos
+const maxRetries = 3; // Máximo número de intentos permitidos
 
 const cambiar_estado_arriendo = async (pool , id_arriendo_puesto, disponible ) => {
 
@@ -23,136 +25,114 @@ const cambiar_estado_arriendo = async (pool , id_arriendo_puesto, disponible ) =
     WHERE id_arriendo_puesto = $1 
     RETURNING *;
   `, [id_arriendo_puesto, disponible]);
-  console.log('esto es result',result.rows[0]);
+
   
   if (result.rowCount === 0) {
     
     return null
   } else {
-    console.log('El registro fue actualizado:', result.rows[0]);
     return result.rows[0];
   }
   }  
 
 
+  const updateTransactionStatus = async (buyOrder, status, pool) => {
+    try {
+      await pool.query(
+        `UPDATE contrato_puesto SET id_estado_contrato = $1 WHERE buy_order = $2`,
+        [status, buyOrder]
+      );
+    } catch (error) {
+      console.error('Error actualizando el estado de la transacción:', error);
+    }
+  };
+  
+  const checkTransactionStatus = async (buyOrder, pool) => {
+    try {
+      const result = await pool.query(
+        `SELECT id_estado_contrato FROM contrato_puesto WHERE buy_order = $1`,
+        [buyOrder]
+      );
+      return result.rows[0]?.id_estado_contrato;
+    } catch (error) {
+      console.error('Error verificando el estado del contrato:', error);
+    }
+  };
+  
+  const handleTransactionResult = async (
+    response,
+    io,
+    id_feria,
+    buy_order,
+    id_arriendo_puesto,
+    pool
+  ) => {
+    const contratoState = response.status === 'AUTHORIZED' ? 2 : 4; // Estado de contrato : comienza con estado 1
+    const arriendoState = response.status === 'AUTHORIZED' ? 3 : 1; // Estado de arriendo : este estado comienza con estado  2 
+    console.log(`Transacción ${buy_order} ${response.status.toLowerCase()}.`);
+  
+    await updateTransactionStatus(response.buy_order, contratoState, pool); // actualiza contrato_puesto
+    const estado = await cambiar_estado_arriendo(pool, id_arriendo_puesto, arriendoState); // actualiza arriendo_puesto
+  
+    if (estado) emitUpdateArriendo(io, id_feria, estado);
+  };
+  
 
-const updateTransactionStatus = async (buyOrder, status, pool) => {
-  try {
-    await pool.query(`
-      UPDATE contrato_puesto
-      SET estado_contrato = $1
-      WHERE buy_order = $2`,
-      [status, buyOrder]);
-      
-  } catch (error) {
-    console.error('Error actualizando el estado de la transacción:', error);
-  }
-};
+  const retryExceeded = async (buyOrder, pool, io, id_feria, id_arriendo_puesto) => {
+    console.log(`Se alcanzó el número máximo de reintentos para la transacción ${buyOrder}.`);
+    await updateTransactionStatus(buyOrder, 4, pool);
+    const estado = await cambiar_estado_arriendo(pool, id_arriendo_puesto, 1);
+    if (estado) emitUpdateArriendo(io, id_feria, estado);
+  };
+  
 
-const check_status_contrato = async ( buy_order ,pool  ) => {
-  try{
-  const result = await pool.query(`  
-    SELECT estado_contrato FROM contrato_puesto 
-    WHERE buy_order  = $1`,[buy_order] );
-    return result.rows[0]?.estado_contrato;
-  }catch (error){ 
+  const startTransactionCheck = async (io, id_feria, buy_order, id_arriendo_puesto, token_ws, pool) => {
+    if (activeChecks[buy_order]) return;
 
-    console.error('Error actualizando el estado de la transacción:', error);
-  }
-
-}
-
-const activeChecks = {}; // Almacena los chequeos activos
-const maxRetries = 3; // Máximo número de intentos permitidos
-
-const startTransactionCheck = async (io,id_feria, buy_order,id_arriendo_puesto ,token_ws, pool) => {
-  if (activeChecks[buy_order]) return; // Evita iniciar un chequeo si ya está activo
-
-  const estado = await check_status_contrato(buy_order, pool); // Asegúrate de esperar la resolución de la promesa
-  if (estado === 1) {
-
-    let retryCount = 0; // Inicializa el contador de intentos
-
+  
+    const estado = await checkTransactionStatus(buy_order, pool);
+    if (estado === 3 ) {
+      console.log('La transacción ya está completada, cancelando chequeo.');
+      return;
+    }
+  
+    let retryCount = 0;
     const intervalId = setInterval(async () => {
       try {
-        const response = await (new WebpayPlus.Transaction()).commit(token_ws);
-
-        if (response.status === 'AUTHORIZED') {
-          console.log(`Transacción ${buy_order} autorizada.`);
-          await updateTransactionStatus(response.buy_order, 2, pool);
-          const estado = await cambiar_estado_arriendo(pool , id_arriendo_puesto, 3)
-
-          if(estado){
-            emitUpdateArriendo( io,id_feria, estado)
-           }
-          clearInterval(intervalId); // Detiene el chequeo
-          delete activeChecks[buy_order]; // Elimina el chequeo activo
-
-        } else if (response.status === 'REJECTED') {
-          console.log(`Transacción ${buy_order} rechazada.`);
-          await updateTransactionStatus(response.buy_order, 3, pool);
-          const estado = await cambiar_estado_arriendo(pool , id_arriendo_puesto, 1)
-
-          if(estado){
-            emitUpdateArriendo( io,id_feria, estado)
-           }
-          clearInterval(intervalId); // Detiene el chequeo
-          delete activeChecks[buy_order]; // Elimina el chequeo activo
+        const response = await new WebpayPlus.Transaction().commit(token_ws);
+        if(response.status === 'REJECTED' || response.status === 'AUTHORIZED' || response.status === 'FAILED' || retryCount >= maxRetries) {
+          await handleTransactionResult(response, io, id_feria, buy_order, id_arriendo_puesto, pool);
+          clearInterval(intervalId);
+          delete activeChecks[buy_order];
         }
+
       } catch (error) {
-        console.error(`Error al procesar la transacción ${buy_order}:`, error);
-
-        // Manejo de errores 422
-        if (error.response && error.response.status === 422) {
-          console.log(`Error 422 para la transacción ${buy_order}. Intento ${retryCount + 1} de ${maxRetries}.`);
-
-          retryCount++; // Incrementa el contador de intentos
+        console.error(`Error procesando la transacción ${buy_order}:`, error);
+  
+        if (error.response?.status === 422 || error.code === 'ECONNABORTED') {
+          retryCount++;
+          console.log(
+            `Error ${error.response?.status || 'timeout'} en la transacción ${buy_order}. Intento ${retryCount} de ${maxRetries}.`
+          );
+  
           if (retryCount >= maxRetries) {
-            console.log(`Se alcanzó el número máximo de reintentos para la transacción ${buy_order}. Deteniendo chequeo.`);
-            await updateTransactionStatus(buy_order, 3, pool);
-            const estado = await cambiar_estado_arriendo(pool , id_arriendo_puesto, 1)
-
-            if(estado){
-              emitUpdateArriendo( io,id_feria, estado)
-             }
-            clearInterval(intervalId); // Detiene el chequeo
-            delete activeChecks[buy_order]; // Elimina el chequeo activo
-          }
-        }
-        // Manejo de errores de timeout
-        else if (error.code === 'ECONNABORTED') {
-          console.log(`Timeout para la transacción ${buy_order}. Intento ${retryCount + 1} de ${maxRetries}.`);
-
-          retryCount++; // Incrementa el contador de intentos
-          if (retryCount >= maxRetries) {
-            console.log(`Se alcanzó el número máximo de reintentos para la transacción ${buy_order}. Deteniendo chequeo.`);
-            await updateTransactionStatus(buy_order, 3, pool);
-            const estado = await cambiar_estado_arriendo(pool , id_arriendo_puesto, 1)
-            if(estado){
-              emitUpdateArriendo( io,id_feria, estado)
-             }
-            clearInterval(intervalId); // Detiene el chequeo
-            delete activeChecks[buy_order]; // Elimina el chequeo activo
+            await retryExceeded(buy_order, pool, io, id_feria, id_arriendo_puesto);
+            clearInterval(intervalId);
+            delete activeChecks[buy_order];
           }
         }
       }
-    }, 10000); // Chequea cada 10 segundos
-
-    // Almacena el ID del intervalo para que puedas detenerlo más tarde si es necesario
+    }, 10000);
+  
     activeChecks[buy_order] = intervalId;
-
-  } else {
-
-    console.log('La transaccion esta completada, cancelando chequeo.');
-  }
-};
-
+  };
+  
 
 
 const saveTransactionToDatabase = async ( pool, id_user_fte, id_arriendo_puesto , id_tipo_pago, id_estado_contrato, precio, buyOrder, sessionId) => {
   const timestampUTC = new Date().toISOString(); 
   await pool.query(`
-    INSERT INTO contrato_puesto (id_user_fte, fecha, id_arriendo_puesto, id_tipo_pago, id_estado_contrato, precio, buy_order, session_id)
+    INSERT INTO contrato_puesto (id_user_fte, fecha_pago, id_arriendo_puesto, id_tipo_pago, id_estado_contrato, precio, buy_order, session_id)
     VALUES ($1, $2, $3, $4,$5,$6,$7,$8)`,
     [ id_user_fte,timestampUTC,id_arriendo_puesto,id_tipo_pago, id_estado_contrato, precio, buyOrder, sessionId]);
 };
@@ -185,7 +165,7 @@ const createTransaction = async (io,socket, pool, params) => {
     setTimeout(() => {
       startTransactionCheck(io,puesto.id_feria,buyOrder ,id_arriendo_puesto, token , pool)
 
-    },40000 ) 
+    },1 ) 
 
     // Responder con la URL y el token
     socket.emit('opentbk', {token , url})
@@ -201,8 +181,6 @@ const createTransaction = async (io,socket, pool, params) => {
  
 // Función para confirmar el commit -- para el front
 const commitTransaction = async ( io,socket,pool ,params) => {
-  console.log(params);
-  
   const { token , id_arriendo_puesto , id_feria} = params.params
   try {
     const response = await (new WebpayPlus.Transaction()).commit(token);

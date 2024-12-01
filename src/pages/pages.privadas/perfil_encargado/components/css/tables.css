@@ -122,11 +122,13 @@
 }
 
 /* Hover and alternating rows */
-.vacante-table tbody tr:nth-child(even) {
+.vacante-table tbody tr:nth-child(even),
+.programa-tabl tbody tr:nth-child(even)  {
   background-color: #f9f9f9;
 }
 
-.vacante-table tbody tr:hover {
+.vacante-table tbody tr:hover,
+.programa-table tbody tr:hover {
   background-color: #d6d3d3;
 
 }

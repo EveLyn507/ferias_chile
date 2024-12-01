@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Stage, Layer, Rect, Line } from 'react-konva';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import React from 'react';
 import { CanvasProps } from './models/canvasModels';
 import StreetsLayer from './layers/streelayer';
@@ -24,8 +24,6 @@ const Canvas2: React.FC<CanvasProps> = ({
   const [hoveredItem, setHoveredItem] = useState<PlanoItemElement | null>(null);
   const [image, setImage] = useState<HTMLImageElement | null>(null);
   const [imageS, setCalleImage] = useState<HTMLImageElement | null>(null);
-
-
   // Estado para el nivel de zoom
   const [zoomLevel, setZoomLevel] = useState(1);
 
@@ -146,50 +144,73 @@ const Canvas2: React.FC<CanvasProps> = ({
     };
   }, []);
 
-  // Función para aumentar el zoom
-  const handleZoomIn = () => {
-    setZoomLevel((prevZoom) => {
-      const nextZoom = Math.floor(prevZoom + 1); // Redondea hacia abajo
-      return Math.min(nextZoom, 4); // Limita el zoom máximo a 2
-    });
-  };
-
-  // Función para reducir el zoom
-  const handleZoomOut = () => {
-    setZoomLevel((prevZoom) => {
-      const nextZoom = Math.floor(prevZoom - 0.5); // Redondea hacia abajo
-      return Math.max(nextZoom, 0.5); // Limita el zoom mínimo a 1
-    });
-  };
   
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [stagePosition, setStagePosition] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (containerRef.current) {
+        setStagePosition({
+          x: containerRef.current.scrollLeft,
+          y: containerRef.current.scrollTop
+        });
+      }
+    };
+
+    const container = containerRef.current;
+    if (container) {
+      container.addEventListener('scroll', handleScroll);
+    }
+
+    return () => {
+      if (container) {
+        container.removeEventListener('scroll', handleScroll);
+      }
+    };
+  }, []);
+
+
+  const containerWidth = 1000;
+  const containerHeight = 500;
+  // Calcular la región visible y centrar el Stage
+  const stageWidth = Math.min(plano.width, containerWidth / zoomLevel);
+  const stageHeight = Math.min(plano.height, containerHeight / zoomLevel);
+  const stageX = Math.max(0, (plano.width - stageWidth) / 2);
+  const stageY = Math.max(0, (plano.height - stageHeight) / 2);
+
 
   return (
 
     <>
       
                 {/* Botones de zoom */}
-        <div style={{ position: 'relative', top: '10px', right: '10px',paddingBottom: '10px' }}>
-        <button onClick={handleZoomIn} style={{ margin: '5px' }}>Zoom In</button>
-        <button onClick={handleZoomOut} style={{ margin: '5px' }}>Zoom Out</button>
+                <div style={{ position: 'relative', top: '10px', right: '10px', paddingBottom: '10px' }}>
+        <button onClick={() => setZoomLevel(Math.min(zoomLevel + 0.1, 4))} style={{ margin: '5px' }}>Zoom In</button>
+        <button onClick={() => setZoomLevel(Math.max(zoomLevel - 0.1, 0.5))} style={{ margin: '5px' }}>Zoom Out</button>
       </div>
 
     <div
-      style={{
-        width: '1000px',  // Un tamaño fijo para el div
-        height: '500px', // Un tamaño fijo para el div
-        overflow: 'auto', // Habilitar scroll
+      ref={containerRef}
+       style={{
+        width: '1000px',
+        height: '500px',
+        overflow: 'auto',
         position: 'relative',
+        border: '1px solid #ccc', // Para visualizar el contorno
       }}
     >
 
 
       <Stage
-        width={plano.width + planX } // Asegúrate de que el stage sea más grande que el div
-        height={plano.height + planY } // Asegúrate de que el stage sea más grande que el div
+        width={plano.width + 200 } // Asegúrate de que el stage sea más grande que el div
+        height={plano.height + 200 } // Asegúrate de que el stage sea más grande que el div
         scaleX={zoomLevel} // Aplica el zoom al eje X
         scaleY={zoomLevel} // Aplica el zoom al eje Y
+ 
         style={{
           backgroundColor: 'transparent',
+
         }}
       >
         <Layer>

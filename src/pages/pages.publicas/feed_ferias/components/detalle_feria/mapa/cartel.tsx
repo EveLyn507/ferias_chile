@@ -19,6 +19,7 @@ export const ArriendoModal = ({ isOpen, onClose, arriendo }: modalProps) => {
   const handleContratarClick = (arriendo: arriendo) => {
     navigate("/pagosss", { state: { arriendo } });
   };
+console.log(arriendo);
 
   return (
     <Modal

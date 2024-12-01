@@ -109,7 +109,7 @@ ALTER TABLE comuna ADD CONSTRAINT comuna_pk PRIMARY KEY ( id_comuna );
 CREATE TABLE contrato_puesto (
     id_contrato     SERIAL NOT NULL,
     id_user_fte     INTEGER NOT NULL,
-    fecha           DATE NOT NULL,
+    fecha_pago           DATE NOT NULL,
     id_arriendo_puesto       INTEGER NOT NULL,
     id_tipo_pago    INTEGER NOT NULL,
     id_estado_contrato INTEGER NOT NULL,
