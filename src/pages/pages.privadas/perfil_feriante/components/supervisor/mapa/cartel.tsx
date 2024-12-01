@@ -1,5 +1,4 @@
 import { arriendo } from './mapaModel';
-import { useNavigate } from 'react-router-dom';
 import Modal from 'react-modal';
 
 interface modalProps {
@@ -14,12 +13,6 @@ const estado = ['none', 'disponible', 'en proceso venta', 'arrendado'];
 Modal.setAppElement('#root');
 
 export const ArriendoModal = ({ isOpen, onClose, arriendo }: modalProps) => {
-  const navigate = useNavigate();
-
-  const handleContratarClick = (arriendo: arriendo) => {
-    navigate("/pagosss", { state: { arriendo } });
-  };
-console.log(arriendo);
 
   return (
     <Modal
@@ -49,12 +42,6 @@ console.log(arriendo);
       <p><strong>Precio:</strong> {arriendo?.precio}</p>
       <p><strong>Estado:</strong> {estado[arriendo?.id_estado_arriendo || 0]}</p>
 
-      <button 
-        onClick={() => handleContratarClick(arriendo!)} 
-        style={{ marginRight: '10px', padding: '10px', backgroundColor: '#007BFF', color: 'white', border: 'none', borderRadius: '5px' }}
-      >
-        Contratar
-      </button>
       <button 
         onClick={onClose} 
         style={{ padding: '10px', backgroundColor: '#DC3545', color: 'white', border: 'none', borderRadius: '5px' }}
