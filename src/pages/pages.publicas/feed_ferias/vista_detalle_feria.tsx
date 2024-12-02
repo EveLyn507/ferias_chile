@@ -37,21 +37,26 @@ export const MapaSupervisor = () => {
 
   const carga = async () => {
     WebSocketService.sendMessage("join_room", { id_feria });
-
     WebSocketService.sendMessage("TodayFeriaElements", { idFeria, nombre_feria, fecha });
-
+  
     await WebSocketService.RecibeData("ResponceTodayFeriaElements", (data: todayArriendos) => {
-      const puestosday = data.planoData.elements.filter((item) => item.id_tipo_elemento === 1);
-      const callesday = data.planoData.elements.filter((item) => item.id_tipo_elemento === 2);
-
       if (!data || !data.todayArriendos) {
         console.error("Datos recibidos son inválidos:", data);
         return;
       }
+  
+      const puestosday = data.planoData.elements.filter((item) => item.id_tipo_elemento === 1);
+      const callesday = data.planoData.elements.filter((item) => item.id_tipo_elemento === 2);
+  
+      // Filtrar arriendos con id_puesto válido
+      const arriendosValidos = data.todayArriendos.filter((arriendo) =>
+        puestosday.some((puesto) => puesto.dataPuesto?.id_puesto === arriendo.id_puesto)
+      );
+  
       setPlano(data.planoData.plano);
       setPuestos(puestosday);
       setCalles(callesday);
-      setArriendos(data.todayArriendos || []);
+      setArriendos(arriendosValidos); // Solo asigna arriendos válidos
     });
   };
 
@@ -65,12 +70,16 @@ export const MapaSupervisor = () => {
   const udapt = async () => {
     await WebSocketService.RecibeData("room_message", (updated) => {
       setArriendos((prevArriendos) => {
-        const updatedArriendos = prevArriendos.map((arriendo) =>
+        if (!prevArriendos.some((arriendo) => arriendo.id_arriendo_puesto === updated.id_arriendo_puesto)) {
+          console.warn("Actualización ignorada para arriendo desconocido:", updated);
+          return prevArriendos; // No actualices si el arriendo no existe
+        }
+  
+        return prevArriendos.map((arriendo) =>
           arriendo.id_arriendo_puesto === updated.id_arriendo_puesto
             ? { ...arriendo, id_estado_arriendo: updated.id_estado_arriendo }
             : arriendo
         );
-        return updatedArriendos;
       });
     });
   };

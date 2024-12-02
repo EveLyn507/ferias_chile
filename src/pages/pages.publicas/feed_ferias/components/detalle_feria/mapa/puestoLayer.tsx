@@ -42,25 +42,27 @@ const PuestosLayer: React.FC<PuestosMapaProps> = ({
         // Obtener el estado actualizado del puesto basado en los arriendos
         const arriendoEstado = arriendos && Puesto.dataPuesto
           ? arriendos.find((arriendo) => arriendo.id_puesto === Puesto.dataPuesto?.id_puesto)
-         : undefined;
+          : null;
 
+        if (!arriendoEstado) {
+          console.warn("Estado no encontrado para puesto:", Puesto.dataPuesto); // Este es el mensaje actual
+        }
+
+        // Agrega un valor predeterminado para evitar problemas
+        const estadoConfig = (() => {
           if (!arriendoEstado) {
-            console.warn("Estado no encontrado para puesto:", Puesto.dataPuesto);
+            return { texto: "Estado desconocido", color: "gray" };
           }
-          const estadoConfig = (() => {
-            if (!arriendoEstado) {
-              return { texto: 'Estado desconocido', color: 'gray' };
-            }
-            switch (arriendoEstado.id_estado_arriendo) {
-              case 1:
-                return { texto: 'Disponible', color: 'green' };
-              case 2:
-                return { texto: 'En proceso venta', color: 'orange' };
-              case 3:
-                return { texto: 'Arrendado', color: 'red' };
-              default:
-                return { texto: 'Estado desconocido', color: 'gray' };
-            }
+          switch (arriendoEstado.id_estado_arriendo) {
+            case 1:
+              return { texto: "Disponible", color: "green" };
+            case 2:
+              return { texto: "En proceso venta", color: "orange" };
+            case 3:
+              return { texto: "Arrendado", color: "red" };
+            default:
+              return { texto: "Estado desconocido", color: "gray" };
+                    }
           })();
 
         return (

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { AppStore } from '../../../../../redux/store';
+import { useToast } from '@components/ToastService'; // Importa el servicio de Toast
 
 interface InteresesVentaProps {
   userMail: string;
@@ -10,9 +11,8 @@ interface InteresesVentaProps {
 
 const InteresesVenta: React.FC<InteresesVentaProps> = ({ intereses, setIntereses }) => {
   const id_user = useSelector((state: AppStore) => state.user.id_user);
+  const { addToast } = useToast(); // Hook para mostrar mensajes con ToastService
   const [nuevoInteres, setNuevoInteres] = useState('');
-  const [mensajeError, setMensajeError] = useState<string | null>(null);
-  const [mensajeExito, setMensajeExito] = useState<string | null>(null);
 
   useEffect(() => {
     const cargarIntereses = async () => {
@@ -22,36 +22,32 @@ const InteresesVenta: React.FC<InteresesVentaProps> = ({ intereses, setIntereses
           const data = await response.json();
           setIntereses(data || []);
         } else {
-          setMensajeError('Error al cargar los intereses.');
+          addToast({ type: 'error', message: 'Error al cargar los intereses.' });
         }
       } catch (error) {
-        console.log(error);
-        
-        setMensajeError('Error al conectar con el servidor.');
+        console.error(error);
+        addToast({ type: 'error', message: 'Error al conectar con el servidor.' });
       }
     };
 
     if (id_user) {
       cargarIntereses();
     }
-  }, [id_user, setIntereses]);
+  }, [id_user, setIntereses, addToast]);
 
   const agregarInteres = async () => {
-    setMensajeError(null);
-    setMensajeExito(null);
-
     if (!nuevoInteres.trim()) {
-      setMensajeError('El interés no puede estar vacío.');
+      addToast({ type: 'error', message: 'El interés no puede estar vacío.' });
       return;
     }
 
     if (intereses.includes(nuevoInteres)) {
-      setMensajeError('El interés ya existe.');
+      addToast({ type: 'error', message: 'El interés ya existe.' });
       return;
     }
 
     if (intereses.length >= 10) {
-      setMensajeError('No puedes agregar más de 10 intereses.');
+      addToast({ type: 'error', message: 'No puedes agregar más de 10 intereses.' });
       return;
     }
 
@@ -65,21 +61,17 @@ const InteresesVenta: React.FC<InteresesVentaProps> = ({ intereses, setIntereses
       if (response.ok) {
         setIntereses([...intereses, nuevoInteres]);
         setNuevoInteres('');
-        setMensajeExito('Interés agregado con éxito.');
+        addToast({ type: 'success', message: 'Interés agregado con éxito.' });
       } else {
-        setMensajeError('Error al agregar el interés.');
+        addToast({ type: 'error', message: 'Error al agregar el interés.' });
       }
     } catch (error) {
-      console.log(error);
-      
-      setMensajeError('Error al conectar con el servidor.');
+      console.error(error);
+      addToast({ type: 'error', message: 'Error al conectar con el servidor.' });
     }
   };
 
   const eliminarInteres = async (interes: string) => {
-    setMensajeError(null);
-    setMensajeExito(null);
-
     try {
       const response = await fetch('http://localhost:5000/api/actualizar-intereses', {
         method: 'POST',
@@ -89,22 +81,19 @@ const InteresesVenta: React.FC<InteresesVentaProps> = ({ intereses, setIntereses
 
       if (response.ok) {
         setIntereses(intereses.filter((i) => i !== interes));
-        setMensajeExito('Interés eliminado con éxito.');
+        addToast({ type: 'success', message: 'Interés eliminado con éxito.' });
       } else {
-        setMensajeError('Error al eliminar el interés.');
+        addToast({ type: 'error', message: 'Error al eliminar el interés.' });
       }
     } catch (error) {
-      console.log(error);
-      
-      setMensajeError('Error al conectar con el servidor.');
+      console.error(error);
+      addToast({ type: 'error', message: 'Error al conectar con el servidor.' });
     }
   };
 
   return (
     <div>
       <h2>Intereses de Venta</h2>
-      {mensajeError && <p style={{ color: 'red' }}>{mensajeError}</p>}
-      {mensajeExito && <p style={{ color: 'green' }}>{mensajeExito}</p>}
       <ul>
         {intereses.map((interes, index) => (
           <li key={index}>

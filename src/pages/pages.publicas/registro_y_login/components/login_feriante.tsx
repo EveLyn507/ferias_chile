@@ -6,11 +6,12 @@ import axios from 'axios';
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import { createUser } from '../../../../redux/states/user';
 import { PrivateRoutes } from '../../../../models';
+import { useToast } from '@components/ToastService'; // Importar ToastService
 
 function LoginFeriante() {
   const [mail, setMail] = useState('');
   const [contrasena, setContrasena] = useState('');
-  const [error, setError] = useState('');
+  const { addToast } = useToast(); // Hook para manejar mensajes Toast
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -24,22 +25,26 @@ function LoginFeriante() {
   }, [dispatch, navigate]);
 
   const login = async () => {
-    setError('');
+    if (!mail || !contrasena) {
+      addToast({ type: 'error', message: 'Correo y contraseña son requeridos.' });
+      return;
+    }
+
     try {
       const response = await axios.post('http://localhost:5000/login2', { mail, contrasena });
       const { token, role, email, id_user } = response.data;
       const userData = { token, role, email, id_user };
       localStorage.setItem('user', JSON.stringify(userData));
       dispatch(createUser(userData));
+      addToast({ type: 'success', message: 'Inicio de sesión exitoso.' });
       navigate(`/${PrivateRoutes.PRIVATE}/${role}`, { replace: true });
     } catch (error) {
       console.error('Error de login', error);
-      setError('Credenciales incorrectas o error en el servidor.');
+      addToast({ type: 'error', message: 'Credenciales incorrectas o error en el servidor.' });
     }
   };
 
   const handleGoogleSuccess = async (credentialResponse: { credential: any }) => {
-    setError('');
     try {
       const { credential } = credentialResponse;
       if (!credential) {
@@ -48,23 +53,23 @@ function LoginFeriante() {
 
       const googleResponse = await axios.post('http://localhost:5000/registro/google', { credential });
       const { token, role, email, id_user } = googleResponse.data;
-
       const userData = { token, role, email, id_user };
       localStorage.setItem('user', JSON.stringify(userData));
       dispatch(createUser(userData));
+      addToast({ type: 'success', message: 'Inicio de sesión con Google exitoso.' });
       navigate(`/${PrivateRoutes.PRIVATE}/${role}`, { replace: true });
     } catch (error: any) {
       if (error.response && error.response.status === 409) {
         console.error('El usuario ya está registrado. Iniciando sesión automáticamente.');
-        alert('Inicio de sesión exitoso.');
-        const { token, role, email, id_user } = error.response.data; // Información del backend en caso de registro previo
+        const { token, role, email, id_user } = error.response.data;
         const userData = { token, role, email, id_user };
         localStorage.setItem('user', JSON.stringify(userData));
         dispatch(createUser(userData));
+        addToast({ type: 'info', message: 'Usuario registrado previamente. Inicio de sesión exitoso.' });
         navigate(`/${PrivateRoutes.PRIVATE}/${role}`, { replace: true });
       } else {
         console.error('Error al intentar autenticar con Google', error);
-        alert('Error al intentar autenticar con Google.');
+        addToast({ type: 'error', message: 'Error al intentar autenticar con Google.' });
       }
     }
   };
@@ -85,14 +90,13 @@ function LoginFeriante() {
           onChange={(e) => setContrasena(e.target.value)}
         />
         <button onClick={login}>Iniciar Sesión</button>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
 
         <h2>O inicia sesión con Google</h2>
         <GoogleLogin
           onSuccess={handleGoogleSuccess}
           onError={() => {
             console.error('Google Auth Failed');
-            setError('Autenticación de Google fallida.');
+            addToast({ type: 'error', message: 'Autenticación de Google fallida.' });
           }}
         />
       </div>
