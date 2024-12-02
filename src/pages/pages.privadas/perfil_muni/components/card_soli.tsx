@@ -2,19 +2,19 @@ import { useEffect, useState } from "react";
 import { solicitud } from "../../../models/interfaces";
 import userWebSocketService from "../../../models/webSoket";
 import { useSelector } from "react-redux";
-import { AppStore } from "../../../../redux/store"; // Cambia la ruta según tu estructura
-
+import { AppStore } from "../../../../redux/store"; 
+import './soli.css';
 
 export const Card_soli_muni = () => {
   const WebSocketService = userWebSocketService.getInstance();
   const [solicitudes, setSolicitudes] = useState<solicitud[]>([]);
-  const id_user_adm = useSelector((state: AppStore) => state.user.id_user); // Obtén el estado global del usuario
+  const id_user_adm = useSelector((state: AppStore) => state.user.id_user); 
 
   useEffect(() => {
     WebSocketService.connect();
-    console.log('Enviando solicitud para obtener solicitudes:', id_user_adm);
+    console.log("Enviando solicitud para obtener solicitudes:", id_user_adm);
     WebSocketService.sendMessage("obtener_solicitudes", { id_user_adm });
-  
+
     WebSocketService.RecibeData("solicitud_response", (data) => {
       console.log("Datos recibidos en el frontend:", data);
       if (data?.length > 0) {
@@ -24,18 +24,17 @@ export const Card_soli_muni = () => {
       }
     });
 
-    // Escuchar la actualización de la solicitud una sola vez
     WebSocketService.RecibeData("obtener_solicitudes", (data) => {
       console.log("Solicitud actualizada:", data);
       setSolicitudes((prev) =>
         prev.map((sol) =>
           sol.id_solicitud === data.id_solicitud
-            ? { ...sol, ...data } // Actualizar la solicitud correspondiente
+            ? { ...sol, ...data } 
             : sol
         )
       );
     });
-  
+
     return () => {
       WebSocketService.disconnect();
     };
@@ -44,13 +43,17 @@ export const Card_soli_muni = () => {
   const aceptarSolicitud = (id_solicitud: number, id_feria: number) => {
     console.log("Aceptando solicitud", id_solicitud, id_feria);
     WebSocketService.sendMessage("confirmar_solicitud", { id_solicitud, id_feria });
+    alert("Solicitud aceptada exitosamente.");
+    window.location.reload(); 
   };
-  
+
   const rechazarSolicitud = (id_solicitud: number, id_feria: number) => {
     console.log("Rechazando solicitud", id_solicitud, id_feria);
     WebSocketService.sendMessage("rechazar_solicitud", { id_solicitud, id_feria });
+    alert("Solicitud rechazada exitosamente."); 
+    window.location.reload(); 
   };
-  
+
   return (
     <div className="ferias">
       {solicitudes.length > 0 ? (

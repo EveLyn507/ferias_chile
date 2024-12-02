@@ -23,7 +23,8 @@ export const PrivateRoutes = {
     
     PERFILFERIANTE : '2',
     POSTULACIONES : '2/postulaciones',
-    SUPERVISOR: '2/postulaciones/supervisor/:id_feria',
+    MAPASUPERVISOR :"2/supervisor/:id_feria/:nombre_feria/:fecha",
+    SUPERVISOR: '2/postulaciones/supervisor/:id_feria/:nombre_feria',
 
     PERFILADMIN : '3',
 

@@ -169,7 +169,7 @@ const getFeriantesPendientes = async (req, res, pool) => {
       SELECT f.id_user_fte, f.nombre, f.apellido, tec.detalle AS estado_pago
       FROM feriante f
       JOIN contrato_puesto cp ON f.id_user_fte = cp.id_user_fte
-      JOIN estado_contrato tec ON cp.estado_contrato = tec.id_status_contrato
+      JOIN estado_contrato tec ON cp.id_estado_contrato = tec.id_estado_contrato
       WHERE tec.detalle != 'finalizado' AND tec.detalle != 'cancelado';
     `);
     res.status(200).json(feriantes.rows);
