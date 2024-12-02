@@ -1,26 +1,45 @@
-import { horarioVacante } from "../../../../../models/interfaces";
+import { horarioVacante } from "../../../../../../models/interfaces";
+import { useToast } from "@components/ToastService"; // Usando alias para importar ToastService
 
 interface divProp {
   horarios: horarioVacante[];
 }
-const semana = ['none', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
+
+const semana = ["none", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo"];
 
 export const DivHorario = ({ horarios }: divProp) => {
+  const { addToast } = useToast(); // Hook para mostrar mensajes con ToastService
+
+  const handleHorarioInfo = (dia: string) => {
+    const horario = horarios.find((h) => semana[h.id_dia] === dia);
+
+    if (horario) {
+      addToast({
+        type: "info",
+        message: `Día: ${dia} - Entrada: ${horario.hora_entrada} - Salida: ${horario.hora_salida}`,
+      });
+    } else {
+      addToast({ type: "warning", message: `No hay horarios disponibles para ${dia}.` });
+    }
+  };
 
   return (
     <div className="horarios">
       <div className="circulos-container">
-        {['L', 'M', 'W', 'J', 'V', 'S', 'D'].map((dia, index) => {
-          const horario = horarios.find((h) => h.id_dia === index + 1);
-          return (
-            <div
-              key={index}
-              className={`dia-circle ${horario ? 'activo' : 'inactivo'}`}
-            >
-              {dia}
-            </div>
-          );
-        })}
+        {["lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo"].map(
+          (dia, index) => {
+            const horario = horarios.find((h) => semana[h.id_dia] === dia);
+            return (
+              <div
+                key={index}
+                className={`dia-circle ${horario ? "activo" : "inactivo"}`}
+                onClick={() => handleHorarioInfo(dia)} // Muestra información del horario al hacer clic
+              >
+                {dia.charAt(0).toUpperCase()}
+              </div>
+            );
+          }
+        )}
       </div>
 
       {horarios.length > 0 && (

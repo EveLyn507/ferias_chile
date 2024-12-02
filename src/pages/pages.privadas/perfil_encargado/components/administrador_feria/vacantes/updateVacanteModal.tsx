@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Modal from "react-modal";
 import { vacante } from "../../../../../models/interfaces";
-
+import { useToast } from '@components/ToastService';// Importa el servicio de toast
 
 interface modalProps {
   isOpen: boolean;
@@ -13,11 +13,11 @@ interface modalProps {
 Modal.setAppElement("#root");
 
 export const VacanteModal = ({ isOpen, onClose, vacante, onSave }: modalProps) => {
-  const semana = ['none', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
-
+  const semana = ['none', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
   const [editedVacante, setEditedVacante] = useState<vacante>(vacante);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const { addToast } = useToast(); // Usa el servicio de toast
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -36,23 +36,23 @@ export const VacanteModal = ({ isOpen, onClose, vacante, onSave }: modalProps) =
 
   const validateVacante = () => {
     if (!editedVacante.ingreso || !editedVacante.termino) {
-      setErrorMessage("Las fechas de ingreso y término son obligatorias.");
+      addToast({ type: 'error', message: 'Las fechas de ingreso y término son obligatorias.' });
       return false;
     }
 
     if (editedVacante.ingreso >= editedVacante.termino) {
-      setErrorMessage("La fecha de ingreso debe ser anterior a la fecha de término.");
+      addToast({ type: 'error', message: 'La fecha de ingreso debe ser anterior a la de término.' });
       return false;
     }
 
     for (const horario of editedVacante.horarios) {
       if (!horario.hora_entrada || !horario.hora_salida) {
-        setErrorMessage("Todos los horarios deben incluir una hora de entrada y salida.");
+        addToast({ type: 'error', message: 'Todos los horarios deben incluir una hora de entrada y salida.' });
         return false;
       }
 
       if (horario.hora_entrada >= horario.hora_salida) {
-        setErrorMessage(`La hora de entrada debe ser anterior a la hora de salida (${semana[horario.id_dia]}).`);
+        addToast({ type: 'error', message: `La hora de entrada debe ser anterior a la hora de salida (${semana[horario.id_dia]}).` });
         return false;
       }
     }
@@ -63,9 +63,9 @@ export const VacanteModal = ({ isOpen, onClose, vacante, onSave }: modalProps) =
   const handleSaveClick = () => {
     if (validateVacante()) {
       onSave(editedVacante, editedVacante.id_feria);
-      setErrorMessage(null);
+      addToast({ type: 'success', message: 'Los cambios se han guardado correctamente.' });
       setSuccessMessage("Los cambios se han guardado correctamente.");
-      setTimeout(() => setSuccessMessage(null), 3000); // Limpiar mensaje después de 3 segundos
+      setTimeout(() => setSuccessMessage(null), 3000); // Limpia el mensaje después de 3 segundos
       onClose();
     }
   };
@@ -111,8 +111,8 @@ export const VacanteModal = ({ isOpen, onClose, vacante, onSave }: modalProps) =
           onChange={handleInputChange}
           style={{ margin: "5px 0", padding: "5px", width: "100%" }}
         >
-          <option value={1}>supervisor</option>
-          <option value={2}>ayudante</option>
+          <option value={1}>Supervisor</option>
+          <option value={2}>Ayudante</option>
         </select>
       </label>
       <br />

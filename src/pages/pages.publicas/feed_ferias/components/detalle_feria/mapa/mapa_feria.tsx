@@ -18,7 +18,8 @@ import { ArriendoModal } from './cartel';
     puestos,
     calles,
     isStatic,
-    arriendos
+    arriendos,
+    nombreFeria,
 
   }) => { 
     const planX = 50;
@@ -75,6 +76,9 @@ import { ArriendoModal } from './cartel';
 
 return (
     <div className='mapa-container'>
+      <h2 style={{ textAlign: 'center', marginBottom: '10px' }}>
+        {nombreFeria}
+      </h2>
 
     <div className='zoom'>
     <button onClick={handleZoomIn} style={{ margin: '5px' }}>Zoom In</button>

@@ -9,6 +9,7 @@ import {
 } from './validaciones';
 import './css/registro.css';
 import axios from 'axios';
+import { useToast } from '@components/ToastService'; 
 
 export const Registro = () => {
   const [values, setValues] = useState({
@@ -35,7 +36,7 @@ export const Registro = () => {
     role: '' 
   });
 
-  const [error2, setError2] = useState(''); 
+  const { addToast } = useToast(); // Hook para mostrar mensajes con ToastService
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -143,11 +144,28 @@ export const Registro = () => {
           });
         }
 
+        addToast({ type: 'success', message: 'Registro exitoso.' }); // Mensaje de éxito
         console.log('Registro exitoso:', response?.data);
+
+        // Limpia los campos después del registro exitoso
+        setValues({
+          nombre: '',
+          apellido: '',
+          user_mail: '',
+          telefono: '',
+          contrasena: '',
+          contrasena2: '',
+          rut: '',
+          rut_div: '',
+          role: ''
+        });
+        setErrors({});
       } catch (err) {
-        setError2('Error al registrar usuario');
+        addToast({ type: 'error', message: 'Error al registrar usuario. Inténtelo nuevamente.' }); // Mensaje de error
         console.error(err);
       }
+    } else {
+      addToast({ type: 'error', message: 'Existen errores en el formulario. Por favor corríjalos.' });
     }
   };
 
@@ -262,17 +280,16 @@ export const Registro = () => {
             required
           >
             <option value="" disabled>
-              Select a role
+              Selecciona un rol
             </option>
             <option value="1">Encargado</option>
             <option value="2">Feriante</option>
-            <option value="3">Administrador Muni</option>
+            <option value="3">Administrador Municipal</option>
           </select>
           {errors.role && <span className="error">{errors.role}</span>}
         </div>
 
         <button type="submit">Registrar</button>
-        {error2 && <p className="error">{error2}</p>}
       </form>
     </div>
   );

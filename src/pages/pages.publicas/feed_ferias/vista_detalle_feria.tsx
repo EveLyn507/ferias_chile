@@ -44,10 +44,14 @@ export const View_detalle_feria = () => {
       const puestosday = data.planoData.elements.filter((item) => item.id_tipo_elemento === 1);
       const callesday = data.planoData.elements.filter((item) => item.id_tipo_elemento === 2);
 
+      if (!data || !data.todayArriendos) {
+        console.error("Datos recibidos son inválidos:", data);
+        return;
+      }
       setPlano(data.planoData.plano);
       setPuestos(puestosday);
       setCalles(callesday);
-      setArriendos(data.todayArriendos);
+      setArriendos(data.todayArriendos || []);
     });
   };
 
@@ -72,15 +76,30 @@ export const View_detalle_feria = () => {
   };
 
   useEffect(() => {
-    udapt();
+  const actualizarEstados = async () => {
+    await WebSocketService.RecibeData("estado_puesto_actualizado", (updatedPuesto) => {
+      setArriendos((prevArriendos) => {
+        const nuevosArriendos = prevArriendos.map((arriendo) =>
+          arriendo.id_puesto === updatedPuesto.id_puesto
+            ? { ...arriendo, id_estado_arriendo: updatedPuesto.id_estado_arriendo }
+            : arriendo
+        );
+        return nuevosArriendos;
+      });
+    });
+  };
 
-    return () => WebSocketService.sendMessage("leave_room", { id_feria });
-  }, []);
+  actualizarEstados();
+
+  return () => {
+    WebSocketService.sendMessage("leave_room", { id_feria });
+  };
+}, []);
 
   return ( 
     <>
  
-        <Mapa puestos={puestos} calles={calles} plano={plano} isStatic={true} arriendos={arriendos} />
+        <Mapa puestos={puestos} calles={calles} plano={plano} isStatic={true} arriendos={arriendos || []} nombreFeria={nombre_feria} />
         </>
   );  
 };

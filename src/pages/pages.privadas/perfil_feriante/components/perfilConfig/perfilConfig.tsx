@@ -7,7 +7,6 @@ import ActualizarCorreoContraseña from './ActualizarCorreoContraseña';
 import FotoPerfil from './FotoPerfil';
 import { useSelector, useDispatch } from 'react-redux';
 import { AppStore } from '../../../../../redux/store';
-import { Link } from 'react-router-dom';
 import { setUserEmail } from '../../../../../redux/actions/userActions';
 import axios from 'axios';
 import FTEWebSocketService from '../../../../models/webSoket';
@@ -128,7 +127,7 @@ const ConfiguracionPerfil: React.FC = () => {
         onCorreoActualizado={handleCorreoActualizado}
       />
 
-      <Link to='postulaciones'> POSTULACIONES </Link>
+      
    </>
   );
 };
