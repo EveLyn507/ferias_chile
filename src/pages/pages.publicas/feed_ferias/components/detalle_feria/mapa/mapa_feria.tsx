@@ -6,14 +6,23 @@ import { useState, useEffect } from 'react';
 import React from 'react';
 import PuestosLayer from './puestoLayer';
 import StreetsLayer from './streelayer';
-import { arriendo, MapaCanvas } from './mapaModel';
+import { arriendo, plano, PlanoItemElement } from './mapaModel';
 import './mapa.css'
 import { ArriendoModal } from './cartel';
 
+  
+export interface MapaCanvas2 {
+  puestos: PlanoItemElement[];
+  calles: PlanoItemElement[];
+  plano: plano 
+  isStatic : true
+  arriendos : arriendo[]
+  nombreFeria: string
+}
 
 
 
-  const Mapa: React.FC<MapaCanvas> = ({
+  const Mapa: React.FC<MapaCanvas2> = ({
     plano,
     puestos,
     calles,
@@ -45,6 +54,7 @@ import { ArriendoModal } from './cartel';
     
     };
 
+    console.log(nombreFeria);
     
     
     // Cargar imagen de los puestos
@@ -63,10 +73,11 @@ import { ArriendoModal } from './cartel';
 return (
 
 <>
-<h2 style={{ textAlign: 'center', marginBottom: '10px' }}>
-        {nombreFeria}
-      </h2>
-<div style={{ position: 'relative', top: '10px', right: '10px', paddingBottom: '10px' }}>
+
+<h1 style={{ position: 'relative', marginTop: '5%', marginRight: 'auto', marginLeft : 'auto'  }}> Mapa {nombreFeria}</h1>
+<div style={{ position: 'relative', marginRight: 'auto', marginLeft : 'auto' }}>
+
+
         <button onClick={() => setZoomLevel(Math.min(zoomLevel + 0.1, 4))} style={{ margin: '5px' }}>
           Zoom In
         </button>
@@ -83,7 +94,7 @@ return (
         x={stagePosition.x}
         y={stagePosition.y}
         draggable
-        style={{ border: 'black solid 5px', backgroundColor: 'transparent',  margin : 'auto'} }
+        style={{ border: 'black solid 5px', backgroundColor: 'transparent',  margin : 'auto', marginBottom: '1%'} }
       >
         <Layer>
 
