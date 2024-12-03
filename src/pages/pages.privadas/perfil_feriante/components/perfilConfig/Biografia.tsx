@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { AppStore } from '../../../../../redux/store';
+import { useToast } from '@components/ToastService'; // Usando alias para importar ToastService
 
 interface BiografiaProps {
   userMail: string;
@@ -10,8 +11,7 @@ interface BiografiaProps {
 
 const Biografia: React.FC<BiografiaProps> = ({ biografia, setBiografia }) => {
   const id_user = useSelector((state: AppStore) => state.user.id_user);
-  const [mensajeError, setMensajeError] = useState<string | null>(null);
-  const [mensajeExito, setMensajeExito] = useState<string | null>(null);
+  const { addToast } = useToast(); // Hook para mostrar mensajes con ToastService
   const maxCaracteres = 500;
 
   useEffect(() => {
@@ -22,30 +22,29 @@ const Biografia: React.FC<BiografiaProps> = ({ biografia, setBiografia }) => {
           const data = await response.json();
           setBiografia(data.biografia || '');
         } else {
-          setMensajeError('Error al cargar la biografía.');
+          addToast({ type: 'error', message: 'Error al cargar la biografía.' });
         }
       } catch (error) {
-        console.log(error);
-        
-        setMensajeError('Error al conectar con el servidor.');
+        console.error(error);
+        addToast({ type: 'error', message: 'Error al conectar con el servidor.' });
       }
     };
     if (id_user) {
       cargarBiografia();
     }
-  }, [id_user, setBiografia]);
+  }, [id_user, setBiografia, addToast]);
 
   const guardarBiografia = async () => {
-    setMensajeError(null);
-    setMensajeExito(null);
-
     if (biografia.trim() === '') {
-      setMensajeError('La biografía no puede estar vacía.');
+      addToast({ type: 'error', message: 'La biografía no puede estar vacía.' });
       return;
     }
 
     if (biografia.length > maxCaracteres) {
-      setMensajeError(`La biografía no puede superar los ${maxCaracteres} caracteres.`);
+      addToast({
+        type: 'error',
+        message: `La biografía no puede superar los ${maxCaracteres} caracteres.`,
+      });
       return;
     }
 
@@ -57,22 +56,19 @@ const Biografia: React.FC<BiografiaProps> = ({ biografia, setBiografia }) => {
       });
 
       if (response.ok) {
-        setMensajeExito('Biografía actualizada con éxito.');
+        addToast({ type: 'success', message: 'Biografía actualizada con éxito.' });
       } else {
-        setMensajeError('Error al actualizar la biografía.');
+        addToast({ type: 'error', message: 'Error al actualizar la biografía.' });
       }
     } catch (error) {
-      console.log(error);
-      
-      setMensajeError('Error al conectar con el servidor.');
+      console.error(error);
+      addToast({ type: 'error', message: 'Error al conectar con el servidor.' });
     }
   };
 
   return (
     <div>
       <h2>Biografía</h2>
-      {mensajeError && <p style={{ color: 'red' }}>{mensajeError}</p>}
-      {mensajeExito && <p style={{ color: 'green' }}>{mensajeExito}</p>}
       <textarea
         value={biografia}
         onChange={(e) => setBiografia(e.target.value)}

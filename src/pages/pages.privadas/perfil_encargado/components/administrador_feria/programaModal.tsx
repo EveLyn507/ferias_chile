@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import Modal from 'react-modal';
-import { ProgramaFeria } from '../../../../models/interfaces';
-import './prograModal.css'
-
-
+import React, { useState, useEffect } from "react";
+import Modal from "react-modal";
+import { ProgramaFeria } from "../../../../models/interfaces";
+import { useToast } from "@components/ToastService"; // Usando alias para importar ToastService
+import "./prograModal.css";
 
 interface EditProgramaModalProps {
   isOpen: boolean;
@@ -21,6 +20,7 @@ const EditProgramaModal: React.FC<EditProgramaModalProps> = ({
   onSave,
 }) => {
   const [editedPrograma, setEditedPrograma] = useState<ProgramaFeria>(programa);
+  const { addToast } = useToast(); // Hook para mostrar mensajes con ToastService
   const [warnings, setWarnings] = useState<string[]>([]);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
@@ -33,22 +33,19 @@ const EditProgramaModal: React.FC<EditProgramaModalProps> = ({
     const { name, value } = e.target;
     setEditedPrograma((prev) => ({
       ...prev,
-      [name]: name === 'id_dia_armado' || name === 'id_dia' ? parseInt(value, 10) : value,
+      [name]: name === "id_dia_armado" || name === "id_dia" ? parseInt(value, 10) : value,
     }));
   };
 
-
   const handleChangebox = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, type, checked, value } = e.target;
-    const inputValue = type === 'checkbox' ? checked : value;
-  
+    const inputValue = type === "checkbox" ? checked : value;
+
     setEditedPrograma((prev) => ({
       ...prev,
       [name]: inputValue,
     }));
   };
-  
-
 
   const validateFields = (): boolean => {
     const errors: string[] = [];
@@ -58,7 +55,11 @@ const EditProgramaModal: React.FC<EditProgramaModalProps> = ({
     if (!editedPrograma.hora_termino) {
       errors.push("La hora de término es obligatoria.");
     }
-    if (editedPrograma.hora_inicio && editedPrograma.hora_termino && editedPrograma.hora_inicio >= editedPrograma.hora_termino) {
+    if (
+      editedPrograma.hora_inicio &&
+      editedPrograma.hora_termino &&
+      editedPrograma.hora_inicio >= editedPrograma.hora_termino
+    ) {
       errors.push("La hora de inicio debe ser anterior a la hora de término.");
     }
     if (!editedPrograma.hora_inicio_armado) {
@@ -67,10 +68,19 @@ const EditProgramaModal: React.FC<EditProgramaModalProps> = ({
     if (!editedPrograma.hora_termino_armado) {
       errors.push("La hora de término del armado es obligatoria.");
     }
-    if (editedPrograma.hora_inicio_armado && editedPrograma.hora_termino_armado && editedPrograma.hora_inicio_armado >= editedPrograma.hora_termino_armado) {
+    if (
+      editedPrograma.hora_inicio_armado &&
+      editedPrograma.hora_termino_armado &&
+      editedPrograma.hora_inicio_armado >= editedPrograma.hora_termino_armado
+    ) {
       errors.push("La hora de inicio del armado debe ser anterior a la hora de término.");
     }
     setWarnings(errors);
+
+    if (errors.length > 0) {
+      addToast({ type: "error", message: "Existen errores en el formulario. Por favor corríjalos." });
+    }
+
     return errors.length === 0;
   };
 
@@ -78,6 +88,7 @@ const EditProgramaModal: React.FC<EditProgramaModalProps> = ({
     if (validateFields()) {
       onSave(editedPrograma);
       setSuccessMessage("Programa actualizado correctamente.");
+      addToast({ type: "success", message: "Programa guardado con éxito." });
       setTimeout(() => {
         onClose();
         setSuccessMessage(null);
@@ -145,9 +156,9 @@ const EditProgramaModal: React.FC<EditProgramaModalProps> = ({
         value={editedPrograma.hora_termino_armado}
         onChange={handleChange}
       />
-        <label>horario activo</label>
-          <input
-        type="checkbox" 
+      <label>Horario Activo</label>
+      <input
+        type="checkbox"
         name="activo"
         checked={editedPrograma.activo}
         onChange={handleChangebox}

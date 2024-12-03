@@ -5,18 +5,18 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { createUser } from '../../../../redux/states/user';
 import { PrivateRoutes } from '../../../../models';
+import { useToast } from '@components/ToastService'; // Importar ToastService
 
 const LoginMunicipal = () => {
   const [mail, setMail] = useState('');
   const [contrasena, setContrasena] = useState('');
-  const [error, setError] = useState('');
+  const { addToast } = useToast(); // Hook para manejar mensajes Toast
 
   const validarMail = (mail: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail);
 
-
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
@@ -26,19 +26,14 @@ const LoginMunicipal = () => {
     }
   }, [dispatch, navigate]);
 
-
-
-  
   const handleLogin = async () => {
-    setError('');
-
     if (!validarMail(mail)) {
-      setError('El correo no tiene un formato válido.');
+      addToast({ type: 'error', message: 'El correo no tiene un formato válido.' });
       return;
     }
 
     if (!contrasena) {
-      setError('La contraseña no puede estar vacía.');
+      addToast({ type: 'error', message: 'La contraseña no puede estar vacía.' });
       return;
     }
 
@@ -48,10 +43,11 @@ const LoginMunicipal = () => {
       const userData = { token, role, email, id_user };
       localStorage.setItem('user', JSON.stringify(userData));
       dispatch(createUser(userData));
+      addToast({ type: 'success', message: 'Inicio de sesión exitoso.' });
       navigate(`/${PrivateRoutes.PRIVATE}/${role}`, { replace: true });
     } catch (error) {
       console.error('Error de login', error);
-      setError('Credenciales incorrectas o error en el servidor.');
+      addToast({ type: 'error', message: 'Credenciales incorrectas o error en el servidor.' });
     }
   };
 
@@ -70,7 +66,6 @@ const LoginMunicipal = () => {
         onChange={(e) => setContrasena(e.target.value)}
       />
       <button onClick={handleLogin}>Iniciar Sesión</button>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
     </div>
   );
 };

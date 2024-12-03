@@ -18,7 +18,8 @@ import { ArriendoModal } from './cartel';
     puestos,
     calles,
     isStatic,
-    arriendos
+    arriendos,
+    nombreFeria,
 
   }) => { 
     const planX = 50;
@@ -62,7 +63,9 @@ import { ArriendoModal } from './cartel';
 return (
 
 <>
-
+<h2 style={{ textAlign: 'center', marginBottom: '10px' }}>
+        {nombreFeria}
+      </h2>
 <div style={{ position: 'relative', top: '10px', right: '10px', paddingBottom: '10px' }}>
         <button onClick={() => setZoomLevel(Math.min(zoomLevel + 0.1, 4))} style={{ margin: '5px' }}>
           Zoom In

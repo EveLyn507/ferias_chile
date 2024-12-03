@@ -37,17 +37,26 @@ export const MapaSupervisor = () => {
 
   const carga = async () => {
     WebSocketService.sendMessage("join_room", { id_feria });
-
     WebSocketService.sendMessage("TodayFeriaElements", { idFeria, nombre_feria, fecha });
-
+  
     await WebSocketService.RecibeData("ResponceTodayFeriaElements", (data: todayArriendos) => {
+      if (!data || !data.todayArriendos) {
+        console.error("Datos recibidos son inválidos:", data);
+        return;
+      }
+  
       const puestosday = data.planoData.elements.filter((item) => item.id_tipo_elemento === 1);
       const callesday = data.planoData.elements.filter((item) => item.id_tipo_elemento === 2);
-
+  
+      // Filtrar arriendos con id_puesto válido
+      const arriendosValidos = data.todayArriendos.filter((arriendo) =>
+        puestosday.some((puesto) => puesto.dataPuesto?.id_puesto === arriendo.id_puesto)
+      );
+  
       setPlano(data.planoData.plano);
       setPuestos(puestosday);
       setCalles(callesday);
-      setArriendos(data.todayArriendos);
+      setArriendos(arriendosValidos); // Solo asigna arriendos válidos
     });
   };
 
@@ -61,26 +70,45 @@ export const MapaSupervisor = () => {
   const udapt = async () => {
     await WebSocketService.RecibeData("room_message", (updated) => {
       setArriendos((prevArriendos) => {
-        const updatedArriendos = prevArriendos.map((arriendo) =>
+        if (!prevArriendos.some((arriendo) => arriendo.id_arriendo_puesto === updated.id_arriendo_puesto)) {
+          console.warn("Actualización ignorada para arriendo desconocido:", updated);
+          return prevArriendos; // No actualices si el arriendo no existe
+        }
+  
+        return prevArriendos.map((arriendo) =>
           arriendo.id_arriendo_puesto === updated.id_arriendo_puesto
             ? { ...arriendo, id_estado_arriendo: updated.id_estado_arriendo }
             : arriendo
         );
-        return updatedArriendos;
       });
     });
   };
 
   useEffect(() => {
-    udapt();
+  const actualizarEstados = async () => {
+    await WebSocketService.RecibeData("estado_puesto_actualizado", (updatedPuesto) => {
+      setArriendos((prevArriendos) => {
+        const nuevosArriendos = prevArriendos.map((arriendo) =>
+          arriendo.id_puesto === updatedPuesto.id_puesto
+            ? { ...arriendo, id_estado_arriendo: updatedPuesto.id_estado_arriendo }
+            : arriendo
+        );
+        return nuevosArriendos;
+      });
+    });
+  };
 
-    return () => WebSocketService.sendMessage("leave_room", { id_feria });
-  }, []);
+  actualizarEstados();
+
+  return () => {
+    WebSocketService.sendMessage("leave_room", { id_feria });
+  };
+}, []);
 
   return ( 
     <>
  
-        <Mapa puestos={puestos} calles={calles} plano={plano} isStatic={true} arriendos={arriendos} />
+        <Mapa puestos={puestos} calles={calles} plano={plano} isStatic={true} arriendos={arriendos || []} nombreFeria={nombre_feria} />
         </>
   );  
 };
