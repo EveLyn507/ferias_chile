@@ -38,7 +38,11 @@ export const MapaSupervisor = () => {
   const carga = async () => {
     WebSocketService.sendMessage("join_room", { id_feria });
     WebSocketService.sendMessage("TodayFeriaElements", { idFeria, nombre_feria, fecha });
-  
+    
+    WebSocketService.RecibeData("nuevo_puesto", (data) => {
+      setPuestos((prevPuestos) => [...prevPuestos, data.puesto]);
+    });
+
     await WebSocketService.RecibeData("ResponceTodayFeriaElements", (data: todayArriendos) => {
       if (!data || !data.todayArriendos) {
         console.error("Datos recibidos son inválidos:", data);
@@ -48,15 +52,22 @@ export const MapaSupervisor = () => {
       const puestosday = data.planoData.elements.filter((item) => item.id_tipo_elemento === 1);
       const callesday = data.planoData.elements.filter((item) => item.id_tipo_elemento === 2);
   
-      // Filtrar arriendos con id_puesto válido
-      const arriendosValidos = data.todayArriendos.filter((arriendo) =>
-        puestosday.some((puesto) => puesto.dataPuesto?.id_puesto === arriendo.id_puesto)
-      );
+      // Mapear estados a los puestos
+      const puestosConEstado = puestosday.map((puesto) => {
+        const arriendo = data.todayArriendos.find((arriendo) => arriendo.id_puesto === puesto.dataPuesto?.id_puesto);
+        return {
+          ...puesto,
+          dataPuesto: {
+            ...puesto.dataPuesto,
+            id_estado_puesto: arriendo ? arriendo.id_estado_arriendo : 0, // Estado predeterminado si no hay arriendo
+          },
+        };
+      });
   
       setPlano(data.planoData.plano);
-      setPuestos(puestosday);
+      setPuestos(puestosConEstado);
       setCalles(callesday);
-      setArriendos(arriendosValidos); // Solo asigna arriendos válidos
+      setArriendos(data.todayArriendos);
     });
   };
 
