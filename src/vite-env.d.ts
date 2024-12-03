@@ -59,7 +59,7 @@ declare module '*.bmp' {
   export default src
 }
 declare module '*.png' {
-  const src: string
+  const src: HTMLImageElement
   export default src
 }
 declare module '*.jpg' {

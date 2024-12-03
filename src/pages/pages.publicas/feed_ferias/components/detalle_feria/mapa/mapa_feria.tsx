@@ -26,6 +26,7 @@ import { ArriendoModal } from './cartel';
     const gridSize = 50;
     const controlSize = 8;
     const [zoomLevel, setZoomLevel] = useState(1);
+    const [stagePosition, setStagePosition] = useState({ x: 0, y: 0 });
 
     const [image, setImage] = useState<HTMLImageElement | null>(null);
     const [isModalOpen, setModalOpen] = useState(false);
@@ -57,37 +58,29 @@ import { ArriendoModal } from './cartel';
     };
     }, []);
 
-  // Función para aumentar el zoom
-  const handleZoomIn = () => {
-    setZoomLevel((prevZoom) => {
-      const nextZoom = Math.floor(prevZoom + 1); // Redondea hacia abajo
-      return Math.min(nextZoom, 3.0); // Limita el zoom máximo a 2
-    });
-  };
-
-  // Función para reducir el zoom
-  const handleZoomOut = () => {
-    setZoomLevel((prevZoom) => {
-      const nextZoom = Math.floor(prevZoom - 0.5); // Redondea hacia abajo
-      return Math.max(nextZoom, 0.2); // Limita el zoom mínimo a 1
-    });
-  };
 
 return (
-    <div className='mapa-container'>
 
-    <div className='zoom'>
-    <button onClick={handleZoomIn} style={{ margin: '5px' }}>Zoom In</button>
-    <button onClick={handleZoomOut} style={{ margin: '5px' }}>Zoom Out</button>
-    </div>
+<>
 
-    <div className='mapa'>
-      <Stage  className='stage'
-       width={plano.width + planX } // Asegúrate de que el stage sea más grande que el div
-        height={plano.height + planY } // Asegúrate de que el stage sea más grande que el div
-        scaleX={zoomLevel} // Aplica el zoom al eje X
-        scaleY={zoomLevel} // Aplica el zoom al eje Y
+<div style={{ position: 'relative', top: '10px', right: '10px', paddingBottom: '10px' }}>
+        <button onClick={() => setZoomLevel(Math.min(zoomLevel + 0.1, 4))} style={{ margin: '5px' }}>
+          Zoom In
+        </button>
+        <button onClick={() => setZoomLevel(Math.max(zoomLevel - 0.1, 0.1))} style={{ margin: '5px' }}>
+          Zoom Out
+        </button>
+      </div>
 
+      <Stage  
+        width={1150}
+        height={600}
+        scaleX={zoomLevel}
+        scaleY={zoomLevel}
+        x={stagePosition.x}
+        y={stagePosition.y}
+        draggable
+        style={{ border: 'black solid 5px', backgroundColor: 'transparent',  margin : 'auto'} }
       >
         <Layer>
 
@@ -140,17 +133,12 @@ return (
       itemClick={handleObjectClick}
 
     />
-
-
-
       {/* Capa para las calles */}
       <StreetsLayer 
             calles={calles}
             isStatic={false}
           />
-
     </Stage>
-    </div>
 
 
     <ArriendoModal
@@ -158,9 +146,8 @@ return (
         onClose={() => setModalOpen(false)}
         arriendo={selectedObject}
       />
-    </div>
 
-    
+    </>
 
 )
 
