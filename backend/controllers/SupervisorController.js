@@ -270,6 +270,45 @@ const aceptarPostulacion = async (req, res) => {
 };
 
 
+const getFechasDisponibles = async (req, res, pool) => {
+  let { id_feria } = req.params;
+  console.log('Recibiendo solicitud para obtener las fechas DE MAPAS disponibles para la feria con id_feria:', id_feria);
+
+  // Validar que id_feria sea un número válido
+  if (!id_feria || isNaN(parseInt(id_feria, 10))) {
+    console.log('Error: El id_feria proporcionado no es un número válido');
+    return res.status(400).json({ message: 'El id_feria debe ser un número válido' });
+  }
+
+  id_feria = parseInt(id_feria, 10);
+  console.log('Iniciando consulta de fechas de MAPAS para la feria con id_feria:', id_feria);
+
+  try {
+    const query = `
+      select a.fecha
+      from feria f
+      join detalle_programa_feria d
+      on (d.id_feria = f.id_feria)
+      join actividad_feria a
+      on (a.id_horario_feria = d.id_horario_feria)
+      where f.id_feria = $1`;
+
+    const result = await pool.query(query, [id_feria]);
+
+    if (result.rows.length === 0) {
+      console.log('No se encontraron fechas de MAPAS para la feria con id_feria:', id_feria);
+      return res.status(404).json({ message: 'No se encontraron fechas de MAPAS para la feria proporcionada.' });
+    }
+
+    console.log('Fechas de MAPAS obtenidas exitosamente para la feria con id_feria:', id_feria, result.rows);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error('Error al consultar las fechas de MAPAS para la feria con id_feria:', id_feria, error);
+    res.status(500).json({ message: 'Error al obtener las fechas de MAPAS' });
+  }
+};
+
+
 module.exports = {
   obtenerEstadoFeria,
   obtenerFeriantesActivos,
@@ -280,5 +319,6 @@ module.exports = {
   registrarPago,
   aceptarPostulacion,
   obtenerHorario,
-  obtenerFechasContratos
+  obtenerFechasContratos,
+  getFechasDisponibles,
 };
