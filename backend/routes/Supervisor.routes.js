@@ -9,6 +9,7 @@ const {
     getFeriantesPendientes,
     registrarPago,
     obtenerHorario,
+    obtenerFechasContratos,
 } = require('../controllers/SupervisorController');
 
 // Obtener el estado de las ferias
@@ -61,5 +62,12 @@ router.put('/feriantes/:id_user_fte/pago', (req, res) => {
 });
 
 
+/// fechas
+
+router.get('/fechas-contratos/:id_feria', (req, res) => {
+    const pool = req.pool;
+    obtenerFechasContratos(req, res, pool);
+  });
+  
 
 module.exports = router;
