@@ -1,11 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import Mapa from "./components/detalle_feria/mapa/mapa_feria";
-import { arriendo, plano, PlanoItemElement, todayArriendos } from "./components/detalle_feria/mapa/mapaModel";
-import userWebSocketService from "../../models/webSoket";
+import userWebSocketService from "../../../../../models/webSoket";
+import { arriendo, PlanoItemElement, todayArriendos, plano } from "./mapaModel";
+import Mapa from "./mapa_feria";
 
-export const MapaSupervisor = () => { 
+
+
+export const View_detalle_feria = () => { 
   const WebSocketService = userWebSocketService.getInstance();
   const { id_feria } = useParams<{ id_feria: string }>();
   const idFeria = id_feria ? parseInt(id_feria) : 0;
@@ -37,26 +39,17 @@ export const MapaSupervisor = () => {
 
   const carga = async () => {
     WebSocketService.sendMessage("join_room", { id_feria });
+
     WebSocketService.sendMessage("TodayFeriaElements", { idFeria, nombre_feria, fecha });
-  
+
     await WebSocketService.RecibeData("ResponceTodayFeriaElements", (data: todayArriendos) => {
-      if (!data || !data.todayArriendos) {
-        console.error("Datos recibidos son inválidos:", data);
-        return;
-      }
-  
       const puestosday = data.planoData.elements.filter((item) => item.id_tipo_elemento === 1);
       const callesday = data.planoData.elements.filter((item) => item.id_tipo_elemento === 2);
-  
-      // Filtrar arriendos con id_puesto válido
-      const arriendosValidos = data.todayArriendos.filter((arriendo) =>
-        puestosday.some((puesto) => puesto.dataPuesto?.id_puesto === arriendo.id_puesto)
-      );
-  
+
       setPlano(data.planoData.plano);
       setPuestos(puestosday);
       setCalles(callesday);
-      setArriendos(arriendosValidos); // Solo asigna arriendos válidos
+      setArriendos(data.todayArriendos);
     });
   };
 
@@ -70,47 +63,28 @@ export const MapaSupervisor = () => {
   const udapt = async () => {
     await WebSocketService.RecibeData("room_message", (updated) => {
       setArriendos((prevArriendos) => {
-        if (!prevArriendos.some((arriendo) => arriendo.id_arriendo_puesto === updated.id_arriendo_puesto)) {
-          console.warn("Actualización ignorada para arriendo desconocido:", updated);
-          return prevArriendos; // No actualices si el arriendo no existe
-        }
-  
-        return prevArriendos.map((arriendo) =>
+        const updatedArriendos = prevArriendos.map((arriendo) =>
           arriendo.id_arriendo_puesto === updated.id_arriendo_puesto
             ? { ...arriendo, id_estado_arriendo: updated.id_estado_arriendo }
             : arriendo
         );
+        return updatedArriendos;
       });
     });
   };
 
   useEffect(() => {
-  const actualizarEstados = async () => {
-    await WebSocketService.RecibeData("estado_puesto_actualizado", (updatedPuesto) => {
-      setArriendos((prevArriendos) => {
-        const nuevosArriendos = prevArriendos.map((arriendo) =>
-          arriendo.id_puesto === updatedPuesto.id_puesto
-            ? { ...arriendo, id_estado_arriendo: updatedPuesto.id_estado_arriendo }
-            : arriendo
-        );
-        return nuevosArriendos;
-      });
-    });
-  };
+    udapt();
 
-  actualizarEstados();
-
-  return () => {
-    WebSocketService.sendMessage("leave_room", { id_feria });
-  };
-}, []);
+    return () => WebSocketService.sendMessage("leave_room", { id_feria });
+  }, []);
 
   return ( 
     <>
  
-        <Mapa puestos={puestos} calles={calles} plano={plano} isStatic={true} arriendos={arriendos || []} nombreFeria={nombre_feria} />
+        <Mapa puestos={puestos} calles={calles} plano={plano} isStatic={true} arriendos={arriendos} />
         </>
   );  
 };
 
-export default MapaSupervisor;
+export default View_detalle_feria;

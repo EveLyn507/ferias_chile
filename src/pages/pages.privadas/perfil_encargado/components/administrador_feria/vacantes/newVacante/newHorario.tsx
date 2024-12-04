@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { horarioVacante } from "../../../../../../models/interfaces";
+import { useToast } from '@components/ToastService';
 
 interface newVacanteProps {
   saveHorario: (horario: horarioVacante) => void;
@@ -15,40 +16,29 @@ const defaultHorario: horarioVacante = {
 
 export const NewHorario = ({ saveHorario }: newVacanteProps) => {
   const [addHorario, setAddHorario] = useState<horarioVacante>(defaultHorario);
-  const [warnings, setWarnings] = useState<string[]>([]);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const { addToast } = useToast();
 
   const clear = () => {
     setAddHorario(defaultHorario);
-    setWarnings([]);
-    setSuccessMessage(null); // Limpiar mensajes de éxito al reiniciar
   };
 
   const handleAddHorario = () => {
-    const newWarnings: string[] = [];
-
-    // Validar que los campos requeridos no estén vacíos
-    if (!addHorario.hora_entrada) {
-      newWarnings.push("La hora de inicio es requerida.");
-    }
-    if (!addHorario.hora_salida) {
-      newWarnings.push("La hora de término es requerida.");
+    if (!addHorario.hora_entrada || !addHorario.hora_salida) {
+      addToast({ type: 'warning', message: 'Las horas de inicio y término son requeridas.' });
+      return;
     }
     if (addHorario.hora_entrada >= addHorario.hora_salida) {
-      newWarnings.push("La hora de inicio debe ser anterior a la hora de término.");
+      addToast({ type: 'error', message: 'La hora de inicio debe ser anterior a la hora de término.' });
+      return;
     }
     if (addHorario.id_dia <= 0) {
-      newWarnings.push("Debe seleccionar un día.");
+      addToast({ type: 'error', message: 'Debe seleccionar un día válido.' });
+      return;
     }
 
-    if (newWarnings.length > 0) {
-      setWarnings(newWarnings); // Actualizar advertencias
-      setSuccessMessage(null); // Limpiar mensaje de éxito si hay errores
-    } else {
-      saveHorario(addHorario);
-      setSuccessMessage("Horario añadido correctamente."); // Mostrar mensaje de éxito
-      clear();
-    }
+    saveHorario(addHorario);
+    addToast({ type: 'success', message: 'Horario añadido correctamente.' });
+    clear();
   };
 
   return (
@@ -86,21 +76,9 @@ export const NewHorario = ({ saveHorario }: newVacanteProps) => {
         </select>
         <button onClick={handleAddHorario}>Añadir horario</button>
 
-        {/* Mostrar advertencias */}
-        {warnings.length > 0 && (
-          <div style={{ color: "red", marginTop: "10px" }}>
-            {warnings.map((warning, index) => (
-              <p key={index}>{warning}</p>
-            ))}
-          </div>
-        )}
+        
 
-        {/* Mostrar mensaje de éxito */}
-        {successMessage && (
-          <div style={{ color: "green", marginTop: "10px" }}>
-            <p>{successMessage}</p>
-          </div>
-        )}
+        
       </div>
     </>
   );

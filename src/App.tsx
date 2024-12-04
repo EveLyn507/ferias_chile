@@ -15,9 +15,11 @@ const View_feed = lazy(() => import ('./pages/pages.publicas/feed_ferias/home_fe
 const Privado = lazy(() => import ('./pages/pages.privadas/Private.routes'));
 import './App.css';
 import Footer from './components/footer';
+import { ToastProvider } from './components/ToastService'; //npm install react-toastify
 
 function App() {
   return (
+    <ToastProvider>
     <div className="App">
       <Suspense fallback={<></>}>
         <Provider store={store}>
@@ -45,6 +47,7 @@ function App() {
         </Provider>
       </Suspense>
     </div>
+    </ToastProvider>
   );
 }
 

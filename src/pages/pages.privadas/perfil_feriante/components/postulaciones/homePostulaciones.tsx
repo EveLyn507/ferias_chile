@@ -2,7 +2,7 @@ import {  useState } from "react"
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs"
 import { MisPostulaciones } from "./misPostulaciones/misPostulaciones"
 import { Filtros_base } from "../../../../../components/filtros"
-import './homePostu.css'
+import  fteHome from './homePostu.module.css'
 import { getFeriasConVacantesVacias } from "../../services/postulacionesFunction"
 import { FeriasTable } from "./PortalEmpleo/feriasTable"
 import { feriaVacante } from "./interfaces"
@@ -34,17 +34,17 @@ export const HomePostulaciones = () => {
 
 
     <TabPanel>
-      <div className="postulacion-container">
+      <div className= {fteHome["postulacion-container"]} >
 
   
-      <div className="postu-filter">
+      <div className= {fteHome["postu-filter"]} >
       <Filtros_base onFilterC={setSelectedComuna} onFilterR={setSelectedRegion}/>
       </div>
-      <div className="search">
+      <div className={fteHome["search"]} >
       <button onClick={() => filtrar()}> Realizar Busqueda</button>
       </div>
 
-      <div className="cards-container">
+      <div className = {fteHome["cards-container"]}>
     <FeriasTable ferias={vacantesFeria}/>
     </div>
     </div>

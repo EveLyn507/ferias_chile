@@ -184,7 +184,7 @@ const registerGoogleFeriante = async (req, res, pool) => {
       const token = jwt.sign(
         { id: existingUser.id_user_fte, email: existingUser.user_mail },
         'your-secret-key',
-        { expiresIn: '5h' }
+        { expiresIn: '24h' }
       );
       return res.status(200).json({
         token,
@@ -197,13 +197,13 @@ const registerGoogleFeriante = async (req, res, pool) => {
     // Si el usuario no existe, registrarlo
     const hashedPassword = await bcrypt.hash(Math.random().toString(36).slice(-8), 10);
     const insertResult = await pool.query(
-      `INSERT INTO public.feriante (user_mail, nombre, apellido, contrasena, id_tipo_usuario, perfil_privado)
-       VALUES ($1, $2, $3, $4, $5, $6) RETURNING id_user_fte`,
-      [user_mail, nombre, apellido, hashedPassword, 2, false]
+      `INSERT INTO public.feriante (user_mail, nombre, apellido, contrasena, id_tipo_usuario, perfil_privado, rut, rut_div)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id_user_fte`,
+      [user_mail, nombre, apellido, hashedPassword, 2, false, '0','0'] 
     );
 
     const id_user = insertResult.rows[0].id_user_fte;
-    const token = jwt.sign({ id: id_user, email: user_mail }, 'your-secret-key', { expiresIn: '5h' });
+    const token = jwt.sign({ id: id_user, email: user_mail }, 'your-secret-key', { expiresIn: '24h' });
 
     return res.status(201).json({ token, role: 2, email: user_mail, id_user });
   } catch (error) {

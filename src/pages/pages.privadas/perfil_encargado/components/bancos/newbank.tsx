@@ -3,19 +3,19 @@ import { DatosBank } from "../../../../models/interfaces";
 import { saveDatosBank } from "../../services/admin_feria_fuctions";
 import { useSelector } from "react-redux";
 import { AppStore } from "../../../../../redux/store";
+import { useToast } from "@components/ToastService"; // Importación del servicio de toast
 
 export const NuevoBanco = () => {
   const id_user = useSelector((store: AppStore) => store.user.id_user);
 
   const [newbank, setNewBank] = useState<DatosBank>({
-    mail_banco: '',
-    nombre_asociado: '', 
-    numero_cuenta: '',
+    mail_banco: "",
+    nombre_asociado: "",
+    numero_cuenta: "",
     id_user_enf: id_user,
   });
 
-  const [validationErrors, setValidationErrors] = useState<string[]>([]);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const { addToast } = useToast(); // Hook para mostrar mensajes con ToastService
 
   const validateFields = () => {
     const errors: string[] = [];
@@ -36,7 +36,10 @@ export const NuevoBanco = () => {
       errors.push("El número de cuenta debe tener al menos 5 caracteres.");
     }
 
-    setValidationErrors(errors);
+    if (errors.length > 0) {
+      addToast({ type: "error", message: "Existen errores en los campos del formulario." });
+    }
+
     return errors.length === 0;
   };
 
@@ -44,77 +47,57 @@ export const NuevoBanco = () => {
     if (!validateFields()) return;
 
     try {
-      const ok = await saveDatosBank(newbank);
-      console.log(ok);
+      await saveDatosBank(newbank);
 
       setNewBank({
-        mail_banco: '',
-        nombre_asociado: '',
-        numero_cuenta: '',
+        mail_banco: "",
+        nombre_asociado: "",
+        numero_cuenta: "",
         id_user_enf: id_user,
       });
 
-      setValidationErrors([]);
-      setSuccessMessage("El banco se ha agregado exitosamente.");
-      setTimeout(() => setSuccessMessage(null), 3000);
+      addToast({ type: "success", message: "Banco agregado exitosamente." });
     } catch (error) {
       console.error("Error al agregar el banco:", error);
+      addToast({ type: "error", message: "Error al agregar el banco." });
     }
   };
 
   return (
-      <>
-      <label> Ingresar Nuevo Banco</label>
+    <>
+      <label>Ingresar Nuevo Banco</label>
       <div className="inputs">
         <div className="input-field">
-        <label> Correo</label>
-        <input
-          type="text"
-          placeholder="Correo del banco"
-          value={newbank.mail_banco}
-          onChange={(e) => setNewBank({ ...newbank, mail_banco: e.target.value })}
-        />        
-      </div>
+          <label>Correo</label>
+          <input
+            type="text"
+            placeholder="Correo del banco"
+            value={newbank.mail_banco}
+            onChange={(e) => setNewBank({ ...newbank, mail_banco: e.target.value })}
+          />
+        </div>
         <div className="input-field">
-        <label> Nombre </label>
-        <input
-          type="text"
-          placeholder="Nombre asociado"
-          value={newbank.nombre_asociado}
-          onChange={(e) => setNewBank({ ...newbank, nombre_asociado: e.target.value })}
-        />   
-         </div>
-  
-    <div className="input-field">
-    <label> Numero de cuenta</label>
-        <input
-          type="text"
-          placeholder="Número de cuenta"
-          value={newbank.numero_cuenta}
-          onChange={(e) => setNewBank({ ...newbank, numero_cuenta: e.target.value })}
-        />
-          </div>
-
-          <div className="input-field">
-             <button  onClick={handleAdd}>Agregar </button>
-           </div>
-          </div>
-  
-
-
-      {validationErrors.length > 0 && (
-        <div className="nuevo-banco-errors">
-          {validationErrors.map((error, index) => (
-            <p key={index} className="nuevo-banco-error-item">{error}</p>
-          ))}
+          <label>Nombre</label>
+          <input
+            type="text"
+            placeholder="Nombre asociado"
+            value={newbank.nombre_asociado}
+            onChange={(e) => setNewBank({ ...newbank, nombre_asociado: e.target.value })}
+          />
         </div>
-      )}
-
-      {successMessage && (
-        <div className="nuevo-banco-success">
-          <p>{successMessage}</p>
+        <div className="input-field">
+          <label>Número de cuenta</label>
+          <input
+            type="text"
+            placeholder="Número de cuenta"
+            value={newbank.numero_cuenta}
+            onChange={(e) => setNewBank({ ...newbank, numero_cuenta: e.target.value })}
+          />
         </div>
-      )}
-   </>
+        <div className="input-field">
+          <button onClick={handleAdd}>Agregar</button>
+        </div>
+      </div>
+    </>
   );
 };

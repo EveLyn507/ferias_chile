@@ -32,6 +32,8 @@ const GestionPuestos: React.FC<GestionPuestosProps> = ({ id_feria }) => {
         setPuestos(response.data);
         setError(null);
       } catch (error) {
+        console.log(error);
+        
         setError('Error al obtener los datos de los puestos');
       } finally {
         setLoading(false);
@@ -53,6 +55,8 @@ const GestionPuestos: React.FC<GestionPuestosProps> = ({ id_feria }) => {
         )
       );
     } catch (err) {
+      console.log(err);
+      
       setError('Error al actualizar el estado del puesto');
     }
   };

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-
-
+import { useToast } from '@components/ToastService'; // Usando alias para importar ToastService
 
 interface ActualizarCorreoContraseñaProps {
   correo: string;
@@ -17,8 +16,7 @@ const ActualizarCorreoContraseña: React.FC<ActualizarCorreoContraseñaProps> = 
 }) => {
   const [correoActualizado, setCorreoActualizado] = useState<string>(correo || ''); // Asegúrate de tener un valor inicial válido
   const [nuevaContraseña, setNuevaContraseña] = useState<string>(''); // Asegúrate de tener un valor inicial vacío
-  const [mensajeError, setMensajeError] = useState<string | null>(null);
-  const [mensajeExito, setMensajeExito] = useState<string | null>(null);
+  const { addToast } = useToast(); // Hook para mostrar mensajes con ToastService
 
   useEffect(() => {
     if (correo) {
@@ -31,18 +29,14 @@ const ActualizarCorreoContraseña: React.FC<ActualizarCorreoContraseñaProps> = 
     return correoRegex.test(correo);
   };
 
-  // Cuando se envía la solicitud para actualizar el correo
   const actualizarCorreo = async () => {
-    setMensajeError(null);
-    setMensajeExito(null);
-
     if (!correoActualizado || !correo) {
-      setMensajeError('El correo actual y el nuevo correo son requeridos.');
+      addToast({ type: 'error', message: 'El correo actual y el nuevo correo son requeridos.' });
       return;
     }
 
     if (!validarCorreo(correoActualizado)) {
-      setMensajeError('El formato del correo no es válido.');
+      addToast({ type: 'error', message: 'El formato del correo no es válido.' });
       return;
     }
 
@@ -55,36 +49,34 @@ const ActualizarCorreoContraseña: React.FC<ActualizarCorreoContraseñaProps> = 
 
       if (response.ok) {
         const nuevoCorreo = correoActualizado;
-        setCorreo(nuevoCorreo); 
-        onCorreoActualizado(nuevoCorreo); 
-        localStorage.setItem('userEmail', nuevoCorreo); 
-        setMensajeExito('Correo actualizado con éxito.');
+        setCorreo(nuevoCorreo);
+        onCorreoActualizado(nuevoCorreo);
+        localStorage.setItem('userEmail', nuevoCorreo);
+        addToast({ type: 'success', message: 'Correo actualizado con éxito.' });
       } else {
         const errorData = await response.json();
-        setMensajeError('Error al actualizar el correo: ' + errorData.message);
+        addToast({ type: 'error', message: `Error al actualizar el correo: ${errorData.message}` });
       }
     } catch (error) {
-      setMensajeError('Error al conectar con el servidor: ' + error);
+      addToast({ type: 'error', message: `Error al conectar con el servidor: ${error}` });
     }
   };
 
   const actualizarContraseña = async () => {
-    setMensajeError(null);
-    setMensajeExito(null);    
-
     if (!nuevaContraseña || !correo) {
-      setMensajeError('La nueva contraseña y el correo son requeridos.');
+      addToast({ type: 'error', message: 'La nueva contraseña y el correo son requeridos.' });
       return;
     }
 
     if (nuevaContraseña.length < 8) {
-      setMensajeError('La contraseña debe tener al menos 8 caracteres.');
+      addToast({
+        type: 'error',
+        message: 'La contraseña debe tener al menos 8 caracteres.',
+      });
       return;
     }
 
     try {
-      
-      console.log({ nuevaContraseña, correo });
       const response = await fetch('http://localhost:5000/api/actualizar-contrasena', {
         method: 'POST',
         headers: {
@@ -98,29 +90,29 @@ const ActualizarCorreoContraseña: React.FC<ActualizarCorreoContraseñaProps> = 
 
       if (response.ok) {
         setContraseña(nuevaContraseña);
-        setMensajeExito('Contraseña actualizada con éxito.');
-        setNuevaContraseña(''); 
+        setNuevaContraseña('');
+        addToast({ type: 'success', message: 'Contraseña actualizada con éxito.' });
       } else {
         const errorData = await response.json();
-        setMensajeError('Error al actualizar la contraseña: ' + errorData.message);
+        addToast({
+          type: 'error',
+          message: `Error al actualizar la contraseña: ${errorData.message}`,
+        });
       }
     } catch (error) {
-      setMensajeError('Error al conectar con el servidor: ' + error);
+      addToast({ type: 'error', message: `Error al conectar con el servidor: ${error}` });
     }
   };
 
   return (
     <div>
       <h2>Actualizar Correo y Contraseña</h2>
-      {mensajeError && <p style={{ color: 'red' }}>{mensajeError}</p>}
-      {mensajeExito && <p style={{ color: 'green' }}>{mensajeExito}</p>}
 
       <div>
         <h3>Correo Actual</h3>
         <p>{correo}</p>
 
         <h3>Actualizar Correo</h3>
-        <p>Nuevo correo: {correoActualizado}</p>
         <input
           type="email"
           value={correoActualizado}
