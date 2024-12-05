@@ -1,15 +1,13 @@
 import { useState, useEffect } from "react";
-import { homeProps, ProgramaFeria } from "../../../../models/interfaces";
-import { getProgramaFeria, GuardarProgramacionFeria } from "../../services/admin_feria_fuctions";
+import { homeProps, ProgramaFeria } from "../../../../../models/interfaces";
+import { getProgramaFeria, GuardarProgramacionFeria } from "../../../services/admin_feria_fuctions";
 import EditProgramaModal from "./programaModal"; // Importa el modal
-import { useToast } from "@components/ToastService"; // Usando alias para importar ToastService
+import { useToast } from "../../../../../../components/ToastService";
 
-const BooleanDaysSelector = ({ id_feria, nombreF }: homeProps) => {
+const BooleanDaysSelector = ({ id_feria }: homeProps) => {
   const semana = ["none", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
 
-  const [programaF, setActual] = useState<ProgramaFeria[]>([]); // Lista de programas actual
-  const [UpdatedPrograma, setUpdatedPro] = useState<ProgramaFeria[]>([]); // Lista modificada que se enviará al backend al guardarla
-  const [isModified, setIsModified] = useState(false);
+  const [programaF, setPrograma] = useState<ProgramaFeria[]>([]); // Lista de programas actual
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPrograma, setSelectedPrograma] = useState<ProgramaFeria | null>(null);
   const { addToast } = useToast(); // Hook para mostrar mensajes con ToastService
@@ -17,8 +15,7 @@ const BooleanDaysSelector = ({ id_feria, nombreF }: homeProps) => {
   useEffect(() => {
     getProgramaFeria(id_feria)
       .then((res: ProgramaFeria[]) => {
-        setActual(res);
-        setUpdatedPro([...res]);
+        setPrograma(res);
       })
       .catch((error) => {
         console.error("Error al cargar la programación:", error);
@@ -26,39 +23,39 @@ const BooleanDaysSelector = ({ id_feria, nombreF }: homeProps) => {
       });
   }, [addToast, id_feria]);
 
-  useEffect(() => {
-    setIsModified(JSON.stringify(programaF) !== JSON.stringify(UpdatedPrograma));
-  }, [programaF, UpdatedPrograma]);
 
   const handleEditClick = (programa: ProgramaFeria) => {
     setSelectedPrograma(programa);
     setIsModalOpen(true);
   };
 
-  const handleSaveVacante = (updatedPrograma: ProgramaFeria) => {
-    setUpdatedPro((prevState) =>
-      prevState.map((programa) =>
-        programa.id_dia === updatedPrograma.id_dia ? updatedPrograma : programa
-      )
-    );
-    addToast({ type: "success", message: "Programa modificado en la lista local." });
+  const handleModalClose = () => {
+    setSelectedPrograma(null)
+    setIsModalOpen(false);
   };
 
-  const sendData = async () => {
-    if (nombreF !== "") {
-      try {
-        const result = await GuardarProgramacionFeria(UpdatedPrograma, id_feria);
-        console.log("Datos enviados correctamente:", result.message);
-        setActual(UpdatedPrograma);
-        addToast({ type: "success", message: "Programación guardada correctamente." });
-      } catch (error) {
-        console.error("Error al guardar la programación:", error);
-        addToast({ type: "error", message: "Error al guardar la programación de la feria." });
-      }
-    } else {
-      addToast({ type: "error", message: "ID de feria inválido. No se puede guardar." });
+  const handleSavePrograma = async (updatedDiaPrograma: ProgramaFeria) => {
+    const result = await GuardarProgramacionFeria(updatedDiaPrograma , id_feria)
+    if(result === 200){
+ setPrograma((prevPrograma) =>
+      prevPrograma.map((item) =>
+        item.id_programa === updatedDiaPrograma.id_programa
+          ? updatedDiaPrograma
+          : item 
+      )
+    );
+    
+    addToast({ type: "success", message: "Programa modificado" });
+  }
+  else {
+    addToast({ type: "error", message: "error al modificar programa" });
+  }
+
+
     }
-  };
+   
+    
+
 
   return (
     <div className="programa-container">
@@ -76,7 +73,7 @@ const BooleanDaysSelector = ({ id_feria, nombreF }: homeProps) => {
           </tr>
         </thead>
         {programaF.map((programa) => (
-          <tbody key={programa.id_dia}>
+          <tbody key={programa.id_programa}>
             <tr>
               <td>{semana[programa.id_dia]}</td>
               <td>{programa.hora_inicio}</td>
@@ -97,15 +94,13 @@ const BooleanDaysSelector = ({ id_feria, nombreF }: homeProps) => {
       {selectedPrograma && (
         <EditProgramaModal
           isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
+          onClose={handleModalClose}
           programa={selectedPrograma}
-          onSave={handleSaveVacante}
+          onSave={handleSavePrograma}
         />
       )}
 
-      <button onClick={sendData} disabled={!isModified}>
-        Guardar Cambios
-      </button>
+ 
     </div>
   );
 };

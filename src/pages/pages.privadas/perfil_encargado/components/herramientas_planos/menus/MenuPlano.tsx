@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useRef } from 'react';
-import '../css/menuD.css'; // Importa el archivo CSS
 import { plano } from '../models/vistaplanoModels';
 
 interface menuPlanoPros {

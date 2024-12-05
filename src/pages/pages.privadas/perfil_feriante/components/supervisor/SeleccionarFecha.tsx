@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 interface FechaContrato {
-  fecha: string; // Ajustado al resultado esperado del backend
+  fecha_pago: string; // Ajustado al resultado esperado del backend
 }
 
 interface SeleccionarFechaProps {
@@ -60,8 +60,8 @@ const SeleccionarFecha: React.FC<SeleccionarFechaProps> = ({ id_feria, onFechaSe
         >
           <option value="">Seleccione una fecha</option>
           {fechas.map((fecha, index) => (
-            <option key={index} value={fecha.fecha}>
-              {fecha.fecha}
+            <option key={index} value={fecha.fecha_pago}>
+              {fecha.fecha_pago}
             </option>
           ))}
         </select>

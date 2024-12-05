@@ -10,7 +10,6 @@ import PerfilFeriantes from './pages/pages.privadas/perfil_feriante/components/p
 import View_detalle_feria from './pages/pages.publicas/feed_ferias/vista_detalle_feria';
 import ConfirmPayment from './pages/pages.privadas/perfil_feriante/components/pagos/voucher_pago';
 import PaymentButton from './pages/pages.privadas/perfil_feriante/components/pagos/view_pago';
-import FeriaForm from './pages/pages.privadas/perfil_encargado/components/formulario/formulario_feria';
 const View_feed = lazy(() => import ('./pages/pages.publicas/feed_ferias/home_feed_feria'));
 const Privado = lazy(() => import ('./pages/pages.privadas/Private.routes'));
 import './App.css';
@@ -29,7 +28,6 @@ function App() {
               <NotFound>
                 <Route path="/" element={<Navigate to={PublicRoutes.FEEDFERIAS} />} />
                 <Route path={PublicRoutes.FEEDFERIAS} element={<View_feed />} />
-                <Route path={`${PublicRoutes.FORMFERIA}`} element={<FeriaForm />} />
                 <Route path={PublicRoutes.LOGIN} element={<LoginHome />} />
                 <Route path={PublicRoutes.REGISTRO} element={<Registro />} />
                 <Route path={PublicRoutes.RESETPASSWORD} element={<ResetPassword />} />

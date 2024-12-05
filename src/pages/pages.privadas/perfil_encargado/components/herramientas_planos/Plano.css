@@ -1,141 +1,183 @@
-.app {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    margin: 80px 0;
-  }
-  
-  .header {
-    padding: 20px;
-    background-color: #f4f4f4;
-    text-align: center;
-  }
-  
-  .main-content {
-    display: flex;
-    flex-direction: row;
-    height: 100%;
-  }
-  
-  .canvas-container {
-    flex: 1;
-    padding: 10px;
-  }
-  
-  .menu-derecha {
-    border-left: 1px solid #ddd;
-  }
-  
-  .error {
-    color: red;
-    font-weight: bold;
-  }
-  
-  .toolbar {
-    display: flex;
-    justify-content: center;
-    align-items: center; 
-    gap: 15px; 
-    padding: 10px;
-  }
-  
-  
-  .toolbar-button {
-    padding: 10px 20px;
-    background-color: rgb(4, 28, 76);
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .toolbar-button:hover {
-    background-color: rgb(24, 51, 105);
-  }
-  
+.herramienta {
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  width: 100%;
+}
 
-  .menu-container {
-    width: 250px;
-    height: 100vh;
-    position: fixed;
-    right: 0;
-    top: 0;
-    background-color: #f0f0f0;
-    padding: 20px;
-    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
-    overflow-y: auto;
-  }
-  
-  .menu-header {
-    margin-bottom: 20px;
-  }
-  
-  .input-group {
-    margin-bottom: 15px;
-  }
-  
-  .input-group label {
-    display: block;
-    margin-bottom: 5px;
-  }
-  
-  .input-group input,
-  .input-group select {
-    width: 100%;
-    padding: 8px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
-  }
-  
-  .menu-button {
-    width: 100%;
-    padding: 10px;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-bottom: 10px;
-  }
-  
-  .save-button {
-    background-color:  rgb(4, 28, 76);
-  }
-  
-  .delete-button {
-    background-color: rgb(4, 28, 76);
-  }
-  
-  .close-button {
-    background-color: rgb(4, 28, 76);
-  }
-  
-  .menu-button:disabled {
-    cursor: not-allowed;
-    opacity: 0.7;
+.toolbar {
+  display: flex;
+  width: 100%;
+  margin-top: 1%;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 15px;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #ddd;
+}
+
+
+.main-content {
+  display: flex;
+  height: auto;
+  width: 100%;
+
+}
+.toolbar-button {
+  padding: 10px 20px;
+  background-color: #042c4c;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.toolbar-button:hover {
+  background-color: #183369;
+  transform: translateY(-2px);
+}
+
+.canvas-container {
+  min-width: 85%;
+  background-color: #ffffff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.planoMenu {
+  min-width: 15%;
+
+}
+
+.menu-container {
+  width: 100%;
+  background-color: #ffffff;
+  border-left: 1px solid #ddd;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+  padding: 20px;
+}
+
+.menu-header {
+  margin-bottom: 15px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #042c4c;
+}
+
+.input-group {
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
+.input-group label {
+  display: block;
+  font-weight: bold;
+}
+
+.input-group input,
+.input-group select {
+  width: 100%;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  font-size: 12px;
+}
+
+.menu-button {
+  width: 100%;
+  padding: 5px;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.save-button {
+  background-color: #1d3557;
+}
+
+.delete-button {
+  background-color: #e63946;
+}
+
+.close-button {
+  background-color: #457b9d;
+}
+
+.menu-button:hover {
+  opacity: 0.9;
+  transform: scale(1.02);
+}
+
+.menu-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.xyinput-group {
+  display: flex;
+  width: 100%;
+}
+
+.xy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.xy label {
+  font-size: 14px;
+  color: #333;
+  font-weight: bold;
+}
+
+.xy input {
+  width: 80%;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+.xy input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.error {
+  color: #e63946;
+  font-weight: bold;
+  margin-top: 10px;
+  font-size: 14px;
+}
+.mobile-warning {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  background-color: #042c4c;
+  color: white;
+  font-size: 18px;
+  text-align: center;
+  border-radius: 8px;
+  z-index: 1000;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 700px) {
+  .app {
+    display: none;
   }
 
   .mobile-warning {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    padding: 20px;
-    background-color: rgb(4, 28, 76);
-    color: white;
-    font-size: 18px;
-    text-align: center;
-    border-radius: 8px;
-    z-index: 1000;
+    display: block;
   }
-  
-  @media (max-width: 700px) {
-    .app {
-      display: none; 
-    }
-
-    .mobile-warning {
-      display: block;
-    }
-  }
+}

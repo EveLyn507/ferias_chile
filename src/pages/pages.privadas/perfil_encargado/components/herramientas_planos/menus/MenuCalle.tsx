@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import '../css/menuD.css'; // Importa el archivo CSS
 import React, {  } from 'react';
 import { PlanoItemElement, Street } from '../models/vistaplanoModels';
 

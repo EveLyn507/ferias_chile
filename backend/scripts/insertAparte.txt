@@ -1,0 +1,235 @@
+  
+  ferias
+  
+  ('Feria del Sol', 2, 7),
+  ('Feria de los Andes', 3, 5),
+  ('Feria Camarones', 4, 2),
+  ('Feria Huara', 5, 9),
+  ('Feria de Camiña', 6, 1),
+  ('Feria Colchane', 7, 8),
+  ('Feria de Pica', 8, 6),
+  ('Feria Pozo Almonte', 9, 4),
+  ('Feria Alto Hospicio', 11, 10),
+  ('Feria Iquique', 12, 2),
+  ('Feria de Calama', 14, 1),
+  ('Feria de Tocopilla', 15, 3),
+  ('Feria Mejillones', 16, 4),
+  ('Feria San Pedro', 17, 8),
+  ('Feria Sierra Gorda', 18, 5),
+  ('Feria de Copiapó', 21, 7),
+  ('Feria de Caldera', 22, 10),
+  ('Feria Tierra Amarilla', 23, 6),
+  ('Feria de La Serena', 26, 9);
+
+
+
+
+
+
+-- Vacantes para id_feria = 2
+INSERT INTO detalle_team_vacante (id_user_fte, id_feria, id_rol, ingreso, termino, id_estado_vacante) VALUES 
+  (null, 2, 1, '2024-11-06', '2025-07-31', 1),
+  (null, 2, 2, '2024-11-08', '2025-09-30', 1),
+  (null, 2, 1, '2024-11-09', '2025-10-31', 2);
+
+-- Vacantes para id_feria = 3
+INSERT INTO detalle_team_vacante (id_user_fte, id_feria, id_rol, ingreso, termino, id_estado_vacante) VALUES 
+  (null, 3, 2, '2024-11-06', '2025-07-15', 1);
+
+-- Vacantes para id_feria = 4
+INSERT INTO detalle_team_vacante (id_user_fte, id_feria, id_rol, ingreso, termino, id_estado_vacante) VALUES 
+  (null, 4, 1, '2024-11-06', '2025-06-30', 2),
+  (null, 4, 2, '2024-11-07', '2025-09-15', 1),
+  (null, 4, 1, '2024-11-06', '2025-11-01', 2);
+
+-- Vacantes para id_feria = 5
+-- Sin vacantes
+
+-- Vacantes para id_feria = 6
+INSERT INTO detalle_team_vacante (id_user_fte, id_feria, id_rol, ingreso, termino, id_estado_vacante) VALUES 
+  (null, 6, 1, '2024-11-06', '2025-10-01', 1),
+  (null, 6, 2, '2024-11-07', '2025-09-01', 2);
+
+-- Vacantes para id_feria = 7
+INSERT INTO detalle_team_vacante (id_user_fte, id_feria, id_rol, ingreso, termino, id_estado_vacante) VALUES 
+  (null, 7, 2, '2024-11-06', '2025-08-30', 1),
+  (null, 7, 1, '2024-11-08', '2025-12-31', 2);
+
+-- Vacantes para id_feria = 8
+-- Sin vacantes
+
+-- Vacantes para id_feria = 9
+INSERT INTO detalle_team_vacante (id_user_fte, id_feria, id_rol, ingreso, termino, id_estado_vacante) VALUES 
+  (null, 9, 2, '2024-11-06', '2025-08-31', 1);
+
+-- Vacantes para id_feria = 10
+INSERT INTO detalle_team_vacante (id_user_fte, id_feria, id_rol, ingreso, termino, id_estado_vacante) VALUES 
+  (null, 10, 1, '2024-11-06', '2025-07-15', 1);
+
+
+vacantes horario
+
+-- Horarios para vacantes de id_feria = 2
+INSERT INTO detalle_horario_empleado (id_vacante, id_dia, hora_entrada, hora_salida) VALUES 
+  (3, 1, '08:00', '17:00'), -- Lunes
+  (3, 3, '08:00', '17:00'); -- Miércoles
+
+INSERT INTO detalle_horario_empleado (id_vacante, id_dia, hora_entrada, hora_salida) VALUES 
+  (4, 5, '09:00', '18:00'); -- Viernes
+
+INSERT INTO detalle_horario_empleado (id_vacante, id_dia, hora_entrada, hora_salida) VALUES 
+  (5, 2, '09:00', '18:00'), -- Martes
+  (5, 4, '09:00', '18:00'); -- Jueves
+
+-- Horarios para vacantes de id_feria = 3
+INSERT INTO detalle_horario_empleado (id_vacante, id_dia, hora_entrada, hora_salida) VALUES 
+  (6, 1, '08:30', '17:30'), -- Lunes
+  (6, 4, '08:30', '17:30'); -- Jueves
+
+-- Horarios para vacantes de id_feria = 4
+INSERT INTO detalle_horario_empleado (id_vacante, id_dia, hora_entrada, hora_salida) VALUES 
+  (7, 2, '10:00', '19:00'), -- Martes
+  (7, 3, '10:00', '19:00'); -- Miércoles
+
+INSERT INTO detalle_horario_empleado (id_vacante, id_dia, hora_entrada, hora_salida) VALUES 
+  (8, 5, '09:00', '18:00'); -- Viernes
+
+-- Horarios para vacantes de id_feria = 6
+INSERT INTO detalle_horario_empleado (id_vacante, id_dia, hora_entrada, hora_salida) VALUES 
+  (9, 1, '09:00', '18:00'), -- Lunes
+  (9, 5, '09:00', '18:00'); -- Viernes
+
+-- Horarios para vacantes de id_feria = 7
+INSERT INTO detalle_horario_empleado (id_vacante, id_dia, hora_entrada, hora_salida) VALUES 
+  (10, 2, '10:00', '19:00'), -- Martes
+  (10, 4, '10:00', '19:00'); -- Jueves
+
+
+-- postulacione svacante
+
+ (3, 6), (3, 7), (3, 8), -- Vacante 3, Usuarios 6, 7, 8
+  (4, 9), (4, 10), -- Vacante 4, Usuarios 9, 10
+  (5, 1), (5, 3), -- Vacante 5, Usuarios 1, 3
+  (6, 2), (6, 5), (6, 7), -- Vacante 6, Usuarios 2, 5, 7
+  (7, 4), (7, 6), -- Vacante 7, Usuarios 4, 6
+  (8, 8), (8, 9), (8, 10), -- Vacante 8, Usuarios 8, 9, 10
+  (9, 2), (9, 4), -- Vacante 9, Usuarios 2, 4
+  (10, 1), (10, 5); -- Vacante 10, Usuarios 1, 5
+
+
+
+UPDATE detalle_programa_feria
+SET hora_inicio = '2024-11-07 09:00:00', hora_termino = '2024-11-07 15:00:00', activo = true
+WHERE id_horario_feria = 87;
+
+UPDATE detalle_programa_feria
+SET hora_inicio = '2024-11-07 07:30:00', hora_termino = '2024-11-07 13:30:00', activo = true
+WHERE id_horario_feria = 104;
+
+UPDATE detalle_programa_feria
+SET hora_inicio = '2024-11-07 11:00:00', hora_termino = '2024-11-07 17:00:00', activo = true
+WHERE id_horario_feria = 67;
+
+UPDATE detalle_programa_feria
+SET hora_inicio = '2024-11-07 10:30:00', hora_termino = '2024-11-07 16:30:00', activo = true
+WHERE id_horario_feria = 101;
+
+UPDATE detalle_programa_feria
+SET hora_inicio = '2024-11-07 08:00:00', hora_termino = '2024-11-07 14:00:00', activo = true
+WHERE id_horario_feria = 29;
+
+UPDATE detalle_programa_feria
+SET hora_inicio = '2024-11-07 09:30:00', hora_termino = '2024-11-07 15:30:00', activo = true
+WHERE id_horario_feria = 78;
+
+UPDATE detalle_programa_feria
+SET hora_inicio = '2024-11-07 07:00:00', hora_termino = '2024-11-07 13:00:00', activo = true
+WHERE id_horario_feria = 120;
+
+UPDATE detalle_programa_feria
+SET hora_inicio = '2024-11-07 10:00:00', hora_termino = '2024-11-07 16:00:00', activo = true
+WHERE id_horario_feria = 36;
+
+UPDATE detalle_programa_feria
+SET hora_inicio = '2024-11-07 08:45:00', hora_termino = '2024-11-07 14:45:00', activo = true
+WHERE id_horario_feria = 99;
+
+UPDATE detalle_programa_feria
+SET hora_inicio = '2024-11-07 11:30:00', hora_termino = '2024-11-07 17:30:00', activo = true
+WHERE id_horario_feria = 41;
+
+UPDATE detalle_programa_feria
+SET hora_inicio = '2024-11-07 12:00:00', hora_termino = '2024-11-07 18:00:00', activo = true
+WHERE id_horario_feria = 58;
+
+UPDATE detalle_programa_feria
+SET hora_inicio = '2024-11-07 09:00:00', hora_termino = '2024-11-07 15:00:00', activo = true
+WHERE id_horario_feria = 124;
+
+UPDATE detalle_programa_feria
+SET hora_inicio = '2024-11-07 07:30:00', hora_termino = '2024-11-07 13:30:00', activo = true
+WHERE id_horario_feria = 111;
+
+UPDATE detalle_programa_feria
+SET hora_inicio = '2024-11-07 08:15:00', hora_termino = '2024-11-07 14:15:00', activo = true
+WHERE id_horario_feria = 82;
+
+UPDATE detalle_programa_feria
+SET hora_inicio = '2024-11-07 10:30:00', hora_termino = '2024-11-07 16:30:00', activo = true
+WHERE id_horario_feria = 133;
+
+UPDATE detalle_programa_feria
+SET hora_inicio = '2024-11-07 12:15:00', hora_termino = '2024-11-07 18:15:00', activo = true
+WHERE id_horario_feria = 15;
+
+UPDATE detalle_programa_feria
+SET hora_inicio = '2024-11-07 09:45:00', hora_termino = '2024-11-07 15:45:00', activo = true
+WHERE id_horario_feria = 45;
+
+UPDATE detalle_programa_feria
+SET hora_inicio = '2024-11-07 08:30:00', hora_termino = '2024-11-07 14:30:00', activo = true
+WHERE id_horario_feria = 122;
+
+UPDATE detalle_programa_feria
+SET hora_inicio = '2024-11-07 10:00:00', hora_termino = '2024-11-07 16:00:00', activo = true
+WHERE id_horario_feria = 73;
+
+UPDATE detalle_programa_feria
+SET hora_inicio = '2024-11-07 07:45:00', hora_termino = '2024-11-07 13:45:00', activo = true
+WHERE id_horario_feria = 114;
+
+UPDATE detalle_programa_feria
+SET hora_inicio = '2024-11-07 11:15:00', hora_termino = '2024-11-07 17:15:00', activo = true
+WHERE id_horario_feria = 140;
+
+UPDATE detalle_programa_feria
+SET hora_inicio = '2024-11-07 12:00:00', hora_termino = '2024-11-07 18:00:00', activo = true
+WHERE id_horario_feria = 60;
+
+UPDATE detalle_programa_feria
+SET hora_inicio = '2024-11-07 08:00:00', hora_termino = '2024-11-07 14:00:00', activo = true
+WHERE id_horario_feria = 29;
+
+UPDATE detalle_programa_feria
+SET hora_inicio = '2024-11-07 09:30:00', hora_termino = '2024-11-07 15:30:00', activo = true
+WHERE id_horario_feria = 64;
+
+UPDATE detalle_programa_feria
+SET hora_inicio = '2024-11-07 07:00:00', hora_termino = '2024-11-07 13:00:00', activo = true
+WHERE id_horario_feria = 81;
+
+UPDATE detalle_programa_feria
+SET hora_inicio = '2024-11-07 10:15:00', hora_termino = '2024-11-07 16:15:00', activo = true
+WHERE id_horario_feria = 127;
+
+UPDATE detalle_programa_feria
+SET hora_inicio = '2024-11-07 08:45:00', hora_termino = '2024-11-07 14:45:00', activo = true
+WHERE id_horario_feria = 49;
+
+UPDATE detalle_programa_feria
+SET hora_inicio = '2024-11-07 07:30:00', hora_termino = '2024-11-07 13:30:00', activo = true
+WHERE id_horario_feria = 100;
+
+UPDATE detalle_programa_feria
+SET hora_inicio = '2024-11-07 09:15:00', hora_termino = '2024-11-07 15:15:00', activo = true
+WHERE id_horario_feria = 93;

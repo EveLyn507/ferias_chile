@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { aceptarPostulacion, rechazarPostulacion } from "../../../services/admin_feria_fuctions";
 import Modal from "react-modal";
 import { ftePostulacion } from "../../../../../models/interfaces";
-import { useToast } from "@components/ToastService"; // Usando alias para importar ToastService
+import { useToast } from "../../../../../../components/ToastService";
 
 interface ModalProps {
   isOpen: boolean;

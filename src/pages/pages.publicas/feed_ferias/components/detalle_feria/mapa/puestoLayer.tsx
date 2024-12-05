@@ -1,6 +1,6 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { Text, Image as KonvaImage, Layer } from 'react-konva';
-import { PlanoItemElement, PuestosMapaProps, arriendo } from './mapaModel';
+import { PlanoItemElement, PuestosMapaProps } from './mapaModel';
 
 const PuestosLayer: React.FC<PuestosMapaProps> = ({
   puestos,

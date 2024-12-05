@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { horarioVacante } from "../../../../../../models/interfaces";
-import { useToast } from '@components/ToastService';
+import { useToast } from "../../../../../../../components/ToastService";
 
 interface newVacanteProps {
   saveHorario: (horario: horarioVacante) => void;

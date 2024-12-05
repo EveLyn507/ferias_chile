@@ -4,7 +4,7 @@ import { homeProps, vacante } from "../../../../../models/interfaces";
 import { deleteVacante, updateVacanteFeria } from "../../../services/admin_feria_fuctions";
 import VacanteCard from "./cardVacante";
 import { CrearVacanteModal } from "./newVacante/newVacanteModal";
-import { useToast } from "@components/ToastService"; // Usando alias para importar ToastService
+import { useToast } from "../../../../../../components/ToastService";
 
 export const EmpleadosFeria = ({ id_feria }: homeProps) => {
   const [vacantes, setVacantes] = useState<Map<number, vacante>>(new Map());

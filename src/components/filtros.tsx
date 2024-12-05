@@ -13,9 +13,10 @@ interface Comuna {
 interface FiltrosBaseProps {
   onFilterC: (comuna: number | null) => void;
   onFilterR: (region: number | null) => void;
+  style : CSSModuleClasses
 }
 
-export const Filtros_base = ({ onFilterC, onFilterR }: FiltrosBaseProps) => {
+export const Filtros_base = ({ onFilterC, onFilterR , style}: FiltrosBaseProps) => {
   const [regiones, setRegiones] = useState<Region[]>([]);
   const [comunas, setComunas] = useState<Comuna[]>([]);
   const [selectedRegion, setSelectedRegion] = useState<number | null>(null);
@@ -64,7 +65,7 @@ export const Filtros_base = ({ onFilterC, onFilterR }: FiltrosBaseProps) => {
       <>
 
       <label>REGIONES:</label>
-      <div className="region-filter">
+      <div className={style["region-filter"]}>
         {regiones.map((region) => (
           <button
             key={region.id}
@@ -79,7 +80,7 @@ export const Filtros_base = ({ onFilterC, onFilterR }: FiltrosBaseProps) => {
 
       {selectedRegion ? (
         <>
-          <div className="search">
+          <div className={style["search"]}>
             <input
               type="text"
               placeholder="Buscar comuna..."
@@ -90,7 +91,7 @@ export const Filtros_base = ({ onFilterC, onFilterR }: FiltrosBaseProps) => {
           </div>
           <label>COMUNAS</label>
           <br />
-          <div className="comuna-filter">
+          <div className={style["comuna-filter"]}>
             <button
               onClick={() => handleComunaClick(null)}
               className={`comuna-btn ${selectedComuna === null ? 'selected' : ''}`}

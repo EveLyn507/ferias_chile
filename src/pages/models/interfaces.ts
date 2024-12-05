@@ -5,6 +5,7 @@
 
   export interface ProgramaFeria {
     id_feria: number;
+    id_programa: number;
     id_dia: number;
     hora_inicio: string; // Cambiado a string para representar el tiempo
     hora_termino: string; // Cambiado a string para representar el tiempo

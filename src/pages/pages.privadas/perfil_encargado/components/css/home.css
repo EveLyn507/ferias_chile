@@ -39,19 +39,21 @@
   .misFerias {
     display: flex;
     width: 100%;
-    min-height: 400px;
-    max-height: 400px;
+    min-height: 300px;
+    max-height: 300px;
     flex-direction: column; /* Elementos en columna */
     overflow-y:auto;
+    direction: rtl; 
+    gap: 3px;
   }
   
   .enfmenu button {
     width: 100%;
     font-size: 18px; /* Tamaño del texto */
-    color: #555; /* Color del texto */
+    color: #ffffff; /* Color del texto */
     padding: 10px; /* Espaciado interno de cada opción */
     border-radius: 5px; /* Esquinas redondeadas */
-    background-color: #ffffff; /* Fondo blanco */
+    background-color:rgb(4, 28, 76);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra ligera */
     cursor: pointer; /* Manito al pasar el ratón */
     transition: all 0.3s ease; /* Transiciones suaves */
@@ -69,6 +71,7 @@
   }
   
 .menuView {
+  margin-top: 30%;
   width: 100%;
 }
 

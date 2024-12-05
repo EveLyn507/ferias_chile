@@ -1,7 +1,7 @@
 import './mapa/layer.css'
 import { useNavigate } from "react-router-dom";
 import { arriendo, arriendosListProp } from "./mapa/mapaModel";
-import { useEffect } from 'react';
+
 
 export const Card_arriendos = ({ arriendos }: arriendosListProp) => {
   const estado = ['none', 'disponible', 'en proceso venta', 'arrendado'];
@@ -13,20 +13,7 @@ console.log(arriendos);
     navigate("/pagosss", { state: { arriendo } });
   };
 
-  useEffect(() => {
-    // Aplica el estilo al body solo mientras el componente esté montado
-    const originalBodyStyle = document.body.style.cssText;
-    document.body.style.display = 'flex';
-    document.body.style.justifyContent = 'center';
-    document.body.style.alignItems = 'center';
-    document.body.style.minHeight = '100vh';
-    document.body.style.margin = '0';
 
-    return () => {
-        // Restaura el estilo original del body al desmontar el componente
-        document.body.style.cssText = originalBodyStyle;
-    };
-}, []);
 
   return (
     <div className="scrollable-container-card-arriendos">

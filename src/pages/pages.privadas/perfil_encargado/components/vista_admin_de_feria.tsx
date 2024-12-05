@@ -1,6 +1,6 @@
 import { useEffect} from "react"
 import { BancoFeria } from "./administrador_feria/datosBank"
-import BooleanDaysSelector from "./administrador_feria/programacion"
+import BooleanDaysSelector from "./administrador_feria/programa/programacion"
 import { useSelector } from "react-redux"
 import { AppStore } from "../../../../redux/store"
 import { VacanteService } from "../rxjs/sharingVacantes"

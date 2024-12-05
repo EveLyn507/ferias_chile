@@ -210,7 +210,7 @@ const obtenerFechasContratos = async (req, res, pool) => {
 
   try {
     const query = `
-      SELECT c.fecha
+      SELECT c.fecha_pago
       FROM feriante f
       JOIN contrato_puesto c ON c.id_user_fte = f.id_user_fte
       JOIN arriendo_puesto a ON c.id_arriendo_puesto = a.id_arriendo_puesto
