@@ -231,41 +231,32 @@ const Vista = ({ savePlanoItem, CreateNewItemElement, UpdatePlano, DeleteItemPla
 
   //funciones drag
   return (
-    <>
-      <div className="mobile-warning">
-        Esta vista no es compatible con dispositivos móviles.
-      </div>
+    <div className="herramienta">
+    <div className="toolbar">
+    <Toolbar
+      onAddPuesto={() => AddPuesto(totalPuestos)}
+      onAddStreet={addCalle}
+    />
+   </div>
+        <div className="main-content" >
 
-      <div className="app">
-        <header className="header">
-          <h1>Ferias Chile</h1>
-        </header>
-
-        <div className="main-content" style={{ display: 'flex', flexDirection: 'row', height: '100vh' }}>
-          <div style={{ flex: 1, padding: '10px' }}>
             {isLoading && <p>Cargando...</p>}
             {error && <p style={{ color: 'red' }}>{error}</p>}
 
-            <Toolbar
-              onAddPuesto={() => AddPuesto(totalPuestos)}
+      
+            <div className="canvas-container">
+              <Canvas
+                puestos={puestos}
+                setPuestos={setPuestos}
+                onItemClick={ItemClick}
+                plano={plano}
+                calles={calles}
+                selectedItem={selectedItem}
+                setSelectedItem={setSelectedItem}
+                />
+            </div>
 
-              onAddStreet={addCalle}
-            />
-
-            <Canvas
-              puestos={puestos}
-              setPuestos={setPuestos}
-              onItemClick={ItemClick}
-              plano={plano}
-              calles={calles}
-              selectedItem={selectedItem}
-              setSelectedItem={setSelectedItem}
-
-
-            />
-          </div>
-
-          <div>
+            <div className="planoMenu">
             {selectedItem?.id_tipo_elemento === 2 ? (
               <MenuCalle
                 selectedCalle={selectedItem}
@@ -288,11 +279,9 @@ const Vista = ({ savePlanoItem, CreateNewItemElement, UpdatePlano, DeleteItemPla
                 <div>Esperando la carga de datos del plano...</div> // Mensaje mientras se carga
               )
             )}
+            </div>
           </div>
-
-        </div>
-      </div>
-    </>
+          </div>
   );
 };
 

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
-import { ProgramaFeria } from "../../../../models/interfaces";
-import { useToast } from "@components/ToastService"; // Usando alias para importar ToastService
+import { ProgramaFeria } from "../../../../../models/interfaces";
 import "./prograModal.css";
+import { useToast } from "../../../../../../components/ToastService";
 
 interface EditProgramaModalProps {
   isOpen: boolean;
@@ -19,10 +19,11 @@ const EditProgramaModal: React.FC<EditProgramaModalProps> = ({
   programa,
   onSave,
 }) => {
-  const [editedPrograma, setEditedPrograma] = useState<ProgramaFeria>(programa);
+  const [editedPrograma, setEditedPrograma] = useState<ProgramaFeria >(programa);
   const { addToast } = useToast(); // Hook para mostrar mensajes con ToastService
   const [warnings, setWarnings] = useState<string[]>([]);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+console.log(programa);
 
   useEffect(() => {
     setWarnings([]);
@@ -84,27 +85,36 @@ const EditProgramaModal: React.FC<EditProgramaModalProps> = ({
     return errors.length === 0;
   };
 
+
+
   const handleSave = () => {
     if (validateFields()) {
       onSave(editedPrograma);
-      setSuccessMessage("Programa actualizado correctamente.");
-      addToast({ type: "success", message: "Programa guardado con éxito." });
-      setTimeout(() => {
-        onClose();
-        setSuccessMessage(null);
-      }, 2000);
-    }
   };
-
+  }
   return (
     <Modal
-      isOpen={isOpen}
-      onRequestClose={onClose}
-      contentLabel="Editar Programa"
-      ariaHideApp={false}
-      className="modal-content"
-      overlayClassName="modal-overlay"
-    >
+    isOpen={isOpen}
+    onRequestClose={onClose}
+    style={{
+      overlay: {
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+      },
+      content: {
+        top: "50%",
+        left: "50%",
+        right: "auto",
+        bottom: "auto",
+        marginRight: "-50%",
+        transform: "translate(-50%, -50%)",
+        padding: "20px",
+        borderRadius: "10px",
+        width: "600px",
+        maxHeight: "80vh",
+        overflow: "auto",
+      },
+    }}
+  >
       <h2>Editar Programa</h2>
 
       {warnings.length > 0 && (

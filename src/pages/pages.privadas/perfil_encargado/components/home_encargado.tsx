@@ -12,6 +12,7 @@ import './css/tables.css'
 import './css/programa.css'
 import './css/banco.css'
 import BancosHome from "./bancos/bancos_home";
+import FeriaForm from "./formulario/formulario_feria";
 
 const PerfilEn = () => {
   const id_user_enf = useSelector((store: AppStore) => store.user.id_user);
@@ -22,14 +23,30 @@ const PerfilEn = () => {
   const [actualF, setActualF] = useState<Feria | null>(null)
   const[menuView,setMenuView] = useState<string>('admin')
 
+  const loadData = () => {
+    if (id_user_enf) {
+      feriasService.loadInitialData(id_user_enf);
+      const subscribe = feriasService.ferias$.subscribe((feriasEn) => {
+      const map = new Map(feriasEn.map(feria => [feria.id_feria, feria]));
+      setFeriasMap(map)
+      if(persistFeria) {     
+        const mostrarF = map.get(Number(persistFeria)) 
+        setActualF(mostrarF!)  
+      }
+    
+    })
+    return () => subscribe.unsubscribe()
+  }
+  
+}
+
   const views : Record<string , JSX.Element>=  {
     'admin' : actualF ? <Admin_de_feria feria={actualF}/> : <p>aca se podrian poner actividades generales etcetc</p>,
-    'banco' : <BancosHome/>
+    'banco' : <BancosHome/>,
+    'nueva-feria' : <FeriaForm loadData= {loadData}/>
   }
 
 
-
-  
   const changeFeria = (id : number ) => {
     const mostrarF = feriasMap.get(id)    
     setActualF(mostrarF!)  
@@ -37,28 +54,17 @@ const PerfilEn = () => {
 }
 
   // Conexión WebSocket solo si no está conectado y no se ha realizado previamente
+
+  
   useEffect(() => {
-
-    if (id_user_enf) {
-      feriasService.loadInitialData(id_user_enf);
-    }
-    const subscribe = feriasService.ferias$.subscribe((feriasEn) => {
-      const map = new Map(feriasEn.map(feria => [feria.id_feria, feria]));
-      setFeriasMap(map)
-      if(persistFeria) {     
-        const mostrarF = map.get(Number(persistFeria)) 
-        setActualF(mostrarF!)  
-      }
-    } )
-
-   
+      loadData()
     const isSocketConnected = sessionStorage.getItem('socketConnected');
 
     if (!isSocketConnected || WebSocketService.socket === null) {
       WebSocketService.connect();
       sessionStorage.setItem('socketConnected', 'true');  
     }
-    return () => subscribe.unsubscribe()
+
   }, []); 
 
 

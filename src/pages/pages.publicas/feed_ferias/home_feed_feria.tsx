@@ -7,7 +7,7 @@ import Carrusel from './components/listado_ferias/carrusel';
 import styles from './css/feed.module.css';
 import './css/carrusel.css';
 import './css/cards_feed.css'
-import './css/filtros.css'
+import feedStyle from './css/filtros.module.css'
 const View_feed = () => {
   const [selectedComuna, setSelectedComuna] = useState<number | null>(null);
   const [selectedRegion, setSelectedRegion] = useState<number | null>(null);
@@ -35,6 +35,7 @@ const View_feed = () => {
     <Filtros_base
       onFilterC={(comuna) => setSelectedComuna(comuna)}
       onFilterR={(region) => setSelectedRegion(region)}
+      style={feedStyle}
     />
   </div>
 

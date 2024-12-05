@@ -23,7 +23,7 @@ export const HomePostulaciones = () => {
 
   return (
 <>
-<h1>PANEL DE EMPLEABILIDAD</h1>
+<h1>EMPLEOS FERIA</h1>
 
 <Tabs>
 
@@ -35,10 +35,8 @@ export const HomePostulaciones = () => {
 
     <TabPanel>
       <div className= {fteHome["postulacion-container"]} >
-
-  
       <div className= {fteHome["postu-filter"]} >
-      <Filtros_base onFilterC={setSelectedComuna} onFilterR={setSelectedRegion}/>
+      <Filtros_base onFilterC={setSelectedComuna} onFilterR={setSelectedRegion} style={fteHome}/>
       </div>
       <div className={fteHome["search"]} >
       <button onClick={() => filtrar()}> Realizar Busqueda</button>

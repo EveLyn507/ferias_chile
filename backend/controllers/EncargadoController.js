@@ -186,15 +186,9 @@ res.status(500).json({ error: 'Error al obtener la feria' });
 
 
 const UpdateProgramaFeria = async (req, res, pool) => {
-  const { id_feria, programacion } = req.body; 
-
+  const { id_feria, programa } = req.body; 
+  const { id_horario_feria ,hora_inicio, hora_termino, id_dia_armado, hora_inicio_armado, hora_termino_armado, activo } = programa
   try {
-    // Recorre cada elemento de la programación (debe ser un array)
-    for (const programa of programacion) {
-      const { id_dia, hora_inicio, hora_termino, id_dia_armado, hora_inicio_armado, hora_termino_armado, activo } = programa;
-      
-
-      // Si los datos existen, hacer el UPDATE
       await pool.query(
         `UPDATE detalle_programa_feria
          SET hora_inicio = $3,
@@ -203,11 +197,10 @@ const UpdateProgramaFeria = async (req, res, pool) => {
              hora_inicio_armado = $6,
              hora_termino_armado = $7,
              activo = $8
-         WHERE id_feria = $1 AND id_dia = $2;`,
-        [id_feria, id_dia, hora_inicio, hora_termino, id_dia_armado, hora_inicio_armado, hora_termino_armado, activo]
+         WHERE id_feria = $1 AND id_horario_feria = $2;`,
+        [id_feria, id_horario_feria ,hora_inicio, hora_termino, id_dia_armado, hora_inicio_armado, hora_termino_armado, activo]
       );
-    }
-
+  
     return res.status(200).json({ message: 'Programación de Feria guardada correctamente' });
     
   } catch (err) {
@@ -513,7 +506,7 @@ const rechazarRestoPostulacion = async (pool, id_vacante) => {
     await pool.query(`
       UPDATE postulaciones
       SET id_estado = 3
-      WHERE id_vacante = $1 
+      WHERE id_vacante = $1 AND id_estado = 1
     `, [id_vacante]);
   } catch (error) {
     console.error("Error al rechazar el resto de postulaciones:", error);

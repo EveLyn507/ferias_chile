@@ -60,6 +60,7 @@ export interface PuestosMapaProps {
     isStatic: false;
     image: HTMLImageElement | null;
     itemClick: (idP : number) => void
+    arriendos: arriendo[]
 
   }
   

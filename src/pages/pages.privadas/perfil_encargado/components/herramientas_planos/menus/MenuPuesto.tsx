@@ -1,7 +1,6 @@
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { dataPuesto,  PlanoItemElement, Rectangle } from "../models/vistaplanoModels";
-import '../css/menuD.css';
 
 interface MenuDerechaProps {
   selectedPuesto: PlanoItemElement | null;
@@ -11,7 +10,7 @@ interface MenuDerechaProps {
 }
 
 
-const MenuDerecha: React.FC<MenuDerechaProps> = ({
+const MenuPuesto: React.FC<MenuDerechaProps> = ({
   selectedPuesto,
   deleteItem,
   setSelectedItem,
@@ -155,4 +154,4 @@ const handleChangeDimencion = (field: keyof Rectangle, value: any) => {
   );
 };
 
-export default MenuDerecha;
+export default MenuPuesto;

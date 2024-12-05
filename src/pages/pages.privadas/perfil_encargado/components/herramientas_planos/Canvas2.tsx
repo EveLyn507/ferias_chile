@@ -147,8 +147,7 @@ const Canvas2: React.FC<CanvasProps> = ({
 
   return (
     <>
-      {/* Botones de zoom */}
-      <div style={{ position: 'relative', top: '10px', right: '10px', paddingBottom: '10px' }}>
+      <div className='zooms'>
         <button onClick={() => setZoomLevel(Math.min(zoomLevel + 0.1, 4))} style={{ margin: '5px' }}>
           Zoom In
         </button>
@@ -156,15 +155,16 @@ const Canvas2: React.FC<CanvasProps> = ({
           Zoom Out
         </button>
       </div>
-      <Stage
-        width={1150}
-        height={500}
+
+      <Stage 
+        width={1260}
+        height={540}
         scaleX={zoomLevel}
         scaleY={zoomLevel}
         x={stagePosition.x}
         y={stagePosition.y}
         draggable
-        style={{ border: 'black solid 5px', backgroundColor: 'transparent',  overflow: 'auto'}}
+        style={{ borderTop:'black solid 1px', borderBottom: 'black solid 1px', backgroundColor: 'transparent' , height: 'auto' , width: 'auto'} }
       >
         <Layer>
           <Rect

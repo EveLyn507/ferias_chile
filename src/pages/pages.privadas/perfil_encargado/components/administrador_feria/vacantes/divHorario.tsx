@@ -1,5 +1,5 @@
-import { horarioVacante } from "../../../../../../models/interfaces";
-import { useToast } from "@components/ToastService"; // Usando alias para importar ToastService
+import { useToast } from "../../../../../../components/ToastService";
+import { horarioVacante } from "../../../../../models/interfaces";
 
 interface divProp {
   horarios: horarioVacante[];

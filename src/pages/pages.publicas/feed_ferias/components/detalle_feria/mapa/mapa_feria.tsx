@@ -145,6 +145,7 @@ return (
       isStatic={false}  // Si los puestos son estáticos o no (pueden moverse o redimensionarse)
       image={image}  // Imagen que se aplicará a los puestos (si es necesario)
       itemClick={handleObjectClick}
+      arriendos={arriendos}
 
     />
       {/* Capa para las calles */}

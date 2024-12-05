@@ -6,7 +6,7 @@ import { PostulacionModal } from "./postulacionModal";
 import { useSelector } from "react-redux";
 import { AppStore } from "../../../../../../redux/store";
 import { getPostulacionesEnf } from "../../../services/admin_feria_fuctions";
-import { useToast } from "@components/ToastService";
+import { useToast } from "../../../../../../components/ToastService";
 
 interface VacanteCardProps {
   formData: vacante;

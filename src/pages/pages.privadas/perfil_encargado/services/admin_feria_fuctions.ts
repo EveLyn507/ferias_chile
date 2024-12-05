@@ -5,18 +5,13 @@ import { VacanteService } from "../rxjs/sharingVacantes";
 import { bancoService } from "../rxjs/sharingbankslist";
 
 // PROGRAMACION DE LA FERIA
-export const  GuardarProgramacionFeria = async (programacion : ProgramaFeria[] ,id_feria : number )  =>  {
+export const  GuardarProgramacionFeria = async (programa : ProgramaFeria ,id_feria : number )  =>  {
 
     try{
-      const response  = await axios.post(`http://localhost:5000/administracion/:id_feria` ,{programacion , id_feria})
-      const feria = response.data
-      if (response.status === 200) {
-    
-        return feria 
-      }else {
-        throw new Error('Error en la solicitud');
+      const response  = await axios.post(`http://localhost:5000/administracion/:id_feria` ,{programa , id_feria})
+        return  response.status
 
-  } 
+  
 }
   catch (error) {
       console.error('Error al insertar programacion de feria  del encargado : ', id_feria, error);

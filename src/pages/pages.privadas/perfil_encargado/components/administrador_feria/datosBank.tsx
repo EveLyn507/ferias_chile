@@ -5,8 +5,9 @@ import { useEffect, useState } from "react";
 import { DatosBank, homeProps } from "../../../../models/interfaces";
 import { bancoService } from "../../rxjs/sharingbankslist";
 import { asociarBankFeria, getFeriaBank } from "../../services/admin_feria_fuctions";
-import { useToast } from "@components/ToastService";
+
 import { Link } from "react-router-dom";
+import { useToast } from "../../../../../components/ToastService";
 
 export const BancoFeria = ({ id_feria }: homeProps) => {
   const id_user_enf = useSelector((store: AppStore) => store.user.id_user);

@@ -12,8 +12,6 @@ export const StatusFeria = ({id_feria} : homeProps) => {
   const [stateButton, setStateButton] = useState<boolean>(true)
   const [estado , setEstado] = useState('')
 
-
-console.log(estado)
 const opTiket = async () => {
     await OpenTiket(id_feria)
     await recargar()
@@ -22,7 +20,7 @@ const opTiket = async () => {
 const recargar = async () => {
   const state  = await recargaStatus(id_feria) 
   setEstado(state)
-  return state === 'No enviada' ? setStateButton(false) : setStateButton(true) 
+  return state === 'No enviada' || state === 'Rechazada' ? setStateButton(false) : setStateButton(true) 
   
 }
 

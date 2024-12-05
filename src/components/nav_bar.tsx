@@ -19,9 +19,7 @@ export const Nav_bar = () => {
     
         <li><Link to="/Feed-ferias" onClick={handleCloseMenu}>Feed-Ferias</Link></li>
         <Logeado/>
-        {role === 1 && ( 
-          <li><Link to="/formulario-feria" onClick={handleCloseMenu}>Crear Feria</Link></li>
-        )}
+   
       </ul>
     </nav>
   );

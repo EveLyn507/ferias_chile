@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState } from "react";
 import Modal from "react-modal";
 import { vacante } from "../../../../../models/interfaces";
-import { useToast } from '@components/ToastService';// Importa el servicio de toast
+import { useToast } from "../../../../../../components/ToastService";
 
 interface modalProps {
   isOpen: boolean;
@@ -14,8 +15,8 @@ Modal.setAppElement("#root");
 
 export const VacanteModal = ({ isOpen, onClose, vacante, onSave }: modalProps) => {
   const semana = ['none', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
-  const [editedVacante, setEditedVacante] = useState<vacante>(vacante);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [editedVacante, setEditedVacante] = useState<vacante>(vacante); 
+  const [errorMessage, _setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const { addToast } = useToast(); // Usa el servicio de toast
 
