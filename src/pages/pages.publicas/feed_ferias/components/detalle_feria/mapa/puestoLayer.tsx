@@ -1,6 +1,6 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { Text, Image as KonvaImage, Layer } from 'react-konva';
-import { PlanoItemElement, PuestosMapaProps, arriendo } from './mapaModel';
+import { PlanoItemElement, PuestosMapaProps } from './mapaModel';
 
 const PuestosLayer: React.FC<PuestosMapaProps> = ({
   puestos,
@@ -44,10 +44,16 @@ const PuestosLayer: React.FC<PuestosMapaProps> = ({
           ? arriendos.find((arriendo) => arriendo.id_puesto === Puesto.dataPuesto?.id_puesto)
           : null;
 
+        if (!arriendoEstado) {
+          console.warn("Estado no encontrado para puesto:", Puesto.dataPuesto); // Este es el mensaje actual
+        }
+
         // Agrega un valor predeterminado para evitar problemas
         const estadoConfig = (() => {
-          const idEstado = Puesto.dataPuesto?.id_estado_puesto || 0;
-          switch (idEstado) {
+          if (!arriendoEstado) {
+            return { texto: "Estado desconocido", color: "gray" };
+          }
+          switch (arriendoEstado.id_estado_arriendo) {
             case 1:
               return { texto: "Disponible", color: "green" };
             case 2:
@@ -56,8 +62,8 @@ const PuestosLayer: React.FC<PuestosMapaProps> = ({
               return { texto: "Arrendado", color: "red" };
             default:
               return { texto: "Estado desconocido", color: "gray" };
-          }
-        })();
+                    }
+          })();
 
         return (
           <React.Fragment key={Puesto.id_elemento}>

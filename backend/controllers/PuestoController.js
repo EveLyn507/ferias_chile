@@ -18,38 +18,45 @@ const getPuestos = async (req, res) => {
     res.status(500).send("Error al obtener los puestos");
   }
 };
-const createPuesto = async (req, res) => {
-  const { numero, id_tipo_puesto, id_feria, descripcion, id_estado_puesto, horarioData } = req.body; 
-  const pool = req.pool;
 
-  try {
-    const result = await pool.query(
-      'INSERT INTO puesto (numero, id_tipo_puesto, id_feria, descripcion, id_estado_puesto) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-      [numero, id_tipo_puesto, id_feria, descripcion, id_estado_puesto]
-    );
-
-    const nuevoPuesto = result.rows[0]; 
-
-    // Si hay datos de horario, insértalos y añádelos al objeto de respuesta
-    if (horarioData) {
-      const { hora_inicio, hora_termino, precio, num_horario } = horarioData;
-      const horarioResult = await pool.query(
-        `INSERT INTO horario_puesto (hora_inicio, hora_termino, precio, num_horario, id_puesto)
-         VALUES ($1, $2, $3, $4, $5) RETURNING *`,
-        [hora_inicio, hora_termino, precio, num_horario, nuevoPuesto.id_puesto]
+  
+  const createPuesto = async (req, res) => {
+    const { numero, id_tipo_puesto, id_feria, descripcion, id_estado_puesto, horarioData } = req.body; // Añadir horario al body
+    const pool = req.pool;
+  
+    try {
+      // Insertar el puesto
+      const result = await pool.query(
+        'INSERT INTO puesto (numero, id_tipo_puesto, id_feria, descripcion, id_estado_puesto) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+        [numero, id_tipo_puesto, id_feria, descripcion, id_estado_puesto]
       );
-
-      nuevoPuesto.horarioData = horarioResult.rows[0];
-    } else {
-      nuevoPuesto.horarioData = null;
+  
+      const nuevoPuesto = result.rows[0]; // Obtener el puesto creado
+  
+      // Verificar si hay datos de horario que insertar
+      if (horarioData) {
+        const { hora_inicio, hora_termino, precio, num_horario } = horarioData;
+  
+        // Llamar a insertHorarioPuesto pasando el id del nuevo puesto
+        const horarioResult = await pool.query(
+          `INSERT INTO horario_puesto (hora_inicio, hora_termino, precio, num_horario, id_puesto)
+           VALUES ($1, $2, $3, $4, $5)
+           RETURNING *`,
+          [hora_inicio, hora_termino, precio, num_horario, nuevoPuesto.id_puesto]
+        );
+  
+        // Agregar el horario insertado al puesto creado
+        nuevoPuesto.horarioData = horarioResult.rows[0];
+        console.log(nuevoPuesto);
+        
+      }
+  
+      res.status(201).json(nuevoPuesto); // Devolver el puesto creado con su horario, si lo hay
+    } catch (err) {
+      console.error('Error al crear puesto:', err); // Detalles del error
+      res.status(500).json({ error: 'Error al crear puesto', details: err.message });
     }
-
-    res.status(201).json(nuevoPuesto);
-  } catch (err) {
-    console.error('Error al crear puesto:', err);
-    res.status(500).json({ error: 'Error al crear puesto', details: err.message });
-  }
-};
+  };
   
   const deletePuesto = async (req, res) => {
     const pool = req.pool;
