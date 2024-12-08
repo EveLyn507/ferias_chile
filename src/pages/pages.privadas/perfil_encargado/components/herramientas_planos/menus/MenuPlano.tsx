@@ -43,8 +43,11 @@ const MenuPlano: React.FC<menuPlanoPros> = ({ plano, onChangePlano }) => {
 
   return (
     <div className="menu-container">
+      <div className="menu-content">
+
+    
       <h3>Modificar Plano</h3>
-      <div>
+      <div className='input-group'>
         <label>
           Largo:
           <input
@@ -56,9 +59,8 @@ const MenuPlano: React.FC<menuPlanoPros> = ({ plano, onChangePlano }) => {
             ref={widthInputRef}
           />
         </label>
-      </div>
+  
 
-      <div>
         <label>
           Alto:
           <input
@@ -71,6 +73,7 @@ const MenuPlano: React.FC<menuPlanoPros> = ({ plano, onChangePlano }) => {
           />
         </label>
       </div>
+    </div>
     </div>
   );
 };

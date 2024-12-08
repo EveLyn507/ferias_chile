@@ -7,6 +7,7 @@ import ConfiguracionPerfil from './perfilConfig/perfilConfig';
 import { HomePostulaciones } from './postulaciones/homePostulaciones';
 import { Menu } from './menu/menufte';
 import './home.css';
+import { MisCompras } from './compras/misCompras';
 
 const PerfilFeriantes: React.FC = () => {
 
@@ -25,7 +26,8 @@ const PerfilFeriantes: React.FC = () => {
 
   const views : Record<string , JSX.Element>=  {
     'configuracion' : <ConfiguracionPerfil/>,
-    'postulaciones' : <HomePostulaciones/>
+    'postulaciones' : <HomePostulaciones/>,
+    'compras' :  <MisCompras/>
   }
   useEffect(() => {   
    

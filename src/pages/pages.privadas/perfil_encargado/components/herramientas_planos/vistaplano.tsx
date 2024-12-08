@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import Toolbar from './Toolbar';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
-import { DeletedItem, plano, PlanoItemElement } from './models/vistaplanoModels';
+import {  plano, PlanoItemElement } from './models/vistaplanoModels';
 import Canvas from './Canvas2';
 import MenuPuesto from './menus/MenuPuesto';
 import MenuCalle from './menus/MenuCalle';
@@ -73,7 +73,7 @@ const Vista = ({ savePlanoItem, CreateNewItemElement, UpdatePlano, DeleteItemPla
         setPlanocharge(true)
       }
 
-      console.log('me activo fetch');
+
 
     };
 
@@ -82,21 +82,15 @@ const Vista = ({ savePlanoItem, CreateNewItemElement, UpdatePlano, DeleteItemPla
   }, []);
 
 
-  const deleteItem = async (delItem: PlanoItemElement) => {
-    const deleteItem: DeletedItem = {
-      id_elemento: delItem!.id_elemento!,
-      id_tipo_elemento: delItem!.id_tipo_elemento,
-      nombre_elemento: delItem!.nombre_elemento,
-      id_plano: delItem!.id_plano!,
-      id_puesto: delItem!.dataPuesto?.id_puesto || null,
-      id_feria: delItem!.id_feria!
-      }
+  const deleteItem =  (delItem: PlanoItemElement) => {
+
       console.log('esto se elimno', delItem);
-      await DeleteItemPlano(deleteItem)
+       DeleteItemPlano(delItem)
 
       if (delItem.id_tipo_elemento === 1) {
-        //const updatedPuestos = puestos.filter((r) => r.id_elemento !== delItem.id_elemento);
-        //setPuestos(updatedPuestos)
+        const newMap = new Map(puestos); // Crear una copia
+        newMap.delete(delItem.id_elemento!);
+        setPuestos(newMap); // Actualizar el estado
       } else if (delItem.id_tipo_elemento === 2) {
       const updatedCalles = calles.filter((r) => r.id_elemento !== delItem.id_elemento);
       setCalles(updatedCalles)
@@ -238,7 +232,7 @@ const Vista = ({ savePlanoItem, CreateNewItemElement, UpdatePlano, DeleteItemPla
       onAddStreet={addCalle}
     />
    </div>
-        <div className="main-content" >
+        <div className="layers-content" >
 
             {isLoading && <p>Cargando...</p>}
             {error && <p style={{ color: 'red' }}>{error}</p>}
@@ -256,7 +250,7 @@ const Vista = ({ savePlanoItem, CreateNewItemElement, UpdatePlano, DeleteItemPla
                 />
             </div>
 
-            <div className="planoMenu">
+
             {selectedItem?.id_tipo_elemento === 2 ? (
               <MenuCalle
                 selectedCalle={selectedItem}
@@ -281,7 +275,7 @@ const Vista = ({ savePlanoItem, CreateNewItemElement, UpdatePlano, DeleteItemPla
             )}
             </div>
           </div>
-          </div>
+  
   );
 };
 
