@@ -29,8 +29,12 @@ const scale = 100
 
   return (
     <div className="menu-container">
+      <div className="menu-content">
+
+
          <h3>Modificar Calle</h3>
-      <div>
+      <div className="xyinput-group">
+      <div className='xy'>
         <label>
           X:
           <input
@@ -39,9 +43,7 @@ const scale = 100
             onChange={(e) => handleChange("x", parseInt(e.target.value))}
           />
         </label>
-      </div>
-
-      <div>
+ 
         <label>
           Y:
           <input
@@ -51,8 +53,10 @@ const scale = 100
           />
         </label>
       </div>
+      </div>
 
-      <div>
+      <div className="xyinput-group">
+      <div className='xy'>
         <label>
           Ancho:
           <input
@@ -61,8 +65,7 @@ const scale = 100
             onChange={(e) => handleChange("width", parseInt(e.target.value))}
           />
         </label>
-      </div>
-      <div>
+
         <label>
           Alto:
           <input
@@ -72,7 +75,11 @@ const scale = 100
           />
         </label>
       </div>
-      <button onClick={() => deleteItem(selectedCalle!)}>ELIMINAR</button>
+      </div>
+      <br />
+      <button  className="menu-button delete-button" onClick={() => deleteItem(selectedCalle!)}>ELIMINAR</button>
+    </div>
+
     </div>
   );
 };

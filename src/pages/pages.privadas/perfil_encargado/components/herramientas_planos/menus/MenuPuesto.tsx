@@ -56,6 +56,8 @@ const handleChangeDimencion = (field: keyof Rectangle, value: any) => {
 
   return (
     <div className="menu-container">
+      <div className="menu-content">
+ 
       <h3 className="menu-header">Editar Puesto {selectedPuesto?.id_elemento}</h3>
 
       <div className="xyinput-group">
@@ -79,7 +81,7 @@ const handleChangeDimencion = (field: keyof Rectangle, value: any) => {
       <br />
       <div className="xyinput-group">
         <div className="xy">
-          <label>Width</label>
+          <label>Ancho (M) </label>
           <input
             type="number"
             value={selectedPuesto!.dimenciones.width! / scale  }
@@ -87,7 +89,7 @@ const handleChangeDimencion = (field: keyof Rectangle, value: any) => {
           />
         </div>
         <div className="xy">
-          <label>Height</label> 
+          <label>Largo (M)</label> 
           <input
             type="number"
             value={selectedPuesto!.dimenciones.height! /scale }
@@ -149,7 +151,8 @@ const handleChangeDimencion = (field: keyof Rectangle, value: any) => {
         Eliminar Puesto
       </button>
       </div>
-      
+             
+      </div>
     </div>
   );
 };

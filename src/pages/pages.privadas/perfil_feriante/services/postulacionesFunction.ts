@@ -73,3 +73,21 @@ catch (error) {
   } 
 
 
+
+export const loadCompras = async (id_user_fte : number) => {
+    
+  try{
+    const response  = await axios.post(`http://localhost:5000/fteLoadCompras`, {id_user_fte})
+     const data = response.data
+  
+     return data
+   
+    
+}
+catch (error) {
+    console.error('Error al cargar las postulaciones del usuario: ', error);
+
+  }
+} 
+
+
