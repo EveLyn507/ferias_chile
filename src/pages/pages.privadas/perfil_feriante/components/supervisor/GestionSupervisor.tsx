@@ -85,7 +85,7 @@ const GestionSupervisor = ({ id_feria, nombre_feria }: GestionSupervisorProps) =
       </div>
 
       <section className="supervisor-section">
-        <GestionPuestos id_feria={id_feria} />
+        <GestionPuestos id_feria={id_feria} fecha={selectedFecha} />
       </section>
 
       <section className="supervisor-section">
