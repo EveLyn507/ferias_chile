@@ -277,6 +277,7 @@ BEGIN
         (p_region IS NULL OR g.id_region = p_region)
         -- Si p_comuna no es NULL, filtrar por comuna
         AND (p_comuna IS NULL OR c.id_comuna = p_comuna)
+		AND f.id_estado = 4
     LIMIT p_limit
     OFFSET p_offset;
 

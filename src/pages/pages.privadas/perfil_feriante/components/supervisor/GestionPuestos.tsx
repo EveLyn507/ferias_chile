@@ -9,9 +9,10 @@ interface Puesto {
 
 interface GestionPuestosProps {
   id_feria: number | null;
+  fecha: string;
 }
 
-const GestionPuestos: React.FC<GestionPuestosProps> = ({ id_feria }) => {
+const GestionPuestos: React.FC<GestionPuestosProps> = ({ id_feria, fecha }) => {
   const [puestos, setPuestos] = useState<Puesto[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -22,26 +23,32 @@ const GestionPuestos: React.FC<GestionPuestosProps> = ({ id_feria }) => {
       setLoading(false);
       return;
     }
-
+  
+    if (!fecha) {
+      setError('Fecha no seleccionada');
+      setLoading(false);
+      return;
+    }
+  
     const fetchPuestos = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`http://localhost:5000/api/supervisor/puestos/${id_feria}`, {
-          params: { id_feria },
-        });
+        const response = await axios.get(
+          `http://localhost:5000/api/supervisor/puestos/${id_feria}`, 
+          { params: { fecha } } // Pasar fecha como parámetro
+        );
         setPuestos(response.data);
         setError(null);
       } catch (error) {
         console.log(error);
-        
         setError('Error al obtener los datos de los puestos');
       } finally {
         setLoading(false);
       }
     };
-
+  
     fetchPuestos();
-  }, [id_feria]);
+  }, [id_feria, fecha]);
 
   const togglePuestoEstado = async (id_puesto: number, estado: string) => {
     try {

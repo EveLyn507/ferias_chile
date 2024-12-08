@@ -79,25 +79,44 @@ const obtenerHorario = async (req, res, pool) => {
 // Obtener el listado de puestos para gestionar el estado (habilitar/bloquear)
 const getPuestos = async (req, res, pool) => {
   try {
-    const { id_feria } = req.params; // Obtener id_feria desde los parámetros de la ruta
+    const { id_feria } = req.params;
+    const { fecha } = req.query; // Obtener la fecha desde los parámetros de consulta
 
-    if (!id_feria) {
-      return res.status(400).json({ message: 'El id_feria es requerido' });
+    console.log('Parámetros recibidos:', { id_feria, fecha }); // Log para verificar los parámetros
+
+    if (!id_feria || !fecha) {
+      console.error('Faltan parámetros requeridos: id_feria o fecha');
+      return res.status(400).json({ message: 'El id_feria y la fecha son requeridos' });
     }
 
-    const puestos = await pool.query(`
-      SELECT p.id_puesto, p.numero, ep.estado
-      FROM puesto p
+    console.log('Ejecutando consulta SQL...');
+
+    const puestos = await pool.query(
+      `
+      SELECT p.id_puesto, p.numero, ep.estado, c.fecha
+      FROM feria f
+      JOIN detalle_programa_feria d ON (d.id_feria = f.id_feria)
+      JOIN actividad_feria a ON (a.id_horario_feria = d.id_horario_feria)
+      JOIN arriendo_puesto ar ON (a.id_actividad_feria = ar.id_actividad_feria)
+      JOIN contrato_puesto c ON (c.id_arriendo_puesto = ar.id_arriendo_puesto)
+      JOIN puesto p ON (p.id_feria = f.id_feria)
       JOIN estado_puesto ep ON p.id_estado_puesto = ep.id_estado_puesto
-      WHERE p.id_feria = $1;
-    `, [id_feria]); // Pasar id_feria como parámetro
+      WHERE f.id_feria = $1 AND c.fecha = $2;
+      `,
+      [id_feria, fecha] // Pasar la fecha como segundo parámetro
+    );
+
+    console.log('Resultado de la consulta:', puestos.rows); // Log para verificar los datos obtenidos
 
     res.status(200).json(puestos.rows);
   } catch (error) {
-    console.error('Error al obtener puestos:', error);
+    console.error('Error al obtener puestos:', error.message);
+    console.error('Stack trace:', error.stack); // Imprimir el stack trace completo
     res.status(500).json({ message: 'Error al obtener puestos' });
   }
 };
+
+
 
 
 // Actualizar el estado de un puesto
@@ -210,14 +229,17 @@ const obtenerFechasContratos = async (req, res, pool) => {
 
   try {
     const query = `
-      SELECT c.fecha_pago
-      FROM feriante f
-      JOIN contrato_puesto c ON c.id_user_fte = f.id_user_fte
-      JOIN arriendo_puesto a ON c.id_arriendo_puesto = a.id_arriendo_puesto
-      JOIN estado_arriendo e ON a.id_estado_arriendo = e.id_estado_arriendo
-      JOIN puesto p ON a.id_puesto = p.id_puesto
-      JOIN feria fe ON p.id_feria = fe.id_feria
-      WHERE fe.id_feria = $1;
+      select a.fecha
+      from feria f
+      join detalle_programa_feria d
+      on (d.id_feria = f.id_feria)
+      join actividad_feria a
+      on (a.id_horario_feria = d.id_horario_feria)
+	    join arriendo_puesto ar
+	    on(a.id_actividad_feria = ar.id_actividad_feria)
+	    join contrato_puesto c
+	    on(c.id_arriendo_puesto = ar.id_arriendo_puesto)
+      WHERE f.id_feria = $1;
     `;
 
     const result = await pool.query(query, [id_feria]);
@@ -285,12 +307,20 @@ const getFechasDisponibles = async (req, res, pool) => {
 
   try {
     const query = `
-      select a.fecha
+      select distinct  c.fecha
       from feria f
       join detalle_programa_feria d
       on (d.id_feria = f.id_feria)
       join actividad_feria a
       on (a.id_horario_feria = d.id_horario_feria)
+	    join arriendo_puesto ar
+	    on(a.id_actividad_feria = ar.id_actividad_feria)
+	    join contrato_puesto c
+	    on(c.id_arriendo_puesto = ar.id_arriendo_puesto)
+	    join puesto p
+	    on(p.id_feria = f.id_feria)
+	    JOIN estado_puesto ep 
+	    on p.id_estado_puesto = ep.id_estado_puesto
       where f.id_feria = $1`;
 
     const result = await pool.query(query, [id_feria]);
