@@ -59,7 +59,7 @@ export interface vistaProps {
   savePlanoItem : (selectedItem : PlanoItemElement) => void
   CreateNewItemElement: (newItem: PlanoItemElement) => Promise<PlanoItemElement>
   UpdatePlano : (newPlano : plano) => void
-  DeleteItemPlano: (DeletedItem : DeletedItem) => void
+  DeleteItemPlano: (DeletedItem : PlanoItemElement) => void
 
 }
 

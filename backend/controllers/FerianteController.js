@@ -520,6 +520,40 @@ const misPostulaciones = async(res , pool, id_user_fte) => {
 } 
 
 
+const loadCompras = async(res, pool,id_user_fte ) => {
+  try {
+
+    const result = await pool.query(`
+      SELECT 
+      cp.id_contrato,
+      cp.fecha_pago,
+      cp.id_arriendo_puesto,
+      (
+      select tp.detalle from tipo_pago tp where tp.id_tipo_pago = cp.id_tipo_pago 
+      ) as tipo_pago,
+      (
+      select ec.detalle from estado_contrato ec where ec.id_estado_contrato = cp.id_estado_contrato
+      ) as estado_contrato,
+      cp.precio,
+      cp.buy_order,
+      ap.id_puesto,
+      af.fecha as fecha_feria,
+      p.numero,
+      (
+      select nombre from feria f where f.id_feria = p.id_feria 
+      ) as nombre_feria
+      FROM contrato_puesto cp
+      JOIN arriendo_puesto ap ON ap.id_arriendo_puesto = cp.id_arriendo_puesto
+      JOIN puesto p ON p.id_puesto = ap.id_puesto
+      JOIN actividad_feria af ON af.id_actividad_feria = ap.id_actividad_feria 
+      WHERE id_user_fte = $1`, [id_user_fte])
+    res.json(result.rows)
+  } catch (error) {
+    res.status(500)
+  }
+}
+
+
 
 module.exports = {
   getEstadoPerfil,
@@ -541,5 +575,6 @@ module.exports = {
   getVacantesFeria,   //inicio modulo postulaciones
   getFeriasConVacantesVacias,
   insertPostulacion,
-  misPostulaciones
+  misPostulaciones,
+  loadCompras
 };

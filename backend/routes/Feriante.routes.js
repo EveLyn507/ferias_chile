@@ -21,7 +21,8 @@ const {
   getVacantesFeria,//modulo postulaciones
   getFeriasConVacantesVacias,
   insertPostulacion,
-  misPostulaciones
+  misPostulaciones,
+  loadCompras
 } = require('../controllers/FerianteController');
 
 // Obtener estado del perfil
@@ -139,6 +140,13 @@ router.post('/getMisPostulaciones', (req, res) => {
   const pool = req.pool;
   const {id_user_fte} = req.body
   misPostulaciones(res, pool,id_user_fte);
+});
+
+
+router.post('/fteLoadCompras', (req, res) => {
+  const pool = req.pool;
+  const {id_user_fte} = req.body
+  loadCompras(res, pool,id_user_fte);
 });
 
 

@@ -14,6 +14,7 @@ export const Menu  = ({ setMenuView } : enfMenuProps) => {
          
                 <button onClick={() => setMenuView('configuracion')}>Configuracion</button>
                 <button onClick={() => setMenuView('postulaciones')}>Empleos Feria</button>
+                <button onClick={() => setMenuView('compras')}>Mis Compras</button>
             </div>
 
 

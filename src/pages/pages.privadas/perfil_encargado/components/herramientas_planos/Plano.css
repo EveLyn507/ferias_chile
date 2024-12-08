@@ -1,8 +1,11 @@
+/* Ajustes generales */
 .herramienta {
   display: flex;
   flex-direction: column;
-  height: auto;
+  height: 100%;
   width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .toolbar {
@@ -15,15 +18,9 @@
   padding: 10px;
   background-color: #f8f9fa;
   border-bottom: 1px solid #ddd;
+  box-sizing: border-box;
 }
 
-
-.main-content {
-  display: flex;
-  height: auto;
-  width: 100%;
-
-}
 .toolbar-button {
   padding: 10px 20px;
   background-color: #042c4c;
@@ -34,30 +31,41 @@
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
+.layers-content {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
 .toolbar-button:hover {
   background-color: #183369;
   transform: translateY(-2px);
 }
 
 .canvas-container {
-  min-width: 85%;
+  flex: 0 0 85%; /* El canvas ocupa el 85% del ancho */
   background-color: #ffffff;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
-}
-
-.planoMenu {
-  min-width: 15%;
-
+  overflow: hidden;
 }
 
 .menu-container {
-  width: 100%;
-  background-color: #ffffff;
+  flex: 0 0 15%; /* El menú ocupa el 15% del ancho */
+  background-color: #f5f5f5;
   border-left: 1px solid #ddd;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   font-family: Arial, sans-serif;
-  padding: 20px;
+  min-height: 100%;
+  box-sizing: border-box;
+}
+
+.menu-content {
+  width: 85%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .menu-header {
@@ -75,25 +83,34 @@
 .input-group label {
   display: block;
   font-weight: bold;
+  font-size: 14px;
+  margin-bottom: 5px;
 }
 
 .input-group input,
 .input-group select {
-  width: 100%;
   border-radius: 4px;
   border: 1px solid #ccc;
+  padding: 5px;
   box-sizing: border-box;
-  font-size: 12px;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+.input-group input:focus {
+  border-color: #007bff;
+  outline: none;
 }
 
 .menu-button {
   width: 100%;
-  padding: 5px;
+  padding: 8px;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   font-weight: bold;
+  font-size: 14px;
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
@@ -121,13 +138,15 @@
 
 .xyinput-group {
   display: flex;
+  flex-wrap: wrap;
   width: 100%;
+  gap: 10px;
 }
 
 .xy {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  flex: 1;
 }
 
 .xy label {
@@ -137,7 +156,7 @@
 }
 
 .xy input {
-  width: 80%;
+  width: 85%;
   padding: 6px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -156,6 +175,7 @@
   margin-top: 10px;
   font-size: 14px;
 }
+
 .mobile-warning {
   display: none;
   position: fixed;
@@ -172,12 +192,3 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-@media (max-width: 700px) {
-  .app {
-    display: none;
-  }
-
-  .mobile-warning {
-    display: block;
-  }
-}
