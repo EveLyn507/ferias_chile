@@ -15,6 +15,7 @@ const Privado = lazy(() => import ('./pages/pages.privadas/Private.routes'));
 import './App.css';
 import Footer from './components/footer';
 import { ToastProvider } from './components/ToastService'; //npm install react-toastify
+import FormularioReserva from './pages/pages.privadas/perfil_feriante/components/supervisor/FormularioReserva';
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
                 <Route path={PublicRoutes.DATOSENCARGADO} element={<PerfilFeriantes />} />
                 <Route path={`${PublicRoutes.DETALLEFERIA}`} element={<View_detalle_feria />} />
                 <Route path={`${PublicRoutes.PAGOOK}`} element={<ConfirmPayment />} />
+                <Route path={`${PublicRoutes.RESERVARPUESTO}`} element={<FormularioReserva />} />
                 <Route element={<AuthGuard privateValidation={true} />}>
                   <Route path={`${PrivateRoutes.PRIVATE}/*`} element={<Privado />} />
                 </Route>

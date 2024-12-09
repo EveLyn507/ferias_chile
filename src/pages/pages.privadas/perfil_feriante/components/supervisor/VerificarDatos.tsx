@@ -1,70 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-
-interface FechaContrato {
-  fecha: string; // Ajustado al resultado esperado del backend
-}
+import RegistroCobrosFisicos from './RegistroCobrosFisicos';
 
 interface Feriante {
   id_user_fte: number;
   nombre: string;
   apellido: string;
   estado: string;
+  descripcion: string;
+  precio: number;
 }
 
 interface VerificarDatosProps {
   id_feria: number;
+  fechaSeleccionada: string; // Nueva prop
 }
 
-const VerificarDatosCombinado: React.FC<VerificarDatosProps> = ({ id_feria }) => {
-  const [fechas, setFechas] = useState<FechaContrato[]>([]);
-  const [fechaSeleccionada, setFechaSeleccionada] = useState<string>('');
+const VerificarDatos: React.FC<VerificarDatosProps> = ({ id_feria, fechaSeleccionada }) => {
   const [feriantes, setFeriantes] = useState<Feriante[]>([]);
-  const [loadingFechas, setLoadingFechas] = useState<boolean>(true);
+  const [menuActivo, setMenuActivo] = useState<number | null>(null);
   const [loadingFeriantes, setLoadingFeriantes] = useState<boolean>(false);
-  const [errorFechas, setErrorFechas] = useState<string | null>(null);
   const [errorFeriantes, setErrorFeriantes] = useState<string | null>(null);
 
-  // Obtener fechas de contratos
   useEffect(() => {
-    const fetchFechasContratos = async () => {
-      try {
-        setLoadingFechas(true);
-
-        // Validación explícita del ID de feria
-        if (isNaN(Number(id_feria))) {
-          throw new Error('El ID de la feria no es un número válido.');
-        }
-
-        const response = await axios.get(`http://localhost:5000/api/supervisor/fechas-contratos/${id_feria}`);
-
-        if (response.data.length === 0) {
-          setErrorFechas('No se encontraron fechas de contratos para esta feria.');
-        } else {
-          setFechas(response.data);
-          setErrorFechas(null);
-        }
-      } catch (err: any) {
-        const message = err.response?.data?.message || 'Error al cargar las fechas.';
-        setErrorFechas(message);
-      } finally {
-        setLoadingFechas(false);
-      }
-    };
-
-    fetchFechasContratos();
-  }, [id_feria]);
-
-  // Obtener feriantes activos según la fecha seleccionada
-  useEffect(() => {
-    const fetchFeriantes = async (fecha: string) => {
+    const fetchFeriantes = async () => {
       try {
         setLoadingFeriantes(true);
-
-        const response = await axios.get(`http://localhost:5000/api/supervisor/feriantes-activos/${id_feria}`, {
-          params: { fecha_pago: fecha },
-        });
-
+        const response = await axios.get(
+          `http://localhost:5000/api/supervisor/feriantes-activos/${id_feria}`,
+          { params: { fecha_pago: fechaSeleccionada } }
+        );
         setFeriantes(response.data);
         setErrorFeriantes(null);
       } catch (err: any) {
@@ -76,37 +41,17 @@ const VerificarDatosCombinado: React.FC<VerificarDatosProps> = ({ id_feria }) =>
     };
 
     if (fechaSeleccionada) {
-      fetchFeriantes(fechaSeleccionada);
+      fetchFeriantes();
     }
   }, [fechaSeleccionada, id_feria]);
+
+  const toggleMenu = (id: number) => {
+    setMenuActivo(menuActivo === id ? null : id);
+  };
 
   return (
     <div>
       <h2>Verificación de Feriantes Activos</h2>
-
-      {/* Selección de fechas */}
-      <div>
-        <h3>Selecciona una Fecha de Contrato</h3>
-        {loadingFechas ? (
-          <p>Cargando fechas...</p>
-        ) : errorFechas ? (
-          <p style={{ color: 'red' }}>{errorFechas}</p>
-        ) : (
-          <select
-            onChange={(e) => setFechaSeleccionada(e.target.value)}
-            aria-label="Seleccionar fecha"
-          >
-            <option value="">Seleccione una fecha</option>
-            {fechas.map((fecha, index) => (
-              <option key={index} value={fecha.fecha}>
-                {fecha.fecha}
-              </option>
-            ))}
-          </select>
-        )}
-      </div>
-
-      {/* Lista de feriantes */}
       <div>
         <h3>Feriantes Activos</h3>
         {loadingFeriantes ? (
@@ -117,7 +62,20 @@ const VerificarDatosCombinado: React.FC<VerificarDatosProps> = ({ id_feria }) =>
           <ul>
             {feriantes.map((feriante) => (
               <li key={feriante.id_user_fte}>
-                {feriante.nombre} {feriante.apellido} - Estado: {feriante.estado}
+                <span
+                  style={{ cursor: 'pointer', color: 'blue' }}
+                  onClick={() => toggleMenu(feriante.id_user_fte)}
+                >
+                  {feriante.nombre} {feriante.apellido}
+                </span>
+                {menuActivo === feriante.id_user_fte && (
+                  <div style={{ border: '1px solid #ddd', padding: '10px', marginTop: '5px' }}>
+                    <p>Estado: {feriante.estado}</p>
+                    <p>Nombre del puesto: {feriante.descripcion}</p>
+                    <p>Precio: {feriante.precio}</p>
+                    <RegistroCobrosFisicos id_feria={id_feria} />
+                  </div>
+                )}
               </li>
             ))}
           </ul>
@@ -127,4 +85,4 @@ const VerificarDatosCombinado: React.FC<VerificarDatosProps> = ({ id_feria }) =>
   );
 };
 
-export default VerificarDatosCombinado;
+export default VerificarDatos;

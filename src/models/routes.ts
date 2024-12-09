@@ -7,6 +7,7 @@ export const PublicRoutes = {
     REGISTRO: 'registro',
     RESETPASSWORD: 'reset-password',
     DATOSENCARGADO : 'actualizar-datos',
+    RESERVARPUESTO : "/reserva-puesto",
     DETALLEFERIA : "/feria/:id_feria/:nombre_feria/:fecha",
      PAGOS : 'pago',
      PAGOS2 : 'pagosss',
