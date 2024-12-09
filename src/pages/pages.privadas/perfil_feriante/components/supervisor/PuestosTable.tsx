@@ -49,12 +49,12 @@ const PuestosTable: React.FC<{ id_feria: number }> = ({ id_feria }) => {
       <div className="puestos-grid">
         {puestos.map((puesto) => (
           <div key={puesto.id_puesto} className="puesto-card">
-            <h3>{puesto.numero}</h3>
-            <p><strong>ID Puesto:</strong> {puesto.id_puesto}</p>
-            <p><strong>Descripción:</strong> {puesto.descripcion}</p>
-            <p><strong>Precio:</strong> {puesto.precio}</p>
+            <p><strong>Puesto:</strong> {puesto.numero} - precio {puesto.precio}       <button onClick={() => navigate('/reserva-puesto')}>Reservar Puesto</button></p>
+      
+
             <button onClick={() => handleReserva(puesto.id_puesto)}>Reservar Este Puesto</button>
           </div>
+          
         ))}
       </div>
     </div>

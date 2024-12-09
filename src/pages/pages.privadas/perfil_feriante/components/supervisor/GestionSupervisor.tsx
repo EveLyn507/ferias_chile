@@ -76,18 +76,21 @@ const GestionSupervisor = ({ id_feria, nombre_feria }: GestionSupervisorProps) =
           Ver Feria
         </Link>
       </div>
+      
+      <section className="supervisor-section">
+        <VerificarDatos id_feria={id_feria} fechaSeleccionada={selectedFecha} />
+      </section>
 
       <section className="supervisor-section">
         <PuestosTable id_feria={id_feria} />
       </section>  
 
+   
+
       <section className="supervisor-section">
         <GestionPuestos id_feria={id_feria} fecha={selectedFecha} />
       </section>
 
-      <section className="supervisor-section">
-        <VerificarDatos id_feria={id_feria} fechaSeleccionada={selectedFecha} />
-      </section>
   
     </div>
   );
