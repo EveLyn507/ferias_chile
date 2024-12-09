@@ -22,6 +22,7 @@ export const MapaSupervisor = () => {
 
   const { nombre_feria } = useParams<{ nombre_feria: string }>() as { nombre_feria: string };
   const { fecha } = useParams<{ fecha: string }>() as { fecha: string };
+console.log(arriendos);
 
   // Estado para controlar qué componente se muestra
 
@@ -40,6 +41,8 @@ export const MapaSupervisor = () => {
     WebSocketService.sendMessage("TodayFeriaElements", { idFeria, nombre_feria, fecha });
   
     await WebSocketService.RecibeData("ResponceTodayFeriaElements", (data: todayArriendos) => {
+      console.log(data);
+      
       if (!data || !data.todayArriendos) {
         console.error("Datos recibidos son inválidos:", data);
         return;

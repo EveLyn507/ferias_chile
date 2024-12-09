@@ -98,6 +98,7 @@ const handleChangeDimencion = (field: keyof Rectangle, value: any) => {
         </div>
       </div>
 
+
       <div className="input-group">
         <label>Descripción:</label>
         <input

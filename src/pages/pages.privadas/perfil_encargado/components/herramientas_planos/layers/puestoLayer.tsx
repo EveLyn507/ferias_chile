@@ -36,6 +36,7 @@ const PuestosLayer: React.FC<PuestosLayerProps> = ({
               y={Puesto.dimenciones.y}
               width={Puesto.dimenciones.width}
               height={Puesto.dimenciones.height}
+              rotation={Puesto.dimenciones.rotation}
               draggable={!isStatic}
               onMouseEnter={() => setHoveredItem(Puesto)}
               onMouseLeave={() => setHoveredItem(null)}

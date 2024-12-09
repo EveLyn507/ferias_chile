@@ -24,6 +24,7 @@ const PuestosLayer: React.FC<PuestosMapaProps> = ({
     setShowCartel(false); // Oculta el cartel
     setSelectedPuesto(null); // Limpiar el puesto seleccionado
   };
+console.log(arriendos);
 
   const calculateDimensionsInMeters = useCallback((width: number, height: number) => {
     const metersWidth = (width / 50) * 2; // Convertimos basado en tamaño base de 2 metros
@@ -57,9 +58,9 @@ const PuestosLayer: React.FC<PuestosMapaProps> = ({
             case 1:
               return { texto: "Disponible", color: "green" };
             case 2:
-              return { texto: "En proceso venta", color: "orange" };
+              return { texto: "Confirmando compra", color: "orange" };
             case 3:
-              return { texto: "Arrendado", color: "red" };
+              return { texto: "ocupado", color: "red" };
             default:
               return { texto: "Estado desconocido", color: "gray" };
                     }

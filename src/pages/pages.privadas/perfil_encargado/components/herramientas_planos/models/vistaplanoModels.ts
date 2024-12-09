@@ -10,6 +10,7 @@ export  interface Rectangle {
     height: number;
     fill: string; 
     isStatic: boolean; 
+
   }
 
   
@@ -20,6 +21,7 @@ export  interface Rectangle {
     x: number;
     y: number;
     isStatic: boolean; 
+
   }
   
   export interface dataPuesto {

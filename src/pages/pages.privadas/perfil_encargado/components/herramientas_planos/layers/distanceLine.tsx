@@ -80,7 +80,7 @@ const DistanceLine = ({ itemA, itemB }: disProp) => {
 />
 {vertical.distance > 0 && (
   <Text
-    text={`${Math.floor(vertical.distance)} px`}
+    text={`${Math.floor(vertical.distance)} CM`}
     x={vertical.textPos.x + 20}
     y={vertical.textPos.y + 20}
     fontSize={14}

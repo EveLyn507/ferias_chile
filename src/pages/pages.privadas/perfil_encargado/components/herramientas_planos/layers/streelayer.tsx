@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* StreetsLayer.tsx */
 import React, { useRef, useState } from 'react';
-import {  Circle, Image as KonvaImage, Layer } from 'react-konva';
+import {  Circle, Image as KonvaImage, Layer  } from 'react-konva';
 import { PlanoItemElement } from '../models/vistaplanoModels';
 import { StreetPageProps } from '../models/canvasModels';
 import DistanceLine from './distanceLine';
@@ -63,7 +63,6 @@ const StreetsLayer: React.FC<StreetPageProps> = ({
       {calles.map((street, index) => {
         const defaultWidth = 50000; // Nuevo tamaño mayor por defecto
         const defaultHeight = 50000; // Nuevo tamaño mayor por defecto
-
         const width = street.dimenciones.width || defaultWidth;
         const height = street.dimenciones.height || defaultHeight;
 
@@ -72,14 +71,14 @@ const StreetsLayer: React.FC<StreetPageProps> = ({
         const rightCornerY = street.dimenciones.y + height;
         const leftCornerX = street.dimenciones.x;
         const leftCornerY = street.dimenciones.y + height;
-     
+
         
         return (
           <React.Fragment key={street.id_elemento}>
             {/* Calle Rectangular */}
             <KonvaImage
               image={image || undefined}
-              x={street.dimenciones.x}
+              x={ street.dimenciones.x}
               y={street.dimenciones.y}
               width={street.dimenciones.width}
               height={street.dimenciones.height}
@@ -96,6 +95,7 @@ const StreetsLayer: React.FC<StreetPageProps> = ({
                 }
               }}
             />
+  
             {isAltPressed && hoveredItem && selectedItem && <DistanceLine itemA={selectedItem} itemB={hoveredItem} />}
 
             {/* Puntos de control para redimensionar */}
