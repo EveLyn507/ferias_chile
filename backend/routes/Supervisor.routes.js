@@ -12,6 +12,7 @@ const {
     obtenerFechasContratos,
     getFechasDisponibles,
     getPuestosDisponibles,
+    createContrato,
 } = require('../controllers/SupervisorController');
 
 // Obtener el estado de las ferias
@@ -83,4 +84,10 @@ router.get('/puestos', (req, res) => {
     getPuestosDisponibles(req, res, pool);
   });
 
+// Ruta para insertar contrato
+
+router.post('/insert', (req, res) => {
+  const pool = req.pool;
+  createContrato(pool,res);
+});
 module.exports = router;
