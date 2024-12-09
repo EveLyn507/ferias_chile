@@ -9,7 +9,6 @@ const {
     getFeriantesPendientes,
     registrarPago,
     obtenerHorario,
-    obtenerFechasContratos,
     getFechasDisponibles,
     getPuestosDisponibles,
 } = require('../controllers/SupervisorController');
@@ -39,7 +38,7 @@ router.get('/feria/mapa', (req, res) => {
 });
 
 // Obtener la lista de feriantes activos en las ferias
-router.get('/feriantes-activos/:id_feria', (req, res) => {
+router.get('/feriantes-activos/:id_feria/:fecha', (req, res) => {
     const pool = req.pool;
     obtenerFeriantesActivos(req, res, pool);
 });
@@ -66,10 +65,7 @@ router.put('/feriantes/:id_user_fte/pago', (req, res) => {
 
 /// fechas
 
-router.get('/fechas-contratos/:id_feria', (req, res) => {
-    const pool = req.pool;
-    obtenerFechasContratos(req, res, pool);
-  });
+
 
 router.get('/fechas-mapas/:id_feria/fechas', (req, res) => {
     const pool = req.pool;

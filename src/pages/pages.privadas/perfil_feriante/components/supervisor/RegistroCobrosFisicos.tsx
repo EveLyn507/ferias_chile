@@ -1,59 +1,31 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, {  } from 'react';
 
 interface Feriante {
   id_user_fte: number;
-  nombre: string;
-  pagado: boolean;
+  nombre_feriante: string;
+  id_puesto: number
+  numero: string;
+  precio: number;
+  estado_pago: string
+  id_estado_contrato : number
+  tipo_pago : string
+
 }
 
 interface RegistroCobrosFisicosProps {
   id_feria: number;
+  feriante: Feriante
+  registrarPago : (id_user : number) => void
 }
 
-const RegistroCobrosFisicos: React.FC<RegistroCobrosFisicosProps> = ({ id_feria }) => {
-  const [feriantes, setFeriantes] = useState<Feriante[]>([]);
-
-  useEffect(() => {
-    const fetchFeriantes = async () => {
-      try {
-        const response = await axios.get('http://localhost:5000/api/supervisor/feriantes-pendientes', {
-          params: { id_feria }, 
-        });
-        setFeriantes(response.data);
-      } catch (error) {
-        console.error('Error al obtener lista de pagos pendientes:', error);
-      }
-    };
-    fetchFeriantes();
-  }, [id_feria]);
-
-  const registrarPago = async (id_user_fte: number) => {
-    try {
-      await axios.put(`http://localhost:5000/api/supervisor/feriantes/${id_user_fte}/pago`);
-      setFeriantes((prev) =>
-        prev.map((feriante) =>
-          feriante.id_user_fte === id_user_fte ? { ...feriante, pagado: true } : feriante
-        )
-      );
-    } catch (error) {
-      console.error('Error al registrar el pago físico:', error);
-    }
-  };
+const RegistroCobrosFisicos: React.FC<RegistroCobrosFisicosProps> = ({  feriante , registrarPago}) => {
 
   return (
     <div>
-      <h2>Registro de Cobros Físicos</h2>
-      <ul>
-        {feriantes.map((feriante) => (
-          <li key={feriante.id_user_fte}>
-            {feriante.nombre} - {feriante.pagado ? 'Pagado' : 'Pendiente'}
-            {!feriante.pagado && (
-              <button onClick={() => registrarPago(feriante.id_user_fte)}>Marcar como Pagado</button>
-            )}
-          </li>
-        ))}
-      </ul>
+      <h4>Estado del pago</h4>
+      {feriante.id_estado_contrato === 2 ? 
+      (<span> {feriante.estado_pago}</span>) : 
+      (<span>{feriante.estado_pago} - <button onClick={() => registrarPago(feriante.id_user_fte)}>Pagar</button></span>) } 
     </div>
   );
 };
