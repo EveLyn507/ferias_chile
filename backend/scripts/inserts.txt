@@ -36,6 +36,10 @@ VALUES (3, 'cancelado');
 INSERT INTO estado_contrato (id_estado_contrato, detalle)
 VALUES (4, 'Erroneo');
 
+INSERT INTO estado_contrato (id_estado_contrato, detalle)
+VALUES (5, 'fisico');
+
+
 --estado puesto
 
 INSERT INTO estado_puesto (id_estado_puesto,estado) 

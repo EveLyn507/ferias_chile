@@ -108,7 +108,8 @@ ALTER TABLE comuna ADD CONSTRAINT comuna_pk PRIMARY KEY ( id_comuna );
 
 CREATE TABLE contrato_puesto (
     id_contrato     SERIAL NOT NULL,
-    id_user_fte     INTEGER NOT NULL,
+    id_user_fte     INTEGER,
+    usuario_fisico  CHARACTER VARYING(100),
     fecha_pago           DATE NOT NULL,
     id_arriendo_puesto       INTEGER NOT NULL,
     id_tipo_pago    INTEGER NOT NULL,
@@ -116,9 +117,11 @@ CREATE TABLE contrato_puesto (
     precio          INTEGER NOT NULL,
     buy_order       CHARACTER VARYING(100) NOT NULL, 
     session_id      CHARACTER VARYING(100) NOT NULL
+    usuario_fisico  CHARACTER VARYING(100)
 );
 
 ALTER TABLE contrato_puesto ADD CONSTRAINT contrato_diario_pk PRIMARY KEY ( id_contrato );
+
 
 CREATE TABLE detalle_horario_empleado (
     id_detalle_horario SERIAL NOT NULL,

@@ -169,7 +169,7 @@ const obtenerFeriantesActivos = async (req, res, pool) => {
 
   try {
     const query = `
-      SELECT f.id_user_fte, f.nombre, f.apellido, a.id_puesto, e.estado
+      SELECT f.id_user_fte, f.nombre, f.apellido, a.id_puesto, e.estado, p.descripcion, p.precio
       FROM feriante f
       JOIN contrato_puesto c ON c.id_user_fte = f.id_user_fte
       JOIN arriendo_puesto a ON c.id_arriendo_puesto = a.id_arriendo_puesto
@@ -213,6 +213,36 @@ const getFeriantesPendientes = async (req, res, pool) => {
   }
 };
 
+const getPuestosDisponibles = async (req, res, pool) => {
+  const { id_feria } = req.query;
+
+  // Validar que id_feria es un número válido
+  if (!id_feria || isNaN(Number(id_feria))) {
+    return res.status(400).json({ message: 'El id_feria debe ser un número válido' });
+  }
+
+  try {
+    const idFeria = parseInt(id_feria, 10);
+    const query = `
+      SELECT distinct p.id_puesto, p.numero, p.descripcion, p.precio
+      FROM puesto p
+      JOIN arriendo_puesto a ON (a.id_puesto = p.id_puesto)
+      JOIN feria f ON (p.id_feria = f.id_feria)
+      JOIN estado_puesto e ON (p.id_estado_puesto = e.id_estado_puesto)
+      WHERE e.id_estado_puesto = 1 AND f.id_feria = $1;
+    `;
+
+    const result = await pool.query(query, [idFeria]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'No se encontró una feria con el id proporcionado' });
+    }
+
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error('Error al obtener el estado de la feria:', error);
+    res.status(500).json({ message: 'Error al obtener el estado de la feria' });
+  }
+};
 
 const obtenerFechasContratos = async (req, res, pool) => {
   let { id_feria } = req.params;
@@ -229,7 +259,7 @@ const obtenerFechasContratos = async (req, res, pool) => {
 
   try {
     const query = `
-      select a.fecha
+      select distinct  c.fecha
       from feria f
       join detalle_programa_feria d
       on (d.id_feria = f.id_feria)
@@ -239,8 +269,12 @@ const obtenerFechasContratos = async (req, res, pool) => {
 	    on(a.id_actividad_feria = ar.id_actividad_feria)
 	    join contrato_puesto c
 	    on(c.id_arriendo_puesto = ar.id_arriendo_puesto)
-      WHERE f.id_feria = $1;
-    `;
+	    join puesto p
+	    on(p.id_feria = f.id_feria)
+	    JOIN estado_puesto ep 
+	    on p.id_estado_puesto = ep.id_estado_puesto
+      where f.id_feria = $1`
+  ;
 
     const result = await pool.query(query, [id_feria]);
 
@@ -351,4 +385,5 @@ module.exports = {
   obtenerHorario,
   obtenerFechasContratos,
   getFechasDisponibles,
+  getPuestosDisponibles,
 };

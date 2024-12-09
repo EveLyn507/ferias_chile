@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import EstadoFeria from './EstadoFeria';
 import GestionPuestos from './GestionPuestos';
 import VerificarDatos from './VerificarDatos';
-import RegistroCobrosFisicos from './RegistroCobrosFisicos';
 import './Supervisor.css';
+import PuestosTable from './PuestosTable';
 
 interface GestionSupervisorProps {
   id_feria: number;
@@ -17,26 +17,21 @@ const GestionSupervisor = ({ id_feria, nombre_feria }: GestionSupervisorProps) =
   const [loadingFechas, setLoadingFechas] = useState<boolean>(true);
   const [errorFechas, setErrorFechas] = useState<string | null>(null);
 
-  // Obtener las fechas disponibles
   useEffect(() => {
     const fetchFechas = async () => {
       try {
         setLoadingFechas(true);
         const response = await fetch(`http://localhost:5000/api/supervisor/fechas-mapas/${id_feria}/fechas`);
-        console.log('Solicitando fechas desde:', `/fechas-mapas/${id_feria}/fechas`);
-
         if (response.ok) {
           const data = await response.json();
-          console.log('Fechas obtenidas:', data);
           const fechas = data.map((item: { fecha: string }) => item.fecha);
           setFechasDisponibles(fechas);
-          setSelectedFecha(fechas[0] || ''); // Seleccionar la primera fecha por defecto
+          setSelectedFecha(fechas[0] || ''); // Selecciona la primera fecha por defecto
           setErrorFechas(null);
         } else {
-          throw new Error('Error al obtener fechas. Respuesta no OK.');
+          throw new Error('Error al obtener fechas.');
         }
       } catch (error) {
-        console.error('Error en la solicitud:', error);
         setErrorFechas('No se pudieron cargar las fechas.');
       } finally {
         setLoadingFechas(false);
@@ -59,7 +54,6 @@ const GestionSupervisor = ({ id_feria, nombre_feria }: GestionSupervisorProps) =
         <EstadoFeria id_feria={id_feria} />
       </section>
 
-      {/* Dropdown para seleccionar la fecha */}
       <div className="supervisor-dropdown">
         <label htmlFor="fecha">Seleccionar Fecha: </label>
         {loadingFechas ? (
@@ -77,7 +71,6 @@ const GestionSupervisor = ({ id_feria, nombre_feria }: GestionSupervisorProps) =
         )}
       </div>
 
-      {/* Link que incluye la fecha seleccionada */}
       <div className="supervisor-link">
         <Link to={`/feria/${id_feria}/${nombre_feria}/${selectedFecha}`} className="button">
           Ver Feria
@@ -85,22 +78,17 @@ const GestionSupervisor = ({ id_feria, nombre_feria }: GestionSupervisorProps) =
       </div>
 
       <section className="supervisor-section">
+        <PuestosTable id_feria={id_feria} />
+      </section>  
+
+      <section className="supervisor-section">
         <GestionPuestos id_feria={id_feria} fecha={selectedFecha} />
       </section>
 
       <section className="supervisor-section">
-        <VerificarDatos id_feria={id_feria} />
+        <VerificarDatos id_feria={id_feria} fechaSeleccionada={selectedFecha} />
       </section>
-
-      <section className="supervisor-section">
-        <RegistroCobrosFisicos id_feria={id_feria} />
-      </section>
-
-      <div className="supervisor-link">
-        <Link to="/solicitudbaja" className="button secondary">
-          Solicitar Baja de Feria
-        </Link>
-      </div>
+  
     </div>
   );
 };

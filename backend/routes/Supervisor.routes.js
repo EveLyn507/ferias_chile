@@ -11,6 +11,7 @@ const {
     obtenerHorario,
     obtenerFechasContratos,
     getFechasDisponibles,
+    getPuestosDisponibles,
 } = require('../controllers/SupervisorController');
 
 // Obtener el estado de las ferias
@@ -75,6 +76,11 @@ router.get('/fechas-mapas/:id_feria/fechas', (req, res) => {
     getFechasDisponibles(req, res, pool);
   });
   
+/// puestos disp
 
+router.get('/puestos', (req, res) => {
+    const pool = req.pool;
+    getPuestosDisponibles(req, res, pool);
+  });
 
 module.exports = router;
