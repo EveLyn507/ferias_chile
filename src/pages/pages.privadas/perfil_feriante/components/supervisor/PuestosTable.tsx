@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // Para navegación
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 interface Puesto {
@@ -13,7 +13,7 @@ const PuestosTable: React.FC<{ id_feria: number }> = ({ id_feria }) => {
   const [puestos, setPuestos] = useState<Puesto[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate(); // Hook para redirigir
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPuestos = async () => {
@@ -32,6 +32,14 @@ const PuestosTable: React.FC<{ id_feria: number }> = ({ id_feria }) => {
     fetchPuestos();
   }, [id_feria]);
 
+  const handleReserva = (id_puesto: number) => {
+    if (id_puesto) {
+      // Navegar a la página de reserva con el ID del puesto
+      navigate('/reserva-puesto', { state: { id_puesto } });
+    } else {
+      console.error('ID del puesto no es válido');
+    }
+  };
   if (loading) return <p>Cargando datos...</p>;
   if (error) return <p>{error}</p>;
 
@@ -44,6 +52,7 @@ const PuestosTable: React.FC<{ id_feria: number }> = ({ id_feria }) => {
             <p><strong>Puesto:</strong> {puesto.numero} - precio {puesto.precio}       <button onClick={() => navigate('/reserva-puesto')}>Reservar Puesto</button></p>
       
 
+            <button onClick={() => handleReserva(puesto.id_puesto)}>Reservar Este Puesto</button>
           </div>
           
         ))}

@@ -72,56 +72,81 @@
   }
   
   
-  .formulario-reserva-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh; /* Asegura que ocupe toda la altura de la pantalla */
-  }
-  
-  .formulario-reserva {
-    background: white;
-    padding: 20px 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-  
-    max-width: 400px; /* Limita el tamaño máximo del formulario */
-  }
-  
-  .formulario-reserva h2 {
-    margin-bottom: 20px;
-    color: #333;
-  }
-  
-  .formulario-reserva label {
-    display: block;
-    text-align: left;
-    margin-bottom: 5px;
-    font-weight: bold;
-    color: #555;
-  }
-  
-  .formulario-reserva input {
-    width: 100%;
-    padding: 10px 100px;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-sizing: border-box;
-  }
-  
-  .formulario-reserva button {
-    background-color: #007bff;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-  }
-  
-  .formulario-reserva button:hover {
-    background-color: #0056b3;
-  }
+/* Contenedor principal para centrar todo el contenido */
+.reserva-puesto-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Altura completa de la ventana */
+  background-color: #f8f9fa; /* Color de fondo suave */
+}
+
+/* Formulario centrado */
+.reserva-puesto-form {
+  background-color: #ffffff; /* Fondo blanco */
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+  max-width: 400px;
+  width: 100%; /* Asegura que sea responsivo */
+  box-sizing: border-box;
+}
+
+/* Estilo para los títulos */
+.reserva-puesto-form h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  color: #343a40;
+}
+
+/* Contenedor de los campos del formulario */
+.reserva-puesto-form div {
+  margin-bottom: 1rem;
+}
+
+/* Etiquetas de los campos */
+.reserva-puesto-form label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #495057;
+}
+
+/* Estilo de los inputs */
+.reserva-puesto-form input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+/* Botón de envío */
+.reserva-puesto-form button {
+  display: block;
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.reserva-puesto-form button:hover {
+  background-color: #0056b3;
+}
+
+/* Mensaje después de enviar el formulario */
+.reserva-puesto-form p {
+  text-align: center;
+  color: #28a745; /* Verde para éxito */
+  font-weight: bold;
+  margin-top: 1rem;
+}
+
   

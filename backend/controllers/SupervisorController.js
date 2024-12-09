@@ -325,6 +325,85 @@ const getFechasDisponibles = async (req, res, pool) => {
   }
 };
 
+// Insertar contrato para un puesto específico
+const createContrato = async (pool, id_tipo_pago, id_estado_contrato, precio, id_puesto, id_actividad_feria, id_estado_arriendo, res) => {
+  const timestamp = new Date().getTime();
+  const sessionId = `session--${timestamp}`;
+  const buyOrder = `order--${timestamp}`;
+
+  try {
+    console.log('Iniciando creación del contrato...');
+    console.log('Parámetros recibidos:', {
+      id_tipo_pago,
+      id_estado_contrato,
+      precio,
+      id_puesto,
+      id_actividad_feria,
+      id_estado_arriendo,
+      buyOrder,
+      sessionId,
+    });
+
+    // Insertar en la tabla arriendo_puesto
+    const arriendoQuery = `
+      INSERT INTO arriendo_puesto 
+      (id_actividad_feria, id_puesto, activo, id_estado_arriendo) 
+      VALUES ($1, $2, $3, 2) 
+      RETURNING id_arriendo_puesto
+    `;
+
+    const arriendoValues = [id_actividad_feria, id_puesto, id_estado_arriendo, true]; // Suponiendo que el estado "activo" es true
+
+    console.log('Consulta SQL para arriendo_puesto:', arriendoQuery);
+    console.log('Valores para arriendo_puesto:', arriendoValues);
+
+    const arriendoResult = await pool.query(arriendoQuery, arriendoValues);
+
+    if (arriendoResult.rows.length > 0) {
+      const id_arriendo_puesto = arriendoResult.rows[0].id_arriendo_puesto;
+      console.log(`Arriendo de puesto creado con ID: ${id_arriendo_puesto}`);
+
+      // Insertar en la tabla contrato_puesto con el id_arriendo_puesto obtenido
+      const contratoQuery = `
+        INSERT INTO contrato_puesto 
+        (usuario_fisico, fecha_pago, id_arriendo_puesto, id_tipo_pago, id_estado_contrato, buy_order, session_id) 
+        VALUES ($1, CURRENT_TIMESTAMP, $2, $3, $4, $5, $6) 
+        RETURNING id_contrato
+      `;
+
+      const contratoValues = [null, id_arriendo_puesto, id_tipo_pago, id_estado_contrato, buyOrder, sessionId];
+
+      console.log('Consulta SQL para contrato_puesto:', contratoQuery);
+      console.log('Valores para contrato_puesto:', contratoValues);
+
+      const contratoResult = await pool.query(contratoQuery, contratoValues);
+
+      if (contratoResult.rows.length > 0) {
+        console.log(`Contrato creado con ID: ${contratoResult.rows[0].id_contrato}`);
+
+        // Devolver un resultado final si ambos inserts son exitosos
+        res.json({
+          mensaje: 'Contrato y arriendo de puesto creados exitosamente',
+          id_contrato: contratoResult.rows[0].id_contrato,
+          id_arriendo_puesto: id_arriendo_puesto
+        });
+      } else {
+        console.error('No se pudo crear el contrato');
+        throw new Error('No se pudo crear el contrato');
+      }
+
+    } else {
+      console.error('No se pudo crear el arriendo del puesto');
+      throw new Error('No se pudo crear el arriendo del puesto');
+    }
+
+  } catch (error) {
+    console.error('Error en la creación del contrato o arriendo del puesto:', error);
+    res.status(500).json({ error: 'Error en la creación del contrato o arriendo del puesto' });
+  }
+};
+
+
 
 module.exports = {
   obtenerEstadoFeria,
@@ -338,4 +417,5 @@ module.exports = {
   obtenerHorario,
   getFechasDisponibles,
   getPuestosDisponibles,
+  createContrato,
 };
