@@ -69,7 +69,24 @@ export interface MapaCanvas2 {
     };
     }, []);
 
+    const pwid = window.innerWidth < 768 ? window.innerWidth - 20 : 800
+    const phei = window.innerWidth < 768 ? 400 : 600
+    const [stageSize, setStageSize] = useState({ width: 1260, height: 540 });
 
+    useEffect(() => {
+      const handleResize = () => {
+        const width = window.innerWidth * 0.85; // 80% del ancho de la ventana
+        const height = window.innerHeight * 0.71; // 60% del alto de la ventana
+        setStageSize({ width, height });
+      };
+  
+      handleResize(); // Ajustar al cargar
+      window.addEventListener("resize", handleResize);
+  
+      return () => {
+        window.removeEventListener("resize", handleResize);
+      };
+    }, []);
 return (
 
 <>
@@ -87,14 +104,15 @@ return (
       </div>
 
       <Stage  
-        width={1150}
-        height={600}
+      className='stage'
+      width={pwid}  // Ajusta el ancho a pantalla pequeña
+      height={phei}  // Ajusta la altura en pantallas más pequeñas
         scaleX={zoomLevel}
         scaleY={zoomLevel}
         x={stagePosition.x}
         y={stagePosition.y}
         draggable
-        style={{ border: 'black solid 5px', backgroundColor: 'transparent',  margin : 'auto', marginBottom: '1%'} }
+        style={{border : 'black solid 1px'}}
       >
         <Layer>
 

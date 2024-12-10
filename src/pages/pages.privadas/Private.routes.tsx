@@ -18,7 +18,7 @@ import '../../App.css';
 
 function Privado() {
 
-  return (
+  return ( 
     <>
      <Logout/>
     <NotFound> 

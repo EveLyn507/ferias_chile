@@ -9,6 +9,7 @@ export const PublicRoutes = {
     DATOSENCARGADO : 'actualizar-datos',
     RESERVARPUESTO : "/reserva-puesto",
     DETALLEFERIA : "/feria/:id_feria/:nombre_feria/:fecha",
+
      PAGOS : 'pago',
      PAGOS2 : 'pagosss',
      PAGOOK : '/pagos/estado'
@@ -24,6 +25,7 @@ export const PrivateRoutes = {
     PERFILFERIANTE : '2',
     POSTULACIONES : '2/postulaciones',
     MAPASUPERVISOR :"2/supervisor/:id_feria/:nombre_feria/:fecha",
+    SUPERVISORFERIA : "2/feria/:id_feria/:nombre_feria/:fecha",
     SUPERVISOR: '2/postulaciones/supervisor/:id_feria/:nombre_feria',
 
     PERFILADMIN : '3',
