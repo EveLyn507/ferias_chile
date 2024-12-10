@@ -1,0 +1,111 @@
+/* Estilos generales */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* ----- view_pago.tsx ----- */
+  
+  /* Título principal */
+  .payment-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  /* Contenedor de la información del puesto */
+  .payment-info {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 0 auto 20px auto;
+    max-width: 400px;
+    list-style: none;
+  }
+  
+  /* Estilo de cada elemento de la lista de información */
+  .payment-item {
+    font-size: 18px;
+    color: #555;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .payment-item:last-child {
+    border-bottom: none;
+  }
+  
+  /* Botón de pago */
+  .payment-button {
+    display: block;
+    background-color: #042c4c;
+    color: #fff;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 15px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    transition: background-color 0.3s ease;
+  }
+  
+  .payment-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .payment-button:active {
+    background-color: #004494;
+  }
+  
+  /* ----- voucher_pago.tsx ----- */
+  
+  /* Contenedor principal para la confirmación del pago */
+  .confirm-payment-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+  }
+  
+  /* Título de confirmación */
+  .confirm-payment-title {
+    font-size: 26px;
+    font-weight: bold;
+    color: #042c4c;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  /* Mensaje de espera */
+  .confirm-payment-message {
+    font-size: 18px;
+    color: #555;
+    text-align: center;
+    animation: blink 1s infinite;
+  }
+  
+  /* Animación de parpadeo para el mensaje de espera */
+  @keyframes blink {
+    0% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.6;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  

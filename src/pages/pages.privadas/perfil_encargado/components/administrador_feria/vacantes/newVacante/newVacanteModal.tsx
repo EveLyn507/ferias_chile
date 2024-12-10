@@ -3,7 +3,7 @@ import { horarioVacante, vacante } from "../../../../../../models/interfaces";
 import { saveVacanteFeria } from "../../../../services/admin_feria_fuctions";
 import { NewHorario } from "./newHorario";
 import Modal from "react-modal";
-import { useToast } from "@components/ToastService"; // Usando alias para importar ToastService
+import { useToast } from "../../../../../../../components/ToastService";
 
 interface newVacanteModal {
   isOpen: boolean;
@@ -94,20 +94,30 @@ export const CrearVacanteModal = ({ id_feria, isOpen, onClose }: newVacanteModal
           padding: "20px",
           borderRadius: "10px",
           overflow: "auto",
+          backgroundColor: "#ffffff",
+          boxShadow: "0 4px 6px rgba(0,0,0,0.1)"
         },
         overlay: {
-          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          backgroundColor: "rgba(4, 44, 76, 0.8)",
         },
       }}
     >
-      <h2>CREAR NUEVA VACANTE</h2>
-      <div>
+      <h2 style={{ textAlign: "center", color: "#042c4c", marginBottom: "20px" }}>CREAR NUEVA VACANTE</h2>
+      <div style={{ maxWidth: "600px", margin: "0 auto" }}>
         <select
           id="role"
           name="role"
           value={rol}
           onChange={(e) => setRol(e.target.value)}
           required
+          style={{
+            width: "100%",
+            padding: "10px",
+            marginBottom: "15px",
+            fontSize: "16px",
+            border: "1px solid #ccc",
+            borderRadius: "4px",
+          }}
         >
           <option value="" disabled>
             Seleccione un rol
@@ -119,35 +129,87 @@ export const CrearVacanteModal = ({ id_feria, isOpen, onClose }: newVacanteModal
         <NewHorario saveHorario={saveHorario} />
 
         {horarios.map((horario, index) => (
-          <div key={index} className="ferias">
+          <div 
+            key={index} 
+            style={{
+              display: "flex", 
+              justifyContent: "space-between", 
+              alignItems: "center", 
+              backgroundColor: "#f9f9f9", 
+              padding: "10px", 
+              marginBottom: "10px", 
+              borderRadius: "6px", 
+              border: "1px solid #ddd"
+            }}
+          >
             <strong>
               {semana[horario.id_dia]} de {horario.hora_entrada} a {horario.hora_salida}
             </strong>
-            <button onClick={() => eliminarHorario(horario.id_dia)}>Eliminar Horario</button>
+            <button 
+              onClick={() => eliminarHorario(horario.id_dia)} 
+              style={{
+                padding: "8px 16px",
+                background: "#dc3545",
+                color: "#fff",
+                border: "none",
+                borderRadius: "4px",
+                cursor: "pointer",
+              }}
+            >
+              Eliminar Horario
+            </button>
           </div>
         ))}
 
         {warnings.length > 0 && (
-          <div style={{ color: "red", marginTop: "10px" }}>
+          <div 
+            style={{ 
+              color: "red", 
+              marginTop: "10px", 
+              padding: "10px", 
+              borderRadius: "4px", 
+              backgroundColor: "#ffe6e6" 
+            }}
+          >
             {warnings.map((warning, index) => (
               <p key={index}>{warning}</p>
             ))}
           </div>
         )}
 
-        <button onClick={guardarVacante}>Agregar Vacante</button>
+        <button 
+          onClick={guardarVacante} 
+          style={{
+            display: "block",
+            width: "100%",
+            padding: "12px",
+            backgroundColor: "#042c4c",
+            color: "#fff",
+            fontSize: "16px",
+            fontWeight: "bold",
+            textAlign: "center",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+            marginTop: "20px",
+            transition: "background-color 0.3s ease",
+          }}
+        >
+          Agregar Vacante
+        </button>
       </div>
 
       <button
         onClick={onClose}
         style={{
           float: "right",
-          padding: "5px 10px",
-          backgroundColor: "#6c757d",
+          padding: "10px 20px",
+          backgroundColor: "#dc3545",
           color: "white",
           border: "none",
           borderRadius: "4px",
           cursor: "pointer",
+          marginTop: "20px",
         }}
       >
         Cerrar

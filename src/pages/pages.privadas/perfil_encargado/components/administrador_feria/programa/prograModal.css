@@ -26,5 +26,42 @@
     margin-top: 20px;
   }
   
+  .modal-actions button {
+    font-size: 16px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  /* Botón de cancelar (rojo) */
+  .modal-actions button:first-child {
+    background-color: #dc3545;
+    color: white;
+  }
+  
+  .modal-actions button:first-child:hover {
+    background-color: #c82333; 
+  }
+  
+  .modal-actions button:first-child:active {
+    background-color: #a71d2a; 
+  }
+  
+  /* Botón de guardar (verde) */
+  .modal-actions button:last-child {
+    background-color: #28a745; 
+    color: white;
+  }
+  
+  .modal-actions button:last-child:hover {
+    background-color: #218838; 
+  }
+  
+  .modal-actions button:last-child:active {
+    background-color: #1e7e34; 
+  }
 
 
