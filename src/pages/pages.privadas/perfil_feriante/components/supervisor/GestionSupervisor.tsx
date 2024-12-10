@@ -32,7 +32,7 @@ const GestionSupervisor = ({ id_feria, nombre_feria }: GestionSupervisorProps) =
           throw new Error('Error al obtener fechas.');
         }
       } catch (error) {
-        setErrorFechas('No se pudieron cargar las fechas.');
+        setErrorFechas('No se pudieron cargar las fechas.' + error);
       } finally {
         setLoadingFechas(false);
       }
@@ -45,7 +45,9 @@ const GestionSupervisor = ({ id_feria, nombre_feria }: GestionSupervisorProps) =
   };
 
   return (
-    <div className="supervisor-container">
+    <>
+    {selectedFecha ? (
+      <div className="supervisor-container">
       <header className="supervisor-header">
         <h1>Panel de Supervisor</h1>
       </header>
@@ -70,7 +72,9 @@ const GestionSupervisor = ({ id_feria, nombre_feria }: GestionSupervisorProps) =
           </select>
         )}
       </div>
-
+      {
+        
+      }
       <div className="supervisor-link">
         <Link to={`/feria/${id_feria}/${nombre_feria}/${selectedFecha}`} className="button">
           Ver Feria
@@ -82,17 +86,17 @@ const GestionSupervisor = ({ id_feria, nombre_feria }: GestionSupervisorProps) =
       </section>
 
       <section className="supervisor-section">
-        <PuestosTable id_feria={id_feria} />
+        <PuestosTable id_feria={id_feria}  fecha={selectedFecha}/>
       </section>  
-
-   
 
       <section className="supervisor-section">
         <GestionPuestos id_feria={id_feria} fecha={selectedFecha} />
       </section>
-
-  
     </div>
+    ) : (<span> cargaondo....</span>)
+    }
+
+        </>
   );
 };
 

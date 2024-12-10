@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -7,35 +7,43 @@ interface Puesto {
   numero: string;
   descripcion: string;
   precio: number;
+  id_arriendo_puesto : number
 }
 
-const PuestosTable: React.FC<{ id_feria: number }> = ({ id_feria }) => {
+interface tablePuesto { 
+  id_feria : number,
+  fecha : string
+}
+
+
+const PuestosTable = ({ id_feria, fecha } : tablePuesto) => {
   const [puestos, setPuestos] = useState<Puesto[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+ 
+  const fetchPuestos = async () => {  
+    try {    
+      const response = await axios.post(`http://localhost:5000/api/supervisor/getPuestosDisponibles`,{id_feria , fecha}
+      );
+      setPuestos(response.data);
+    } catch (err) {
+      setError('Error al cargar los datos.' +  err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  
   useEffect(() => {
-    const fetchPuestos = async () => {
-      try {
-        const response = await axios.get(`http://localhost:5000/api/supervisor/puestos`, {
-          params: { id_feria: id_feria },
-        });
-        setPuestos(response.data);
-      } catch (err) {
-        setError('Error al cargar los datos.');
-      } finally {
-        setLoading(false);
-      }
-    };
 
     fetchPuestos();
-  }, [id_feria]);
+  }, [id_feria, fecha]);
 
-  const handleReserva = (id_puesto: number) => {
-    if (id_puesto) {
+  const handleReserva = (id_arriendo_puesto: number, precio : number) => {
+    if (id_arriendo_puesto) {
       // Navegar a la página de reserva con el ID del puesto
-      navigate('/reserva-puesto', { state: { id_puesto } });
+      navigate('/reserva-puesto', { state: { id_arriendo_puesto, precio } });
     } else {
       console.error('ID del puesto no es válido');
     }
@@ -49,10 +57,8 @@ const PuestosTable: React.FC<{ id_feria: number }> = ({ id_feria }) => {
       <div className="puestos-grid">
         {puestos.map((puesto) => (
           <div key={puesto.id_puesto} className="puesto-card">
-            <p><strong>Puesto:</strong> {puesto.numero} - precio {puesto.precio}       <button onClick={() => navigate('/reserva-puesto')}>Reservar Puesto</button></p>
-      
+            <p><strong>Puesto:</strong> {puesto.numero} - precio {puesto.precio}        <button onClick={() => handleReserva(puesto.id_arriendo_puesto , puesto.precio)}>Reservar Este Puesto</button></p>
 
-            <button onClick={() => handleReserva(puesto.id_puesto)}>Reservar Este Puesto</button>
           </div>
           
         ))}

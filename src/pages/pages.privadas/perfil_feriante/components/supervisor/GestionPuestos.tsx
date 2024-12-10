@@ -16,37 +16,22 @@ const GestionPuestos: React.FC<GestionPuestosProps> = ({ id_feria, fecha }) => {
   const [puestos, setPuestos] = useState<Puesto[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    if (!id_feria || isNaN(id_feria)) {
-      setError('ID de feria no válido');
+  const fetchPuestos = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.post(
+        `http://localhost:5000/api/supervisor/getPuestosFTE`, {id_feria , fecha}
+      );
+      setPuestos(response.data);
+      setError(null);
+    } catch (error) {
+      console.log(error);
+      setError('Error al obtener los datos de los puestos');
+    } finally {
       setLoading(false);
-      return;
     }
-  
-    if (!fecha) {
-      setError('Fecha no seleccionada');
-      setLoading(false);
-      return;
-    }
-  
-    const fetchPuestos = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get(
-          `http://localhost:5000/api/supervisor/puestos/${id_feria}`, 
-          { params: { fecha } } // Pasar fecha como parámetro
-        );
-        setPuestos(response.data);
-        setError(null);
-      } catch (error) {
-        console.log(error);
-        setError('Error al obtener los datos de los puestos');
-      } finally {
-        setLoading(false);
-      }
-    };
-  
+  };
+  useEffect(() => {  
     fetchPuestos();
   }, [id_feria, fecha]);
 

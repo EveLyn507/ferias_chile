@@ -1,10 +1,6 @@
 const obtenerEstadoFeria = async (req, res, pool) => {
   const { id_feria } = req.query;
 
-  // Validar que id_feria es un número válido
-  if (!id_feria || isNaN(Number(id_feria))) {
-    return res.status(400).json({ message: 'El id_feria debe ser un número válido' });
-  }
 
   try {
     const idFeria = parseInt(id_feria, 10);
@@ -77,39 +73,22 @@ const obtenerHorario = async (req, res, pool) => {
 
 
 // Obtener el listado de puestos para gestionar el estado (habilitar/bloquear)
-const getPuestos = async (req, res, pool) => {
+const getPuestos = async ( res, pool, id_feria , fecha) => {
   try {
-    const { id_feria } = req.params;
-    const { fecha } = req.query; // Obtener la fecha desde los parámetros de consulta
-
-    console.log('Parámetros recibidos: aqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq', { id_feria, fecha }); // Log para verificar los parámetros
-
-    if (!id_feria || !fecha) {
-      console.error('Faltan parámetros requeridos: id_feria o fecha');
-      return res.status(400).json({ message: 'El id_feria y la fecha son requeridos' });
-    }
-
-    console.log('Ejecutando consulta SQL...');
-
-    const puestos = await pool.query(
-      `
-   SELECT p.id_puesto, p.numero, ep.estado
+    const puestos = await pool.query(`
+      SELECT p.id_puesto, p.numero, ep.estado
       FROM feria f
       JOIN puesto p ON (p.id_feria = f.id_feria)
       JOIN estado_puesto ep ON p.id_estado_puesto = ep.id_estado_puesto
-      WHERE f.id_feria = $1 
-      order by p.id_puesto 
-;
-      `,
+      WHERE f.id_feria = $1  
+      order by p.id_puesto;`,
       [id_feria] // Pasar la fecha como segundo parámetro
     );
 
-    console.log('Resultado de la consulta:', puestos.rows); // Log para verificar los datos obtenidos
 
     res.status(200).json(puestos.rows);
   } catch (error) {
     console.error('Error al obtener puestos:', error.message);
-    console.error('Stack trace:', error.stack); // Imprimir el stack trace completo
     res.status(500).json({ message: 'Error al obtener puestos' });
   }
 };
@@ -151,7 +130,7 @@ const obtenerMapaFeria = async (req, res, pool) => {
 // Obtener feriantes activos en cada feria
 const obtenerFeriantesActivos = async (req, res, pool) => {
   const  { id_feria , fecha} = req.params;
-  console.log('Recibiendo solicitud para obtener feriantes activos, id_feria:', id_feria);
+
 
   // Validar que id_feria es un número válido
   if (!id_feria || isNaN(id_feria)) {
@@ -183,17 +162,11 @@ SELECT
   JOIN estado_contrato ec ON ec.id_estado_contrato = cp.id_estado_contrato
   WHERE f.id_feria = $1 AND af.fecha =  $2;
     `;
-    console.log('Consultando feriantes activos para la feria con id_feria:', [id_feria, fecha]);
+
 
     // Pasamos id_feria como parámetro
     const result = await pool.query(query, [parseInt(id_feria, 10) , fecha]);
 
-    if (result.rows.length === 0) {
-      console.log('No se encontraron feriantes para la feria con id_feria:', id_feria);
-      return res.status(404).json({ message: 'No se encontraron feriantes para la feria con el id proporcionado' });
-    }
-
-    console.log('Feriantes activos obtenidos exitosamente:', result.rows);
     res.status(200).json(result.rows);
   } catch (error) {
     console.error('Error al obtener los feriantes activos:', error);
@@ -218,30 +191,18 @@ const getFeriantesPendientes = async (req, res, pool) => {
   }
 };
 
-const getPuestosDisponibles = async (req, res, pool) => {
-  const { id_feria } = req.query;
-
-  // Validar que id_feria es un número válido
-  if (!id_feria || isNaN(Number(id_feria))) {
-    return res.status(400).json({ message: 'El id_feria debe ser un número válido' });
-  }
-
+const getPuestosDisponibles = async (res, pool, id_feria , fecha) => {
+  console.log('activelacadfasfjksdnfguhsdnflks');
+  
   try {
-    const idFeria = parseInt(id_feria, 10);
-    const query = `
-      SELECT distinct p.id_puesto, p.numero, p.descripcion, p.precio
+    const result  = await pool.query( `
+      SELECT distinct p.id_puesto, p.numero, p.descripcion, p.precio, a.id_arriendo_puesto
       FROM puesto p
       JOIN arriendo_puesto a ON (a.id_puesto = p.id_puesto)
+	    JOIN actividad_feria af ON af.id_actividad_feria = a.id_actividad_feria
       JOIN feria f ON (p.id_feria = f.id_feria)
       JOIN estado_puesto e ON (p.id_estado_puesto = e.id_estado_puesto)
-      WHERE e.id_estado_puesto = 1 AND f.id_feria = $1;
-    `;
-
-    const result = await pool.query(query, [idFeria]);
-    if (result.rows.length === 0) {
-      return res.status(404).json({ message: 'No se encontró una feria con el id proporcionado' });
-    }
-
+      WHERE e.id_estado_puesto = 1 AND f.id_feria = $1 AND a.id_estado_arriendo = 1 AND af.fecha = $2`, [id_feria, fecha]);
     res.status(200).json(result.rows);
   } catch (error) {
     console.error('Error al obtener el estado de la feria:', error);
@@ -287,16 +248,13 @@ const aceptarPostulacion = async (req, res) => {
 
 const getFechasDisponibles = async (req, res, pool) => {
   let { id_feria } = req.params;
-  console.log('Recibiendo solicitud para obtener las fechas DE MAPAS disponibles para la feria con id_feria:', id_feria);
 
   // Validar que id_feria sea un número válido
   if (!id_feria || isNaN(parseInt(id_feria, 10))) {
-    console.log('Error: El id_feria proporcionado no es un número válido');
     return res.status(400).json({ message: 'El id_feria debe ser un número válido' });
   }
 
   id_feria = parseInt(id_feria, 10);
-  console.log('Iniciando consulta de fechas de MAPAS para la feria con id_feria:', id_feria);
 
   try {
     const query = `
@@ -312,96 +270,48 @@ const getFechasDisponibles = async (req, res, pool) => {
 
     const result = await pool.query(query, [id_feria]);
 
-    if (result.rows.length === 0) {
-      console.log('No se encontraron fechas de MAPAS para la feria con id_feria:', id_feria);
-      return res.status(404).json({ message: 'No se encontraron fechas de MAPAS para la feria proporcionada.' });
-    }
 
-    console.log('Fechas de MAPAS obtenidas exitosamente para la feria con id_feria:', id_feria, result.rows);
+
     res.status(200).json(result.rows);
   } catch (error) {
-    console.error('Error al consultar las fechas de MAPAS para la feria con id_feria:', id_feria, error);
     res.status(500).json({ message: 'Error al obtener las fechas de MAPAS' });
   }
 };
 
 // Insertar contrato para un puesto específico
-const createContrato = async (pool, id_tipo_pago, id_estado_contrato, precio, id_puesto, id_actividad_feria, id_estado_arriendo, res) => {
+const createContrato = async (res , pool , id_arriendo_puesto , nombre_fisico, precio) => {
   const timestamp = new Date().getTime();
   const sessionId = `session--${timestamp}`;
   const buyOrder = `order--${timestamp}`;
-
+  const timestampUTC = new Date().toISOString(); 
   try {
-    console.log('Iniciando creación del contrato...');
-    console.log('Parámetros recibidos:', {
-      id_tipo_pago,
-      id_estado_contrato,
-      precio,
-      id_puesto,
-      id_actividad_feria,
-      id_estado_arriendo,
-      buyOrder,
-      sessionId,
-    });
+
+
+    const arriendo  = await pool.query(`
+      UPDATE arriendo_puesto 
+      SET id_estado_arriendo = 3
+      WHERE id_arriendo_puesto = $1
+      RETURNING * `, [id_arriendo_puesto])
+
 
     // Insertar en la tabla arriendo_puesto
-    const arriendoQuery = `
-      INSERT INTO arriendo_puesto 
-      (id_actividad_feria, id_puesto, activo, id_estado_arriendo) 
-      VALUES ($1, $2, $3, 2) 
-      RETURNING id_arriendo_puesto
-    `;
 
-    const arriendoValues = [id_actividad_feria, id_puesto, id_estado_arriendo, true]; // Suponiendo que el estado "activo" es true
-
-    console.log('Consulta SQL para arriendo_puesto:', arriendoQuery);
-    console.log('Valores para arriendo_puesto:', arriendoValues);
-
-    const arriendoResult = await pool.query(arriendoQuery, arriendoValues);
-
-    if (arriendoResult.rows.length > 0) {
-      const id_arriendo_puesto = arriendoResult.rows[0].id_arriendo_puesto;
-      console.log(`Arriendo de puesto creado con ID: ${id_arriendo_puesto}`);
-
+    if (arriendo.rows.length > 0) {
       // Insertar en la tabla contrato_puesto con el id_arriendo_puesto obtenido
-      const contratoQuery = `
+      const contrato =  await pool.query(`
         INSERT INTO contrato_puesto 
-        (usuario_fisico, fecha_pago, id_arriendo_puesto, id_tipo_pago, id_estado_contrato, buy_order, session_id) 
-        VALUES ($1, CURRENT_TIMESTAMP, $2, $3, $4, $5, $6) 
-        RETURNING id_contrato
-      `;
+        (id_user_fte , usuario_fisico , fecha_pago, id_arriendo_puesto, id_tipo_pago, id_estado_contrato , precio , buy_order , session_id) 
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8 , $9) 
+        RETURNING id_arriendo_puesto
+      ` , [null,nombre_fisico, timestampUTC ,id_arriendo_puesto, 3, 5, precio, buyOrder, sessionId]) 
+        res.status(200).json({msj: "contrato exitoso"})
 
-      const contratoValues = [null, id_arriendo_puesto, id_tipo_pago, id_estado_contrato, buyOrder, sessionId];
-
-      console.log('Consulta SQL para contrato_puesto:', contratoQuery);
-      console.log('Valores para contrato_puesto:', contratoValues);
-
-      const contratoResult = await pool.query(contratoQuery, contratoValues);
-
-      if (contratoResult.rows.length > 0) {
-        console.log(`Contrato creado con ID: ${contratoResult.rows[0].id_contrato}`);
-
-        // Devolver un resultado final si ambos inserts son exitosos
-        res.json({
-          mensaje: 'Contrato y arriendo de puesto creados exitosamente',
-          id_contrato: contratoResult.rows[0].id_contrato,
-          id_arriendo_puesto: id_arriendo_puesto
-        });
-      } else {
-        console.error('No se pudo crear el contrato');
-        throw new Error('No se pudo crear el contrato');
-      }
-
-    } else {
-      console.error('No se pudo crear el arriendo del puesto');
-      throw new Error('No se pudo crear el arriendo del puesto');
     }
-
   } catch (error) {
     console.error('Error en la creación del contrato o arriendo del puesto:', error);
     res.status(500).json({ error: 'Error en la creación del contrato o arriendo del puesto' });
   }
-};
+  }
 
 
 

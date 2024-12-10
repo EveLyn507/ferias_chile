@@ -29,7 +29,7 @@ const VerificarDatos: React.FC<VerificarDatosProps> = ({ id_feria, fechaSeleccio
     const fetchFeriantes = async () => {
       try {
         setLoadingFeriantes(true);
-        const response = await axios.get(
+        const response = await axios.post(
           `http://localhost:5000/api/supervisor/feriantes-activos/${id_feria}/${fechaSeleccionada}`,
           { params: { fecha_pago: fechaSeleccionada } }
         );
