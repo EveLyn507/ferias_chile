@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import EstadoFeria from './EstadoFeria';
 import GestionPuestos from './GestionPuestos';
 import VerificarDatos from './VerificarDatos';
@@ -16,7 +16,7 @@ const GestionSupervisor = ({ id_feria, nombre_feria }: GestionSupervisorProps) =
   const [selectedFecha, setSelectedFecha] = useState<string>('');
   const [loadingFechas, setLoadingFechas] = useState<boolean>(true);
   const [errorFechas, setErrorFechas] = useState<string | null>(null);
-  const navigate = useNavigate();
+
   useEffect(() => {
     const fetchFechas = async () => {
       try {
@@ -73,12 +73,12 @@ const GestionSupervisor = ({ id_feria, nombre_feria }: GestionSupervisorProps) =
         )}
       </div>
       {
-        
+
       }
       <div className="supervisor-link">
-      <button onClick={() => navigate(`2/supervisor/${id_feria}/${nombre_feria}/${selectedFecha}`)} className="button">
-  Ver Feria
-</button>
+        <Link to={`/private/2/supervisor/${id_feria}/${nombre_feria}/${selectedFecha}`} className="button">
+          Ver Feria
+        </Link>
       </div>
       
       <section className="supervisor-section">

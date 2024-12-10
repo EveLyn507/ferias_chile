@@ -25,7 +25,7 @@ useEffect(() =>{
 
 },[])
 
-
+ 
   return (
     
     <>
@@ -38,7 +38,7 @@ useEffect(() =>{
           <span> Rol: {mipost.rol} </span>
           <span> Fecha de inicio: {mipost.fecha_ingreso} </span>
           <span> Fecha de termino: {mipost.fecha_termino} </span>
-          <Link to={`/private/2/postulaciones/supervisor/${mipost.id_feria}/${mipost.nombre_feria}`}>SUPERVISOR</Link>
+          <Link to={`/private/2/supervisor/${mipost.id_feria}/${mipost.nombre_feria}`}>SUPERVISOR</Link>
    
       </div>
     ))}

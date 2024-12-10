@@ -1,54 +1,100 @@
+
+
 import { Stage, Layer, Rect, Line } from 'react-konva';
 import { useState, useEffect } from 'react';
+
 import React from 'react';
 import PuestosLayer from './puestoLayer';
 import StreetsLayer from './streelayer';
-import { arriendo, MapaCanvas } from './mapaModel';
-import './mapa.css';
+import { arriendo, plano, PlanoItemElement } from './mapaModel';
+import './mapa.css'
 import { ArriendoModal } from './cartel';
 
-const Mapa: React.FC<MapaCanvas> = ({
-  plano,
-  puestos,
-  calles,
-  isStatic,
-  arriendos
-}) => { 
-  const planX = 50;
-  const planY = 50;
-  const gridSize = 50;
-  const controlSize = 8;
+  
+export interface MapaCanvas2 {
+  puestos: PlanoItemElement[];
+  calles: PlanoItemElement[];
+  plano: plano 
+  isStatic : true
+  arriendos : arriendo[]
+  nombreFeria: string
+}
 
-  // Establecer el zoom base para móviles más alto para que los puestos se vean correctamente
-  const [zoomLevel, setZoomLevel] = useState(window.innerWidth < 768 ? 1.5 : 1); 
-  const [stagePosition, setStagePosition] = useState({ x: 0, y: 0 });
 
-  const [image, setImage] = useState<HTMLImageElement | null>(null);
-  const [isModalOpen, setModalOpen] = useState(false);
-  const [selectedObject, setSelectedObject] = useState<arriendo | null>(null);
 
-  const handleObjectClick = (idP: number) => {
-    const arrSelect = arriendos.find(arr => arr.id_puesto === idP);
-    if (arrSelect) {
-      setSelectedObject(arrSelect);
-      setModalOpen(true);
-    }
-  };
+  const Mapa: React.FC<MapaCanvas2> = ({
+    plano,
+    puestos,
+    calles,
+    isStatic,
+    arriendos,
+    nombreFeria,
 
-  useEffect(() => {
+  }) => { 
+    const planX = 50;
+    const planY = 50;
+    const gridSize = 50;
+    const controlSize = 8;
+    const [zoomLevel, setZoomLevel] = useState(1);
+    const [stagePosition, setStagePosition] = useState({ x: 0, y: 0 });
+
+    const [image, setImage] = useState<HTMLImageElement | null>(null);
+    const [isModalOpen, setModalOpen] = useState(false);
+    const [selectedObject, setSelectedObject] = useState<arriendo | null>(null);
+  
+    
+    const handleObjectClick =  (idP : number) => {
+      const arrSelect =  arriendos.find(arr => arr.id_puesto === idP)
+      console.log(arrSelect, idP);
+      
+      if(arrSelect){
+        setSelectedObject(arrSelect);
+        setModalOpen(true);
+      }
+    
+    };
+
+    console.log(nombreFeria);
+    
+    
+    // Cargar imagen de los puestos
+    useEffect(() => {
     const img = new window.Image();
     img.src = '/imagenes/puesto.png';
     img.onload = () => {
-      setImage(img);
+        setImage(img);
     };
     img.onerror = () => {
-      console.error('Error loading the image');
+        console.error('Error loading the image');
     };
-  }, []);
+    }, []);
 
-  return (
-    <>
-      <div style={{ position: 'relative', top: '10px', right: '10px', paddingBottom: '10px' }}>
+    const pwid = window.innerWidth < 768 ? 430  : 800
+    const phei = window.innerHeight< 768 ? 400 : 600
+    const [stageSize, setStageSize] = useState({ width: pwid, height: phei });
+
+    useEffect(() => {
+      const handleResize = () => {
+        const width = window.innerWidth // 80% del ancho de la ventana
+        const height = window.innerHeight * 0.71; // 60% del alto de la ventana
+        setStageSize({ width, height });
+      };
+  
+      handleResize(); // Ajustar al cargar
+      window.addEventListener("resize", handleResize);
+  
+      return () => {
+        window.removeEventListener("resize", handleResize);
+      };
+    }, []);
+return (
+
+<>
+
+<h1 style={{ position: 'relative', marginTop: '5%', marginRight: 'auto', marginLeft : 'auto'  }}> Mapa {nombreFeria}</h1>
+<div style={{ position: 'relative', marginRight: 'auto', marginLeft : 'auto' }}>
+
+
         <button onClick={() => setZoomLevel(Math.min(zoomLevel + 0.1, 4))} style={{ margin: '5px' }}>
           Zoom In
         </button>
@@ -57,80 +103,88 @@ const Mapa: React.FC<MapaCanvas> = ({
         </button>
       </div>
 
-      <Stage
-        width={window.innerWidth < 768 ? window.innerWidth - 20 : 800}  // Ajusta el ancho a pantalla pequeña
-        height={window.innerWidth < 768 ? 400 : 600}  // Ajusta la altura en pantallas más pequeñas
+      <Stage  
+      className='stage'
+      width={stageSize.width}  // Ajusta el ancho a pantalla pequeña
+      height={stageSize.height}  // Ajusta la altura en pantallas más pequeñas
         scaleX={zoomLevel}
         scaleY={zoomLevel}
         x={stagePosition.x}
         y={stagePosition.y}
         draggable
-        style={{ 
-          border: 'black solid 5px', 
-          backgroundColor: 'transparent', 
-          margin: 'auto' 
-        }}
+        style={{borderTop : 'black solid 1px'}}
       >
         <Layer>
-          <Rect
-            x={planX}
-            y={planY}
-            width={plano.width}
-            height={plano.height}
-            fill="lightgray"
-            stroke="black"
-            strokeWidth={2}
+
+        <Rect
+          x={planX}
+          y={planY}
+          width={plano.width}
+          height={plano.height}
+          fill="lightgray"
+          stroke="black"
+          strokeWidth={2}
+        />
+        {/*GRILLA DE LAS LINEAS DEL FONDO*/}
+        {Array.from({ length: plano.width / gridSize }, (_, i) => (
+          <Line
+            key={`v-${i}`}
+            points={[planX + i * gridSize, planY, planX + i * gridSize, planY + plano.height]}
+            stroke="#ddd"
+            strokeWidth={1}
           />
-          {/* GRILLA DE LAS LINEAS DEL FONDO */}
-          {Array.from({ length: plano.width / gridSize }, (_, i) => (
-            <Line
-              key={`v-${i}`}
-              points={[planX + i * gridSize, planY, planX + i * gridSize, planY + plano.height]}
-              stroke="#ddd"
-              strokeWidth={1}
-            />
-          ))}
-          {Array.from({ length: plano.height / gridSize }, (_, i) => (
-            <Line
-              key={`h-${i}`}
-              points={[planX, planY + i * gridSize, planX + plano.width, planY + i * gridSize]}
-              stroke="#ddd"
-              strokeWidth={1}
-            />
-          ))}
+        ))}
 
-          {/* Controlador para redimensionar el plano */}
-          {!isStatic && (
-            <Rect
-              x={planX + plano.width - controlSize / 2}
-              y={planY + plano.height - controlSize / 2}
-              width={controlSize}
-              height={controlSize}
-              fill="blue"
-            />
-          )}
-        </Layer>
+        {Array.from({ length: plano.height / gridSize }, (_, i) => (
+          <Line
+            key={`h-${i}`}
+            points={[planX, planY + i * gridSize, planX + plano.width, planY + i * gridSize]}
+            stroke="#ddd"
+            strokeWidth={1}
+          />
+        ))} 
 
-        <PuestosLayer
-          puestos={puestos}  // Lista de puestos, debe ser un arreglo de objetos Rectangle
-          isStatic={false}  // Si los puestos son estáticos o no (pueden moverse o redimensionarse)
-          image={image}  // Imagen que se aplicará a los puestos (si es necesario)
-          itemClick={handleObjectClick}
-        />
-        {/* Capa para las calles */}
-        <StreetsLayer
-          calles={calles}
-          isStatic={false}
-        />
-      </Stage>
 
-      <ArriendoModal
+        {/* Controlador para redimensionar el plano */}
+        {!isStatic && (
+          <Rect
+            x={planX + plano.width - controlSize / 2}
+            y={planY + plano.height - controlSize / 2}
+            width={controlSize}
+            height={controlSize}
+            fill="blue"
+          />
+        )}
+      </Layer>
+
+
+      <PuestosLayer
+      puestos={puestos}  // Lista de puestos, debe ser un arreglo de objetos Rectangle
+      isStatic={false}  // Si los puestos son estáticos o no (pueden moverse o redimensionarse)
+      image={image}  // Imagen que se aplicará a los puestos (si es necesario)
+      itemClick={handleObjectClick}
+
+
+    />
+      {/* Capa para las calles */}
+      <StreetsLayer 
+            calles={calles}
+            isStatic={false}
+          />
+    </Stage>
+
+
+    <ArriendoModal
         isOpen={isModalOpen}
         onClose={() => setModalOpen(false)}
         arriendo={selectedObject}
       />
-    </>
-  );
-};
 
-export default Mapa;
+    </>
+
+)
+
+
+  }  // fin
+  
+  export default Mapa;

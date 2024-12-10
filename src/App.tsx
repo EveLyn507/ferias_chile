@@ -7,7 +7,6 @@ import { Nav_bar } from './components';
 import { NotFound, PrivateRoutes, PublicRoutes } from './models/index'; // rutas url 
 import { LoginHome, Registro, ResetPassword } from './pages/pages.publicas/registro_y_login/index';
 import PerfilFeriantes from './pages/pages.privadas/perfil_feriante/components/perfil_feriante';
-import View_detalle_feria from './pages/pages.publicas/feed_ferias/vista_detalle_feria';
 import ConfirmPayment from './pages/pages.privadas/perfil_feriante/components/pagos/voucher_pago';
 import PaymentButton from './pages/pages.privadas/perfil_feriante/components/pagos/view_pago';
 const View_feed = lazy(() => import ('./pages/pages.publicas/feed_ferias/home_feed_feria'));
@@ -16,6 +15,7 @@ import './App.css';
 import Footer from './components/footer';
 import { ToastProvider } from './components/ToastService'; //npm install react-toastify
 import FormularioReserva from './pages/pages.privadas/perfil_feriante/components/supervisor/FormularioReserva';
+import View_detalle_feria from './pages/pages.publicas/feed_ferias/vista_detalle_feria';
 
 function App() {
   return (

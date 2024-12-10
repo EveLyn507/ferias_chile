@@ -78,14 +78,10 @@
     }
 
     .stage {
-        width: 100%;
+        width: 412;
         height: 300px; /* Ajusta la altura del canvas para que se vea mejor en pantallas más pequeñas */
     }
 
-    .mapa canvas {
-        width: 100%;
-        height: 100%;
-    }
 }
 
 /* Para pantallas de teléfono más pequeñas */
@@ -114,8 +110,5 @@
         height: 200px; /* Ajusta la altura aún más para móviles muy pequeños */
     }
 
-    .mapa canvas {
-        width: 100%;
-        height: 100%;
-    }
+
 }

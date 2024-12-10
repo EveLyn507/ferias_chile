@@ -45,7 +45,7 @@ export const CardFerias = ({ ferias }: FeriasProps) => {
               </ul>
             </section>
 
-            <section className="card-actividades">
+            <section className="card-actividades"> 
               <h3>Nuetras Proximas Fechas</h3>
               <div className="botones-container">
                 {feria.actividades?.map((actividad) => (
