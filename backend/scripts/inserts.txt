@@ -440,6 +440,14 @@ INSERT INTO tipo_red (id_tipo_red, red_social, url_foto_red) VALUES
 (5, 'TikTok', 'https://upload.wikimedia.org/wikipedia/en/6/69/TikTok_logo.svg');
 
 
+insert into banco_encargado  (mail_banco ,id_user_enf,nombre_asociado,numero_cuenta)
+ VALUES ('mibanco@mio.com', 3 , 'miBanco' , 11111111); 
+
+
+insert into
+contrato_puesto(id_user_fte , usuario_fisico , fecha_pago, id_arriendo_puesto, id_tipo_pago, id_estado_contrato , precio , buy_order , session_id)
+values (4,null, '2024-12-10' ,3, 3, 2, 2222, 22222, 2222)
+
 
 
 

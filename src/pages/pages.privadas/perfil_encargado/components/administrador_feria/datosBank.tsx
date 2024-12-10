@@ -6,7 +6,7 @@ import { DatosBank, homeProps } from "../../../../models/interfaces";
 import { bancoService } from "../../rxjs/sharingbankslist";
 import { asociarBankFeria, getFeriaBank } from "../../services/admin_feria_fuctions";
 
-import { Link } from "react-router-dom";
+
 import { useToast } from "../../../../../components/ToastService";
 
 export const BancoFeria = ({ id_feria }: homeProps) => {
@@ -82,7 +82,7 @@ export const BancoFeria = ({ id_feria }: homeProps) => {
           </ul>
         )}
 
-        <Link to={`bancos`}>Ingresa tus bancos</Link>
+
       </div>
     </div>
   );
