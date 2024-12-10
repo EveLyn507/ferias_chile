@@ -1,46 +1,121 @@
 .mapa-container {
-    max-width: 1350px; /* Máximo ancho del contenedor */
-    max-height: 600px; /* Máxima altura del contenedor */
-    width: 100%; /* Asegura que sea flexible y ocupe el ancho disponible */
-    height: auto; /* Permite que el contenedor sea flexible verticalmente */
+    max-width: 1350px;
+    max-height: 600px;
+    width: 100%;
+    height: auto;
     margin-top: 6%;
     margin-left: 2%;
     margin-right: 2%;
     display: flex;
     flex-direction: column;
     padding: 1%;
-    background-color: #f0f0f0; /* Fondo claro para diferenciar */
-    overflow: auto; /* Evita que el contenido desborde el contenedor */
+    background-color: #f0f0f0;
+    overflow: auto;
 }
 
+/* Contenedor de los controles de zoom */
 .zoom {
     max-height: 5%;
     display: flex;
-    justify-content: flex-end; /* Alinea el zoom al final */
+    justify-content: flex-end;
+    margin-bottom: 10px;
 }
 
+.zoom button {
+    font-size: 14px;
+    padding: 6px 10px;
+}
+
+/* Ajuste para el contenedor del mapa */
 .mapa {
-    display: flex; /* Flexbox para centrar contenido */
-    justify-content: center; /* Centra horizontalmente */
-    align-items: center; /* Centra verticalmente */
-    width: 100%; /* Asegura que ocupe todo el ancho del contenedor */
-    height: 100%; /* Ocupa toda la altura disponible */
-    position: relative; /* Permite que los canvas se posicionen dentro del contenedor */
-
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
 }
 
+/* Asegura que el Stage ocupe todo el contenedor */
 .stage {
-    width: 100%; /* Asegura que el stage ocupe todo el espacio disponible */
-    height: 100%; /* Asegura que el stage ocupe todo el espacio disponible */
+    width: 100%;
+    height: 100%;
 }
 
+/* Ajusta el canvas dentro del mapa */
 .mapa canvas {
-    position: absolute; /* Los canvas deben superponerse */
-
-    width: 100%;  /* Ajusta el canvas al tamaño del contenedor */
-    height: 100%; /* Ajusta el canvas al tamaño del contenedor */
-    margin: auto; /* Centra el canvas dentro de su contenedor */
-
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    margin: auto;
 }
 
+/* Responsividad para pantallas pequeñas (celulares) */
+@media screen and (max-width: 768px) {
+    .mapa-container {
+        margin-top: 10%;
+        margin-left: 2%;
+        height: 500%;
+        margin-right: 2%;
+        padding: 0.5%;
+        max-width: 100%;
+        max-height: 400px; /* Reduce la altura del contenedor en pantallas más pequeñas */
+    }
 
+    .zoom {
+        margin-bottom: 5px;
+        justify-content: space-between;
+    }
+
+    .zoom button {
+        font-size: 14px;
+        padding: 6px 10px;
+    }
+
+    .mapa {
+        height: auto;
+    }
+
+    .stage {
+        width: 100%;
+        height: 300px; /* Ajusta la altura del canvas para que se vea mejor en pantallas más pequeñas */
+    }
+
+    .mapa canvas {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+/* Para pantallas de teléfono más pequeñas */
+@media screen and (max-width: 480px) {
+    .mapa-container {
+        margin-top: 15%; /* Aumenta el espacio superior para pantallas más pequeñas */
+        margin-left: 0;
+        margin-right: 0;
+        padding: 0.5%;
+        max-width: 100%;
+        max-height: 250px; /* Reduce aún más la altura del mapa en pantallas muy pequeñas */
+    }
+
+    .zoom {
+        margin-bottom: 5px;
+        justify-content: space-between;
+    }
+
+    .zoom button {
+        font-size: 12px;
+        padding: 4px 8px;
+    }
+
+    .stage {
+        width: 100%;
+        height: 200px; /* Ajusta la altura aún más para móviles muy pequeños */
+    }
+
+    .mapa canvas {
+        width: 100%;
+        height: 100%;
+    }
+}

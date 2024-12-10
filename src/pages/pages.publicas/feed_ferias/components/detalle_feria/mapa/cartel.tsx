@@ -16,6 +16,11 @@ Modal.setAppElement('#root');
 export const ArriendoModal = ({ isOpen, onClose, arriendo }: modalProps) => {
   const navigate = useNavigate();
 
+  if (!arriendo) {
+    console.warn("Arriendo no encontrado");
+    return null;
+  }
+
   const handleContratarClick = (arriendo: arriendo) => {
     navigate("/pagosss", { state: { arriendo } });
   };

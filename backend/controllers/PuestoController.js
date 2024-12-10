@@ -1,16 +1,24 @@
 // controllers/PuestoController.js
 
 const getPuestos = async (req, res) => {
-    const pool = req.pool;
-    const id_feria = parseInt(req.params.id_feria, 10);
-    try {
-      const result = await pool.query('SELECT public.contar_puestos_actuales($1)', [id_feria]);
-      const totalpuestos = result.rows[0].contar_puestos_actuales
-      res.json(totalpuestos)
-    } catch (err) {
-      res.status(500).send('Error al obtener los puestos');
-    }
-  };
+  const pool = req.pool;
+  const id_feria = parseInt(req.params.id_feria, 10);
+  try {
+    const result = await pool.query(
+      `SELECT p.id_puesto, p.numero, p.id_tipo_puesto, p.descripcion, p.id_estado_puesto, p.id_feria,
+              h.hora_inicio, h.hora_termino, h.precio
+       FROM puesto p
+       LEFT JOIN horario_puesto h ON p.id_puesto = h.id_puesto
+       WHERE p.id_feria = $1`,
+      [id_feria]
+    );
+    res.json(result.rows); 
+  } catch (err) {
+    console.error("Error al obtener los puestos:", err);
+    res.status(500).send("Error al obtener los puestos");
+  }
+};
+
   
   const createPuesto = async (req, res) => {
     const { numero, id_tipo_puesto, id_feria, descripcion, id_estado_puesto, horarioData } = req.body; // Añadir horario al body

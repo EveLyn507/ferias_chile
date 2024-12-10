@@ -3,6 +3,7 @@
 import React, { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import userWebSocketService from '../../../../models/webSoket.ts';
+import './Pagos.css';
 
 const ConfirmPayment: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -43,9 +44,9 @@ const ConfirmPayment: React.FC = () => {
 
 
   return (
-    <div>
-      <h1>Confirmando el Pago...</h1>
-      <p>Por favor, espere...</p>
+    <div className="confirm-payment-container">
+      <h1 className="confirm-payment-title">Confirmando el Pago...</h1>
+      <p className="confirm-payment-message">Por favor, espere...</p>
     </div>
   );
 };

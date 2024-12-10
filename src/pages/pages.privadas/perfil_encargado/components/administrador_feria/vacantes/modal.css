@@ -26,33 +26,45 @@
   
   .modal-footer {
     margin-top: 15px;
-    text-align: right;
+    text-align: flex;
+    justify-content: space-between;
   }
   
   .modal-footer button {
     padding: 10px;
     border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
   }
   
   .modal-footer button:first-child {
-    margin-right: 10px;
-  }
-  
-  .modal-footer button:nth-child(1) {
-    background-color: #28A745;
+    background-color: #dc3545;
     color: white;
     border: none;
   }
   
-  .modal-footer button:nth-child(2) {
-    background-color: #DC3545;
+  .modal-footer button:first-child:hover {
+    background-color: #c82333; 
+  }
+  
+  .modal-footer button:first-child:active {
+    background-color: #a71d2a; 
+  }
+  
+  .modal-footer button:last-child {
+    background-color: #28a745;
     color: white;
     border: none;
   }
   
-  .modal-footer button:nth-child(3) {
-    background-color: #007BFF;
-    color: white;
-    border: none;
+  .modal-footer button:last-child:hover {
+    background-color: #218838; 
   }
+  
+  .modal-footer button:last-child:active {
+    background-color: #1e7e34; 
+  }
+  
   
